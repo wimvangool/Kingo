@@ -39,8 +39,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MicroServices\Endpoints\" />
-  </ItemGroup>
-
 </Project>

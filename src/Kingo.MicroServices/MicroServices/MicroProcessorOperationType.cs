@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents a specific operation type performed by a <see cref="MicroProcessor" />.

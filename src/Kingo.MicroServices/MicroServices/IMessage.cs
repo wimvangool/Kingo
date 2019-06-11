@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Kingo.Reflection;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents a message that is being handled or executed

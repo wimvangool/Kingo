@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents a specific role or kind a message that is handled or executed by a <see cref="MicroProcessor"/> can have.

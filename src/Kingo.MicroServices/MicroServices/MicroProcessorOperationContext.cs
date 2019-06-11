@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using Kingo.Threading;
 
 namespace Kingo.MicroServices
 {

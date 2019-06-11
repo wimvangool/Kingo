@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents an operation where a specific <see cref="IAsyncMethod"/> is being executed.

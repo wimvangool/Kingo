@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>    
     /// Represents an operation of a <see cref="IMicroProcessor"/> where a query ie being executed.    

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     //[TestClass]
     //public sealed class MicroProcessorTest

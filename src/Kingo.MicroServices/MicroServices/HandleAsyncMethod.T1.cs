@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Kingo.Reflection;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {   

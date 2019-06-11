@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Kingo.Reflection;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     internal sealed class MessageHandlerInstance<TMessage> : MessageHandlerInstance
     {
