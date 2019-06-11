@@ -33,7 +33,7 @@ namespace Kingo.MicroServices.Endpoints
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_components.Count} types added.";
+            $"{_components.Count} type(s) added, {_services.Count} type registration(s) made.";
 
         IServiceCollection IServiceCollectionBuilder.BuildServiceCollection(IServiceCollection services) =>
             BuildServiceCollection(services ?? new ServiceCollection());
