@@ -86,15 +86,24 @@ namespace Kingo.MicroServices
 
         private async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
         {
-            // Every operation potentially yields a new stream of events, which is immediately handled by the processor
-            // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
-            // sub-tree of events are handled before the next event in the stream.
-            var result = await operation.ExecuteAsync();
-            if (result.Events.Count > 0)
+            Token.ThrowIfCancellationRequested();
+
+            try
             {
-                return await HandleEventsAsync(result.ToEventBufferResult(), operation.Context);
+                // Every operation potentially yields a new stream of events, which is immediately handled by the processor
+                // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
+                // sub-tree of events are handled before the next event in the stream.
+                var result = await operation.ExecuteAsync();
+                if (result.Events.Count > 0)
+                {
+                    return await HandleEventsAsync(result.ToEventBufferResult(), operation.Context);
+                }
+                return result;
             }
-            return result;
+            finally
+            {
+                Token.ThrowIfCancellationRequested();
+            }            
         }
 
         private async Task<MessageHandlerOperationResult> HandleEventsAsync(EventBufferResult result, MessageHandlerOperationContext context) =>

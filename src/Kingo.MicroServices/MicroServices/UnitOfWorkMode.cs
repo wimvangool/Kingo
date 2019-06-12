@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents a specific mode of the unit of work that a <see cref="MicroProcessor" /> uses to store and flush changes.

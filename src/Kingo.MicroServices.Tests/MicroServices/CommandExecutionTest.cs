@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -440,7 +440,134 @@ namespace Kingo.MicroServices
 
         #region [====== Exception Handling ======]
 
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException), AllowDerivedTypes = true)]
+        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationIsCancelledWithTheSpecifiedToken()
+        {
+            var tokenSource = new CancellationTokenSource();
 
+            try
+            {
+                await CreateProcessor().ExecuteAsync((message, context) =>
+                {
+                    tokenSource.Cancel();
+                }, new object(), tokenSource.Token);
+            }
+            catch (OperationCanceledException exception)
+            {
+                Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                throw;
+            }
+            finally
+            {
+                tokenSource.Dispose();
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationIsCancelledWithSomeOtherToken()
+        {
+            var exceptionToThrow = new OperationCanceledException();
+            var tokenSource = new CancellationTokenSource();
+
+            try
+            {
+                await CreateProcessor().ExecuteAsync((message, context) =>
+                {
+                    throw exceptionToThrow;
+                }, new object(), tokenSource.Token);
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(exceptionToThrow, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                tokenSource.Dispose();
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadRequestException), AllowDerivedTypes = true)]
+        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsMessageHandlerException()
+        {
+            var exceptionToThrow = new BusinessRuleException();
+
+            try
+            {
+                await CreateProcessor().ExecuteAsync((message, context) =>
+                {
+                    throw exceptionToThrow;
+                }, new object());
+            }
+            catch (BadRequestException exception)
+            {
+                Assert.AreSame(exceptionToThrow, exception.InnerException);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadRequestException))]
+        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
+        {
+            var exceptionToThrow = new BadRequestException();
+
+            try
+            {
+                await CreateProcessor().ExecuteAsync((message, context) =>
+                {
+                    throw exceptionToThrow;
+                }, new object());
+            }
+            catch (BadRequestException exception)
+            {
+                Assert.AreSame(exceptionToThrow, exception);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsInternalServerErrorException()
+        {
+            var exceptionToThrow = new InternalServerErrorException();
+
+            try
+            {
+                await CreateProcessor().ExecuteAsync((message, context) =>
+                {
+                    throw exceptionToThrow;
+                }, new object());
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(exceptionToThrow, exception);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsRandomException()
+        {
+            var exceptionToThrow = new Exception();
+
+            try
+            {
+                await CreateProcessor().ExecuteAsync((message, context) =>
+                {
+                    throw exceptionToThrow;
+                }, new object());
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(exceptionToThrow, exception.InnerException);
+                throw;
+            }
+        }
 
         #endregion
     }
