@@ -177,4 +177,7 @@
   <data name="UnitOfWork_EnlistmentTimeout" xml:space="preserve">
     <value>The operation to enlist to the current unit of work (as a result of modification of aggregate of type '{0}'), was aborted because execution time exceeded the specified timeout ({1}).</value>
   </data>
+  <data name="UnitOfWork_InvalidMode" xml:space="preserve">
+    <value>The specified mode is invalid: {0}.</value>
+  </data>
 </root>

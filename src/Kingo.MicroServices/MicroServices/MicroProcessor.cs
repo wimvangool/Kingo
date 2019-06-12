@@ -37,6 +37,7 @@ namespace Kingo.MicroServices
         #endregion
                 
         private readonly Context<IServiceProvider> _serviceProviderContext;
+        private readonly Lazy<IMicroProcessorOptions> _options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
@@ -54,7 +55,25 @@ namespace Kingo.MicroServices
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
             _serviceProviderContext = new Context<IServiceProvider>(serviceProvider);
-        }        
+            _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
+        }
+
+        #region [====== Options ======]
+
+        internal IMicroProcessorOptions Options =>
+            _options.Value;
+
+        private IMicroProcessorOptions ResolveOptions()
+        {
+            var options = ServiceProvider.GetService<MicroProcessorOptions>();
+            if (options == null)
+            {
+                return new MicroProcessorOptions();
+            }
+            return options;
+        }            
+
+        #endregion
 
         #region [====== ServiceProvider ======]        
 
@@ -70,7 +89,7 @@ namespace Kingo.MicroServices
         public virtual IServiceScope CreateScope() =>
             new ServiceScope(this, ServiceProvider.CreateScope());
 
-        #endregion
+        #endregion        
 
         #region [====== ExecuteAsync (Commands & Queries) ======]          
 

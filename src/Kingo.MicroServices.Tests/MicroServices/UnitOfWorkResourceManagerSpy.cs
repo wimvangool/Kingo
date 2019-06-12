@@ -13,11 +13,10 @@ namespace Kingo.MicroServices
         private int _requiresFlushCount;
         private int _flushCount;
 
-        public UnitOfWorkResourceManagerSpy(bool requiresFlush, Exception exceptionToThrow = null)
-        {
-            _requiresFlush = requiresFlush;
-            _exceptionToThrow = exceptionToThrow;
-            _resourceId = null;
+        public UnitOfWorkResourceManagerSpy(bool requiresFlush, Exception exceptionToThrow = null) :
+            this(requiresFlush, new object())
+        {            
+            _exceptionToThrow = exceptionToThrow;            
         }
 
         public UnitOfWorkResourceManagerSpy(bool requiresFlush, object resourceId)

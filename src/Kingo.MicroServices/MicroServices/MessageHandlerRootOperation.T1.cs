@@ -8,12 +8,12 @@ namespace Kingo.MicroServices
     internal abstract class MessageHandlerRootOperation<TMessage> : MessageHandlerOperation<TMessage>
     {
         private readonly HandleAsyncMethod<TMessage> _method;
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         protected MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, IMessage<TMessage> message, CancellationToken? token) :
-            this(processor, method, message, token, new UnitOfWork()) { }
+            this(processor, method, message, token, UnitOfWork.InMode(processor.Options.UnitOfWorkMode)) { }
             
-        private MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, IMessage<TMessage> message, CancellationToken? token, UnitOfWork unitOfWork) :
+        private MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, IMessage<TMessage> message, CancellationToken? token, IUnitOfWork unitOfWork) :
             base(new MessageHandlerOperationContext(processor, unitOfWork), message, token)
         {
             _method = method;
@@ -67,6 +67,6 @@ namespace Kingo.MicroServices
         protected override IEnumerable<HandleAsyncMethodOperation> CreateMethodOperations(MessageHandlerOperationContext context)
         {
             yield return CreateMethodOperation(_method, context);
-        }        
+        }                 
     }
 }

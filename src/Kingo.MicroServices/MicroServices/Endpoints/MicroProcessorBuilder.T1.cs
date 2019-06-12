@@ -5,24 +5,36 @@ namespace Kingo.MicroServices.Endpoints
 {
     internal sealed class MicroProcessorBuilder<TProcessor> : IMicroProcessorBuilder, IServiceCollectionBuilder
         where TProcessor : class, IMicroProcessor
-    {        
+    {
+        private readonly MicroProcessorOptions _options;
+        private readonly MicroProcessorComponentCollection _components;
+
         public MicroProcessorBuilder()
-        {            
-            Components = new MicroProcessorComponentCollection();            
+        {   
+            _options = new MicroProcessorOptions();
+            _components = new MicroProcessorComponentCollection();            
         }
 
-        public MicroProcessorComponentCollection Components
+        public UnitOfWorkMode UnitOfWorkMode
         {
-            get;
-        }                      
+            get => _options.UnitOfWorkMode;
+            set => _options.UnitOfWorkMode = value;
+        }
 
-        public IServiceCollection BuildServiceCollection(IServiceCollection services = null)
-        {            
+        public MicroProcessorComponentCollection Components =>
+            _components;
+
+        public IServiceCollection BuildServiceCollection(IServiceCollection services = null) =>
+            BuildServiceCollection(services ?? new ServiceCollection(), _options.Copy());
+
+        private IServiceCollection BuildServiceCollection(IServiceCollection services, MicroProcessorOptions options)
+        {
             foreach (var builder in Builders())
             {
                 services = builder.BuildServiceCollection(services);
             }
             return services
+                .AddTransient(provider => options)
                 .AddTransient<IMicroProcessor, TProcessor>(provider => provider.GetRequiredService<TProcessor>())
                 .AddTransient<TProcessor>();
         }
@@ -30,6 +42,6 @@ namespace Kingo.MicroServices.Endpoints
         private IEnumerable<IServiceCollectionBuilder> Builders()
         {
             yield return Components;                        
-        }
+        }        
     }
 }

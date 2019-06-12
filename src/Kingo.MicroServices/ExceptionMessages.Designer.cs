@@ -239,5 +239,14 @@ namespace Kingo {
                 return ResourceManager.GetString("UnitOfWork_EnlistmentTimeout", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified mode is invalid: {0}..
+        /// </summary>
+        internal static string UnitOfWork_InvalidMode {
+            get {
+                return ResourceManager.GetString("UnitOfWork_InvalidMode", resourceCulture);
+            }
+        }
     }
 }
