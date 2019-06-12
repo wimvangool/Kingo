@@ -16,5 +16,22 @@ namespace Kingo.MicroServices
         {
             get;
         }
+
+        /// <summary>
+        /// Returns the parameter that represents the message to be handled. This parameter
+        /// is <c>null</c> for methods of the <see cref="IQuery{TResponse}"/> interface.
+        /// </summary>
+        IParameterAttributeProvider MessageParameter
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Returns the parameter that represents the <see cref="MicroProcessorOperationContext" /> that is supplied to the method.
+        /// </summary>
+        IParameterAttributeProvider ContextParameter
+        {
+            get;
+        }
     }
 }

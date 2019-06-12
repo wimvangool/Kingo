@@ -13,16 +13,16 @@ namespace Kingo.MicroServices
         private readonly Query _component;
         private readonly MethodAttributeProvider _attributeProvider;
 
-        internal ExecuteAsyncMethod(Query component, QueryInterface @interface)
+        internal ExecuteAsyncMethod(Query component, MethodAttributeProvider attributeProvider)
         {
             _component = component;
-            _attributeProvider = @interface.CreateMethodAttributeProvider(component);
+            _attributeProvider = attributeProvider;
         }
 
         #region [====== Component ======]
 
         MicroProcessorComponent IAsyncMethod.Component =>
-            Query;
+            Query;        
 
         /// <summary>
         /// The message handler that implements this method.
@@ -45,6 +45,22 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
             _attributeProvider.GetAttributesOfType<TAttribute>();
+
+        #endregion
+
+        #region [====== Parameters ======]
+
+        /// <inheritdoc />
+        public abstract IParameterAttributeProvider MessageParameter
+        {
+            get;
+        }
+
+        /// <inheritdoc />
+        public abstract IParameterAttributeProvider ContextParameter
+        {
+            get;
+        }
 
         #endregion
     }

@@ -1,41 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class HandleAsyncMethodTest
+    public sealed class HandleAsyncMethodTest : AsyncMethodTest
     {
-        #region [====== MessageHandlers ======]
-
+        #region [====== MessageHandler Types ======]
+        
+        [Value(10)]
         private sealed class MessageHandler1 : IMessageHandler<object>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
+            [Value(2)]
+            public Task HandleAsync([Value(0)] object message, [Value(1)] MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
+        [Value(20)]
         private sealed class MessageHandler2 : IMessageHandler<object>, IMessageHandler<string>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
-                Task.CompletedTask;
+            [Value(10)]
+            Task IMessageHandler<string>.HandleAsync([Value(2)] string message, [Value(3)] MessageHandlerOperationContext context) =>
+                HandleAsync(message, context);
 
-            public Task HandleAsync(string message, MessageHandlerOperationContext context) =>
-                Task.CompletedTask;
+            [Value(18)]
+            public Task HandleAsync([Value(4)] object message, [Value(5)] MessageHandlerOperationContext context) =>
+                Task.CompletedTask;            
         }
 
-        #endregion
+        #endregion                
 
         [TestMethod]
         public void Method_ReturnsExpectedMethod_IfMessageHandlerImplementsOneInterface_And_MessageTypeMatchesExactly()
         {
             var messageHandler = new MessageHandler1();
             var method = new HandleAsyncMethod<object>(messageHandler);
-
-            Assert.AreSame(typeof(MessageHandler1), method.MessageHandler.Type);
-            AssertMessageParameterTypeIs(typeof(object), method);
+            
+            AssertComponentProperties<MessageHandler1>(method, 10);
+            AssertMethodProperties<object>(method, 0, 1);
         }
 
         [TestMethod]
@@ -44,22 +47,22 @@ namespace Kingo.MicroServices
             var messageHandler = new MessageHandler1();
             var method = new HandleAsyncMethod<string>(messageHandler);
 
-            Assert.AreSame(typeof(MessageHandler1), method.MessageHandler.Type);
-            AssertMessageParameterTypeIs(typeof(object), method);
+            AssertComponentProperties<MessageHandler1>(method, 10);
+            AssertMethodProperties<object>(method, 0, 1);
         }
 
         [TestMethod]
         public void Method_ReturnsExpectedMethod_IfMessageHandlerImplementsTwoInterfaces_And_MessageTypeMatchesExactly()
         {
             var messageHandler = new MessageHandler2();
-            var methodOfObject = new HandleAsyncMethod<object>(messageHandler);
             var methodOfString = new HandleAsyncMethod<string>(messageHandler);
+            var methodOfObject = new HandleAsyncMethod<object>(messageHandler);            
 
-            Assert.AreSame(typeof(MessageHandler2), methodOfObject.MessageHandler.Type);
-            AssertMessageParameterTypeIs(typeof(object), methodOfObject);
+            AssertComponentProperties<MessageHandler2>(methodOfString, 20);
+            AssertMethodProperties<string>(methodOfString, 2, 3);
 
-            Assert.AreSame(typeof(MessageHandler2), methodOfString.MessageHandler.Type);
-            AssertMessageParameterTypeIs(typeof(string), methodOfString);
+            AssertComponentProperties<MessageHandler2>(methodOfObject, 20);
+            AssertMethodProperties<object>(methodOfObject, 4, 5);
         }
 
         [TestMethod]
@@ -68,11 +71,16 @@ namespace Kingo.MicroServices
             var messageHandler = new MessageHandler2();
             var method = new HandleAsyncMethod<IDisposable>(messageHandler);
 
-            Assert.AreSame(typeof(MessageHandler2), method.MessageHandler.Type);
-            AssertMessageParameterTypeIs(typeof(object), method);
-        }
+            AssertComponentProperties<MessageHandler2>(method, 20);
+            AssertMethodProperties<object>(method, 4, 5);
+        }        
 
-        private static void AssertMessageParameterTypeIs(Type parameterType, HandleAsyncMethod method) =>
-            Assert.AreSame(parameterType, method.Info.GetParameters()[0].ParameterType);
+        private static void AssertMethodProperties<TParameter>(IAsyncMethod method, int messageValue, int contextValue)
+        {
+            Assert.AreSame(typeof(TParameter), method.MessageParameter.Type);
+            AssertValue(method.MessageParameter, messageValue);
+            AssertValue(method.ContextParameter, contextValue);
+            AssertValue(method, (messageValue + contextValue) * 2);
+        }        
     }
 }

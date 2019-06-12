@@ -12,17 +12,27 @@ namespace Kingo.MicroServices
     {
         private readonly MessageHandler _component;
         private readonly MethodAttributeProvider _attributeProvider;
+        private readonly IParameterAttributeProvider _messageParameter;
+        private readonly IParameterAttributeProvider _contextParameter;
 
-        internal HandleAsyncMethod(MessageHandler component, MessageHandlerInterface @interface)
+        internal HandleAsyncMethod(MessageHandler component, MessageHandlerInterface @interface) :
+            this(component, @interface.CreateMethodAttributeProvider(component)) { }
+
+        private HandleAsyncMethod(MessageHandler component, MethodAttributeProvider attributeProvider) :
+            this(component, attributeProvider, attributeProvider.Info.GetParameters()) { }
+
+        private HandleAsyncMethod(MessageHandler component, MethodAttributeProvider attributeProvider, ParameterInfo[] parameters)
         {
             _component = component;
-            _attributeProvider = @interface.CreateMethodAttributeProvider(component);
+            _attributeProvider = attributeProvider;
+            _messageParameter = new ParameterAttributeProvider(parameters[0]);
+            _contextParameter = new ParameterAttributeProvider(parameters[1]);
         }
 
         #region [====== Component ======]
 
         MicroProcessorComponent IAsyncMethod.Component =>
-            MessageHandler;
+            MessageHandler;        
 
         /// <summary>
         /// The message handler that implements this method.
@@ -45,6 +55,18 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
             _attributeProvider.GetAttributesOfType<TAttribute>();
+
+        #endregion
+
+        #region [====== Parameters ======]
+
+        /// <inheritdoc />
+        public IParameterAttributeProvider MessageParameter =>
+            _messageParameter;
+
+        /// <inheritdoc />
+        public IParameterAttributeProvider ContextParameter =>
+            _contextParameter;
 
         #endregion
     }

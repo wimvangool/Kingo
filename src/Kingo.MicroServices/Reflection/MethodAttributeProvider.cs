@@ -5,15 +5,15 @@ namespace Kingo.Reflection
 {
     internal sealed class MethodAttributeProvider : IMethodAttributeProvider
     {
-        private readonly AttributeProvider<MethodInfo> _attributeProvider;
+        private readonly MemberAttributeProvider<MethodInfo> _attributeProvider;
 
         public MethodAttributeProvider(MethodInfo info)
         {
-            _attributeProvider = new AttributeProvider<MethodInfo>(info);
+            _attributeProvider = new MemberAttributeProvider<MethodInfo>(info);
         }
 
         public MethodInfo Info =>
-            _attributeProvider.Target;
+            _attributeProvider.Member;
 
         public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
             _attributeProvider.TryGetAttributeOfType(out attribute);

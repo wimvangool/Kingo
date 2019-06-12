@@ -2,21 +2,19 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Kingo.Reflection
 {
-    internal sealed class AttributeProvider<TMember> : IAttributeProvider
-        where TMember : MemberInfo
+    internal abstract class AttributeProvider : IAttributeProvider
     {
-        private static readonly ConcurrentDictionary<TMember, Attribute[]> _Attributes = new ConcurrentDictionary<TMember, Attribute[]>();        
+        private static readonly ConcurrentDictionary<object, Attribute[]> _Attributes = new ConcurrentDictionary<object, Attribute[]>();
 
-        public AttributeProvider(TMember target)
+        protected abstract object Target
         {
-            Target = target;
+            get;
         }
 
-        public TMember Target
+        protected abstract string TargetName
         {
             get;
         }
@@ -29,24 +27,23 @@ namespace Kingo.Reflection
             }
             catch (InvalidOperationException)
             {
-                throw NewAmbiguousAttributeMatchException(Target, typeof(TAttribute));
+                throw NewAmbiguousAttributeMatchException(TargetName, typeof(TAttribute));
             }
             return attribute != null;
         }
 
         public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
-            from attribute in _Attributes.GetOrAdd(Target, LoadAttributes)
+            from attribute in _Attributes.GetOrAdd(Target, target => LoadAttributes())
             let desiredAttribute = attribute as TAttribute
             where desiredAttribute != null
             select desiredAttribute;
 
-        private static Attribute[] LoadAttributes(TMember target) =>
-            target.GetCustomAttributes().ToArray();
+        protected abstract Attribute[] LoadAttributes();            
 
-        private static Exception NewAmbiguousAttributeMatchException(TMember target, Type attributeType)
+        private static Exception NewAmbiguousAttributeMatchException(string targetName, Type attributeType)
         {
             var messageFormat = ExceptionMessages.AttributeProvider_AmbiguousAttributeMatch;
-            var message = string.Format(messageFormat, attributeType.Name, target.Name);
+            var message = string.Format(messageFormat, attributeType.Name, targetName);
             return new InvalidOperationException(message);
         }
     }
