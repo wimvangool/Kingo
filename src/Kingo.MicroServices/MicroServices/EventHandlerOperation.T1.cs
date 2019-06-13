@@ -12,7 +12,7 @@ namespace Kingo.MicroServices
         {
             try
             {
-                return await base.ExecuteAsync();
+                return await base.ExecuteAsync().ConfigureAwait(false);
             }
             catch (BadRequestException exception)
             {

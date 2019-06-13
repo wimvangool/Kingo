@@ -40,7 +40,7 @@ namespace Kingo.MicroServices
                 _context;
 
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
-                new QueryOperationResult<TResponse>(await _method.ExecuteAsync(_context));
+                new QueryOperationResult<TResponse>(await _method.ExecuteAsync(_context).ConfigureAwait(false));
         }
 
         #endregion

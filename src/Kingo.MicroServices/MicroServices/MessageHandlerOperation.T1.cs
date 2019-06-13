@@ -39,8 +39,7 @@ namespace Kingo.MicroServices
 
             public override async Task<MessageHandlerOperationResult> ExecuteAsync()
             {
-                await _method.HandleAsync(_operation._message.Instance, _context);
-
+                await _method.HandleAsync(_operation._message.Instance, _context).ConfigureAwait(false);
                 return new EventBusResult(_context.EventBus);
             }
         }
@@ -79,7 +78,7 @@ namespace Kingo.MicroServices
 
             foreach (var operation in CreateMethodOperationPipelines(_context))
             {
-                result = result.Append(await ExecuteAsync(operation));
+                result = result.Append(await ExecuteAsync(operation).ConfigureAwait(false));
             }
             return result;
         }
@@ -93,10 +92,10 @@ namespace Kingo.MicroServices
                 // Every operation potentially yields a new stream of events, which is immediately handled by the processor
                 // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
                 // sub-tree of events are handled before the next event in the stream.
-                var result = await operation.ExecuteAsync();
+                var result = await operation.ExecuteAsync().ConfigureAwait(false);
                 if (result.Events.Count > 0)
                 {
-                    return await HandleEventsAsync(result.ToEventBufferResult(), operation.Context);
+                    return await HandleEventsAsync(result.ToEventBufferResult(), operation.Context).ConfigureAwait(false);
                 }
                 return result;
             }
@@ -107,7 +106,7 @@ namespace Kingo.MicroServices
         }
 
         private async Task<MessageHandlerOperationResult> HandleEventsAsync(EventBufferResult result, MessageHandlerOperationContext context) =>
-            result.Append(await result.EventBuffer.HandleWith(this, context));
+            result.Append(await result.EventBuffer.HandleWith(this, context).ConfigureAwait(false));
 
         private IEnumerable<HandleAsyncMethodOperation> CreateMethodOperationPipelines(MessageHandlerOperationContext context)
         {

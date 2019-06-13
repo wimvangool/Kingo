@@ -84,7 +84,7 @@ namespace Kingo.MicroServices
             {
                 foreach (var resourceGroup in resourceGroups)
                 {
-                    await FlushGroupAsync(resourceGroup);
+                    await FlushGroupAsync(resourceGroup).ConfigureAwait(false);
                 }
             }
         }

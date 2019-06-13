@@ -48,7 +48,7 @@ namespace Kingo.MicroServices
 
             foreach (var message in _events)
             {
-                result = result.Append(await message.HandleWith(processor, context));
+                result = result.Append(await message.HandleWith(processor, context).ConfigureAwait(false));
             }
             return result;
         }
