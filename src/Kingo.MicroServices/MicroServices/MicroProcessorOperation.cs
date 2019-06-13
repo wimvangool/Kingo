@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -30,5 +31,12 @@ namespace Kingo.MicroServices
         {
             get;
         }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            ToString(GetType().FriendlyName());
+
+        internal string ToString(object operationOrMethod) =>
+            $"{operationOrMethod} [{Kind}]";
     }
 }

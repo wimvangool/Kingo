@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Kingo.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -57,6 +58,10 @@ namespace Kingo.MicroServices
             _serviceProviderContext = new Context<IServiceProvider>(serviceProvider);
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
         }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            GetType().FriendlyName();
 
         #region [====== Options ======]
 

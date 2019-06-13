@@ -33,6 +33,14 @@ namespace Kingo.MicroServices
         public override bool HandlesInternalMessages =>
             _configuration?.HandlesInternalMessages ?? base.HandlesInternalMessages;
 
+        public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
+            _messageHandler.HandleAsync(message, context);
+
+        internal override object ResolveMessageHandler(IServiceProvider serviceProvider) =>
+            _messageHandler;
+
+        #region [====== Equals, GetHashCode & ToString ======]
+
         public override bool Equals(MicroProcessorComponent other) =>
             Equals(other as MessageHandlerInstance<TMessage>);
 
@@ -62,10 +70,9 @@ namespace Kingo.MicroServices
                 left.HandlesInternalMessages == right.HandlesInternalMessages;
         }
 
-        public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
-            _messageHandler.HandleAsync(message, context);
+        public override string ToString() =>
+            $"{_messageHandler} ({MessageHandlerAttribute.ToString(this)})";
 
-        internal override object ResolveMessageHandler(IServiceProvider serviceProvider) =>
-            _messageHandler;        
+        #endregion
     }
 }

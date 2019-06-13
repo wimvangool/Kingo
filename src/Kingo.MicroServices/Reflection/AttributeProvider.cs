@@ -17,7 +17,7 @@ namespace Kingo.Reflection
         protected abstract string TargetName
         {
             get;
-        }
+        }        
 
         public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
         {

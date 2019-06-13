@@ -32,9 +32,12 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public void Publish(object message) =>
             _messages.Add(message ?? throw new ArgumentNullException(nameof(message)));
-        
+
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_messages.Count} event(s)";                
+            ToString(this);
+        
+        internal static string ToString(IReadOnlyList<object> events) =>
+            $"{events.Count} event(s) published";
     }
 }

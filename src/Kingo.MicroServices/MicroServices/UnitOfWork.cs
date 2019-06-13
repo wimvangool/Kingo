@@ -23,6 +23,9 @@ namespace Kingo.MicroServices
 
             public Task FlushAsync() =>
                 Task.CompletedTask;
+
+            public override string ToString() =>
+                UnitOfWorkMode.Disabled.ToString();
         }
 
         #endregion
@@ -39,7 +42,13 @@ namespace Kingo.MicroServices
                 _resourceGroups = new Dictionary<object, List<IUnitOfWorkResourceManager>>();
             }
 
-            #region [====== EnlistAsync ======]
+            protected abstract UnitOfWorkMode Mode
+            {
+                get;
+            }
+
+            private int ResourceManagerCount =>
+                _resourceGroups.Values.Sum(group => group.Count);
 
             public Task EnlistAsync(IUnitOfWorkResourceManager resourceManager) =>
                 AsyncMethod.Run(() => Enlist(resourceManager));
@@ -60,18 +69,15 @@ namespace Kingo.MicroServices
                 {
                     _resourceGroups.Add(resourceId, new List<IUnitOfWorkResourceManager> { resourceManager });
                 }
-            }
-
-            #endregion
-
-            #region [====== FlushAsync ======]
+            }            
 
             public Task FlushAsync() =>
                 FlushAsync(Interlocked.Exchange(ref _resourceGroups, new Dictionary<object, List<IUnitOfWorkResourceManager>>()).Values);
 
-            protected abstract Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups);                
+            protected abstract Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups);
 
-            #endregion
+            public override string ToString() =>
+                $"{Mode} ({ResourceManagerCount} resource manager(s) enlisted)";
         }
 
         #endregion
@@ -80,13 +86,16 @@ namespace Kingo.MicroServices
 
         private sealed class SingleThreadedMode : EnabledMode
         {
+            protected override UnitOfWorkMode Mode =>
+                UnitOfWorkMode.SingleThreaded;
+
             protected override async Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups)
             {
                 foreach (var resourceGroup in resourceGroups)
                 {
                     await FlushGroupAsync(resourceGroup).ConfigureAwait(false);
                 }
-            }
+            }                           
         }
 
         #endregion
@@ -95,6 +104,9 @@ namespace Kingo.MicroServices
 
         private sealed class MultiThreadedMode : EnabledMode
         {
+            protected override UnitOfWorkMode Mode =>
+                UnitOfWorkMode.MultiThreaded;
+
             protected override Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups) =>
                 Task.WhenAll(resourceGroups.Select(FlushGroupAsync));
         }
@@ -106,13 +118,16 @@ namespace Kingo.MicroServices
         private UnitOfWork(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-        }
+        }        
 
         public Task EnlistAsync(IUnitOfWorkResourceManager resourceManager) =>
             _unitOfWork.EnlistAsync(resourceManager ?? throw new ArgumentNullException(nameof(resourceManager)));
 
         public Task FlushAsync() =>
             _unitOfWork.FlushAsync();
+
+        public override string ToString() =>
+            _unitOfWork.ToString();
 
         private static async Task FlushGroupAsync(IEnumerable<IUnitOfWorkResourceManager> resourceGroup)
         {

@@ -11,7 +11,7 @@ namespace Kingo.MicroServices
         public abstract object Instance
         {
             get;
-        }
+        }        
 
         public abstract Task<MessageHandlerOperationResult> HandleWith(IMessageProcessor processor, MessageHandlerOperationContext context);        
     }

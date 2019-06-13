@@ -119,7 +119,7 @@ namespace Kingo.Reflection
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{this.Count()} items";
+            $"{this.Count()} types";
 
         #region [====== IEnumerable<Type> ======]        
 

@@ -29,7 +29,11 @@
         public abstract QueryOperationContext Context
         {
             get;
-        }        
+        }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            ToString(Method);
 
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Kingo.Threading;
 
 namespace Kingo.MicroServices
@@ -68,6 +69,9 @@ namespace Kingo.MicroServices
             public override int GetHashCode() =>
                 _messageHandler.GetHashCode();
 
+            public override string ToString() =>
+                _messageHandler.GetType().FriendlyName();
+
             public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
                 AsyncMethod.Run(() => _messageHandler.Invoke(message, context));            
         }
@@ -116,6 +120,9 @@ namespace Kingo.MicroServices
 
             public override int GetHashCode() =>
                 _messageHandler.GetHashCode();
+
+            public override string ToString() =>
+                _messageHandler.GetType().FriendlyName();
 
             public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
                 _messageHandler.Invoke(message, context);

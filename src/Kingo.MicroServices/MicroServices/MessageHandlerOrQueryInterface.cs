@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Kingo.Reflection;
 
@@ -55,6 +56,9 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public override string ToString() =>
             Type.FriendlyName();
+
+        internal static string ToString(IEnumerable<MessageHandlerOrQueryInterface> interfaces) =>
+            string.Join(", ", interfaces.Select(@interface => @interface.ToString()));
 
         #endregion
 

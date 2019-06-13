@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
                 _operation.Token;
 
             public override MicroProcessorOperationKinds Kind =>
-                _operation.Kind;
+                _operation.Kind;            
 
             public override async Task<MessageHandlerOperationResult> ExecuteAsync()
             {
@@ -69,7 +69,7 @@ namespace Kingo.MicroServices
             _message;
 
         public override MicroProcessorOperationKinds Kind =>
-            MicroProcessorOperationKinds.BranchOperation;
+            MicroProcessorOperationKinds.BranchOperation;        
 
         /// <inheritdoc />
         public override async Task<MessageHandlerOperationResult> ExecuteAsync()

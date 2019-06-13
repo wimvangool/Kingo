@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -36,6 +37,10 @@ namespace Kingo.MicroServices
         /// </summary>
         public IServiceProvider ServiceProvider =>
             _processor.ServiceProvider;
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            GetType().FriendlyName();
 
         internal QueryOperationContext PushOperation<TResponse>(ExecuteAsyncMethodOperation<TResponse> operation) =>
             new QueryOperationContext(this, operation);

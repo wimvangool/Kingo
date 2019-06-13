@@ -20,5 +20,8 @@ namespace Kingo.Reflection
 
         public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
             _attributeProvider.GetAttributesOfType<TAttribute>();
+
+        public override string ToString() =>
+            Type.FriendlyName();
     }
 }

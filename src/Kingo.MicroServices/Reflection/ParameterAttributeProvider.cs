@@ -27,5 +27,8 @@ namespace Kingo.Reflection
 
         protected override Attribute[] LoadAttributes() =>
             _parameter.GetCustomAttributes(true).OfType<Attribute>().ToArray();
+
+        public override string ToString() =>
+            $"{Type.FriendlyName()} {TargetName}";
     }
 }

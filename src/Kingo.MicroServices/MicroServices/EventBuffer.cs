@@ -35,6 +35,9 @@ namespace Kingo.MicroServices
         public IEnumerator<object> GetEnumerator() =>
             _events.Select(@event => @event.Instance).GetEnumerator();
 
+        public override string ToString() =>
+            EventBus.ToString(this);
+
         #endregion
 
         #region [====== IEventStream ======]

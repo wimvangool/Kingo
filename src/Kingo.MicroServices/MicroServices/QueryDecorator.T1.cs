@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Kingo.Threading;
 
 namespace Kingo.MicroServices
@@ -49,6 +50,9 @@ namespace Kingo.MicroServices
                 _query = query ?? throw new ArgumentNullException(nameof(query));
             }
 
+            public override string ToString() =>
+                _query.GetType().FriendlyName();
+
             public Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
                 AsyncMethod.Run(() => _query.Invoke(context));
         }
@@ -78,6 +82,9 @@ namespace Kingo.MicroServices
             {
                 _query = query ?? throw new ArgumentNullException(nameof(query));
             }
+
+            public override string ToString() =>
+                _query.GetType().FriendlyName();
 
             public Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
                 _query.Invoke(context);

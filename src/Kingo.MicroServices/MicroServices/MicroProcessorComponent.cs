@@ -95,7 +95,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            Type.FriendlyName();
+            Type.FriendlyName();        
 
         #endregion        
 

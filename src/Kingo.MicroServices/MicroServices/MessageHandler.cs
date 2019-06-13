@@ -34,7 +34,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Type.FriendlyName()} ({_interfaces.Length} interface(s) implemented)";
+            $"{Type.FriendlyName()} ({MessageHandlerOrQueryInterface.ToString(_interfaces)}";
 
         #region [====== IMessageHandlerConfiguration ======]
 

@@ -33,6 +33,9 @@ namespace Kingo.MicroServices
         public MessageKind Kind =>
             _kind;
 
+        public override string ToString() =>
+            $"{Type.FriendlyName()} ({Kind})";
+
         #endregion
     }
 }

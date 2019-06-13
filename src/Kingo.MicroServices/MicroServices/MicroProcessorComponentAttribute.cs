@@ -22,5 +22,9 @@ namespace Kingo.MicroServices
         {
             get;            
         }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"{nameof(Lifetime)} = {Lifetime}";
     }
 }

@@ -20,5 +20,8 @@
 
         public MicroProcessorOptions Copy() =>
             new MicroProcessorOptions(this);
+
+        public override string ToString() =>
+            $"{nameof(UnitOfWorkMode)} = {UnitOfWorkMode}";
     }
 }

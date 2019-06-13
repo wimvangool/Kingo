@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {   
@@ -17,6 +18,9 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
-            _messageHandler.HandleAsync(message, context);                    
+            _messageHandler.HandleAsync(message, context);
+
+        public override string ToString() =>
+            $"{MessageHandler.Type.FriendlyName()}.{nameof(IMessageHandler<object>.HandleAsync)}({MessageParameter.Type.FriendlyName()}, ...)";
     }
 }

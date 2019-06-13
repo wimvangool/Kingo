@@ -25,6 +25,9 @@ namespace Kingo.MicroServices
 
             public override AsyncMethodOperationStackTrace Push(IAsyncMethodOperation operation) =>
                 new SingleItemStackTrace(operation);
+
+            public override string ToString() =>
+                string.Empty;
         }
 
         #endregion
@@ -66,6 +69,9 @@ namespace Kingo.MicroServices
 
             public override AsyncMethodOperationStackTrace Push(IAsyncMethodOperation operation) =>
                 new RecursiveStackTrace(this, operation);
+
+            public override string ToString() =>
+                _operation.ToString();
         }
 
         #endregion
@@ -121,14 +127,14 @@ namespace Kingo.MicroServices
 
             public override AsyncMethodOperationStackTrace Push(IAsyncMethodOperation operation) =>
                 new RecursiveStackTrace(this, operation);
+
+            public override string ToString() =>
+                $"{_operation} (Depth = {_stackTrace.Count})";
         }
 
         #endregion
 
-        public static readonly AsyncMethodOperationStackTrace Empty = new EmptyStackTrace();
-
-        public override string ToString() =>
-            string.Join(" -> ", this.Select(operation => operation.ToString()));
+        public static readonly AsyncMethodOperationStackTrace Empty = new EmptyStackTrace();        
 
         #region [====== IReadOnlyList<IAsyncMethodOperation> ======]
 

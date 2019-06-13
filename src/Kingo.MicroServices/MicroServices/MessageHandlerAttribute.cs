@@ -35,7 +35,10 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{nameof(HandlesExternalMessages)} = {HandlesExternalMessages}, {nameof(HandlesInternalMessages)} = {HandlesInternalMessages}";
+            ToString(this);
+
+        internal static string ToString(IMessageHandlerConfiguration configuration) =>
+            $"{nameof(HandlesExternalMessages)} = {configuration.HandlesExternalMessages}, {nameof(HandlesInternalMessages)} = {configuration.HandlesInternalMessages}";
 
         internal static MessageHandlerAttribute Create(bool handlesExternalMessages, bool handlesInternalMessages) =>
             new MessageHandlerAttribute() { HandlesExternalMessages = handlesExternalMessages, HandlesInternalMessages = handlesInternalMessages };        

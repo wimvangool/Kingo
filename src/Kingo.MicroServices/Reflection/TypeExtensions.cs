@@ -695,8 +695,15 @@ namespace Kingo.Reflection
             return builder.Append(typeName);
         }
 
-        internal static string RemoveTypeParameterCount(this string typeName) =>
-            typeName.Substring(0, typeName.IndexOf("`"));
+        internal static string RemoveTypeParameterCount(this string typeName)
+        {
+            var indexOfQuotationMark = typeName.IndexOf("`");
+            if (indexOfQuotationMark < 0)
+            {
+                return typeName;
+            }
+            return typeName.Substring(0, indexOfQuotationMark);
+        }            
 
         private static StringBuilder AppendTypeParameters(this StringBuilder builder, Type[] typeParameters, bool useFullNames) => builder
             .AppendFriendlyNameOf(typeParameters[0], useFullNames)

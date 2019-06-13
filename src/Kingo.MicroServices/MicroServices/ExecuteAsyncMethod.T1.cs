@@ -32,6 +32,9 @@ namespace Kingo.MicroServices
             _contextParameter;
 
         public Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
-            _query.ExecuteAsync(context);        
+            _query.ExecuteAsync(context);
+
+        public override string ToString() =>
+            $"{Query.Type.FriendlyName()}.{nameof(IQuery<object>.ExecuteAsync)}(...)";
     }
 }

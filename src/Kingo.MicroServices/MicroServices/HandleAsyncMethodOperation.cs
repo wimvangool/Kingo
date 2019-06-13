@@ -35,6 +35,10 @@
         public override MicroProcessorOperationType Type =>
             MicroProcessorOperationType.MessageHandlerOperation;
 
+        /// <inheritdoc />
+        public override string ToString() =>
+            ToString(Method);
+
         #endregion
 
         #region [====== IMicroProcessorOperation<HandleAsyncResult> ======]
