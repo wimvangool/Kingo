@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
@@ -13,30 +15,30 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteAsync_Throws_IfCommandHandlerIsNull()
+        public async Task ExecuteCommandAsync_Throws_IfCommandHandlerIsNull()
         {
-            await CreateProcessor().ExecuteAsync(null, new object());
+            await CreateProcessor().ExecuteCommandAsync(null, new object());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteAsync_Throws_IfCommandHandlerActionIsNull()
+        public async Task ExecuteCommandAsync_Throws_IfCommandHandlerActionIsNull()
         {
-            await CreateProcessor().ExecuteAsync(null as Action<object, MessageHandlerOperationContext>, new object());
+            await CreateProcessor().ExecuteCommandAsync(null as Action<object, MessageHandlerOperationContext>, new object());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteAsync_Throws_IfCommandHandlerFuncIsNull()
+        public async Task ExecuteCommandAsync_Throws_IfCommandHandlerFuncIsNull()
         {
-            await CreateProcessor().ExecuteAsync(null as Func<object, MessageHandlerOperationContext, Task>, new object());
+            await CreateProcessor().ExecuteCommandAsync(null as Func<object, MessageHandlerOperationContext, Task>, new object());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteAsync_Throws_IfCommandIsNull()
+        public async Task ExecuteCommandAsync_Throws_IfCommandIsNull()
         {
-            await CreateProcessor().ExecuteAsync<object>((message, context) => { }, null);
+            await CreateProcessor().ExecuteCommandAsync<object>((message, context) => { }, null);
         }
 
         #endregion
@@ -44,9 +46,9 @@ namespace Kingo.MicroServices
         #region [====== Return Value ======]
 
         [TestMethod]
-        public async Task ExecuteAsync_ReturnsNoEvents_IfCommandHandlerPublishesNoEvents()
+        public async Task ExecuteCommandAsync_ReturnsNoEvents_IfCommandHandlerPublishesNoEvents()
         {
-            var result = await CreateProcessor().ExecuteAsync((message, context) => { }, new object());
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) => { }, new object());
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.MessageHandlerCount);
@@ -54,10 +56,10 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_ReturnsExpectedEvent_IfCommandHandlerPublishesOneEvent()
+        public async Task ExecuteCommandAsync_ReturnsExpectedEvent_IfCommandHandlerPublishesOneEvent()
         {
             var command = new object();
-            var result = await CreateProcessor().ExecuteAsync((message, context) =>
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
                 context.EventBus.Publish(message);
             }, command);
@@ -69,7 +71,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_ReturnsExpectedEvents_IfCommandHandlerPublishesOneEvent_And_EventHandlerPublishesAnotherEvent()
+        public async Task ExecuteCommandAsync_ReturnsExpectedEvents_IfCommandHandlerPublishesOneEvent_And_EventHandlerPublishesAnotherEvent()
         {
             var command = new object();
             var eventA = string.Empty;
@@ -81,7 +83,7 @@ namespace Kingo.MicroServices
                 context.EventBus.Publish(eventB);
             }, false, true);
 
-            var result = await CreateProcessor().ExecuteAsync((message, context) =>
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
                 context.EventBus.Publish(eventA);
             }, command);
@@ -94,7 +96,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_ReturnsExpectedEvents_IfCommandHandlerPublishesOneEvent_And_EventHandlersPublishMoreEvents()
+        public async Task ExecuteCommandAsync_ReturnsExpectedEvents_IfCommandHandlerPublishesOneEvent_And_EventHandlersPublishMoreEvents()
         {
             var command = new object();
             var eventA = string.Empty;
@@ -120,7 +122,7 @@ namespace Kingo.MicroServices
                 context.EventBus.Publish(eventD);
             }, false, true);
 
-            var result = await CreateProcessor().ExecuteAsync((message, context) =>
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
                 context.EventBus.Publish(eventA);
             }, command);
@@ -139,7 +141,7 @@ namespace Kingo.MicroServices
         #region [====== Context Verification ======]
 
         [TestMethod]
-        public async Task ExecuteAsync_ProducesExpectedStackTrace_IfCommandHandlerPublishesOneEvent_And_EventHandlersPublishMoreEvents()
+        public async Task ExecuteCommandAsync_ProducesExpectedStackTrace_IfCommandHandlerPublishesOneEvent_And_EventHandlersPublishMoreEvents()
         {            
             var command = new object();
             var eventA = string.Empty;
@@ -180,7 +182,7 @@ namespace Kingo.MicroServices
                 AssertEventBus(context.EventBus, 1);
             }, false, true);
 
-            await CreateProcessor().ExecuteAsync((message, context) =>
+            await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 1, message, MessageKind.Command);
                 AssertEventBus(context.EventBus, 0);
@@ -222,21 +224,21 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_Throws_IfUnitOfWorkModeIsInvalid()
+        public async Task ExecuteCommandAsync_Throws_IfUnitOfWorkModeIsInvalid()
         {
             ProcessorBuilder.UnitOfWorkMode = (UnitOfWorkMode) (-1);
 
-            await CreateProcessor().ExecuteAsync((message, context) => { }, new object());
+            await CreateProcessor().ExecuteCommandAsync((message, context) => { }, new object());
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_DoesNotFlushResourceManager_IfUnitOfWorkModeIsDisabled_And_ResourceManagerDoesNotRequireFlush()
+        public async Task ExecuteCommandAsync_DoesNotFlushResourceManager_IfUnitOfWorkModeIsDisabled_And_ResourceManagerDoesNotRequireFlush()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.Disabled;
 
             var resourceManager = new UnitOfWorkResourceManagerSpy(false);
 
-            await CreateProcessor().ExecuteAsync(async (message, context) =>
+            await CreateProcessor().ExecuteCommandAsync(async (message, context) =>
             {
                 await context.UnitOfWork.EnlistAsync(resourceManager);
 
@@ -249,13 +251,13 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_FlushesResourceManagerOnEnlistment_IfUnitOfWorkIsDisabled_And_ResourceManagerRequiresFlush()
+        public async Task ExecuteCommandAsync_FlushesResourceManagerOnEnlistment_IfUnitOfWorkIsDisabled_And_ResourceManagerRequiresFlush()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.Disabled;
 
             var resourceManager = new UnitOfWorkResourceManagerSpy(true);
 
-            await CreateProcessor().ExecuteAsync(async (message, context) =>
+            await CreateProcessor().ExecuteCommandAsync(async (message, context) =>
             {
                 await context.UnitOfWork.EnlistAsync(resourceManager);
 
@@ -268,7 +270,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_FlushesResourceManagersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagersRequireFlush()
+        public async Task ExecuteCommandAsync_FlushesResourceManagersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagersRequireFlush()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
 
@@ -276,7 +278,7 @@ namespace Kingo.MicroServices
             var resourceManagerB = new UnitOfWorkResourceManagerSpy(true);
             var resourceManagerC = new UnitOfWorkResourceManagerSpy(false);
 
-            await CreateProcessor().ExecuteAsync(async (message, context) =>
+            await CreateProcessor().ExecuteCommandAsync(async (message, context) =>
             {
                 await context.UnitOfWork.EnlistAsync(resourceManagerA);
                 await context.UnitOfWork.EnlistAsync(resourceManagerB);
@@ -304,7 +306,7 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_FlushesResourceManagersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagerThrows()
+        public async Task ExecuteCommandAsync_FlushesResourceManagersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagerThrows()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
 
@@ -315,7 +317,7 @@ namespace Kingo.MicroServices
 
             try
             {
-                await CreateProcessor().ExecuteAsync(async (message, context) =>
+                await CreateProcessor().ExecuteCommandAsync(async (message, context) =>
                 {
                     await context.UnitOfWork.EnlistAsync(resourceManagerA);
                     await context.UnitOfWork.EnlistAsync(resourceManagerB);
@@ -352,7 +354,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_FlushesResourceManagersAsynchronously_IfUnitOfWorkIsMultiThreaded_And_SomeResourceManagersRequireFlush()
+        public async Task ExecuteCommandAsync_FlushesResourceManagersAsynchronously_IfUnitOfWorkIsMultiThreaded_And_SomeResourceManagersRequireFlush()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
 
@@ -360,7 +362,7 @@ namespace Kingo.MicroServices
             var resourceManagerB = new UnitOfWorkResourceManagerSpy(true);
             var resourceManagerC = new UnitOfWorkResourceManagerSpy(false);
 
-            await CreateProcessor().ExecuteAsync(async (message, context) =>
+            await CreateProcessor().ExecuteCommandAsync(async (message, context) =>
             {
                 await context.UnitOfWork.EnlistAsync(resourceManagerA);
                 await context.UnitOfWork.EnlistAsync(resourceManagerB);
@@ -388,7 +390,7 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_FlushesResourceManagersAsynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagerThrows()
+        public async Task ExecuteCommandAsync_FlushesResourceManagersAsynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagerThrows()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
 
@@ -399,7 +401,7 @@ namespace Kingo.MicroServices
 
             try
             {
-                await CreateProcessor().ExecuteAsync(async (message, context) =>
+                await CreateProcessor().ExecuteCommandAsync(async (message, context) =>
                 {
                     await context.UnitOfWork.EnlistAsync(resourceManagerA);
                     await context.UnitOfWork.EnlistAsync(resourceManagerB);
@@ -442,13 +444,13 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(OperationCanceledException), AllowDerivedTypes = true)]
-        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationIsCancelledWithTheSpecifiedToken()
+        public async Task ExecuteCommandAsync_ThrowsExpectedException_IfOperationIsCancelledWithTheSpecifiedToken()
         {
             var tokenSource = new CancellationTokenSource();
 
             try
             {
-                await CreateProcessor().ExecuteAsync((message, context) =>
+                await CreateProcessor().ExecuteCommandAsync((message, context) =>
                 {
                     tokenSource.Cancel();
                 }, new object(), tokenSource.Token);
@@ -466,14 +468,14 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationIsCancelledWithSomeOtherToken()
+        public async Task ExecuteCommandAsync_ThrowsExpectedException_IfOperationIsCancelledWithSomeOtherToken()
         {
             var exceptionToThrow = new OperationCanceledException();
             var tokenSource = new CancellationTokenSource();
 
             try
             {
-                await CreateProcessor().ExecuteAsync((message, context) =>
+                await CreateProcessor().ExecuteCommandAsync((message, context) =>
                 {
                     throw exceptionToThrow;
                 }, new object(), tokenSource.Token);
@@ -491,13 +493,13 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(BadRequestException), AllowDerivedTypes = true)]
-        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsMessageHandlerException()
+        public async Task ExecuteCommandAsync_ThrowsExpectedException_IfOperationThrowsMessageHandlerOperationException()
         {
             var exceptionToThrow = new BusinessRuleException();
 
             try
             {
-                await CreateProcessor().ExecuteAsync((message, context) =>
+                await CreateProcessor().ExecuteCommandAsync((message, context) =>
                 {
                     throw exceptionToThrow;
                 }, new object());
@@ -511,13 +513,13 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(BadRequestException))]
-        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
+        public async Task ExecuteCommandAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
         {
             var exceptionToThrow = new BadRequestException();
 
             try
             {
-                await CreateProcessor().ExecuteAsync((message, context) =>
+                await CreateProcessor().ExecuteCommandAsync((message, context) =>
                 {
                     throw exceptionToThrow;
                 }, new object());
@@ -531,13 +533,13 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsInternalServerErrorException()
+        public async Task ExecuteCommandAsync_ThrowsExpectedException_IfOperationThrowsInternalServerErrorException()
         {
             var exceptionToThrow = new InternalServerErrorException();
 
             try
             {
-                await CreateProcessor().ExecuteAsync((message, context) =>
+                await CreateProcessor().ExecuteCommandAsync((message, context) =>
                 {
                     throw exceptionToThrow;
                 }, new object());
@@ -551,13 +553,13 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_ThrowsExpectedException_IfOperationThrowsRandomException()
+        public async Task ExecuteCommandAsync_ThrowsExpectedException_IfOperationThrowsRandomException()
         {
             var exceptionToThrow = new Exception();
 
             try
             {
-                await CreateProcessor().ExecuteAsync((message, context) =>
+                await CreateProcessor().ExecuteCommandAsync((message, context) =>
                 {
                     throw exceptionToThrow;
                 }, new object());
@@ -568,6 +570,286 @@ namespace Kingo.MicroServices
                 throw;
             }
         }
+
+        #endregion
+
+        #region [====== Invocation of Registered EventHandlers ======]
+
+        [MessageHandler(HandlesExternalMessages = true, HandlesInternalMessages = true)]
+        private abstract class CommandHandler : IMessageHandler<int>, IMessageHandler<object>
+        {                        
+            public Task HandleAsync(int message, MessageHandlerOperationContext context)
+            {
+                try
+                {
+                    return HandleMessageAsync(message, context);
+                }
+                finally
+                {
+                    context.EventBus.Publish(string.Empty);
+                }
+            }
+
+            public Task HandleAsync(object message, MessageHandlerOperationContext context)
+            {
+                try
+                {
+                    return HandleMessageAsync(message, context);
+                }
+                finally
+                {
+                    Assert.AreSame(typeof(string), message.GetType());
+                }
+            }                
+
+            private Task HandleMessageAsync<TMessage>(TMessage message, MessageHandlerOperationContext context)
+            {
+                AssertContext(message, context);
+                Instances(context).Add(this);
+                return Task.CompletedTask;
+            }
+
+            private void AssertContext<TMessage>(TMessage message, MessageHandlerOperationContext context) =>
+                AssertOperation(message, context.StackTrace.CurrentOperation);
+
+            private void AssertOperation<TMessage>(TMessage message, IAsyncMethodOperation operation)
+            {
+                Assert.AreEqual(message, operation.Message.Instance);
+                AssertMethod(typeof(TMessage), operation.Method);
+                AssertMessageHandler(GetType(), operation.Method.Component as MessageHandler);
+            }
+
+            private static void AssertMethod(Type messageType, IAsyncMethod method)
+            {
+                Assert.AreSame(messageType, method.MessageParameter.Type);
+                Assert.AreSame(typeof(MessageHandlerOperationContext), method.ContextParameter.Type);
+            }
+
+            private static void AssertMessageHandler(Type messageHandlerType, MessageHandler messageHandler)
+            {
+                Assert.IsNotNull(messageHandler);
+                Assert.AreSame(messageHandlerType, messageHandler.Type);                
+                Assert.AreEqual(2, messageHandler.Interfaces.Count);
+                AssertImplements<IMessageHandler<int>>(messageHandler);
+                AssertImplements<IMessageHandler<object>>(messageHandler);
+            }
+
+            private static void AssertImplements<TInterface>(MessageHandler messageHandler) =>
+                Assert.IsTrue(messageHandler.Interfaces.Any(@interface => @interface.Type == typeof(TInterface)));
+
+            private static IInstanceCollector Instances(MicroProcessorOperationContext context) =>
+                context.ServiceProvider.GetRequiredService<IInstanceCollector>();
+        }
+
+        private sealed class TransientCommandHandler : CommandHandler { }
+
+        [MicroProcessorComponent(ServiceLifetime.Scoped)]
+        private sealed class ScopedCommandHandler : CommandHandler { }
+
+        [MicroProcessorComponent(ServiceLifetime.Singleton)]
+        private sealed class SingletonCommandHandler : CommandHandler { }
+
+        [TestMethod]
+        public async Task ExecuteCommandAsync_CreatesNewInstanceForEveryInvocation_IfCommandHandlerHasTransientLifetime()
+        {
+            ProcessorBuilder.Components.AddType<TransientCommandHandler>();
+            ProcessorBuilder.Components.AddMessageHandlers();
+
+            var processor = CreateProcessor();
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 2);
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 4);
+        }
+
+        [TestMethod]
+        public async Task ExecuteCommandAsync_CreatesNewInstancePerScope_IfCommandHandlerHasScopedLifetime()
+        {
+            ProcessorBuilder.Components.AddType<ScopedCommandHandler>();
+            ProcessorBuilder.Components.AddMessageHandlers();
+
+            var processor = CreateProcessor();
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<ScopedCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<ScopedCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 2);
+        }
+
+        [TestMethod]
+        public async Task ExecuteCommandAsync_CreatesOnlyOneInstanceEver_IfCommandHandlerHasSingletonLifetime()
+        {
+            ProcessorBuilder.Components.AddType<SingletonCommandHandler>();
+            ProcessorBuilder.Components.AddMessageHandlers();
+
+            var processor = CreateProcessor();
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<SingletonCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<SingletonCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+        }
+
+        [TestMethod]
+        public async Task ExecuteCommandAsync_UsesOnlyOneInstanceEver_IfCommandHandlerWasRegisteredAsInstance()
+        {            
+            ProcessorBuilder.Components.AddMessageHandler(new TransientCommandHandler());
+
+            var processor = CreateProcessor();
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_InvokesInstanceOverType_IfSameTypeIsRegisteredAsBothInstanceAndType()
+        {            
+            ProcessorBuilder.Components.AddType<TransientCommandHandler>();
+            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler(new TransientCommandHandler());
+
+            var processor = CreateProcessor();
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_InvokesActionOnce_IfDelegateIsRegisteredTwice_And_ConfigurationIsEqual()
+        {
+            Action<int, MessageHandlerOperationContext> messageHandler = (message, context) =>
+            {
+                context.EventBus.Publish(string.Empty);
+            };
+
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
+            {
+                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
+            }, new object());
+
+            Assert.AreEqual(2, result.MessageHandlerCount);
+            Assert.AreEqual(2, result.Events.Count);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_InvokesActionTwice_IfDelegateIsRegisteredTwice_And_ConfigurationIsNotEqual()
+        {
+            Action<int, MessageHandlerOperationContext> messageHandler = (message, context) =>
+            {
+                context.EventBus.Publish(string.Empty);
+            };
+
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, true, true);
+
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
+            {
+                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
+            }, new object());
+
+            Assert.AreEqual(3, result.MessageHandlerCount);
+            Assert.AreEqual(3, result.Events.Count);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_InvokesFuncOnce_IfDelegateIsRegisteredTwice_And_ConfigurationIsEqual()
+        {
+            Func<int, MessageHandlerOperationContext, Task> messageHandler = (message, context) =>
+            {
+                context.EventBus.Publish(string.Empty);
+                return Task.CompletedTask;
+            };
+
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
+            {
+                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
+            }, new object());
+
+            Assert.AreEqual(2, result.MessageHandlerCount);
+            Assert.AreEqual(2, result.Events.Count);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_InvokesFuncTwice_IfDelegateIsRegisteredTwice_And_ConfigurationIsNotEqual()
+        {
+            Func<int, MessageHandlerOperationContext, Task> messageHandler = (message, context) =>
+            {
+                context.EventBus.Publish(string.Empty);
+                return Task.CompletedTask;
+            };
+
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler, true, true);
+
+            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
+            {
+                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
+            }, new object());
+
+            Assert.AreEqual(3, result.MessageHandlerCount);
+            Assert.AreEqual(3, result.Events.Count);
+        }
+
+        private static Task ExecuteCommandAsync<TCommandHandler>(IMicroProcessor processor) where TCommandHandler : IMessageHandler<int> =>
+            ExecuteCommandAsync(processor, processor.ServiceProvider.GetRequiredService<TCommandHandler>());
+
+        private static async Task ExecuteCommandAsync(IMicroProcessor processor, IMessageHandler<int> commandHandler) =>
+            AssertCommandHandlerResult(await processor.ExecuteCommandAsync(commandHandler, DateTimeOffset.UtcNow.Second));
+
+        private static void AssertCommandHandlerResult(MessageHandlerOperationResult result)
+        {
+            Assert.AreEqual(2, result.MessageHandlerCount);
+            Assert.AreEqual(1, result.Events.Count);
+        }
+
+        private static void AssertInstanceCount(IMicroProcessor processor, int count) =>
+            processor.ServiceProvider.GetRequiredService<IInstanceCollector>().AssertInstanceCountIs(count);
 
         #endregion
     }

@@ -69,14 +69,14 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Equals, GetHashcode & ToString ======]
+        #region [====== Equals, GetHashCode & ToString ======]
 
         /// <inheritdoc />
         public override bool Equals(object obj) =>
             Equals(obj as MicroProcessorComponent);
 
         /// <inheritdoc />
-        public bool Equals(MicroProcessorComponent other)
+        public virtual bool Equals(MicroProcessorComponent other)
         {
             if (ReferenceEquals(other, null))
             {

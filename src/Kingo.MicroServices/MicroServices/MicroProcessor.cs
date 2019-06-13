@@ -94,15 +94,15 @@ namespace Kingo.MicroServices
         #region [====== ExecuteAsync (Commands & Queries) ======]          
 
         /// <inheritdoc />
-        public Task<MessageHandlerOperationResult> ExecuteAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
+        public Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
             ExecuteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token));                                    
 
         /// <inheritdoc />
-        public Task<QueryOperationResult<TResponse>> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
+        public Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
             ExecuteOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token));
 
         /// <inheritdoc />
-        public Task<QueryOperationResult<TResponse>> ExecuteAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
+        public Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
             ExecuteOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token));
 
         #endregion

@@ -101,7 +101,7 @@ namespace Kingo.MicroServices
 
                 try
                 {
-                    result = await processor.ExecuteAsync(handler, message).ConfigureAwait(false);                    
+                    result = await processor.ExecuteCommandAsync(handler, message).ConfigureAwait(false);                    
                 }
                 catch (Exception exception)
                 {
@@ -165,7 +165,7 @@ namespace Kingo.MicroServices
             {
                 try
                 {
-                    return new QueryResult<TResponse>(await processor.ExecuteAsync<TResponse>(query).ConfigureAwait(false));
+                    return new QueryResult<TResponse>(await processor.ExecuteQueryAsync<TResponse>(query).ConfigureAwait(false));
                 }
                 catch (Exception exception)
                 {
@@ -219,7 +219,7 @@ namespace Kingo.MicroServices
             {
                 try
                 {
-                    return new QueryResult<TResponse>(await processor.ExecuteAsync(query, request).ConfigureAwait(false));
+                    return new QueryResult<TResponse>(await processor.ExecuteQueryAsync(query, request).ConfigureAwait(false));
                 }
                 catch (Exception exception)
                 {

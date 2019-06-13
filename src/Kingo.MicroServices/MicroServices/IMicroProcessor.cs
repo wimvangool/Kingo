@@ -34,7 +34,7 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the command.
         /// </exception> 
-        Task<MessageHandlerOperationResult> ExecuteAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null);
         
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
@@ -49,7 +49,7 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        Task<QueryOperationResult<TResponse>> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -66,6 +66,6 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        Task<QueryOperationResult<TResponse>> ExecuteAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null);        
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null);        
     }
 }

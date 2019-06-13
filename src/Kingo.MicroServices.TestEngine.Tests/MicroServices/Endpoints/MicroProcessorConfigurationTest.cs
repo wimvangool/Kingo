@@ -136,7 +136,7 @@ namespace Kingo.MicroServices.Endpoints
 
             _configuration.Setup();
 
-            var result = await _configuration.ResolveProcessor().ExecuteAsync((message, context) =>
+            var result = await _configuration.ResolveProcessor().ExecuteCommandAsync((message, context) =>
             {
                 context.EventBus.Publish(@event);
             }, new object());

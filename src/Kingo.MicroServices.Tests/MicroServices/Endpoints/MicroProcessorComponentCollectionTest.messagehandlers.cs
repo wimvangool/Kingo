@@ -235,21 +235,7 @@ namespace Kingo.MicroServices.Endpoints
             Assert.AreSame(messageHandler, provider.GetRequiredService<IMessageHandler<object>>());
             Assert.AreSame(messageHandler, provider.GetRequiredService<IMessageHandler<int>>());
             Assert.AreSame(messageHandler, provider.GetRequiredService<MessageHandler2>());
-        }
-
-        [TestMethod]
-        public void AddMessageHandler_AddsAllExpectedMappings_IfMessageTypeIsSpecifiedExplicitly()
-        {
-            var messageHandler = new MessageHandler2();
-
-            _components.AddMessageHandler<int>(messageHandler);
-
-            var provider = BuildServiceProvider();
-
-            Assert.IsNull(provider.GetService<IMessageHandler<object>>());            
-            Assert.AreSame(messageHandler, provider.GetRequiredService<IMessageHandler<int>>());
-            Assert.AreSame(messageHandler, provider.GetRequiredService<MessageHandler2>());
-        }
+        }        
 
         [TestMethod]
         public void AddMessageHandler_AddsAllExpectedMappings_IfMessageHandlerIsAction()

@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
     /// </summary>
     public static class MicroProcessorExtensions
     {
-        #region [====== ExecuteAsync (Commands) ======]                  
+        #region [====== ExecuteCommandAsync ======]                  
 
         /// <summary>
         /// Executes a command with a specified <paramref name="messageHandler"/>.
@@ -28,8 +28,8 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the command.
         /// </exception> 
-        public static Task<MessageHandlerOperationResult> ExecuteAsync<TCommand>(this IMicroProcessor processor, Action<TCommand, MessageHandlerOperationContext> messageHandler, TCommand message, CancellationToken? token = null) =>
-            processor.ExecuteAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, token);
+        public static Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(this IMicroProcessor processor, Action<TCommand, MessageHandlerOperationContext> messageHandler, TCommand message, CancellationToken? token = null) =>
+            processor.ExecuteCommandAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, token);
 
         /// <summary>
         /// Executes a command with a specified <paramref name="messageHandler"/>.
@@ -48,12 +48,12 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the command.
         /// </exception>  
-        public static Task<MessageHandlerOperationResult> ExecuteAsync<TCommand>(this IMicroProcessor processor, Func<TCommand, MessageHandlerOperationContext, Task> messageHandler, TCommand message, CancellationToken? token = null) =>
-            processor.ExecuteAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, token);
+        public static Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(this IMicroProcessor processor, Func<TCommand, MessageHandlerOperationContext, Task> messageHandler, TCommand message, CancellationToken? token = null) =>
+            processor.ExecuteCommandAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, token);
 
         #endregion
 
-        #region [====== ExecuteAsync (Queries) ======]
+        #region [====== ExecuteQueryAsync ======]
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
@@ -69,8 +69,8 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<QueryOperationResult<TResponse>> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryOperationContext, TResponse> query, CancellationToken? token = null) =>
-            processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query), token);
+        public static Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(this IMicroProcessor processor, Func<QueryOperationContext, TResponse> query, CancellationToken? token = null) =>
+            processor.ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
@@ -86,8 +86,8 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<QueryOperationResult<TResponse>> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryOperationContext, Task<TResponse>> query, CancellationToken? token = null) =>
-            processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query), token);
+        public static Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(this IMicroProcessor processor, Func<QueryOperationContext, Task<TResponse>> query, CancellationToken? token = null) =>
+            processor.ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -105,8 +105,8 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<QueryOperationResult<TResponse>> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, Func<TRequest, QueryOperationContext, TResponse> query, TRequest message, CancellationToken? token = null) =>
-            processor.ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, token);
+        public static Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(this IMicroProcessor processor, Func<TRequest, QueryOperationContext, TResponse> query, TRequest message, CancellationToken? token = null) =>
+            processor.ExecuteQueryAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -124,8 +124,8 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorOperationException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<QueryOperationResult<TResponse>> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, Func<TRequest, QueryOperationContext, Task<TResponse>> query, TRequest message, CancellationToken? token = null) =>
-            processor.ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, token);
+        public static Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(this IMicroProcessor processor, Func<TRequest, QueryOperationContext, Task<TResponse>> query, TRequest message, CancellationToken? token = null) =>
+            processor.ExecuteQueryAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, token);
 
         #endregion
     }

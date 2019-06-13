@@ -40,17 +40,36 @@ namespace Kingo.MicroServices
 
         #region [====== Decorate (Action) ======]      
 
-        private sealed class MessageHandlerAction : IMessageHandler<TMessage>
+        private sealed class MessageHandlerAction : IMessageHandler<TMessage>, IEquatable<MessageHandlerAction>
         {
             private readonly Action<TMessage, MessageHandlerOperationContext> _messageHandler;
 
             public MessageHandlerAction(Action<TMessage, MessageHandlerOperationContext> messageHandler)
             {
-                _messageHandler = messageHandler;
+                _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
             }
 
+            public override bool Equals(object obj) =>
+                Equals(obj as MessageHandlerAction);
+
+            public bool Equals(MessageHandlerAction other)
+            {
+                if (ReferenceEquals(other, null))
+                {
+                    return false;
+                }
+                if (ReferenceEquals(other, this))
+                {
+                    return true;
+                }
+                return Equals(_messageHandler, other._messageHandler);
+            }
+
+            public override int GetHashCode() =>
+                _messageHandler.GetHashCode();
+
             public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
-                AsyncMethod.Run(() => _messageHandler.Invoke(message, context));
+                AsyncMethod.Run(() => _messageHandler.Invoke(message, context));            
         }
 
         /// <summary>
@@ -58,24 +77,45 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="messageHandler">The delegate to wrap.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="messageHandler"/> is <c>null</c>; otherwise, a <see cref="IMessageHandler{T}"/> instance
-        /// that wraps the specified <paramref name="messageHandler"/>.
+        /// A <see cref="IMessageHandler{TMessage}"/> that wraps the specified <paramref name="messageHandler"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> is <c>null</c>.
+        /// </exception>
         public static IMessageHandler<TMessage> Decorate(Action<TMessage, MessageHandlerOperationContext> messageHandler) =>
-            messageHandler == null ? null : new MessageHandlerAction(messageHandler);
+            new MessageHandlerAction(messageHandler);
 
         #endregion
 
         #region [====== Decorate (Func) ======]
 
-        private sealed class MessageHandlerFunc : IMessageHandler<TMessage>
+        private sealed class MessageHandlerFunc : IMessageHandler<TMessage>, IEquatable<MessageHandlerFunc>
         {
             private readonly Func<TMessage, MessageHandlerOperationContext, Task> _messageHandler;
 
             public MessageHandlerFunc(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler)
             {
-                _messageHandler = messageHandler;
+                _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
             }
+
+            public override bool Equals(object obj) =>
+                Equals(obj as MessageHandlerFunc);
+
+            public bool Equals(MessageHandlerFunc other)
+            {
+                if (ReferenceEquals(other, null))
+                {
+                    return false;
+                }
+                if (ReferenceEquals(other, this))
+                {
+                    return true;
+                }
+                return Equals(_messageHandler, other._messageHandler);
+            }
+
+            public override int GetHashCode() =>
+                _messageHandler.GetHashCode();
 
             public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
                 _messageHandler.Invoke(message, context);
@@ -86,11 +126,13 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="messageHandler">The delegate to wrap.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="messageHandler"/> is <c>null</c>; otherwise, a <see cref="IMessageHandler{T}"/> instance
-        /// that wraps the specified <paramref name="messageHandler"/>.
+        /// A <see cref="IMessageHandler{TMessage}"/> that wraps the specified <paramref name="messageHandler"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> is <c>null</c>.
+        /// </exception>
         public static IMessageHandler<TMessage> Decorate(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler) =>
-            messageHandler == null ? null : new MessageHandlerFunc(messageHandler);
+            new MessageHandlerFunc(messageHandler);
 
         #endregion
     }

@@ -14,9 +14,9 @@ namespace Kingo.MicroServices.Endpoints
     /// messages, execute queries and publish events.
     /// </summary>
     public sealed class MicroProcessorComponentCollection : IServiceCollectionBuilder
-    {        
-        private readonly Dictionary<Type, MessageHandlerType> _messageHandlerComponents;
-        private readonly List<MessageHandlerInstance> _messageHandlerInstances;
+    {                
+        private readonly List<IHandleAsyncMethodFactory> _messageHandlerInstances;
+        private readonly List<IHandleAsyncMethodFactory> _messageHandlerTypes;
         private readonly HashSet<MicroProcessorComponent> _components;
         private readonly IServiceCollection _services;        
 
@@ -24,9 +24,9 @@ namespace Kingo.MicroServices.Endpoints
         /// Initializes a new instance of the <see cref="MicroProcessorComponentCollection" /> class.
         /// </summary>
         public MicroProcessorComponentCollection()
-        {
-            _messageHandlerComponents = new Dictionary<Type, MessageHandlerType>();
-            _messageHandlerInstances = new List<MessageHandlerInstance>();
+        {            
+            _messageHandlerInstances = new List<IHandleAsyncMethodFactory>();
+            _messageHandlerTypes = new List<IHandleAsyncMethodFactory>();
             _components = new HashSet<MicroProcessorComponent>();
             _services = new ServiceCollection();            
         }
@@ -48,7 +48,7 @@ namespace Kingo.MicroServices.Endpoints
         }
 
         internal IHandleAsyncMethodFactory BuildMethodFactory() =>
-            new HandleAsyncMethodFactory(_messageHandlerComponents.Values.Cast<IHandleAsyncMethodFactory>().Concat(_messageHandlerInstances));
+            new HandleAsyncMethodFactory(_messageHandlerInstances.Concat(_messageHandlerTypes).Distinct());
 
         #region [====== AddTypes ======]
 
@@ -115,17 +115,16 @@ namespace Kingo.MicroServices.Endpoints
         /// </exception>
         public void AddMessageHandler(object messageHandler)
         {
-            var instances = MessageHandlerInstance.FromInstance(messageHandler).ToArray();
-            if (instances.Length == 0)
-            {
-                return;
-            }
-            foreach (var instance in instances)
+            if (MessageHandlerInstance.IsMessageHandlerInstance(messageHandler, out var instance))
             {
                 _messageHandlerInstances.Add(instance);
-                _services.AddTransient(instance.Interface.Type, provider => provider.GetService(instance.Type));
-            }
-            _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
+
+                foreach (var @interface in instance.Interfaces)
+                {                    
+                    _services.AddTransient(@interface.Type, provider => provider.GetService(instance.Type));
+                }
+                _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
+            }            
         }
 
         /// <summary>
@@ -143,7 +142,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
         public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, bool handlesExternalMessages, bool handlesInternalMessages) =>
-            AddMessageHandler(messageHandler, MessageHandlerAttribute.Create(handlesExternalMessages, handlesInternalMessages));
+            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(handlesExternalMessages, handlesInternalMessages));
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
@@ -155,7 +154,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
         public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, IMessageHandlerConfiguration configuration = null) =>
-            AddMessageHandler(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configuration);
+            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(configuration));
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
@@ -172,7 +171,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
         public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, bool handlesExternalMessages, bool handlesInternalMessages) =>
-            AddMessageHandler(messageHandler, MessageHandlerAttribute.Create(handlesExternalMessages, handlesInternalMessages));
+            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(handlesExternalMessages, handlesInternalMessages));
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
@@ -184,24 +183,12 @@ namespace Kingo.MicroServices.Endpoints
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
         public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, IMessageHandlerConfiguration configuration = null) =>
-            AddMessageHandler(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configuration);
+            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(configuration));        
 
-        /// <summary>
-        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
-        /// <param name="messageHandler">The handler to register.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageHandler"/> is <c>null</c>.
-        /// </exception>
-        public void AddMessageHandler<TMessage>(IMessageHandler<TMessage> messageHandler) =>
-            AddMessageHandler(messageHandler, null);
-
-        private void AddMessageHandler<TMessage>(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration)
+        private void AddMessageHandler<TMessage>(MessageHandlerInstance<TMessage> messageHandler)
         {
-            _messageHandlerInstances.Add(new MessageHandlerInstance<TMessage>(messageHandler, configuration));
-            _services.AddTransient(provider => messageHandler);
-            _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
+            _messageHandlerInstances.Add(messageHandler);
+            _services.AddTransient<IMessageHandler<TMessage>>(provider => messageHandler);            
         }
 
         /// <summary>
@@ -216,7 +203,7 @@ namespace Kingo.MicroServices.Endpoints
             foreach (var messageHandler in MessageHandlerType.FromComponents(components))
             {
                 _services.AddComponent(messageHandler, messageHandler.Interfaces.Select(@interface => @interface.Type));
-                _messageHandlerComponents[messageHandler.Type] = messageHandler;
+                _messageHandlerTypes.Add(messageHandler);
             }
         }       
 
