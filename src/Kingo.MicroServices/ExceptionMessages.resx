@@ -123,9 +123,6 @@
   <data name="Comparable_IncomparableType" xml:space="preserve">
     <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'.</value>
   </data>
-  <data name="Constraint_UnsupportedType" xml:space="preserve">
-    <value>Cannot validate object of type '{0}': constraint '{1}' can only validate instances of type '{2}'.</value>
-  </data>
   <data name="Context_IllegalScopeStarted" xml:space="preserve">
     <value>Cannot start this scope because a more restrive scope is still active.</value>
   </data>
@@ -135,17 +132,8 @@
   <data name="DateTimeSpan_TimeSpanZeroNotAllowed" xml:space="preserve">
     <value>'{0}' is not allowed to be zero.</value>
   </data>
-  <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
-    <value>Specified expression is not supported: '{0}'.</value>
-  </data>
   <data name="HostedEndpoint_EndpointAlreadyStarted" xml:space="preserve">
     <value>Cannot start endpoint '{0}' because it has already been started. </value>
-  </data>
-  <data name="Identifier_EmptyIdentifier" xml:space="preserve">
-    <value>Cannot create an empty identifier.</value>
-  </data>
-  <data name="Identifier_InvalidIdentifier" xml:space="preserve">
-    <value>Invalid identifier specified: '{0}'.</value>
   </data>
   <data name="MessageHandlerClass_CouldNotResolveMessageHandler" xml:space="preserve">
     <value>Could not resolve message handler of type '{0}'.</value>
@@ -156,20 +144,11 @@
   <data name="MicroProcessorComponent_UnsupportedType" xml:space="preserve">
     <value>Type '{0}' cannot be used as a component. The type must represent a concrete (non-abstract) type and may not contain unspecified generic parameters.</value>
   </data>
-  <data name="NullController_OperationNotSupported" xml:space="preserve">
-    <value>Operation '{0}' is not supported at this point.</value>
-  </data>
   <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
-  <data name="Scope_CannotCompleteScope" xml:space="preserve">
-    <value>Cannot complete this scope because it is not the current scope.</value>
-  </data>
   <data name="Scope_IncorrectNesting" xml:space="preserve">
     <value>The scopes were not nested correctly.</value>
-  </data>
-  <data name="Scope_ScopeAlreadyCompleted" xml:space="preserve">
-    <value>The scope has already completed.</value>
   </data>
   <data name="ServiceCollectionExtensions_InvalidComponentLifetime" xml:space="preserve">
     <value>Component of type '{0}' could not be added because it is configured with an invalid lifetime ({1}).</value>

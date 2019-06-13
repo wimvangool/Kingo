@@ -79,15 +79,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot validate object of type &apos;{0}&apos;: constraint &apos;{1}&apos; can only validate instances of type &apos;{2}&apos;..
-        /// </summary>
-        internal static string Constraint_UnsupportedType {
-            get {
-                return ResourceManager.GetString("Constraint_UnsupportedType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
         /// </summary>
         internal static string Context_IllegalScopeStarted {
@@ -115,38 +106,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
-        /// </summary>
-        internal static string ExpressionExtensions_UnsupportedExpression {
-            get {
-                return ResourceManager.GetString("ExpressionExtensions_UnsupportedExpression", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot start endpoint &apos;{0}&apos; because it has already been started. .
         /// </summary>
         internal static string HostedEndpoint_EndpointAlreadyStarted {
             get {
                 return ResourceManager.GetString("HostedEndpoint_EndpointAlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot create an empty identifier..
-        /// </summary>
-        internal static string Identifier_EmptyIdentifier {
-            get {
-                return ResourceManager.GetString("Identifier_EmptyIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid identifier specified: &apos;{0}&apos;..
-        /// </summary>
-        internal static string Identifier_InvalidIdentifier {
-            get {
-                return ResourceManager.GetString("Identifier_InvalidIdentifier", resourceCulture);
             }
         }
         
@@ -178,15 +142,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation &apos;{0}&apos; is not supported at this point..
-        /// </summary>
-        internal static string NullController_OperationNotSupported {
-            get {
-                return ResourceManager.GetString("NullController_OperationNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
         internal static string ReadOnlyList_IndexOutOfRange {
@@ -196,29 +151,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot complete this scope because it is not the current scope..
-        /// </summary>
-        internal static string Scope_CannotCompleteScope {
-            get {
-                return ResourceManager.GetString("Scope_CannotCompleteScope", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The scopes were not nested correctly..
         /// </summary>
         internal static string Scope_IncorrectNesting {
             get {
                 return ResourceManager.GetString("Scope_IncorrectNesting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The scope has already completed..
-        /// </summary>
-        internal static string Scope_ScopeAlreadyCompleted {
-            get {
-                return ResourceManager.GetString("Scope_ScopeAlreadyCompleted", resourceCulture);
             }
         }
         
