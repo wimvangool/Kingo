@@ -6,6 +6,9 @@
     public sealed class QueryOperationContext : MicroProcessorOperationContext
     {
         internal QueryOperationContext(MicroProcessor processor, AsyncMethodOperationStackTrace stackTrace = null) :
-            base(processor, stackTrace) { }                     
+            base(processor, stackTrace) { }
+        
+        internal QueryOperationContext(MicroProcessorOperationContext context, IAsyncMethodOperation operation) :
+            base(context, operation) { }
     }
 }

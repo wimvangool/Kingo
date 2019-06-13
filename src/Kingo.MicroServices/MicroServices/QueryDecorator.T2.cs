@@ -47,7 +47,7 @@ namespace Kingo.MicroServices
 
             public QueryFunc(Func<TRequest, QueryOperationContext, TResponse> query)
             {
-                _query = query;
+                _query = query ?? throw new ArgumentNullException(nameof(query));
             }
 
             public Task<TResponse> ExecuteAsync(TRequest message, QueryOperationContext context) =>
@@ -59,11 +59,13 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="query">The delegate to wrap.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="query"/> is <c>null</c>; otherwise, a <see cref="IQuery{T, S}"/> instance
-        /// that wraps the specified <paramref name="query"/>.
+        /// A <see cref="IQuery{T, S}"/> that wraps the specified <paramref name="query"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>
         public static IQuery<TRequest, TResponse> Decorate(Func<TRequest, QueryOperationContext, TResponse> query) =>
-            query == null ? null : new QueryFunc(query);
+            new QueryFunc(query);
 
         #endregion
 
@@ -75,7 +77,7 @@ namespace Kingo.MicroServices
 
             public QueryFuncAsync(Func<TRequest, QueryOperationContext, Task<TResponse>> query)
             {
-                _query = query;
+                _query = query ?? throw new ArgumentNullException(nameof(query));
             }
 
             public Task<TResponse> ExecuteAsync(TRequest message, QueryOperationContext context) =>
@@ -87,11 +89,13 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="query">The delegate to wrap.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="query"/> is <c>null</c>; otherwise, a <see cref="IQuery{T, S}"/> instance
-        /// that wraps the specified <paramref name="query"/>.
+        /// A <see cref="IQuery{T, S}"/> that wraps the specified <paramref name="query"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>
         public static IQuery<TRequest, TResponse> Decorate(Func<TRequest, QueryOperationContext, Task<TResponse>> query) =>
-            query == null ? null : new QueryFuncAsync(query);
+            new QueryFuncAsync(query);
 
         #endregion
     }

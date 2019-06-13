@@ -47,9 +47,13 @@ namespace Kingo.MicroServices
             {
                 return await CreateQueryOperationPipeline(Context).ExecuteAsync().ConfigureAwait(false);
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException exception)
             {
-                throw;
+                if (exception.CancellationToken == Token)
+                {
+                    throw;
+                }
+                throw InternalServerErrorException.FromInnerException(exception);
             }
             catch (MicroProcessorOperationException)
             {
@@ -63,7 +67,7 @@ namespace Kingo.MicroServices
             }
             catch (Exception exception)
             {
-                throw new InternalServerErrorException(exception.Message);
+                throw new InternalServerErrorException(exception.Message, exception);
             }
             finally
             {

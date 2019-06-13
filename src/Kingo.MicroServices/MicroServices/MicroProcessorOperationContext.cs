@@ -38,6 +38,6 @@ namespace Kingo.MicroServices
             _processor.ServiceProvider;
 
         internal QueryOperationContext PushOperation<TResponse>(ExecuteAsyncMethodOperation<TResponse> operation) =>
-            new QueryOperationContext(Processor, _stackTrace).PushOperation(operation);
+            new QueryOperationContext(this, operation);
     }
 }
