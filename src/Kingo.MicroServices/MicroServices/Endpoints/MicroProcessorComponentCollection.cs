@@ -15,8 +15,8 @@ namespace Kingo.MicroServices.Endpoints
     /// </summary>
     public sealed class MicroProcessorComponentCollection : IServiceCollectionBuilder
     {                
-        private readonly List<IHandleAsyncMethodFactory> _messageHandlerInstances;
-        private readonly List<IHandleAsyncMethodFactory> _messageHandlerTypes;
+        private readonly List<MessageHandler> _messageHandlerInstances;
+        private readonly List<MessageHandler> _messageHandlerTypes;
         private readonly HashSet<MicroProcessorComponent> _components;
         private readonly IServiceCollection _services;        
 
@@ -25,8 +25,8 @@ namespace Kingo.MicroServices.Endpoints
         /// </summary>
         public MicroProcessorComponentCollection()
         {            
-            _messageHandlerInstances = new List<IHandleAsyncMethodFactory>();
-            _messageHandlerTypes = new List<IHandleAsyncMethodFactory>();
+            _messageHandlerInstances = new List<MessageHandler>();
+            _messageHandlerTypes = new List<MessageHandler>();
             _components = new HashSet<MicroProcessorComponent>();
             _services = new ServiceCollection();            
         }
@@ -47,8 +47,15 @@ namespace Kingo.MicroServices.Endpoints
             return services.AddSingleton(BuildMethodFactory());                
         }
 
-        internal IHandleAsyncMethodFactory BuildMethodFactory() =>
-            new HandleAsyncMethodFactory(_messageHandlerInstances.Concat(_messageHandlerTypes).Distinct());
+        internal IHandleAsyncMethodFactory BuildMethodFactory()
+        {
+            // When building the factory, we select only distinct instances and types, so no instance or type is ever
+            // invoked twice for the same message. We also filter out all types that have also been registered as an instance
+            // to prevent weird and unpredictable behavior - instances simply take precedence in that case.
+            var instances = _messageHandlerInstances.Distinct().ToArray();
+            var types = _messageHandlerTypes.Distinct().Where(messageHandler => instances.All(instance => instance.Type != messageHandler.Type));
+            return new HandleAsyncMethodFactory(instances.Concat(types));
+        }                    
 
         #region [====== AddTypes ======]
 
@@ -125,65 +132,30 @@ namespace Kingo.MicroServices.Endpoints
                 }
                 _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
             }            
-        }
+        }        
+
+        /// <summary>
+        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance. NB: this message handler will only
+        /// receive internal messages (events).
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
+        /// <param name="messageHandler">The handler to register.</param>        
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> is <c>null</c>.
+        /// </exception>
+        public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler) =>
+            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler));        
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
-        /// <param name="messageHandler">The handler to register.</param>
-        /// <param name="handlesExternalMessages">
-        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle external messages from the processor.
-        /// </param>
-        /// <param name="handlesInternalMessages">
-        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle internal messages from the processor.
-        /// </param>
+        /// <param name="messageHandler">The handler to register.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, bool handlesExternalMessages, bool handlesInternalMessages) =>
-            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(handlesExternalMessages, handlesInternalMessages));
-
-        /// <summary>
-        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
-        /// <param name="messageHandler">The handler to register.</param>
-        /// <param name="configuration">Optional explicit configuration for the specified <paramref name="messageHandler"/>.</param> 
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageHandler"/> is <c>null</c>.
-        /// </exception>
-        public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, IMessageHandlerConfiguration configuration = null) =>
-            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(configuration));
-
-        /// <summary>
-        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
-        /// <param name="messageHandler">The handler to register.</param>
-        /// <param name="handlesExternalMessages">
-        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle external messages from the processor.
-        /// </param>
-        /// <param name="handlesInternalMessages">
-        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle internal messages from the processor.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageHandler"/> is <c>null</c>.
-        /// </exception>
-        public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, bool handlesExternalMessages, bool handlesInternalMessages) =>
-            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(handlesExternalMessages, handlesInternalMessages));
-
-        /// <summary>
-        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
-        /// <param name="messageHandler">The handler to register.</param>
-        /// <param name="configuration">Optional explicit configuration for the specified <paramref name="messageHandler"/>.</param> 
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageHandler"/> is <c>null</c>.
-        /// </exception>
-        public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, IMessageHandlerConfiguration configuration = null) =>
-            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler).WithConfiguration(configuration));        
+        public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler) =>
+            AddMessageHandler(new MessageHandlerInstance<TMessage>(messageHandler));        
 
         private void AddMessageHandler<TMessage>(MessageHandlerInstance<TMessage> messageHandler)
         {

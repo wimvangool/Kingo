@@ -81,7 +81,7 @@ namespace Kingo.MicroServices
             ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
             {
                 context.EventBus.Publish(eventB);
-            }, false, true);
+            });
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
@@ -108,19 +108,19 @@ namespace Kingo.MicroServices
             ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
             {
                 context.EventBus.Publish(eventB);
-            }, false, true);
+            });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
             {
                 context.EventBus.Publish(eventC);
-            }, false, true);
+            });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
             {
                 context.EventBus.Publish(eventD);
-            }, false, true);
+            });
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
@@ -158,7 +158,7 @@ namespace Kingo.MicroServices
                 context.EventBus.Publish(eventB);
 
                 AssertEventBus(context.EventBus, 1);
-            }, false, true);
+            });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
@@ -169,7 +169,7 @@ namespace Kingo.MicroServices
                 context.EventBus.Publish(eventC);
 
                 AssertEventBus(context.EventBus, 1);
-            }, false, true);
+            });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
@@ -180,7 +180,7 @@ namespace Kingo.MicroServices
                 context.EventBus.Publish(eventD);
 
                 AssertEventBus(context.EventBus, 1);
-            }, false, true);
+            });
 
             await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
@@ -641,7 +641,15 @@ namespace Kingo.MicroServices
                 context.ServiceProvider.GetRequiredService<IInstanceCollector>();
         }
 
-        private sealed class TransientCommandHandler : CommandHandler { }
+        private sealed class TransientCommandHandler : CommandHandler
+        {
+            private readonly Guid _id;
+
+            public TransientCommandHandler()
+            {
+                _id = Guid.NewGuid();
+            }
+        }
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ScopedCommandHandler : CommandHandler { }
@@ -733,7 +741,29 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task ExecuteAsync_InvokesInstanceOverType_IfSameTypeIsRegisteredAsBothInstanceAndType()
+        public async Task ExecuteAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredBeforeType()
+        {            
+            ProcessorBuilder.Components.AddType<TransientCommandHandler>();
+            ProcessorBuilder.Components.AddMessageHandler(new TransientCommandHandler());
+            ProcessorBuilder.Components.AddMessageHandlers();            
+
+            var processor = CreateProcessor();
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+
+            using (processor.CreateScope())
+            {
+                await ExecuteCommandAsync<TransientCommandHandler>(processor);
+            }
+            AssertInstanceCount(processor, 1);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredAfterType()
         {            
             ProcessorBuilder.Components.AddType<TransientCommandHandler>();
             ProcessorBuilder.Components.AddMessageHandlers();
@@ -762,8 +792,8 @@ namespace Kingo.MicroServices
                 context.EventBus.Publish(string.Empty);
             };
 
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
@@ -772,27 +802,7 @@ namespace Kingo.MicroServices
 
             Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(2, result.Events.Count);
-        }
-
-        [TestMethod]
-        public async Task ExecuteAsync_InvokesActionTwice_IfDelegateIsRegisteredTwice_And_ConfigurationIsNotEqual()
-        {
-            Action<int, MessageHandlerOperationContext> messageHandler = (message, context) =>
-            {
-                context.EventBus.Publish(string.Empty);
-            };
-
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, true, true);
-
-            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
-            {
-                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
-            }, new object());
-
-            Assert.AreEqual(3, result.MessageHandlerCount);
-            Assert.AreEqual(3, result.Events.Count);
-        }
+        }       
 
         [TestMethod]
         public async Task ExecuteAsync_InvokesFuncOnce_IfDelegateIsRegisteredTwice_And_ConfigurationIsEqual()
@@ -803,8 +813,8 @@ namespace Kingo.MicroServices
                 return Task.CompletedTask;
             };
 
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
+            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
@@ -813,28 +823,7 @@ namespace Kingo.MicroServices
 
             Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(2, result.Events.Count);
-        }
-
-        [TestMethod]
-        public async Task ExecuteAsync_InvokesFuncTwice_IfDelegateIsRegisteredTwice_And_ConfigurationIsNotEqual()
-        {
-            Func<int, MessageHandlerOperationContext, Task> messageHandler = (message, context) =>
-            {
-                context.EventBus.Publish(string.Empty);
-                return Task.CompletedTask;
-            };
-
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, false, true);
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler, true, true);
-
-            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
-            {
-                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
-            }, new object());
-
-            Assert.AreEqual(3, result.MessageHandlerCount);
-            Assert.AreEqual(3, result.Events.Count);
-        }
+        }       
 
         private static Task ExecuteCommandAsync<TCommandHandler>(IMicroProcessor processor) where TCommandHandler : IMessageHandler<int> =>
             ExecuteCommandAsync(processor, processor.ServiceProvider.GetRequiredService<TCommandHandler>());

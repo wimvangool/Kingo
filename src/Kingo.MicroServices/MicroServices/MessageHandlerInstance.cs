@@ -2,7 +2,7 @@
 
 namespace Kingo.MicroServices
 {
-    internal sealed class MessageHandlerInstance : MessageHandler
+    internal sealed class MessageHandlerInstance : MessageHandler, IEquatable<MessageHandlerInstance>
     {
         private readonly object _messageHandler;
 
@@ -14,6 +14,22 @@ namespace Kingo.MicroServices
 
         internal override object ResolveMessageHandler(IServiceProvider serviceProvider) =>
             _messageHandler;
+
+        public override bool Equals(MicroProcessorComponent other) =>
+            Equals(other as MessageHandlerInstance);
+
+        public bool Equals(MessageHandlerInstance other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+            return ReferenceEquals(_messageHandler, other._messageHandler);
+        }        
 
         public static bool IsMessageHandlerInstance(object messageHandler, out MessageHandlerInstance instance)
         {

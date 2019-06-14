@@ -5,8 +5,7 @@ namespace Kingo.MicroServices
 {
     internal sealed class MessageHandlerInstance<TMessage> : MessageHandler, IMessageHandler<TMessage>
     {        
-        private readonly IMessageHandler<TMessage> _messageHandler;
-        private readonly IMessageHandlerConfiguration _configuration;
+        private readonly IMessageHandler<TMessage> _messageHandler;        
 
         public MessageHandlerInstance(Action<TMessage, MessageHandlerOperationContext> messageHandler) :
             this(MessageHandlerDecorator<TMessage>.Decorate(messageHandler)) { }
@@ -14,24 +13,17 @@ namespace Kingo.MicroServices
         public MessageHandlerInstance(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler) :
             this(MessageHandlerDecorator<TMessage>.Decorate(messageHandler)) { }
 
-        private MessageHandlerInstance(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration = null) :
+        private MessageHandlerInstance(IMessageHandler<TMessage> messageHandler) :
             base(MessageHandlerType.FromInstance(messageHandler), MessageHandlerInterface.FromType<TMessage>())
         {
-            _messageHandler = messageHandler;
-            _configuration = configuration;
+            _messageHandler = messageHandler;            
         }
 
-        public MessageHandlerInstance<TMessage> WithConfiguration(bool handlesExternalMessages, bool handlesInternalMessages) =>
-            WithConfiguration(MessageHandlerAttribute.Create(handlesExternalMessages, handlesInternalMessages));
-
-        public MessageHandlerInstance<TMessage> WithConfiguration(IMessageHandlerConfiguration configuration) =>
-            new MessageHandlerInstance<TMessage>(_messageHandler, configuration);
-
         public override bool HandlesExternalMessages =>
-            _configuration?.HandlesExternalMessages ?? base.HandlesExternalMessages;
+            false;
 
         public override bool HandlesInternalMessages =>
-            _configuration?.HandlesInternalMessages ?? base.HandlesInternalMessages;
+            true;
 
         public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
             _messageHandler.HandleAsync(message, context);
@@ -50,25 +42,11 @@ namespace Kingo.MicroServices
             {
                 return false;
             }
-            return
-                _messageHandler.Equals(other._messageHandler) &&
-                Equals(_configuration, other._configuration);
+            return _messageHandler.Equals(other._messageHandler);          
         }
 
-        private static bool Equals(IMessageHandlerConfiguration left, IMessageHandlerConfiguration right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-            return
-                left.HandlesExternalMessages == right.HandlesExternalMessages &&
-                left.HandlesInternalMessages == right.HandlesInternalMessages;
-        }
+        public override int GetHashCode() =>
+            _messageHandler.GetHashCode();
 
         public override string ToString() =>
             $"{_messageHandler} ({MessageHandlerAttribute.ToString(this)})";
