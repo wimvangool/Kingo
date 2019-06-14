@@ -13,5 +13,13 @@
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets the options for the endpoints.
+        /// </summary>
+        MicroProcessorEndpointOptions Endpoints
+        {
+            get;
+        }
     }
 }

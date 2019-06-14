@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
@@ -7,7 +9,7 @@ namespace Kingo.MicroServices
     /// Represent a component that implements one or more variations of the <see cref="IQuery{TResponse}"/> or
     /// <see cref="IQuery{TRequest, TResponse}"/> interfaces.
     /// </summary>
-    public abstract class Query : MicroProcessorComponent
+    public abstract class Query : MicroProcessorComponent, IReadOnlyCollection<ExecuteAsyncMethod>
     {
         private readonly QueryInterface[] _interfaces;
 
@@ -23,6 +25,19 @@ namespace Kingo.MicroServices
         /// </summary>
         public IReadOnlyCollection<QueryInterface> Interfaces =>
             _interfaces;
+
+        int IReadOnlyCollection<ExecuteAsyncMethod>.Count =>
+            _interfaces.Length;
+
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+
+        /// <inheritdoc />
+        public IEnumerator<ExecuteAsyncMethod> GetEnumerator() =>
+            Methods().GetEnumerator();
+
+        private IEnumerable<ExecuteAsyncMethod> Methods() =>
+            _interfaces.Select(@interface => @interface.CreateMethod(this));
 
         /// <inheritdoc />
         public override string ToString() =>

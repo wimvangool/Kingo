@@ -21,6 +21,9 @@ namespace Kingo.MicroServices.Endpoints
             set => _options.UnitOfWorkMode = value;
         }
 
+        public MicroProcessorEndpointOptions Endpoints =>
+            _options.Endpoints;
+
         public MicroProcessorComponentCollection Components =>
             _components;
 

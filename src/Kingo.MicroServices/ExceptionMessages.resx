@@ -132,6 +132,9 @@
   <data name="DateTimeSpan_TimeSpanZeroNotAllowed" xml:space="preserve">
     <value>'{0}' is not allowed to be zero.</value>
   </data>
+  <data name="HandleAsyncMethodEndpoint_InvalidMessageKindSpecified" xml:space="preserve">
+    <value>Invalid MessageKind ({0}) specified. Endpoints only support commands and events.</value>
+  </data>
   <data name="HostedEndpoint_EndpointAlreadyStarted" xml:space="preserve">
     <value>Cannot start endpoint '{0}' because it has already been started. </value>
   </data>

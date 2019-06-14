@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
@@ -94,9 +96,24 @@ namespace Kingo.MicroServices
         public virtual IServiceScope CreateScope() =>
             new ServiceScope(this, ServiceProvider.CreateScope());
 
-        #endregion        
+        #endregion
 
-        #region [====== ExecuteAsync (Commands & Queries) ======]          
+        #region [====== MethodEndpoints ======]
+
+        /// <inheritdoc />
+        public virtual IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints()
+        {
+            var methodFactory = ServiceProvider.GetService<IHandleAsyncMethodFactory>();
+            if (methodFactory == null)
+            {
+                return Enumerable.Empty<HandleAsyncMethodEndpoint>();
+            }
+            return methodFactory.CreateMethodEndpoints(this);
+        }            
+
+        #endregion
+
+        #region [====== ExecuteAsync (Commands & Queries) ======]                  
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
@@ -119,7 +136,7 @@ namespace Kingo.MicroServices
         /// </summary>        
         /// <param name="operation">The operation to execute.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<MessageHandlerOperationResult> ExecuteOperationAsync(MessageHandlerOperation operation) =>
+        protected internal virtual Task<MessageHandlerOperationResult> ExecuteOperationAsync(MessageHandlerOperation operation) =>
             ExecuteOperationAsync<MessageHandlerOperationResult>(operation);
 
         /// <summary>

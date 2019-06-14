@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class CommandExecutionTest : MicroProcessorTest
+    public sealed class ExecuteCommandTest : MicroProcessorTest
     {
         #region [====== Null Parameters ======]
 
@@ -641,15 +641,7 @@ namespace Kingo.MicroServices
                 context.ServiceProvider.GetRequiredService<IInstanceCollector>();
         }
 
-        private sealed class TransientCommandHandler : CommandHandler
-        {
-            private readonly Guid _id;
-
-            public TransientCommandHandler()
-            {
-                _id = Guid.NewGuid();
-            }
-        }
+        private sealed class TransientCommandHandler : CommandHandler { }
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ScopedCommandHandler : CommandHandler { }

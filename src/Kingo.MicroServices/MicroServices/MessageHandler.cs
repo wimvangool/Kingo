@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represent a component that implements one or more variations of the <see cref="IMessageHandler{TMessage}"/> interface.
     /// </summary>
-    public abstract class MessageHandler : MicroProcessorComponent, IMessageHandlerConfiguration, IHandleAsyncMethodFactory
+    public abstract class MessageHandler : MicroProcessorComponent, IMessageHandlerConfiguration, IHandleAsyncMethodFactory, IReadOnlyCollection<HandleAsyncMethod>
     {
         private readonly MessageHandlerInterface[] _interfaces;
         private readonly Lazy<IMessageHandlerConfiguration> _configuration;
@@ -30,11 +31,11 @@ namespace Kingo.MicroServices
         /// Returns the <see cref="IMessageHandler{TMessage}"/> interfaces that are implemented by this message handler.
         /// </summary>
         public IReadOnlyCollection<MessageHandlerInterface> Interfaces =>
-            _interfaces;
+            _interfaces;        
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Type.FriendlyName()} ({MessageHandlerOrQueryInterface.ToString(_interfaces)}";
+            $"{Type.FriendlyName()} ({MessageHandlerOrQueryInterface.ToString(_interfaces)}";        
 
         #region [====== IMessageHandlerConfiguration ======]
 
@@ -72,10 +73,41 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== IHandleAsyncMethodFactory ======]
+        #region [====== IHandleAsyncMethodFactory.CreateMethodEndpoints(MicroProcessor) ======]
+
+        IEnumerable<HandleAsyncMethodEndpoint> IHandleAsyncMethodFactory.CreateMethodEndpoints(MicroProcessor processor) =>
+            HandlesExternalMessages ? CreateMethodEndpoints(processor) : Enumerable.Empty<HandleAsyncMethodEndpoint>();
+
+        private IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints(MicroProcessor processor)
+        {
+            foreach (var method in Methods())
+            {
+                if (method.TryCreateEndpoint(processor, out var endpoint))
+                {
+                    yield return endpoint;
+                }
+            }
+        }
+
+        int IReadOnlyCollection<HandleAsyncMethod>.Count =>
+            _interfaces.Length;
+
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+
+        /// <inheritdoc />
+        public IEnumerator<HandleAsyncMethod> GetEnumerator() =>
+            Methods().GetEnumerator();
+
+        private IEnumerable<HandleAsyncMethod> Methods() =>
+            _interfaces.Select(@interface => @interface.CreateMethod(this));
+
+        #endregion
+
+        #region [====== IHandleAsyncMethodFactory.CreateMethodsFor<TMessage> ======]
 
         private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, object>> _MessageHandlerFactories =
-            new ConcurrentDictionary<MessageHandlerInterface, Func<object, object>>();
+            new ConcurrentDictionary<MessageHandlerInterface, Func<object, object>>();        
 
         IEnumerable<HandleAsyncMethod<TMessage>> IHandleAsyncMethodFactory.CreateMethodsFor<TMessage>(MicroProcessorOperationKinds operationKind, IServiceProvider serviceProvider)
         {

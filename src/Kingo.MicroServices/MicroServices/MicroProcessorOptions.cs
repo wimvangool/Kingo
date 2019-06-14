@@ -2,15 +2,20 @@
 {
     internal sealed class MicroProcessorOptions : IMicroProcessorOptions
     {
-        public MicroProcessorOptions()
-        {
-            UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
-        }
-
         private MicroProcessorOptions(MicroProcessorOptions options)
         {
             UnitOfWorkMode = options.UnitOfWorkMode;
+            Endpoints = options.Endpoints.Copy();
         }
+
+        public MicroProcessorOptions()
+        {
+            UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
+            Endpoints = new MicroProcessorEndpointOptions();
+        }
+
+        public MicroProcessorOptions Copy() =>
+            new MicroProcessorOptions(this);
 
         public UnitOfWorkMode UnitOfWorkMode
         {
@@ -18,8 +23,10 @@
             set;
         }
 
-        public MicroProcessorOptions Copy() =>
-            new MicroProcessorOptions(this);
+        public MicroProcessorEndpointOptions Endpoints
+        {
+            get;
+        }
 
         public override string ToString() =>
             $"{nameof(UnitOfWorkMode)} = {UnitOfWorkMode}";

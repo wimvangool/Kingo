@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,13 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
+        /// Creates and returns all endpoints that reference the methods of all registered
+        /// message handlers that are marked by the <see cref="EndpointAttribute" />.
+        /// </summary>
+        /// <returns>A collection of endpoints.</returns>
+        IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints();
+
+        /// <summary>
         /// Executes a command with a specified <paramref name="messageHandler"/>.
         /// </summary>
         /// <typeparam name="TCommand">Type of the command.</typeparam>
@@ -30,10 +38,7 @@ namespace Kingo.MicroServices
         /// </returns> 
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="MicroProcessorOperationException">
-        /// Something went wrong while executing the command.
-        /// </exception> 
+        /// </exception>       
         Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null);
         
         /// <summary>
@@ -45,10 +50,7 @@ namespace Kingo.MicroServices
         /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="MicroProcessorOperationException">
-        /// Something went wrong while executing the query.
-        /// </exception>  
+        /// </exception>         
         Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
 
         /// <summary>
@@ -62,10 +64,7 @@ namespace Kingo.MicroServices
         /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="MicroProcessorOperationException">
-        /// Something went wrong while executing the query.
-        /// </exception>  
+        /// </exception>         
         Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null);        
     }
 }

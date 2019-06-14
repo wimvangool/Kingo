@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class QueryExecutionTest2 : MicroProcessorTest
+    public sealed class ExecuteQueryTest2 : MicroProcessorTest
     {
         #region [====== Null Parameters ======]
 

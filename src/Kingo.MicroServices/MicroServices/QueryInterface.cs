@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
     /// Represent a specific, closed version of the <see cref="IQuery{TResponse}"/> or
     /// <see cref="IQuery{TRequest, TResponse}"/> interface.
     /// </summary>
-    public sealed class QueryInterface : MessageHandlerOrQueryInterface
+    public sealed class QueryInterface : MessageHandlerOrQueryInterface<Query, ExecuteAsyncMethod>
     {        
         private readonly Type[] _messageTypes;
 
@@ -30,13 +30,16 @@ namespace Kingo.MicroServices
         /// The response message type.
         /// </summary>
         public Type ResponseType =>
-            HasRequestType ? _messageTypes[1] : _messageTypes[0];
+            HasRequestType ? _messageTypes[1] : _messageTypes[0];        
 
         internal override string MethodName =>
-            "ExecuteAsync";        
+            HasRequestType ? nameof(IQuery<object, object>.ExecuteAsync) : nameof(IQuery<object>.ExecuteAsync);
 
         private bool HasRequestType =>
-            _messageTypes.Length == 2;        
+            _messageTypes.Length == 2;
+
+        internal override ExecuteAsyncMethod CreateMethod(Query component) =>
+            new ExecuteAsyncMethod(component, this);
 
         #region [====== FromComponent ======]
 

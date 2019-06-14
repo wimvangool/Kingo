@@ -8,15 +8,34 @@ namespace Kingo.MicroServices
     /// When implemented, represents the <see cref="IQuery{TResponse}.ExecuteAsync"/> or
     /// <see cref="IQuery{TRequest, TResponse}.ExecuteAsync"/> method of a specific query.
     /// </summary>
-    public abstract class ExecuteAsyncMethod : IAsyncMethod
+    public class ExecuteAsyncMethod : IAsyncMethod
     {
         private readonly Query _component;
         private readonly MethodAttributeProvider _attributeProvider;
+        private readonly IParameterAttributeProvider _messageParameter;
+        private readonly IParameterAttributeProvider _contextParameter;
 
-        internal ExecuteAsyncMethod(Query component, MethodAttributeProvider attributeProvider)
+        internal ExecuteAsyncMethod(Query component, QueryInterface @interface) :
+            this(component, @interface.CreateMethodAttributeProvider(component)) { }
+
+        private ExecuteAsyncMethod(Query component, MethodAttributeProvider attributeProvider) :
+            this(component, attributeProvider, attributeProvider.Info.GetParameters()) { }
+
+        private ExecuteAsyncMethod(Query component, MethodAttributeProvider attributeProvider, ParameterInfo[] parameters)
         {
             _component = component;
             _attributeProvider = attributeProvider;
+
+            if (parameters.Length == 1)
+            {
+                _messageParameter = null;
+                _contextParameter = new ParameterAttributeProvider(parameters[0]);
+            }
+            else
+            {
+                _messageParameter = new ParameterAttributeProvider(parameters[0]);
+                _contextParameter = new ParameterAttributeProvider(parameters[1]);
+            }
         }
 
         #region [====== Component ======]
@@ -51,16 +70,12 @@ namespace Kingo.MicroServices
         #region [====== Parameters ======]
 
         /// <inheritdoc />
-        public abstract IParameterAttributeProvider MessageParameter
-        {
-            get;
-        }
+        public IParameterAttributeProvider MessageParameter =>
+            _messageParameter;
 
         /// <inheritdoc />
-        public abstract IParameterAttributeProvider ContextParameter
-        {
-            get;
-        }
+        public IParameterAttributeProvider ContextParameter =>
+            _contextParameter;       
 
         #endregion
     }

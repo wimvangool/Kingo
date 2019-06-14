@@ -106,6 +106,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid MessageKind ({0}) specified. Endpoints only support commands and events..
+        /// </summary>
+        internal static string HandleAsyncMethodEndpoint_InvalidMessageKindSpecified {
+            get {
+                return ResourceManager.GetString("HandleAsyncMethodEndpoint_InvalidMessageKindSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot start endpoint &apos;{0}&apos; because it has already been started. .
         /// </summary>
         internal static string HostedEndpoint_EndpointAlreadyStarted {
