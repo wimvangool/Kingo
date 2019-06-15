@@ -14,13 +14,17 @@ namespace Kingo.MicroServices.Endpoints
 
         private sealed class MicroServiceBusControllerStub : MicroServiceBusController
         {
+            private readonly IMicroProcessor _processor;
             private readonly IEnumerator<HostedEndpoint> _endpointEnumerator;
 
-            public MicroServiceBusControllerStub(IMicroProcessor processor, IReadOnlyCollection<HostedEndpoint> endpoints)
-                : base(new EndpointRepeater(processor, endpoints.Count))
+            public MicroServiceBusControllerStub(IMicroProcessor processor, IReadOnlyCollection<HostedEndpoint> endpoints)                
             {
+                _processor = new EndpointRepeater(processor, endpoints.Count);
                 _endpointEnumerator = endpoints.GetEnumerator();
             }
+
+            protected override IMicroProcessor Processor =>
+                _processor;
 
             protected override HostedEndpoint CreateHostedEndpoint(HandleAsyncMethodEndpoint methodEndpoint)
             {

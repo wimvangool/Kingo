@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,18 +11,24 @@ namespace Kingo.MicroServices.Endpoints
     /// processing.
     /// </summary>
     public abstract class MicroServiceBusController : HostedEndpoint
-    {        
-        private readonly IMicroProcessor _processor;
+    {                
         private IEnumerable<HostedEndpoint> _endpoints;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroServiceBusController" /> class.
         /// </summary>
-        protected MicroServiceBusController(IMicroProcessor processor)
-        {
-            _processor = processor ?? throw new ArgumentNullException(nameof(processor));
+        protected MicroServiceBusController()
+        {            
             _endpoints = Enumerable.Empty<HostedEndpoint>();
         }
+
+        /// <summary>
+        /// Returns the processor that will process all the messages.
+        /// </summary>
+        protected abstract IMicroProcessor Processor
+        {
+            get;
+        }        
 
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
@@ -54,7 +59,7 @@ namespace Kingo.MicroServices.Endpoints
             // again and the rest of the startup process is aborted.
             var endpoints = new List<HostedEndpoint>();
 
-            foreach (var endpoint in CreateHostedEndpointsFor(_processor))
+            foreach (var endpoint in CreateHostedEndpoints())
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -94,13 +99,13 @@ namespace Kingo.MicroServices.Endpoints
             }                       
         }
 
-        private IEnumerable<HostedEndpoint> CreateHostedEndpointsFor(IMicroProcessor processor) =>
-            processor.CreateMethodEndpoints().Select(CreateHostedEndpoint);
+        private IEnumerable<HostedEndpoint> CreateHostedEndpoints() =>
+            Processor.CreateMethodEndpoints().Select(CreateHostedEndpoint);
 
         /// <summary>
         /// Creates and returns a new <see cref="HostedEndpoint"/> for the specified <paramref name="methodEndpoint"/>.
         /// </summary>
-        /// <param name="methodEndpoint">A specific endpoint that is capable of processing messages of a specific type.</param>
+        /// <param name="methodEndpoint">A specific endpoint that is capable of processing messages of a specific type.</param>        
         /// <returns>A new <see cref="HostedEndpoint"/>.</returns>
         protected abstract HostedEndpoint CreateHostedEndpoint(HandleAsyncMethodEndpoint methodEndpoint);
     }

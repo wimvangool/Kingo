@@ -86,7 +86,7 @@ namespace Kingo.MicroServices.Endpoints
 
         #endregion
 
-        #region [====== AddMicroServiceBus (Type) ======]
+        #region [====== AddMicroServiceBus ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -98,7 +98,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public async Task AddMicroServiceBus_DoesNothing_IfTypeDoesNotImplementMicroServiceBusInterface()
         {
-            ProcessorBuilder.Components.AddMicroServiceBus<object>();
+            ProcessorBuilder.Components.AddMicroServiceBus(typeof(object));
 
             var provider = BuildServiceProvider();
             var serviceBus = provider.GetRequiredService<IMicroServiceBus>();
@@ -283,7 +283,7 @@ namespace Kingo.MicroServices.Endpoints
         }
 
         [TestMethod]
-        public async Task AddMicroServiceBuses_BuildsExpectedServiceBus_IfMultipleServiceBusesAreAdded()
+        public async Task AddMicroServiceBuses_BuildsExpectedServiceBus_IfMultipleServiceBusesWereAddedAsType()
         {
             ProcessorBuilder.Components.AddType<TransientServiceBus>();
             ProcessorBuilder.Components.AddType<ScopedServiceBus>();

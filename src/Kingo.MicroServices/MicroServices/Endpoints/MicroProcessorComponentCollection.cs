@@ -17,6 +17,7 @@ namespace Kingo.MicroServices.Endpoints
     {                
         private readonly HashSet<MessageHandler> _messageHandlerInstances;
         private readonly HashSet<MessageHandler> _messageHandlerTypes;
+        private readonly HashSet<MicroServiceBusControllerType> _serviceBusControllerTypes;
         private readonly HashSet<MicroServiceBusType> _serviceBusTypes;
         private readonly HashSet<MicroProcessorComponent> _components;
         private readonly IServiceCollection _services;        
@@ -28,6 +29,7 @@ namespace Kingo.MicroServices.Endpoints
         {            
             _messageHandlerInstances = new HashSet<MessageHandler>();
             _messageHandlerTypes = new HashSet<MessageHandler>();
+            _serviceBusControllerTypes = new HashSet<MicroServiceBusControllerType>();
             _serviceBusTypes = new HashSet<MicroServiceBusType>();
             _components = new HashSet<MicroProcessorComponent>();
             _services = new ServiceCollection();            
@@ -247,6 +249,59 @@ namespace Kingo.MicroServices.Endpoints
 
         #endregion
 
+        #region [====== AddMicroServiceBusController ======]
+
+        /// <summary>
+        /// Automatically registers all types that are a <see cref="MicroServiceBusController" />. Each controller
+        /// will also be registered as a <see cref="Microsoft.Extensions.Hosting.IHostedService"/> that will be
+        /// started and stopped automatically.
+        /// </summary>
+        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
+        public void AddMicroServiceBusControllers(Func<MicroProcessorComponent, bool> predicate = null)
+        {
+            foreach (var controller in MicroServiceBusControllerType.FromComponents(GetComponents(predicate)))
+            {
+                AddMicroServiceBusController(controller);
+            }
+        }
+
+        /// <summary>
+        /// Adds <typeparamref name="TController"/> as a <see cref="MicroServiceBusController"/>. If
+        /// <typeparamref name="TController"/> implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>,
+        /// it is also registered as a hosted service that will be started and stopped automatically.
+        /// </summary>
+        /// <typeparam name="TController">The type to register as a controller.</typeparam> 
+        public void AddMicroServiceBusController<TController>() where TController : MicroServiceBusController =>
+            AddMicroServiceBusController(typeof(TController));
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a <see cref="MicroServiceBusController"/> if and only if
+        /// the specified <paramref name="type"/> actually is a <see cref="MicroServiceBusController"/>. If <paramref name="type"/>
+        /// implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>, it is also registered
+        /// as a hosted service that will be started and stopped automatically.
+        /// </summary>
+        /// <param name="type">The type to register as a controller.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public void AddMicroServiceBusController(Type type)
+        {
+            if (MicroServiceBusControllerType.IsMicroProcessorBusControllerType(type, out var controller))
+            {
+                AddMicroServiceBusController(controller);
+            }
+        }
+
+        private void AddMicroServiceBusController(MicroServiceBusControllerType controller)
+        {
+            if (_serviceBusControllerTypes.Add(controller))
+            {
+                _services.AddComponent(controller, controller.ServiceTypes);
+            }
+        }
+
+        #endregion
+
         #region [====== AddMicroServiceBus ======]
 
         /// <summary>
@@ -264,13 +319,12 @@ namespace Kingo.MicroServices.Endpoints
         }
 
         /// <summary>
-        /// Adds the specified <typeparamref name="TMicroServiceBus"/> as a <see cref="IMicroServiceBus" /> instance, if
-        /// and only if this type implements the <see cref="IMicroServiceBus"/> interface. If <typeparamref name="TMicroServiceBus"/>
-        /// also implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>, it is also registered
-        /// as a hosted service that will be started and stopped automatically.
+        /// Adds the specified <typeparamref name="TMicroServiceBus"/> as a <see cref="IMicroServiceBus" />.
+        /// If <typeparamref name="TMicroServiceBus"/> implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>,
+        /// it is also registered as a hosted service that will be started and stopped automatically.
         /// </summary>
-        /// <typeparam name="TMicroServiceBus"></typeparam>
-        public void AddMicroServiceBus<TMicroServiceBus>() =>
+        /// <typeparam name="TMicroServiceBus">Type of a service bus.</typeparam>
+        public void AddMicroServiceBus<TMicroServiceBus>() where TMicroServiceBus : IMicroServiceBus =>
             AddMicroServiceBus(typeof(TMicroServiceBus));
 
         /// <summary>
