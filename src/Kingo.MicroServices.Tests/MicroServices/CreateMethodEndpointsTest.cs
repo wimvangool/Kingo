@@ -55,8 +55,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsEmptyCollection_IfMethodHasNoEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddType<MessageHandler1>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler1>();            
 
             Assert.AreEqual(0, CreateProcessor().CreateMethodEndpoints().Count());
         }
@@ -64,8 +63,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsEmptyCollection_IfMethodHasEndpointAttribute_But_MessageHandlerHandlesNoExternalMessages()
         {
-            ProcessorBuilder.Components.AddType<MessageHandler2>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler2>();            
 
             Assert.AreEqual(0, CreateProcessor().CreateMethodEndpoints().Count());
         }
@@ -73,8 +71,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsOneEndpoint_IfMethodHasEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddType<MessageHandler3>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();            
 
             var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
 
@@ -85,8 +82,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsMultipleEndpoints_IfMultipleMethodsHaveEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddType<MessageHandler4>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler4>();            
 
             var endpoints = CreateProcessor().CreateMethodEndpoints().ToArray();
 
@@ -100,9 +96,8 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsMultipleEndpoints_IfMultipleMessageHandlersHaveEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddType<MessageHandler3>();
-            ProcessorBuilder.Components.AddType<MessageHandler4>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler4>();            
 
             var endpoints = CreateProcessor().CreateMethodEndpoints().ToArray();
 
@@ -191,8 +186,7 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(InvalidOperationException))]
         public void CreateMethodEndpoints_Throws_IfMessageKindIsSetToRequest()
         {
-            ProcessorBuilder.Components.AddType<RequestHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<RequestHandler>();            
 
             CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
         }
@@ -201,8 +195,7 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(InvalidOperationException))]
         public void CreateMethodEndpoints_Throws_IfMessageKindIsSetToUnknownValue()
         {
-            ProcessorBuilder.Components.AddType<UnknownMessageKindHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<UnknownMessageKindHandler>();            
 
             CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
         }
@@ -210,8 +203,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsEventHandler_IfMessageKindIsEvent()
         {
-            ProcessorBuilder.Components.AddType<ExplicitEventHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ExplicitEventHandler>();            
 
             var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
 
@@ -221,8 +213,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsEventHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeDoesNotEndWithCommand()
         {
-            ProcessorBuilder.Components.AddType<ImplicitEventHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ImplicitEventHandler>();            
 
             var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
 
@@ -232,8 +223,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsCommandHandler_IfMessageKindIsCommand()
         {
-            ProcessorBuilder.Components.AddType<ExplicitCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ExplicitCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
 
@@ -243,8 +233,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsCommandHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeEndsWithCommand()
         {
-            ProcessorBuilder.Components.AddType<ImplicitCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
 
@@ -255,9 +244,7 @@ namespace Kingo.MicroServices
         public void CreateMethodEndpoints_Returns_IfCustomMessageKindResolverReturnsUnspecified_And_NameOfMessageTypeEndsWithCommand()
         {
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.Unspecified);
-
-            ProcessorBuilder.Components.AddType<ImplicitCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
 
@@ -269,9 +256,7 @@ namespace Kingo.MicroServices
         public void CreateMethodEndpoints_Throws_IfCustomMessageKindResolver_ReturnsRequest()
         {
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.Request);
-
-            ProcessorBuilder.Components.AddType<ImplicitCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
             CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
         }
@@ -281,9 +266,7 @@ namespace Kingo.MicroServices
         public void CreateMethodEndpoints_Throws_IfCustomMessageKindResolver_ReturnsUnknownMessageKind()
         {
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver((MessageKind) (-1));
-
-            ProcessorBuilder.Components.AddType<ImplicitCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
             CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
         }

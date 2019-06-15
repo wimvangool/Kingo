@@ -107,10 +107,59 @@ namespace Kingo.MicroServices.Endpoints
         /// </exception>
         public void AddTypes(IEnumerable<Type> types) =>
             _components.UnionWith(MicroProcessorComponent.FromTypes(types));
-                    
-        #endregion        
 
-        #region [====== AddMessageHandlers ======]
+        #endregion
+
+        #region [====== AddMessageHandlers (Types) ======]
+
+        /// <summary>
+        /// Adds all message handlers that are found in the assemblies that match the specified search criteria.
+        /// </summary>        
+        /// <param name="predicate">Optional predicate that is used to filter specific types.</param>                
+        public void AddMessageHandlers(Func<MicroProcessorComponent, bool> predicate = null) =>
+            AddMessageHandlers(GetComponents(predicate));        
+        
+        private void AddMessageHandlers(IEnumerable<MicroProcessorComponent> components)
+        {
+            foreach (var messageHandler in MessageHandlerType.FromComponents(components))
+            {
+                AddMessageHandler(messageHandler);
+            }
+        }
+
+        /// <summary>
+        /// Adds the specified <typeparamref name="TMessageHandler"/> as a message handler for the processor, if and only if
+        /// this type represents a message handler.
+        /// </summary>
+        /// <typeparam name="TMessageHandler">Type of the message handler to add.</typeparam>
+        public void AddMessageHandler<TMessageHandler>() =>
+            AddMessageHandler(typeof(TMessageHandler));
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a message handler for the processor, if and only if
+        /// this type represents a message handler.
+        /// </summary>
+        /// <param name="type">The type to add as a message handler.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public void AddMessageHandler(Type type)
+        {
+            if (MessageHandlerType.IsMessageHandlerComponent(type, out var messageHandler))
+            {
+                AddMessageHandler(messageHandler);
+            }
+        }
+        
+        private void AddMessageHandler(MessageHandler messageHandler)
+        {
+            _services.AddComponent(messageHandler, messageHandler.Interfaces.Select(@interface => @interface.Type));
+            _messageHandlerTypes.Add(messageHandler);
+        }
+
+        #endregion
+
+        #region [====== AddMessageHandler (Instances) ======]
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler"/> as a singleton instance for every <see cref="IMessageHandler{TMessage}"/>
@@ -132,7 +181,7 @@ namespace Kingo.MicroServices.Endpoints
                 }
                 _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
             }            
-        }        
+        }       
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance. NB: this message handler will only
@@ -162,22 +211,6 @@ namespace Kingo.MicroServices.Endpoints
             _messageHandlerInstances.Add(messageHandler);
             _services.AddTransient<IMessageHandler<TMessage>>(provider => messageHandler);            
         }
-
-        /// <summary>
-        /// Adds all message handlers that are found in the assemblies that match the specified search criteria.
-        /// </summary>        
-        /// <param name="predicate">Optional predicate that is used to filter specific types.</param>                
-        public void AddMessageHandlers(Func<MicroProcessorComponent, bool> predicate = null) =>
-            AddMessageHandlers(GetComponents(predicate));        
-        
-        private void AddMessageHandlers(IEnumerable<MicroProcessorComponent> components)
-        {
-            foreach (var messageHandler in MessageHandlerType.FromComponents(components))
-            {
-                _services.AddComponent(messageHandler, messageHandler.Interfaces.Select(@interface => @interface.Type));
-                _messageHandlerTypes.Add(messageHandler);
-            }
-        }       
 
         #endregion
 

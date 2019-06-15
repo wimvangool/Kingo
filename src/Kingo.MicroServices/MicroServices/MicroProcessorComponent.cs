@@ -151,9 +151,18 @@ namespace Kingo.MicroServices
         /// <returns>
         /// <c>true</c> if <paramref name="type"/> is a non-null, non-abstract type and does not represent an open generic type.
         /// Otherwise <c>false</c>.
-        /// </returns>        
-        public static bool CanBeCreatedFrom(Type type) =>
-            type != null && !type.IsAbstract && !type.ContainsGenericParameters;
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception> 
+        public static bool CanBeCreatedFrom(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            return !type.IsAbstract && !type.ContainsGenericParameters;
+        }            
 
         #endregion
     }

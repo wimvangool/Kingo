@@ -652,8 +652,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task ExecuteCommandAsync_CreatesNewInstanceForEveryInvocation_IfCommandHandlerHasTransientLifetime()
         {
-            ProcessorBuilder.Components.AddType<TransientCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<TransientCommandHandler>();            
 
             var processor = CreateProcessor();
 
@@ -673,8 +672,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task ExecuteCommandAsync_CreatesNewInstancePerScope_IfCommandHandlerHasScopedLifetime()
         {
-            ProcessorBuilder.Components.AddType<ScopedCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<ScopedCommandHandler>();            
 
             var processor = CreateProcessor();
 
@@ -694,8 +692,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task ExecuteCommandAsync_CreatesOnlyOneInstanceEver_IfCommandHandlerHasSingletonLifetime()
         {
-            ProcessorBuilder.Components.AddType<SingletonCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<SingletonCommandHandler>();            
 
             var processor = CreateProcessor();
 
@@ -735,9 +732,8 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task ExecuteAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredBeforeType()
         {            
-            ProcessorBuilder.Components.AddType<TransientCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandler(new TransientCommandHandler());
-            ProcessorBuilder.Components.AddMessageHandlers();            
+            ProcessorBuilder.Components.AddMessageHandler<TransientCommandHandler>();
+            ProcessorBuilder.Components.AddMessageHandler(new TransientCommandHandler());            
 
             var processor = CreateProcessor();
 
@@ -757,8 +753,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task ExecuteAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredAfterType()
         {            
-            ProcessorBuilder.Components.AddType<TransientCommandHandler>();
-            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddMessageHandler<TransientCommandHandler>();            
             ProcessorBuilder.Components.AddMessageHandler(new TransientCommandHandler());
 
             var processor = CreateProcessor();

@@ -56,7 +56,7 @@ namespace Kingo.MicroServices
         }
 
         internal static bool IsMessageHandlerComponent(Type type, out MessageHandlerType messageHandler)
-        {
+        {            
             if (CanBeCreatedFrom(type))
             {
                 return IsMessageHandlerComponent(new MicroProcessorComponent(type), out messageHandler);
