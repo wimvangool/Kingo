@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Kingo.MicroServices.Endpoints;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -51,13 +51,28 @@ namespace Kingo.MicroServices
         }
 
         protected IMicroProcessorBuilder ProcessorBuilder =>
-            _builder;
+            _builder;        
 
-        protected IServiceCollection Services =>
-            _services;
+        protected IMicroProcessor CreateProcessor() =>
+            BuildServiceProvider().GetRequiredService<IMicroProcessor>();
 
-        protected virtual IMicroProcessor CreateProcessor() =>
-            _builder.BuildServiceCollection(_services).BuildServiceProvider().GetRequiredService<IMicroProcessor>();
+        protected IServiceProvider BuildServiceProvider() =>
+            BuildServiceCollection().BuildServiceProvider();
+
+        protected IServiceCollection BuildServiceCollection() =>
+            _builder.BuildServiceCollection(_services);
+
+        // The default service count specifies how many services are registered by default
+        // in the service collection. This number can be used to verify whether or not
+        // the appropriate services from a test were registered or not.
+        // The default services are:
+        // - IMicroProcessor + TProcessor
+        // - MicroProcessorOptions
+        // - IHandleAsyncMethodFactory
+        // - IMicroServiceBus
+        // - IInstanceCollector
+        protected virtual int DefaultServiceCount =>
+            6;
 
         [TestInitialize]
         public virtual void Setup() { }           

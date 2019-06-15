@@ -723,13 +723,65 @@ namespace Kingo.Reflection
 
         #endregion
 
-        #region [====== GetInterfacesOfType ======]        
+        #region [====== ImplementsInterface ======]
+
+        /// <summary>
+        /// Determines whether or not the specified <paramref name="type"/> implements <typeparamref name="TInterface"/>.
+        /// </summary>
+        /// <typeparam name="TInterface">Type of an interface.</typeparam>
+        /// <param name="type">A type.</param>        
+        /// <returns>
+        /// <c>true</c> if <paramref name="type"/> implements (at least one variation of) <typeparamref name="TInterface"/>;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public static bool ImplementsInterface<TInterface>(this Type type) =>
+            type.ImplementsInterface(typeof(TInterface));
+
+        /// <summary>
+        /// Determines whether or not the specified <paramref name="type"/> implements the specified <paramref name="interfaceType"/>.
+        /// </summary>
+        /// <param name="type">A type.</param>
+        /// <param name="interfaceType">An interface type.</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="type"/> implements (at least one variation of) the specified <paramref name="interfaceType"/>;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> or <paramref name="interfaceType"/> is <c>null</c>.
+        /// </exception>
+        public static bool ImplementsInterface(this Type type, Type interfaceType) =>
+            type.GetInterfacesOfType(interfaceType).Any();
+
+        #endregion
+
+        #region [====== GetInterfacesOfType ======]    
+
+        /// <summary>
+        /// Returns all variations of <typeparamref name="TInterface" /> that are implemented by
+        /// the specified <paramref name="type"/>.
+        /// </summary>
+        /// <typeparam name="TInterface">Type of an interface.</typeparam>
+        /// <param name="type">Type that is checked for implementations of <typeparamref name="TInterface" />.</param>        
+        /// <returns>
+        /// All implemented variations of <typeparamref name="TInterface" /> that are implemented
+        /// by the specified <paramref name="type"/>. If <paramref name="type"/> is not a class or value type or
+        /// <paramref name="type"/> simply doesn't implement any instance of <typeparamref name="TInterface" />,
+        /// an empty collection is returned.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/>.
+        /// </exception>
+        public static IEnumerable<Type> GetInterfacesOfType<TInterface>(this Type type) =>
+            GetInterfacesOfType(type, typeof(TInterface));
 
         /// <summary>
         /// Returns all variations of the specified <paramref name="interfaceTypes" /> that are implemented by
         /// the specified <paramref name="type"/>.
         /// </summary>
-        /// <param name="type">Type that must implement one of the the specified <paramref name="interfaceTypes"/>.</param>
+        /// <param name="type">Type that must implement one of the specified <paramref name="interfaceTypes"/>.</param>
         /// <param name="interfaceTypes">A collection of interface types. These can contain generic type definitions.</param>
         /// <returns>
         /// All implemented variations of the specified <paramref name="interfaceTypes" /> that are implemented

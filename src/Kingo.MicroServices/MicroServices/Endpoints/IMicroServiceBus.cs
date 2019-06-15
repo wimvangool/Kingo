@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 
 namespace Kingo.MicroServices.Endpoints
 {
     /// <summary>
     /// When implemented by a class, represents a service bus that can publish messages.
     /// </summary>
-    public interface IMicroServiceBus : IHostedService
+    public interface IMicroServiceBus
     {
         /// <summary>
         /// Publishes all specified <paramref name="messages" />.

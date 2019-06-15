@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.Endpoints
 {
     [TestClass]
-    public sealed partial class MicroProcessorComponentCollectionTest
+    public sealed class AddComponentsTest : MicroProcessorTest<MicroProcessor>
     {
         #region [====== Nested Types ======]        
 
@@ -20,14 +20,7 @@ namespace Kingo.MicroServices.Endpoints
                 Task.FromResult(new object());
         }
 
-        #endregion
-
-        private readonly MicroProcessorComponentCollection _components;
-
-        public MicroProcessorComponentCollectionTest()
-        {
-            _components = new MicroProcessorComponentCollection();
-        }
+        #endregion        
 
         #region [====== AddComponents ======]
 
@@ -35,7 +28,7 @@ namespace Kingo.MicroServices.Endpoints
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddComponents_Throws_IfServiceFactoryIsNull()
         {
-            _components.AddComponents(null);
+            ProcessorBuilder.Components.AddComponents(null);
         }
 
         #endregion
@@ -45,9 +38,9 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddReadModel_AddsExpectedReadModel_IfTypeIsBothMessageHandlerAndQuery()
         {
-            _components.AddType<ReadModel>();
-            _components.AddMessageHandlers();
-            _components.AddQueries();
+            ProcessorBuilder.Components.AddType<ReadModel>();
+            ProcessorBuilder.Components.AddMessageHandlers();
+            ProcessorBuilder.Components.AddQueries();
 
             var provider = BuildServiceProvider();
 
@@ -59,12 +52,6 @@ namespace Kingo.MicroServices.Endpoints
             Assert.AreSame(query, readModel);
         }
 
-        #endregion
-
-        private IServiceProvider BuildServiceProvider() =>
-            BuildServiceCollection().BuildServiceProvider();
-
-        private IServiceCollection BuildServiceCollection() =>
-            (_components as IServiceCollectionBuilder).BuildServiceCollection();
+        #endregion        
     }
 }

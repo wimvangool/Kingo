@@ -15,8 +15,9 @@ namespace Kingo.MicroServices.Endpoints
     /// </summary>
     public sealed class MicroProcessorComponentCollection : IServiceCollectionBuilder
     {                
-        private readonly List<MessageHandler> _messageHandlerInstances;
-        private readonly List<MessageHandler> _messageHandlerTypes;
+        private readonly HashSet<MessageHandler> _messageHandlerInstances;
+        private readonly HashSet<MessageHandler> _messageHandlerTypes;
+        private readonly HashSet<MicroServiceBusType> _serviceBusTypes;
         private readonly HashSet<MicroProcessorComponent> _components;
         private readonly IServiceCollection _services;        
 
@@ -25,11 +26,12 @@ namespace Kingo.MicroServices.Endpoints
         /// </summary>
         public MicroProcessorComponentCollection()
         {            
-            _messageHandlerInstances = new List<MessageHandler>();
-            _messageHandlerTypes = new List<MessageHandler>();
+            _messageHandlerInstances = new HashSet<MessageHandler>();
+            _messageHandlerTypes = new HashSet<MessageHandler>();
+            _serviceBusTypes = new HashSet<MicroServiceBusType>();
             _components = new HashSet<MicroProcessorComponent>();
             _services = new ServiceCollection();            
-        }
+        }       
 
         /// <inheritdoc />
         public override string ToString() =>
@@ -44,18 +46,24 @@ namespace Kingo.MicroServices.Endpoints
             {
                 services.Add(service);
             }
-            return services.AddSingleton(BuildMethodFactory());                
+            return services
+                .AddSingleton(BuildMethodFactory())
+                .AddTransient(BuildMicroServiceBus);
         }
 
-        internal IHandleAsyncMethodFactory BuildMethodFactory()
-        {
-            // When building the factory, we select only distinct instances and types, so no instance or type is ever
-            // invoked twice for the same message. We also filter out all types that have also been registered as an instance
-            // to prevent weird and unpredictable behavior - instances simply take precedence in that case.
-            var instances = _messageHandlerInstances.Distinct().ToArray();
-            var types = _messageHandlerTypes.Distinct().Where(messageHandler => instances.All(instance => instance.Type != messageHandler.Type));
-            return new HandleAsyncMethodFactory(instances.Concat(types));
-        }                    
+        // When building the factory, we filter out all types that have also been registered as an instance
+        // to prevent weird and unpredictable behavior - instances simply take precedence in that case.
+        private IHandleAsyncMethodFactory BuildMethodFactory() =>
+            new HandleAsyncMethodFactory(_messageHandlerInstances.Concat(_messageHandlerTypes.Where(IsNotRegisteredAsInstance)));
+
+        private bool IsNotRegisteredAsInstance(MessageHandler messageHandler) =>
+            _messageHandlerInstances.All(instance => instance.Type != messageHandler.Type);
+        
+        // When building the service bus, we actually create a composite bus that encapsulates all registered service bus types.
+        // Only this composite bus is actually registered as an IMicroServiceBus instance, so that clients always get the right
+        // service bus instance.        
+        internal IMicroServiceBus BuildMicroServiceBus(IServiceProvider provider) =>
+            new MicroServiceBusComposite(_serviceBusTypes.Select(bus => provider.GetRequiredService(bus.Type)).OfType<IMicroServiceBus>());
 
         #region [====== AddTypes ======]
 
@@ -153,8 +161,10 @@ namespace Kingo.MicroServices.Endpoints
         
         private void AddMessageHandler(MessageHandler messageHandler)
         {
-            _services.AddComponent(messageHandler, messageHandler.Interfaces.Select(@interface => @interface.Type));
-            _messageHandlerTypes.Add(messageHandler);
+            if (_messageHandlerTypes.Add(messageHandler))
+            {
+                _services.AddComponent(messageHandler, messageHandler.Interfaces.Select(@interface => @interface.Type));
+            }            
         }
 
         #endregion
@@ -171,10 +181,8 @@ namespace Kingo.MicroServices.Endpoints
         /// </exception>
         public void AddMessageHandler(object messageHandler)
         {
-            if (MessageHandlerInstance.IsMessageHandlerInstance(messageHandler, out var instance))
-            {
-                _messageHandlerInstances.Add(instance);
-
+            if (MessageHandlerInstance.IsMessageHandlerInstance(messageHandler, out var instance) && _messageHandlerInstances.Add(instance))
+            {                
                 foreach (var @interface in instance.Interfaces)
                 {                    
                     _services.AddTransient(@interface.Type, provider => provider.GetService(instance.Type));
@@ -208,8 +216,10 @@ namespace Kingo.MicroServices.Endpoints
 
         private void AddMessageHandler<TMessage>(MessageHandlerInstance<TMessage> messageHandler)
         {
-            _messageHandlerInstances.Add(messageHandler);
-            _services.AddTransient<IMessageHandler<TMessage>>(provider => messageHandler);            
+            if (_messageHandlerInstances.Add(messageHandler))
+            {
+                _services.AddTransient<IMessageHandler<TMessage>>(provider => messageHandler);
+            }            
         }
 
         #endregion
@@ -232,7 +242,57 @@ namespace Kingo.MicroServices.Endpoints
                 services = services.AddComponent(query, query.Interfaces.Select(@interface => @interface.Type));
             }            
             return services;
-        }        
+        }
+
+        #endregion
+
+        #region [====== AddMicroServiceBus ======]
+
+        /// <summary>
+        /// Automatically registers all types that implement the <see cref="IMicroServiceBus" /> interface as
+        /// a service bus endpoint. Any type that also implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>
+        /// is also registered as a hosted service that will be started and stopped automatically.
+        /// </summary>
+        public void AddMicroServiceBuses()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Adds the specified <typeparamref name="TMicroServiceBus"/> as a <see cref="IMicroServiceBus" /> instance, if
+        /// and only if this type implements the <see cref="IMicroServiceBus"/> interface. If <typeparamref name="TMicroServiceBus"/>
+        /// also implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>, it is also registered
+        /// as a hosted service that will be started and stopped automatically.
+        /// </summary>
+        /// <typeparam name="TMicroServiceBus"></typeparam>
+        public void AddMicroServiceBus<TMicroServiceBus>() =>
+            AddMicroServiceBus(typeof(TMicroServiceBus));
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a <see cref="IMicroServiceBus" /> instance, if
+        /// and only if this type implements the <see cref="IMicroServiceBus"/> interface. If <paramref name="type"/>
+        /// also implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>, it is also registered
+        /// as a hosted service that will be started and stopped automatically.
+        /// </summary>
+        /// <param name="type">The type to register as a service bus.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public void AddMicroServiceBus(Type type)
+        {
+            if (MicroServiceBusType.IsMicroServiceBusType(type, out var microServiceBus))
+            {
+                AddMicroServiceBus(microServiceBus);
+            }
+        }
+
+        private void AddMicroServiceBus(MicroServiceBusType microServiceBus)
+        {
+            if (_serviceBusTypes.Add(microServiceBus))
+            {
+                _services.AddComponent(microServiceBus, microServiceBus.ServiceTypes);
+            }            
+        }
 
         #endregion
 
