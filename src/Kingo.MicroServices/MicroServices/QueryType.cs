@@ -11,13 +11,13 @@ namespace Kingo.MicroServices
 
         #region [====== FromInstance ======]
 
-        public static QueryType FromInstance(object query)
+        public new static QueryType FromInstance(object query)
         {
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            var component = new MicroProcessorComponent(query.GetType());
+            var component = MicroProcessorComponent.FromInstance(query);
             var interfaces = QueryInterface.FromComponent(component).ToArray();
             return new QueryType(component, interfaces);
         }

@@ -144,9 +144,6 @@
   <data name="MessageHandlerOrQueryInterface_InterfaceMethodNotFound" xml:space="preserve">
     <value>Could not find implementation of method '{0}.{1}(...)' on type '{3}'.</value>
   </data>
-  <data name="MicroProcessorComponent_UnsupportedType" xml:space="preserve">
-    <value>Type '{0}' cannot be used as a component. The type must represent a concrete (non-abstract) type and may not contain unspecified generic parameters.</value>
-  </data>
   <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>

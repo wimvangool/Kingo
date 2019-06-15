@@ -29,13 +29,13 @@ namespace Kingo.MicroServices
 
         #region [====== FromInstance ======]
 
-        public static MessageHandlerType FromInstance(object messageHandler)
+        public new static MessageHandlerType FromInstance(object messageHandler)
         {
             if (messageHandler == null)
             {
                 throw new ArgumentNullException(nameof(messageHandler));
             }
-            var component = new MicroProcessorComponent(messageHandler.GetType());
+            var component = MicroProcessorComponent.FromInstance(messageHandler);
             var interfaces = MessageHandlerInterface.FromComponent(component).ToArray();
             return new MessageHandlerType(component, interfaces);
         }
@@ -57,9 +57,9 @@ namespace Kingo.MicroServices
 
         internal static bool IsMessageHandlerComponent(Type type, out MessageHandlerType messageHandler)
         {            
-            if (CanBeCreatedFrom(type))
+            if (IsMicroProcessorComponent(type, out var component))
             {
-                return IsMessageHandlerComponent(new MicroProcessorComponent(type), out messageHandler);
+                return IsMessageHandlerComponent(component, out messageHandler);
             }
             messageHandler = null;
             return false;

@@ -10,8 +10,8 @@ namespace Kingo.MicroServices.Endpoints
     {
         private readonly Type[] _serviceTypes;
 
-        private MicroServiceBusType(Type type, params Type[] serviceTypes) :
-            base(type)
+        private MicroServiceBusType(MicroProcessorComponent component, params Type[] serviceTypes) :
+            base(component)
         {
             _serviceTypes = serviceTypes;
         }
@@ -19,18 +19,39 @@ namespace Kingo.MicroServices.Endpoints
         public IEnumerable<Type> ServiceTypes =>
             _serviceTypes;
 
+        public static IEnumerable<MicroServiceBusType> FromComponents(IEnumerable<MicroProcessorComponent> components)
+        {
+            foreach (var component in components)
+            {
+                if (IsMicroServiceBusType(component, out var microServiceBus))
+                {
+                    yield return microServiceBus;
+                }
+            }
+        }
+
         public static bool IsMicroServiceBusType(Type type, out MicroServiceBusType microServiceBus)
         {
-            if (CanBeCreatedFrom(type) && type.ImplementsInterface<IMicroServiceBus>())
+            if (IsMicroProcessorComponent(type, out var component))
             {
-                var hostedServiceInterface = type.GetInterfacesOfType<IHostedService>().FirstOrDefault();
+                return IsMicroServiceBusType(component, out microServiceBus);
+            }
+            microServiceBus = null;
+            return false;
+        }
+
+        private static bool IsMicroServiceBusType(MicroProcessorComponent component, out MicroServiceBusType microServiceBus)
+        {            
+            if (component.Type.ImplementsInterface<IMicroServiceBus>())
+            {
+                var hostedServiceInterface = component.Type.GetInterfacesOfType<IHostedService>().FirstOrDefault();
                 if (hostedServiceInterface == null)
                 {
-                    microServiceBus = new MicroServiceBusType(type);
+                    microServiceBus = new MicroServiceBusType(component);
                 }
                 else
                 {
-                    microServiceBus = new MicroServiceBusType(type, hostedServiceInterface);
+                    microServiceBus = new MicroServiceBusType(component, hostedServiceInterface);
                 }
                 return true;
             }

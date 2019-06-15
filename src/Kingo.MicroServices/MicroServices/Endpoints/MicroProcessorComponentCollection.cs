@@ -121,7 +121,8 @@ namespace Kingo.MicroServices.Endpoints
         #region [====== AddMessageHandlers (Types) ======]
 
         /// <summary>
-        /// Adds all message handlers that are found in the assemblies that match the specified search criteria.
+        /// Automatically registers all message handlers that are found in the types that were added to this collection,
+        /// which are types that implement the <see cref="IMessageHandler{TMessage}"/> interface.
         /// </summary>        
         /// <param name="predicate">Optional predicate that is used to filter specific types.</param>                
         public void AddMessageHandlers(Func<MicroProcessorComponent, bool> predicate = null) =>
@@ -227,9 +228,9 @@ namespace Kingo.MicroServices.Endpoints
         #region [====== AddQueries ======]
 
         /// <summary>
-        /// Adds all queries to the components of the processor. A query is defined as any public, non-abstract, non-generic class that
-        /// implements at least one variation of the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/>
-        /// interfaces.
+        /// Automatically registers all queries that are found in the types that were added to this collection, which
+        /// are types that implement the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/>
+        /// interface.
         /// </summary>
         /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
         public void AddQueries(Func<MicroProcessorComponent, bool> predicate = null) =>
@@ -253,9 +254,13 @@ namespace Kingo.MicroServices.Endpoints
         /// a service bus endpoint. Any type that also implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>
         /// is also registered as a hosted service that will be started and stopped automatically.
         /// </summary>
-        public void AddMicroServiceBuses()
+        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
+        public void AddMicroServiceBuses(Func<MicroProcessorComponent, bool> predicate = null)
         {
-            throw new NotImplementedException();
+            foreach (var microServiceBus in MicroServiceBusType.FromComponents(GetComponents(predicate)))
+            {
+                AddMicroServiceBus(microServiceBus);
+            }
         }
 
         /// <summary>

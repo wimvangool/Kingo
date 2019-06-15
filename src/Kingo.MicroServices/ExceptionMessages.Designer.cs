@@ -142,15 +142,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type &apos;{0}&apos; cannot be used as a component. The type must represent a concrete (non-abstract) type and may not contain unspecified generic parameters..
-        /// </summary>
-        internal static string MicroProcessorComponent_UnsupportedType {
-            get {
-                return ResourceManager.GetString("MicroProcessorComponent_UnsupportedType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
         internal static string ReadOnlyList_IndexOutOfRange {

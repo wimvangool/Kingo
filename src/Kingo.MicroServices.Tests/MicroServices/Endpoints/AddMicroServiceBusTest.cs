@@ -269,7 +269,44 @@ namespace Kingo.MicroServices.Endpoints
 
         #region [====== AddMicroServiceBuses ======]
 
+        [TestMethod]
+        public async Task AddMicroServiceBuses_DoesNothing_IfNoTypesWereAdded()
+        {
+            ProcessorBuilder.Components.AddMicroServiceBuses();
 
+            var processor = CreateProcessor();
+            var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
+
+            await PublishMessageAsync(processor);
+
+            instances.AssertInstanceCountIs(0);
+        }
+
+        [TestMethod]
+        public async Task AddMicroServiceBuses_BuildsExpectedServiceBus_IfMultipleServiceBusesAreAdded()
+        {
+            ProcessorBuilder.Components.AddType<TransientServiceBus>();
+            ProcessorBuilder.Components.AddType<ScopedServiceBus>();
+            ProcessorBuilder.Components.AddType<SingletonServiceBus>();
+            ProcessorBuilder.Components.AddMicroServiceBuses();
+
+            var processor = CreateProcessor();
+            var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
+
+            using (processor.CreateScope())
+            {
+                await PublishMessageAsync(processor);
+                await PublishMessageAsync(processor);
+            }
+            instances.AssertInstanceCountIs(4);
+
+            using (processor.CreateScope())
+            {
+                await PublishMessageAsync(processor);
+                await PublishMessageAsync(processor);
+            }
+            instances.AssertInstanceCountIs(7);
+        }
 
         #endregion
     }

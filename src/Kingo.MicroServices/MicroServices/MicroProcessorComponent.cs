@@ -12,45 +12,18 @@ namespace Kingo.MicroServices
     {
         private readonly TypeAttributeProvider _attributeProvider;
         private readonly Lazy<IMicroProcessorComponentConfiguration> _configuration;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicroProcessorComponent" /> class.
-        /// </summary>
-        /// <param name="type">Type of the component.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="type"/> is not a supported component type.
-        /// </exception>
-        public MicroProcessorComponent(Type type) :
-            this(type, CanBeCreatedFrom(type)) { }
-
-        private MicroProcessorComponent(Type type, bool canBeCreatedFromType)
+        
+        private MicroProcessorComponent(Type type)
         {
-            if (canBeCreatedFromType)
-            {
-                _attributeProvider = new TypeAttributeProvider(type ?? throw new ArgumentNullException(nameof(type)));
-                _configuration = new Lazy<IMicroProcessorComponentConfiguration>(GetConfiguration);
-            }
-            else
-            {
-                throw NewUnsupportedTypeException(type);
-            }
-        }
+            _attributeProvider = new TypeAttributeProvider(type ?? throw new ArgumentNullException(nameof(type)));
+            _configuration = new Lazy<IMicroProcessorComponentConfiguration>(GetConfiguration);
+        }        
 
         internal MicroProcessorComponent(MicroProcessorComponent component)
         {
             _attributeProvider = component._attributeProvider;
             _configuration = component._configuration;
-        }        
-
-        private static Exception NewUnsupportedTypeException(Type type)
-        {
-            var messageFormat = ExceptionMessages.MicroProcessorComponent_UnsupportedType;
-            var message = string.Format(messageFormat, type.FriendlyName());
-            return new ArgumentException(message, nameof(type));
-        }
+        }              
 
         #region [====== IMicroProcessorComponentConfiguration ======]
 
@@ -119,17 +92,10 @@ namespace Kingo.MicroServices
 
         #region [====== FromTypes ======]
 
-        /// <summary>
-        /// Creates and returns a collection of <see cref="MicroProcessorComponent">components</see>
-        /// based on a collection of regular <paramref name="types"/>. The returned collection contains
-        /// one component for each type that can serve as a component.
-        /// </summary>
-        /// <param name="types">A collection of types.</param>
-        /// <returns>A new collection of components.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="types"/> is <c>null</c>.
-        /// </exception>
-        public static IEnumerable<MicroProcessorComponent> FromTypes(IEnumerable<Type> types)
+        internal static MicroProcessorComponent FromInstance(object instance) =>
+            new MicroProcessorComponent(instance.GetType());
+        
+        internal static IEnumerable<MicroProcessorComponent> FromTypes(IEnumerable<Type> types)
         {
             if (types == null)
             {
@@ -137,32 +103,27 @@ namespace Kingo.MicroServices
             }
             foreach (var type in types)
             {
-                if (CanBeCreatedFrom(type))
+                if (IsMicroProcessorComponent(type, out var component))
                 {
-                    yield return new MicroProcessorComponent(type, true);
+                    yield return component;
                 }
             }
         }
-
-        /// <summary>
-        /// Determines whether or not the specified <paramref name="type"/> can be used as a <see cref="MicroProcessorComponent" />.
-        /// </summary>
-        /// <param name="type">The type to check.</param>        
-        /// <returns>
-        /// <c>true</c> if <paramref name="type"/> is a non-null, non-abstract type and does not represent an open generic type.
-        /// Otherwise <c>false</c>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> is <c>null</c>.
-        /// </exception> 
-        public static bool CanBeCreatedFrom(Type type)
+        
+        public static bool IsMicroProcessorComponent(Type type, out MicroProcessorComponent component)
         {
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
-            return !type.IsAbstract && !type.ContainsGenericParameters;
-        }            
+            if (type.IsAbstract || type.ContainsGenericParameters)
+            {
+                component = null;
+                return false;
+            }
+            component = new MicroProcessorComponent(type);
+            return true;
+        }                 
 
         #endregion
     }
