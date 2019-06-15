@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Kingo.MicroServices.Endpoints;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,7 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public abstract class MicroProcessorTest
+    public abstract class MicroProcessorTest<TProcessor>
+        where TProcessor : class, IMicroProcessor
     {
         #region [===== InstanceCollector ======]
 
@@ -38,12 +40,12 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly MicroProcessorBuilder<MicroProcessor> _builder;
+        private readonly MicroProcessorBuilder<TProcessor> _builder;
         private readonly IServiceCollection _services;
 
         protected MicroProcessorTest()
         {
-            _builder = new MicroProcessorBuilder<MicroProcessor>();
+            _builder = new MicroProcessorBuilder<TProcessor>();
             _services = new ServiceCollection();
             _services.AddSingleton<IInstanceCollector, InstanceCollector>();
         }
@@ -54,7 +56,10 @@ namespace Kingo.MicroServices
         protected IServiceCollection Services =>
             _services;
 
-        protected IMicroProcessor CreateProcessor() =>
+        protected virtual IMicroProcessor CreateProcessor() =>
             _builder.BuildServiceCollection(_services).BuildServiceProvider().GetRequiredService<IMicroProcessor>();
+
+        [TestInitialize]
+        public virtual void Setup() { }           
     }
 }

@@ -47,17 +47,10 @@ namespace Kingo.MicroServices
         /// </summary>                     
         /// <param name="serviceProvider">
         /// Service-provider that will be used to resolve message-handlers, their dependencies and other components.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="serviceProvider"/> is <c>null</c>.
-        /// </exception>
-        public MicroProcessor(IServiceProvider serviceProvider)
-        {                        
-            if (serviceProvider == null)
-            {
-                throw new ArgumentNullException(nameof(serviceProvider));
-            }
-            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider);
+        /// </param>        
+        public MicroProcessor(IServiceProvider serviceProvider = null)
+        {                                    
+            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider ?? CreateDefaultServiceProvider());
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
         }
 
@@ -95,6 +88,9 @@ namespace Kingo.MicroServices
         /// </summary>
         public virtual IServiceScope CreateScope() =>
             new ServiceScope(this, ServiceProvider.CreateScope());
+
+        private static IServiceProvider CreateDefaultServiceProvider() =>
+            new ServiceCollection().BuildServiceProvider(true);
 
         #endregion
 

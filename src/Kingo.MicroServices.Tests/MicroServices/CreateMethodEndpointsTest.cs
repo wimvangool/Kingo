@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class CreateMethodEndpointsTest : MicroProcessorTest
+    public sealed class CreateMethodEndpointsTest : MicroProcessorTest<MicroProcessor>
     {
         #region [====== Returned Collection/Endpoints ======]
 

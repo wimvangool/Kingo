@@ -20,13 +20,7 @@ namespace Kingo.Clocks
         public void TearDown()
         {
             _clock.Dispose();
-        }
-        
-        public TestContext TestContext
-        {
-            get;
-            set;
-        }
+        }              
 
         [TestMethod]
         public void UtcDateAndTime_ReturnsIncrementedValue_EachTimeItIsCalled()

@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class ExecuteCommandTest : MicroProcessorTest
+    public sealed class ExecuteCommandTest : MicroProcessorTest<MicroProcessor>
     {
         #region [====== Null Parameters ======]
 
