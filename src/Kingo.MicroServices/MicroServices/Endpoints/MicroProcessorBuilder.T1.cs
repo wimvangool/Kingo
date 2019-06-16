@@ -42,7 +42,7 @@ namespace Kingo.MicroServices.Endpoints
             {
                 return services
                     .AddTransient(provider => options)
-                    .AddComponent(processor, typeof(IMicroProcessor));
+                    .AddComponent(processor);
             }
             throw NewInvalidProcessorTypeException(typeof(TProcessor));
         }        

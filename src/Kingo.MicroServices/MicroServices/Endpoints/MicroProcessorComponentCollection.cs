@@ -166,7 +166,7 @@ namespace Kingo.MicroServices.Endpoints
         {
             if (_messageHandlerTypes.Add(messageHandler))
             {
-                _services.AddComponent(messageHandler, messageHandler.Interfaces.Select(@interface => @interface.Type));
+                _services.AddComponent(messageHandler);
             }            
         }
 
@@ -242,7 +242,7 @@ namespace Kingo.MicroServices.Endpoints
         {
             foreach (var query in QueryType.FromComponents(components))
             {
-                services = services.AddComponent(query, query.Interfaces.Select(@interface => @interface.Type));
+                services = services.AddComponent(query);
             }            
             return services;
         }
@@ -296,7 +296,7 @@ namespace Kingo.MicroServices.Endpoints
         {
             if (_serviceBusControllerTypes.Add(controller))
             {
-                _services.AddComponent(controller, controller.ServiceTypes);
+                _services.AddComponent(controller);
             }
         }
 
@@ -349,7 +349,7 @@ namespace Kingo.MicroServices.Endpoints
         {
             if (_serviceBusTypes.Add(microServiceBus))
             {
-                _services.AddComponent(microServiceBus, microServiceBus.ServiceTypes);
+                _services.AddComponent(microServiceBus);
             }            
         }
 

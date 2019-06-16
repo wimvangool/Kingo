@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,17 +13,20 @@ namespace Kingo.MicroServices
     {
         private readonly TypeAttributeProvider _attributeProvider;
         private readonly Lazy<IMicroProcessorComponentConfiguration> _configuration;
+        private readonly Type[] _serviceTypes;
         
         private MicroProcessorComponent(Type type)
         {
             _attributeProvider = new TypeAttributeProvider(type ?? throw new ArgumentNullException(nameof(type)));
             _configuration = new Lazy<IMicroProcessorComponentConfiguration>(GetConfiguration);
+            _serviceTypes = new Type[0];
         }        
 
-        internal MicroProcessorComponent(MicroProcessorComponent component)
+        internal MicroProcessorComponent(MicroProcessorComponent component, IEnumerable<Type> serviceTypes)
         {
             _attributeProvider = component._attributeProvider;
             _configuration = component._configuration;
+            _serviceTypes = serviceTypes.ToArray();
         }              
 
         #region [====== IMicroProcessorComponentConfiguration ======]
@@ -30,6 +34,10 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public ServiceLifetime Lifetime =>
             _configuration.Value.Lifetime;
+
+        /// <inheritdoc />
+        public IEnumerable<Type> ServiceTypes =>
+            _configuration.Value.ServiceTypes.Concat(_serviceTypes).Where(serviceType => serviceType.IsAssignableFrom(Type)).Distinct();        
 
         private IMicroProcessorComponentConfiguration GetConfiguration()
         {

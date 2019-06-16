@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Kingo.Reflection;
@@ -59,16 +58,13 @@ namespace Kingo.MicroServices.Endpoints
 
         #endregion
 
-        #region [====== AddComponent ======]      
+        #region [====== AddComponent ======]              
 
         /// <summary>
-        /// Adds the specified <paramref name="component" /> to the service collection based on its configuration.
-        /// If <paramref name="serviceTypes" /> is specified, an additional mapping from each service type to
-        /// the type of the component is added to the collection.
+        /// Adds the specified <paramref name="component" /> to the service collection based on its configuration.        
         /// </summary>
         /// <param name="services">A collection of services.</param>
-        /// <param name="component">The component to add.</param>
-        /// <param name="serviceTypes">Optional collection of service types for which additional mappings are added.</param>
+        /// <param name="component">The component to add.</param>        
         /// <returns>A configured service collection.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="services"/> or <paramref name="component"/> is <c>null</c>.
@@ -76,25 +72,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentException">
         /// <paramref name="component"/> specifies an invalid service lifetime.
         /// </exception>
-        public static IServiceCollection AddComponent(this IServiceCollection services, MicroProcessorComponent component, params Type[] serviceTypes) =>
-            services.AddComponent(component, serviceTypes.AsEnumerable());
-
-        /// <summary>
-        /// Adds the specified <paramref name="component" /> to the service collection based on its configuration.
-        /// If <paramref name="serviceTypes" /> is specified, an additional mapping from each service type to
-        /// the type of the component is added to the collection.
-        /// </summary>
-        /// <param name="services">A collection of services.</param>
-        /// <param name="component">The component to add.</param>
-        /// <param name="serviceTypes">Optional collection of service types for which additional mappings are added.</param>
-        /// <returns>A configured service collection.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="services"/> or <paramref name="component"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="component"/> specifies an invalid service lifetime.
-        /// </exception>
-        public static IServiceCollection AddComponent(this IServiceCollection services, MicroProcessorComponent component, IEnumerable<Type> serviceTypes = null)
+        public static IServiceCollection AddComponent(this IServiceCollection services, MicroProcessorComponent component)
         {
             if (services == null)
             {
@@ -103,14 +81,10 @@ namespace Kingo.MicroServices.Endpoints
             if (component == null)
             {
                 throw new ArgumentNullException(nameof(component));
-            }
-            if (serviceTypes == null)
-            {
-                serviceTypes = Enumerable.Empty<Type>();
-            }
+            }           
             // First, we add mappings from the serviceTypes - which are presumably interfaces or abstract classes -
             // to the component type by factory, so that at run-time they will all resolve the same instance if requested.
-            foreach (var serviceType in serviceTypes)
+            foreach (var serviceType in component.ServiceTypes)
             {
                 services = services.AddTransient(serviceType, provider => provider.GetRequiredService(component.Type));
             }

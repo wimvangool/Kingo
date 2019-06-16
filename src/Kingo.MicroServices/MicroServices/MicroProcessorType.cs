@@ -7,8 +7,8 @@ namespace Kingo.MicroServices
     /// </summary>
     public sealed class MicroProcessorType : MicroProcessorComponent
     {
-        internal MicroProcessorType(MicroProcessorComponent component) :
-            base(component) { }
+        internal MicroProcessorType(MicroProcessorComponent component, params Type[] serviceTypes) :
+            base(component, serviceTypes) { }        
 
         internal static bool IsMicroProcessorType(Type type, out MicroProcessorType processor)
         {
@@ -24,7 +24,7 @@ namespace Kingo.MicroServices
         {
             if (typeof(MicroProcessor).IsAssignableFrom(component.Type))
             {
-                processor = new MicroProcessorType(component);
+                processor = new MicroProcessorType(component, typeof(IMicroProcessor));
                 return true;
             }
             processor = null;

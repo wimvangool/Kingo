@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
@@ -12,15 +13,22 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessorComponentAttribute" /> class.
         /// </summary>
-        public MicroProcessorComponentAttribute(ServiceLifetime lifetime = ServiceLifetime.Transient)
+        public MicroProcessorComponentAttribute(ServiceLifetime lifetime = ServiceLifetime.Transient, params Type[] serviceTypes)
         {
             Lifetime = lifetime;
+            ServiceTypes = serviceTypes ?? throw new ArgumentNullException(nameof(serviceTypes));
         }
 
         /// <inheritdoc />
         public ServiceLifetime Lifetime
         {
             get;            
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Type> ServiceTypes
+        {
+            get;
         }
 
         /// <inheritdoc />

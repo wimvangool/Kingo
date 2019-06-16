@@ -6,16 +6,8 @@ namespace Kingo.MicroServices.Endpoints
 {
     internal sealed class MicroServiceBusControllerType : MicroProcessorComponent
     {
-        private readonly Type[] _serviceTypes;
-
         private MicroServiceBusControllerType(MicroProcessorComponent component, params Type[] serviceTypes) :
-            base(component)
-        {
-            _serviceTypes = serviceTypes;
-        }
-
-        public IEnumerable<Type> ServiceTypes =>
-            _serviceTypes;
+            base(component, serviceTypes) { }               
 
         public static IEnumerable<MicroServiceBusControllerType> FromComponents(IEnumerable<MicroProcessorComponent> components)
         {

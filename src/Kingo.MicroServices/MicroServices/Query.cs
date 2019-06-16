@@ -14,7 +14,7 @@ namespace Kingo.MicroServices
         private readonly QueryInterface[] _interfaces;
 
         internal Query(MicroProcessorComponent component, params QueryInterface[] interfaces) :
-            base(component)
+            base(component, interfaces.Select(@interface => @interface.Type))
         {
             _interfaces = interfaces;
         }
@@ -24,7 +24,7 @@ namespace Kingo.MicroServices
         /// that are implemented by this query.
         /// </summary>
         public IReadOnlyCollection<QueryInterface> Interfaces =>
-            _interfaces;
+            _interfaces;        
 
         int IReadOnlyCollection<ExecuteAsyncMethod>.Count =>
             _interfaces.Length;

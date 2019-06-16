@@ -7,8 +7,19 @@ namespace Kingo.MicroServices.Endpoints
 {
     [TestClass]
     public sealed class AddComponentsTest : MicroProcessorTest<MicroProcessor>
-    {
-        #region [====== Nested Types ======]        
+    {              
+        #region [====== AddComponents ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddComponents_Throws_IfServiceFactoryIsNull()
+        {
+            ProcessorBuilder.Components.AddComponents(null);
+        }        
+
+        #endregion
+
+        #region [====== AddReadModels ======]
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ReadModel : IMessageHandler<object>, IQuery<object>
@@ -19,21 +30,6 @@ namespace Kingo.MicroServices.Endpoints
             public Task<object> ExecuteAsync(QueryOperationContext context) =>
                 Task.FromResult(new object());
         }
-
-        #endregion        
-
-        #region [====== AddComponents ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void AddComponents_Throws_IfServiceFactoryIsNull()
-        {
-            ProcessorBuilder.Components.AddComponents(null);
-        }
-
-        #endregion
-
-        #region [====== AddReadModels ======]
 
         [TestMethod]
         public void AddReadModel_AddsExpectedReadModel_IfTypeIsBothMessageHandlerAndQuery()

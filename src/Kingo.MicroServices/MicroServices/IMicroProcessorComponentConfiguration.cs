@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
@@ -11,6 +13,14 @@ namespace Kingo.MicroServices
         /// Indicates the lifetime of the component.
         /// </summary>
         ServiceLifetime Lifetime
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Returns all service types for which this component is registered.
+        /// </summary>
+        IEnumerable<Type> ServiceTypes
         {
             get;
         }
