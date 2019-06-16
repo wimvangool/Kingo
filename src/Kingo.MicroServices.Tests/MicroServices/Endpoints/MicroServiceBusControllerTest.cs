@@ -41,7 +41,8 @@ namespace Kingo.MicroServices.Endpoints
             private readonly IMicroProcessor _processor;
             private readonly int _numberOfEndpoints;
 
-            public EndpointRepeater(IMicroProcessor processor, int numberOfEndpoints)
+            public EndpointRepeater(IMicroProcessor processor, int numberOfEndpoints) :
+                base(null)
             {
                 _processor = processor;
                 _numberOfEndpoints = numberOfEndpoints;
@@ -160,10 +161,8 @@ namespace Kingo.MicroServices.Endpoints
         #endregion
 
         [TestInitialize]
-        public override void Setup()
-        {
-            base.Setup();
-
+        public void Setup()
+        {            
             ProcessorBuilder.Components.AddMessageHandler(new MessageHandlerStub());            
         }
 

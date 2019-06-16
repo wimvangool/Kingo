@@ -3,7 +3,7 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class DefaultMessageKindResolver : IMessageKindResolver
+    internal sealed class MessageKindResolver : IMessageKindResolver
     {
         public override string ToString() =>
             GetType().FriendlyName();

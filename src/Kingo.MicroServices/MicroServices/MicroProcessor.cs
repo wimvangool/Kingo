@@ -16,14 +16,36 @@ namespace Kingo.MicroServices
     {
         #region [====== ServiceScope ======]
 
-        private sealed class ServiceScope : IServiceScope
+        private sealed class MicroProcessorServiceProvider : IMicroProcessorServiceProvider
+        {
+            private readonly MicroProcessor _processor;
+            private readonly IServiceProvider _serviceProvider;
+
+            public MicroProcessorServiceProvider(MicroProcessor processor, IServiceProvider serviceProvider)
+            {
+                _processor = processor;
+                _serviceProvider = serviceProvider;
+            }
+
+            public object GetService(Type serviceType) =>
+                _serviceProvider.GetService(serviceType);
+
+            public IServiceScope CreateScope() =>
+                new MicroProcessorServiceScope(_processor, _serviceProvider.CreateScope());
+        }
+
+        private sealed class MicroProcessorServiceScope : IServiceScope
         {
             private readonly IDisposable _contextScope;
             private readonly IServiceScope _serviceScope;            
 
-            public ServiceScope(MicroProcessor processor, IServiceScope serviceScope)
+            public MicroProcessorServiceScope(MicroProcessor processor, IServiceScope serviceScope)
             {
-                _contextScope = processor._serviceProviderContext.OverrideAsyncLocal(serviceScope.ServiceProvider);
+                // Every time a new scope is created by a client of the processor, the local service provider
+                // property is updated to refer to the scoped provider. This mechanism makes sure that every time
+                // the internal components of the processor resolve a new dependency, it will do so in the latest
+                // created scope.
+                _contextScope = processor._serviceProviderContext.OverrideAsyncLocal(new MicroProcessorServiceProvider(processor, serviceScope.ServiceProvider));
                 _serviceScope = serviceScope;                
             }
 
@@ -39,7 +61,7 @@ namespace Kingo.MicroServices
 
         #endregion
                 
-        private readonly Context<IServiceProvider> _serviceProviderContext;
+        private readonly Context<IMicroProcessorServiceProvider> _serviceProviderContext;
         private readonly Lazy<IMicroProcessorOptions> _options;
 
         /// <summary>
@@ -48,9 +70,9 @@ namespace Kingo.MicroServices
         /// <param name="serviceProvider">
         /// Service-provider that will be used to resolve message-handlers, their dependencies and other components.
         /// </param>        
-        public MicroProcessor(IServiceProvider serviceProvider = null)
+        public MicroProcessor(IServiceProvider serviceProvider)
         {                                    
-            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider ?? CreateDefaultServiceProvider());
+            _serviceProviderContext = new Context<IMicroProcessorServiceProvider>(CreateServiceProvider(serviceProvider));
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
         }
 
@@ -78,16 +100,11 @@ namespace Kingo.MicroServices
         #region [====== ServiceProvider ======]        
 
         /// <inheritdoc />
-        public virtual IServiceProvider ServiceProvider =>
+        public virtual IMicroProcessorServiceProvider ServiceProvider =>
             _serviceProviderContext.Current;
 
-        /// <summary>
-        /// Creates and returns a new <see cref="IServiceScope" /> that determines the lifetime of scoped
-        /// dependencies. As a side-effect, this method updates the processor's <see cref="ServiceProvider" />
-        /// to the provider of the scope and resets it as soon as the scope is disposed.
-        /// </summary>
-        public virtual IServiceScope CreateScope() =>
-            new ServiceScope(this, ServiceProvider.CreateScope());
+        private IMicroProcessorServiceProvider CreateServiceProvider(IServiceProvider serviceProvider) =>
+            new MicroProcessorServiceProvider(this, serviceProvider ?? CreateDefaultServiceProvider());
 
         private static IServiceProvider CreateDefaultServiceProvider() =>
             new ServiceCollection().BuildServiceProvider(true);

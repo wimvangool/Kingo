@@ -145,14 +145,14 @@ namespace Kingo.MicroServices.Endpoints
             var processor = CreateProcessor();
             var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
             }
             instances.AssertInstanceCountIs(2);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
@@ -168,14 +168,14 @@ namespace Kingo.MicroServices.Endpoints
             var processor = CreateProcessor();
             var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
             }
             instances.AssertInstanceCountIs(1);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
@@ -191,14 +191,14 @@ namespace Kingo.MicroServices.Endpoints
             var processor = CreateProcessor();
             var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
             }
             instances.AssertInstanceCountIs(1);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
@@ -247,14 +247,14 @@ namespace Kingo.MicroServices.Endpoints
             var processor = CreateProcessor();
             var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
             }
             instances.AssertInstanceCountIs(4);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
@@ -293,14 +293,14 @@ namespace Kingo.MicroServices.Endpoints
             var processor = CreateProcessor();
             var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);
             }
             instances.AssertInstanceCountIs(4);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await PublishMessageAsync(processor);
                 await PublishMessageAsync(processor);

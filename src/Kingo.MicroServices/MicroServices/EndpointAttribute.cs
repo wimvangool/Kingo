@@ -19,12 +19,40 @@ namespace Kingo.MicroServices
             MessageKind = messageKind;
         }
 
+        #region [====== MessageKind ======]
+
         /// <summary>
         /// Specifies the message kind of the message that is handled by this endpoint
         /// </summary>
         public MessageKind MessageKind
         {
             get;
-        }        
+        }
+
+        internal bool IsCommandEndpoint(IMessageKindResolver resolver, Type messageType) =>
+            IsCommandEndpoint(resolver, messageType, MessageKind);
+
+        private static bool IsCommandEndpoint(IMessageKindResolver resolver, Type messageType, MessageKind messageKind)
+        {
+            switch (messageKind)
+            {
+                case MessageKind.Unspecified:
+                    return IsCommandEndpoint(new MessageKindResolver(), messageType, resolver.ResolveMessageKind(messageType));
+                case MessageKind.Command:
+                    return true;
+                case MessageKind.Event:
+                    return false;
+            }
+            throw NewInvalidMessageKindSpecifiedException(messageKind);
+        }
+
+        private static Exception NewInvalidMessageKindSpecifiedException(MessageKind messageKind)
+        {
+            var messageFormat = ExceptionMessages.EndpointAttribute_InvalidMessageKindSpecified;
+            var message = string.Format(messageFormat, messageKind);
+            return new InvalidOperationException(message);
+        }
+
+        #endregion
     }
 }

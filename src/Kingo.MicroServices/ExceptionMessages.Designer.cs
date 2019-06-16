@@ -108,9 +108,9 @@ namespace Kingo {
         /// <summary>
         ///   Looks up a localized string similar to Invalid MessageKind ({0}) specified. Endpoints only support commands and events..
         /// </summary>
-        internal static string HandleAsyncMethodEndpoint_InvalidMessageKindSpecified {
+        internal static string EndpointAttribute_InvalidMessageKindSpecified {
             get {
-                return ResourceManager.GetString("HandleAsyncMethodEndpoint_InvalidMessageKindSpecified", resourceCulture);
+                return ResourceManager.GetString("EndpointAttribute_InvalidMessageKindSpecified", resourceCulture);
             }
         }
         
@@ -138,6 +138,15 @@ namespace Kingo {
         internal static string MessageHandlerOrQueryInterface_InterfaceMethodNotFound {
             get {
                 return ResourceManager.GetString("MessageHandlerOrQueryInterface_InterfaceMethodNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; cannot be used as a MicroProcessor. Please provider a non-abstract, non-generic MicroProcessor-type..
+        /// </summary>
+        internal static string MicroProcessorBuilder_InvalidProcessorType {
+            get {
+                return ResourceManager.GetString("MicroProcessorBuilder_InvalidProcessorType", resourceCulture);
             }
         }
         

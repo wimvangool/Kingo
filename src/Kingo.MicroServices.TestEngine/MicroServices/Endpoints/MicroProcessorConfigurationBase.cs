@@ -9,7 +9,7 @@ namespace Kingo.MicroServices.Endpoints
             Setup<MicroProcessor>(processorConfigurator);
 
         public abstract IServiceCollectionConfiguration Setup<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
-            where TProcessor : class, IMicroProcessor;
+            where TProcessor : MicroProcessor;
 
         public abstract void Configure(Action<IServiceCollection> serviceConfigurator);
 

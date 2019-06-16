@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.Endpoints
                 SetupProcessor<TProcessor>(processorConfigurator);
 
             private MicroProcessorConfigurationBase SetupProcessor<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
-                where TProcessor : class, IMicroProcessor
+                where TProcessor : MicroProcessor
             {
                 if (_serviceCollection.SwitchToState(this, new ConfiguringState<TProcessor>(_serviceCollection, processorConfigurator)))
                 {
@@ -43,7 +43,7 @@ namespace Kingo.MicroServices.Endpoints
         #region [====== ConfiguringState ======]
 
         private sealed class ConfiguringState<TProcessor> : MicroProcessorConfigurationBase
-            where TProcessor : class, IMicroProcessor
+            where TProcessor : MicroProcessor
         {
             private readonly MicroProcessorConfiguration _serviceCollection;
             private readonly Action<IMicroProcessorBuilder> _processorConfigurator;

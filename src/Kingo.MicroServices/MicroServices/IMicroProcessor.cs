@@ -9,12 +9,12 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When implemented by a class, represents a processor that can process commands, events and queries.
     /// </summary>
-    public interface IMicroProcessor : IServiceScopeFactory
+    public interface IMicroProcessor
     {
         /// <summary>
-        /// Returns the service provider the processor uses in the current scope to resolve its dependencies.
+        /// Returns the service provider the processor uses to resolve its dependencies.
         /// </summary>
-        IServiceProvider ServiceProvider
+        IMicroProcessorServiceProvider ServiceProvider
         {
             get;
         }

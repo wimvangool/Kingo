@@ -6,19 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
-{
-    [TestClass]
-    public abstract class MicroProcessorTest<TProcessor>
-        where TProcessor : class, IMicroProcessor
+{    
+    public class MicroProcessorTest<TProcessor>
+        where TProcessor : MicroProcessor
     {
-        #region [===== InstanceCollector ======]
-
-        protected interface IInstanceCollector
-        {
-            void Add(object instance);
-
-            void AssertInstanceCountIs(int count);
-        }
+        #region [===== InstanceCollector ======]        
 
         private sealed class InstanceCollector : IInstanceCollector
         {
@@ -43,23 +35,23 @@ namespace Kingo.MicroServices
         private readonly MicroProcessorBuilder<TProcessor> _builder;
         private readonly IServiceCollection _services;
 
-        protected MicroProcessorTest()
+        public MicroProcessorTest()
         {
             _builder = new MicroProcessorBuilder<TProcessor>();
             _services = new ServiceCollection();
             _services.AddSingleton<IInstanceCollector, InstanceCollector>();
         }
 
-        protected IMicroProcessorBuilder ProcessorBuilder =>
+        public IMicroProcessorBuilder ProcessorBuilder =>
             _builder;        
 
-        protected IMicroProcessor CreateProcessor() =>
+        public IMicroProcessor CreateProcessor() =>
             BuildServiceProvider().GetRequiredService<IMicroProcessor>();
 
-        protected IServiceProvider BuildServiceProvider() =>
+        public IServiceProvider BuildServiceProvider() =>
             BuildServiceCollection().BuildServiceProvider();
 
-        protected IServiceCollection BuildServiceCollection() =>
+        public IServiceCollection BuildServiceCollection() =>
             _builder.BuildServiceCollection(_services);
 
         // The default service count specifies how many services are registered by default
@@ -72,9 +64,6 @@ namespace Kingo.MicroServices
         // - IMicroServiceBus
         // - IInstanceCollector
         protected virtual int DefaultServiceCount =>
-            6;
-
-        [TestInitialize]
-        public virtual void Setup() { }           
+            6;              
     }
 }

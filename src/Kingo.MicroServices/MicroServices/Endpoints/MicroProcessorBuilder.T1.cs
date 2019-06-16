@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.Endpoints
 {
     internal sealed class MicroProcessorBuilder<TProcessor> : IMicroProcessorBuilder, IServiceCollectionBuilder
-        where TProcessor : class, IMicroProcessor
+        where TProcessor : MicroProcessor
     {
         private readonly MicroProcessorOptions _options;
         private readonly MicroProcessorComponentCollection _components;
@@ -36,15 +38,25 @@ namespace Kingo.MicroServices.Endpoints
             {
                 services = builder.BuildServiceCollection(services);
             }
-            return services
-                .AddTransient(provider => options)
-                .AddTransient<IMicroProcessor, TProcessor>(provider => provider.GetRequiredService<TProcessor>())
-                .AddTransient<TProcessor>();
-        }
+            if (MicroProcessorType.IsMicroProcessorType(typeof(TProcessor), out var processor))
+            {
+                return services
+                    .AddTransient(provider => options)
+                    .AddComponent(processor, typeof(IMicroProcessor));
+            }
+            throw NewInvalidProcessorTypeException(typeof(TProcessor));
+        }        
 
         private IEnumerable<IServiceCollectionBuilder> Builders()
         {
             yield return Components;                        
-        }        
+        }
+
+        private static Exception NewInvalidProcessorTypeException(Type processorType)
+        {
+            var messageFormat = ExceptionMessages.MicroProcessorBuilder_InvalidProcessorType;
+            var message = string.Format(messageFormat, processorType.FriendlyName());
+            return new InvalidOperationException(message);
+        }
     }
 }

@@ -656,13 +656,13 @@ namespace Kingo.MicroServices
 
             var processor = CreateProcessor();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }
             AssertInstanceCount(processor, 2);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }
@@ -676,13 +676,13 @@ namespace Kingo.MicroServices
 
             var processor = CreateProcessor();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<ScopedCommandHandler>(processor);
             }
             AssertInstanceCount(processor, 1);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<ScopedCommandHandler>(processor);
             }
@@ -696,13 +696,13 @@ namespace Kingo.MicroServices
 
             var processor = CreateProcessor();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<SingletonCommandHandler>(processor);
             }
             AssertInstanceCount(processor, 1);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<SingletonCommandHandler>(processor);
             }
@@ -716,13 +716,13 @@ namespace Kingo.MicroServices
 
             var processor = CreateProcessor();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }
             AssertInstanceCount(processor, 1);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }
@@ -737,13 +737,13 @@ namespace Kingo.MicroServices
 
             var processor = CreateProcessor();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }
             AssertInstanceCount(processor, 1);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }
@@ -758,13 +758,13 @@ namespace Kingo.MicroServices
 
             var processor = CreateProcessor();
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }
             AssertInstanceCount(processor, 1);
 
-            using (processor.CreateScope())
+            using (processor.ServiceProvider.CreateScope())
             {
                 await ExecuteCommandAsync<TransientCommandHandler>(processor);
             }

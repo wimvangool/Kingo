@@ -40,7 +40,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="services"/> is <c>null</c>.
         /// </exception>
-        public static IServiceCollection AddMicroProcessor<TProcessor>(this IServiceCollection services, Action<IMicroProcessorBuilder> processorConfiguration = null) where TProcessor : class, IMicroProcessor
+        public static IServiceCollection AddMicroProcessor<TProcessor>(this IServiceCollection services, Action<IMicroProcessorBuilder> processorConfiguration = null) where TProcessor : MicroProcessor
         {
             if (services == null)
             {
@@ -59,8 +59,26 @@ namespace Kingo.MicroServices.Endpoints
 
         #endregion
 
-        #region [====== AddComponent ======]        
-            
+        #region [====== AddComponent ======]      
+
+        /// <summary>
+        /// Adds the specified <paramref name="component" /> to the service collection based on its configuration.
+        /// If <paramref name="serviceTypes" /> is specified, an additional mapping from each service type to
+        /// the type of the component is added to the collection.
+        /// </summary>
+        /// <param name="services">A collection of services.</param>
+        /// <param name="component">The component to add.</param>
+        /// <param name="serviceTypes">Optional collection of service types for which additional mappings are added.</param>
+        /// <returns>A configured service collection.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="services"/> or <paramref name="component"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="component"/> specifies an invalid service lifetime.
+        /// </exception>
+        public static IServiceCollection AddComponent(this IServiceCollection services, MicroProcessorComponent component, params Type[] serviceTypes) =>
+            services.AddComponent(component, serviceTypes.AsEnumerable());
+
         /// <summary>
         /// Adds the specified <paramref name="component" /> to the service collection based on its configuration.
         /// If <paramref name="serviceTypes" /> is specified, an additional mapping from each service type to

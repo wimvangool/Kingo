@@ -122,7 +122,7 @@ namespace Kingo.MicroServices
             _Context.Current;
 
         internal static IDisposable CreateScope(IMicroProcessor processor) =>
-            new MicroProcessorTestScope(_Context.OverrideAsyncLocal(new MicroProcessorTestContext(processor)), processor.CreateScope());
+            new MicroProcessorTestScope(_Context.OverrideAsyncLocal(new MicroProcessorTestContext(processor)), processor.ServiceProvider.CreateScope());
 
         #endregion
     }

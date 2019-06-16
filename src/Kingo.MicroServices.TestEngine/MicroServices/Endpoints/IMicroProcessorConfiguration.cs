@@ -24,6 +24,6 @@ namespace Kingo.MicroServices.Endpoints
         /// Optional configuration callback that can be used to configure the specific parts of the processor.
         /// </param>
         IServiceCollectionConfiguration Setup<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
-            where TProcessor : class, IMicroProcessor;
+            where TProcessor : MicroProcessor;
     }
 }

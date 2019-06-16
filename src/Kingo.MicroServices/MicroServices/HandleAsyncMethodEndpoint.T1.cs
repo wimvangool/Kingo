@@ -36,22 +36,8 @@ namespace Kingo.MicroServices
             base(method)
         {            
             _processor = processor;
-            _isCommandEndpoint = IsCommandEndpoint(attribute.MessageKind, processor.Options.Endpoints.MessageKindResolver);
-        }
-
-        private static bool IsCommandEndpoint(MessageKind messageKind, IMessageKindResolver resolver)
-        {            
-            switch (messageKind)
-            {
-                case MessageKind.Unspecified:                    
-                    return IsCommandEndpoint(resolver.ResolveMessageKind(typeof(TMessage)), new DefaultMessageKindResolver());
-                case MessageKind.Command:
-                    return true;
-                case MessageKind.Event:
-                    return false;
-            }                        
-            throw NewInvalidMessageKindSpecifiedException(messageKind);
-        }
+            _isCommandEndpoint = attribute.IsCommandEndpoint(processor.Options.Endpoints.MessageKindResolver, typeof(TMessage));
+        }        
 
         public override MessageKind MessageKind =>
             _isCommandEndpoint ? MessageKind.Command : MessageKind.Event;
@@ -73,7 +59,7 @@ namespace Kingo.MicroServices
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
             // the infrastructure does not create a scope upon receiving a new message (like in ASP.NET).
-            using (_processor.CreateScope())
+            using (_processor.ServiceProvider.CreateScope())
             {
                 return await _processor.ExecuteOperationAsync(CreateOperation(message, token));
             }
@@ -92,13 +78,6 @@ namespace Kingo.MicroServices
         }        
 
         private HandleAsyncMethod<TMessage> CreateMethod() =>
-            new HandleAsyncMethod<TMessage>(new MessageHandlerResolver(_processor, MessageHandler), this);
-
-        private static Exception NewInvalidMessageKindSpecifiedException(MessageKind messageKind)
-        {
-            var messageFormat = ExceptionMessages.HandleAsyncMethodEndpoint_InvalidMessageKindSpecified;
-            var message = string.Format(messageFormat, messageKind);
-            return new InvalidOperationException(message);
-        }
+            new HandleAsyncMethod<TMessage>(new MessageHandlerResolver(_processor, MessageHandler), this);        
     }
 }

@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
     {        
         internal MicroProcessorEndpointOptions()
         {
-            MessageKindResolver = new DefaultMessageKindResolver();
+            MessageKindResolver = new MessageKindResolver();
         }
 
         private MicroProcessorEndpointOptions(MicroProcessorEndpointOptions options)
