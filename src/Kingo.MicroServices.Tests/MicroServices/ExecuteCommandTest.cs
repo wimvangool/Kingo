@@ -67,7 +67,7 @@ namespace Kingo.MicroServices
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.MessageHandlerCount);
             Assert.AreEqual(1, result.Events.Count);
-            Assert.AreSame(command, result.Events[0]);
+            Assert.AreSame(command, result.Events[0].Instance);
         }
 
         [TestMethod]
@@ -91,8 +91,8 @@ namespace Kingo.MicroServices
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(2, result.Events.Count);
-            Assert.AreSame(eventA, result.Events[0]);
-            Assert.AreSame(eventB, result.Events[1]);
+            Assert.AreSame(eventA, result.Events[0].Instance);
+            Assert.AreSame(eventB, result.Events[1].Instance);
         }
 
         [TestMethod]
@@ -130,10 +130,10 @@ namespace Kingo.MicroServices
             Assert.IsNotNull(result);
             Assert.AreEqual(4, result.MessageHandlerCount);
             Assert.AreEqual(4, result.Events.Count);
-            Assert.AreSame(eventA, result.Events[0]);
-            Assert.AreEqual(eventB, result.Events[1]);
-            Assert.AreSame(eventC, result.Events[2]);
-            Assert.AreSame(eventD, result.Events[3]);
+            Assert.AreSame(eventA, result.Events[0].Instance);
+            Assert.AreEqual(eventB, result.Events[1].Instance);
+            Assert.AreSame(eventC, result.Events[2].Instance);
+            Assert.AreSame(eventD, result.Events[3].Instance);
         }
 
         #endregion

@@ -15,6 +15,13 @@ namespace Kingo.MicroServices.Endpoints
         private bool _isConnected;
 
         /// <inheritdoc />
+        public override string ToString() =>
+            ToString(GetType());
+
+        internal string ToString(Type endpointType) =>
+            $"{endpointType.FriendlyName()} (Connected = {_isConnected})";
+
+        /// <inheritdoc />
         public virtual async Task StartAsync(CancellationToken cancellationToken)
         {
             if (IsDisposed)

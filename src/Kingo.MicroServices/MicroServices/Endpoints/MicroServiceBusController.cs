@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.Endpoints
 {
@@ -10,6 +11,7 @@ namespace Kingo.MicroServices.Endpoints
     /// and dispatches those messages to a <see cref="IMicroProcessor" /> for further
     /// processing.
     /// </summary>
+    [MicroProcessorComponent(ServiceLifetime.Singleton)]
     public abstract class MicroServiceBusController : HostedEndpoint
     {                
         private IEnumerable<HostedEndpoint> _endpoints;

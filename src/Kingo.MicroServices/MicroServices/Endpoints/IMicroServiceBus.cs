@@ -16,7 +16,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messages"/> is <c>null</c>.
         /// </exception>
-        Task PublishAsync(IEnumerable<object> messages);
+        Task PublishAsync(IEnumerable<IMessage> messages);
 
         /// <summary>
         /// Publishes the specified <paramref name="message" />.
@@ -25,6 +25,6 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task PublishAsync(object message);        
+        Task PublishAsync(IMessage message);        
     }
 }

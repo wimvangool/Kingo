@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {    
-    internal sealed class EventBuffer : IEventBuffer, IReadOnlyList<object>
+    internal sealed class EventBuffer : IEventBuffer, IReadOnlyList<IMessage>
     {
-        public static readonly EventBuffer Empty = new EventBuffer(Enumerable.Empty<object>());
+        public static readonly EventBuffer Empty = new EventBuffer(Enumerable.Empty<IMessage>());
 
         private readonly Event[] _events;
 
-        public EventBuffer(IEnumerable<object> events) :
-            this(events.Select(CreateEvent)) { }
+        public EventBuffer(IEnumerable<IMessage> messages) :
+            this(messages.Where(message => message.Kind == MessageKind.Event).Select(message => CreateEvent(message.Instance))) { }
 
         private EventBuffer(IEnumerable<Event> events)
         {
@@ -27,13 +27,13 @@ namespace Kingo.MicroServices
         public int Count =>
             _events.Length;
 
-        public object this[int index] =>
-            _events[index].Instance;
+        public IMessage this[int index] =>
+            _events[index];
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public IEnumerator<object> GetEnumerator() =>
-            _events.Select(@event => @event.Instance).GetEnumerator();
+        public IEnumerator<IMessage> GetEnumerator() =>
+            _events.AsEnumerable().GetEnumerator();
 
         public override string ToString() =>
             EventBus.ToString(this);

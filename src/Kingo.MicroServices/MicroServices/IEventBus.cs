@@ -6,7 +6,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When implemented by a class, represent a bus to which events can be published.
     /// </summary>
-    public interface IEventBus : IReadOnlyList<object>
+    public interface IEventBus : IReadOnlyList<IMessage>
     {
         /// <summary>
         /// Publishes the specified <paramref name="message"/>.

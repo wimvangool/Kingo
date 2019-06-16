@@ -5,7 +5,7 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices.Endpoints
 {
-    internal sealed class MicroServiceBusComposite : IMicroServiceBus
+    internal sealed class MicroServiceBusComposite : MicroServiceBus
     {
         private readonly IMicroServiceBus[] _microServiceBuses;
 
@@ -14,10 +14,10 @@ namespace Kingo.MicroServices.Endpoints
             _microServiceBuses = microServiceBuses.ToArray();
         }
 
-        public Task PublishAsync(IEnumerable<object> messages) =>
+        public override Task PublishAsync(IEnumerable<IMessage> messages) =>
             Task.WhenAll(_microServiceBuses.Select(bus => bus.PublishAsync(messages)));
 
-        public Task PublishAsync(object message) =>
+        public override Task PublishAsync(IMessage message) =>
             Task.WhenAll(_microServiceBuses.Select(bus => bus.PublishAsync(message)));
 
         public override string ToString() =>

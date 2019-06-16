@@ -143,7 +143,7 @@ namespace Kingo.MicroServices.Endpoints
 
             Assert.AreEqual(1, result.MessageHandlerCount);
             Assert.AreEqual(1, result.Events.Count);
-            Assert.AreSame(@event, result.Events[0]);            
+            Assert.AreSame(@event, result.Events[0].Instance);            
         }        
 
         #endregion

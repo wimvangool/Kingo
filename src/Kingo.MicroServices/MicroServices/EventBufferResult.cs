@@ -4,7 +4,7 @@ namespace Kingo.MicroServices
 {
     internal sealed class EventBufferResult : MessageHandlerOperationResult
     {
-        public static readonly EventBufferResult Empty = new EventBufferResult(MicroServices.EventBuffer.Empty, 0);        
+        public static readonly EventBufferResult Empty = new EventBufferResult(EventBuffer.Empty, 0);        
 
         public EventBufferResult(EventBuffer eventBuffer, int messageHandlerCount)
         {
@@ -12,7 +12,7 @@ namespace Kingo.MicroServices
             MessageHandlerCount = messageHandlerCount;
         }
 
-        public override IReadOnlyList<object> Events =>
+        public override IReadOnlyList<IMessage> Events =>
             EventBuffer;
 
         internal EventBuffer EventBuffer

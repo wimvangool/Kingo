@@ -5,15 +5,15 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When implemented, represents the result of handling a message by a <see cref="IMessageProcessor" />.
     /// </summary>
-    public abstract class MessageHandlerOperationResult : IMicroProcessorOperationResult<IReadOnlyList<object>>
+    public abstract class MessageHandlerOperationResult : IMicroProcessorOperationResult<IReadOnlyList<IMessage>>
     {                        
-        IReadOnlyList<object> IMicroProcessorOperationResult<IReadOnlyList<object>>.Value =>
+        IReadOnlyList<IMessage> IMicroProcessorOperationResult<IReadOnlyList<IMessage>>.Value =>
             Events;
 
         /// <summary>
         /// The events that were published during the operation.
         /// </summary>
-        public abstract IReadOnlyList<object> Events
+        public abstract IReadOnlyList<IMessage> Events
         {
             get;
         }

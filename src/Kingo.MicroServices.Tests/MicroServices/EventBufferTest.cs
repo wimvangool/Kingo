@@ -22,7 +22,7 @@ namespace Kingo.MicroServices
             var numberGenerator = new Random();
             var itemsToAdd = numberGenerator.Next(1, 100);
             var itemToAdd = numberGenerator.Next();
-            var buffer = new EventBuffer(Enumerable.Repeat(itemToAdd, itemsToAdd).Cast<object>());
+            var buffer = new EventBuffer(Enumerable.Repeat(CreateMessage(itemToAdd), itemsToAdd));
 
             Assert.AreEqual(itemsToAdd, buffer.Count);
         }
@@ -68,10 +68,10 @@ namespace Kingo.MicroServices
             var numberGenerator = new Random();
             var itemsToAdd = numberGenerator.Next(1, 100);
             var itemToAdd = numberGenerator.Next();
-            var buffer = new EventBuffer(Enumerable.Repeat(itemToAdd, itemsToAdd).Cast<object>());
+            var buffer = new EventBuffer(Enumerable.Repeat(CreateMessage(itemToAdd), itemsToAdd));
 
             Assert.AreEqual(itemsToAdd, buffer.AsEnumerable().Count());
-            Assert.IsTrue(buffer.All(item => item.Equals(itemToAdd)));
+            Assert.IsTrue(buffer.All(item => item.Instance.Equals(itemToAdd)));
         }
 
         #endregion        
@@ -94,7 +94,7 @@ namespace Kingo.MicroServices
             var numberGenerator = new Random();
             var itemsToAdd = numberGenerator.Next(1, 100);
             var itemToAdd = numberGenerator.Next();
-            var buffer = new EventBuffer(Enumerable.Repeat(itemToAdd, itemsToAdd).Cast<object>());
+            var buffer = new EventBuffer(Enumerable.Repeat(CreateMessage(itemToAdd), itemsToAdd));
             var processor = new MessageProcessorSpy();
 
             await buffer.HandleWith(processor, null);
@@ -104,5 +104,8 @@ namespace Kingo.MicroServices
         }
 
         #endregion             
+
+        private static IMessage CreateMessage<TMessage>(TMessage message) =>
+            new Event<TMessage>(message);
     }
 }

@@ -16,21 +16,21 @@ namespace Kingo.MicroServices.Endpoints
 
         private abstract class AbstractServiceBus : IMicroServiceBus
         {
-            public abstract Task PublishAsync(IEnumerable<object> messages);
+            public abstract Task PublishAsync(IEnumerable<IMessage> messages);
 
-            public abstract Task PublishAsync(object message);
+            public abstract Task PublishAsync(IMessage message);
         }
 
         private sealed class GenericServiceBus<T> : IMicroServiceBus
         {
-            public Task PublishAsync(IEnumerable<object> messages) =>
+            public Task PublishAsync(IEnumerable<IMessage> messages) =>
                 Task.CompletedTask;
 
-            public Task PublishAsync(object message) =>
+            public Task PublishAsync(IMessage message) =>
                 Task.CompletedTask;
         }
 
-        private abstract class MicroServiceBus : IMicroServiceBus
+        private abstract class MicroServiceBus : MicroServiceBus<string>
         {
             private readonly IInstanceCollector _instances;
 
@@ -39,23 +39,33 @@ namespace Kingo.MicroServices.Endpoints
                 _instances = instances;
             }
 
-            public Task PublishAsync(IEnumerable<object> messages)
+            protected override Task ConnectAsync(CancellationToken cancellationToken) =>
+                Task.CompletedTask;
+
+            protected override Task DisconnectAsync(CancellationToken cancellationToken) =>
+                Task.CompletedTask;
+
+            protected override string Serialize(IMessage message) =>
+                message.Instance.ToString();
+
+            protected override Task PublishAsync(IEnumerable<string> messages)
             {
                 _instances.Add(this);
                 return Task.CompletedTask;
             }
 
-            public Task PublishAsync(object message)
+            protected override Task PublishAsync(string message)
             {
                 _instances.Add(this);
                 return Task.CompletedTask;
             }
         }
 
+        [MicroProcessorComponent]
         private sealed class TransientServiceBus : MicroServiceBus
         {
             public TransientServiceBus(IInstanceCollector instances) :
-                base(instances) { }
+                base(instances) { }            
         }
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
@@ -64,25 +74,12 @@ namespace Kingo.MicroServices.Endpoints
             public ScopedServiceBus(IInstanceCollector instances) :
                 base(instances) { }
         }
-
-        [MicroProcessorComponent(ServiceLifetime.Singleton)]
+        
         private sealed class SingletonServiceBus : MicroServiceBus
         {
             public SingletonServiceBus(IInstanceCollector instances) :
                 base(instances) { }
-        }
-
-        private sealed class HostedServiceBus : MicroServiceBus, IHostedService
-        {
-            public HostedServiceBus(IInstanceCollector instances) :
-                base(instances) { }
-
-            public Task StartAsync(CancellationToken cancellationToken) =>
-                Task.CompletedTask;
-
-            public Task StopAsync(CancellationToken cancellationToken) =>
-                Task.CompletedTask;            
-        }
+        }       
 
         #endregion
 
@@ -104,7 +101,7 @@ namespace Kingo.MicroServices.Endpoints
             var serviceBus = provider.GetRequiredService<IMicroServiceBus>();
             var instances = provider.GetRequiredService<IInstanceCollector>();
 
-            await serviceBus.PublishAsync(new object());
+            await serviceBus.PublishAsync(new Event<object>(new object()));
 
             instances.AssertInstanceCountIs(0);
         }
@@ -118,7 +115,7 @@ namespace Kingo.MicroServices.Endpoints
             var serviceBus = provider.GetRequiredService<IMicroServiceBus>();
             var instances = provider.GetRequiredService<IInstanceCollector>();
 
-            await serviceBus.PublishAsync(new object());
+            await serviceBus.PublishAsync(CreateMessage());
 
             instances.AssertInstanceCountIs(0);
         }
@@ -132,7 +129,7 @@ namespace Kingo.MicroServices.Endpoints
             var serviceBus = provider.GetRequiredService<IMicroServiceBus>();
             var instances = provider.GetRequiredService<IInstanceCollector>();
 
-            await serviceBus.PublishAsync(new object());
+            await serviceBus.PublishAsync(CreateMessage());
 
             instances.AssertInstanceCountIs(0);
         }
@@ -209,7 +206,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public async Task AddMicroServiceBus_AddsServiceBusAsHostedService_IfTypeImplementsHostedServiceInterface()
         {
-            ProcessorBuilder.Components.AddMicroServiceBus<HostedServiceBus>();
+            ProcessorBuilder.Components.AddMicroServiceBus<TransientServiceBus>();
 
             var processor = CreateProcessor();
             var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
@@ -218,14 +215,14 @@ namespace Kingo.MicroServices.Endpoints
 
             instances.AssertInstanceCountIs(1);
 
-            Assert.IsInstanceOfType(processor.ServiceProvider.GetRequiredService<IHostedService>(), typeof(HostedServiceBus));
+            Assert.IsInstanceOfType(processor.ServiceProvider.GetRequiredService<IHostedService>(), typeof(TransientServiceBus));
         }
 
         [TestMethod]
         public async Task AddMicroServiceBus_DoesNothing_IfServiceBusHasAlreadyBeenAdded()
         {
-            ProcessorBuilder.Components.AddMicroServiceBus<HostedServiceBus>();
-            ProcessorBuilder.Components.AddMicroServiceBus<HostedServiceBus>();
+            ProcessorBuilder.Components.AddMicroServiceBus<TransientServiceBus>();
+            ProcessorBuilder.Components.AddMicroServiceBus<TransientServiceBus>();
 
             var processor = CreateProcessor();
             var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
@@ -234,7 +231,7 @@ namespace Kingo.MicroServices.Endpoints
 
             instances.AssertInstanceCountIs(1);
 
-            Assert.IsInstanceOfType(processor.ServiceProvider.GetRequiredService<IEnumerable<IHostedService>>().Single(), typeof(HostedServiceBus));
+            Assert.IsInstanceOfType(processor.ServiceProvider.GetRequiredService<IEnumerable<IHostedService>>().Single(), typeof(TransientServiceBus));
         }
 
         [TestMethod]
@@ -263,7 +260,13 @@ namespace Kingo.MicroServices.Endpoints
         }
 
         private static Task PublishMessageAsync(IMicroProcessor processor) =>
-            processor.ServiceProvider.GetRequiredService<IMicroServiceBus>().PublishAsync(new object());
+            processor.ServiceProvider.GetRequiredService<IMicroServiceBus>().PublishAsync(CreateMessage());
+
+        private static IMessage CreateMessage() =>
+            CreateMessage(new object());
+
+        private static IMessage CreateMessage<TMessage>(TMessage message) =>
+            new Event<TMessage>(message);
 
         #endregion
 

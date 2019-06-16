@@ -52,6 +52,7 @@ namespace Kingo.MicroServices.Endpoints
                 Task.CompletedTask;
         }
 
+        [MicroProcessorComponent(ServiceLifetime.Transient)]
         private sealed class TransientController : AbstractController
         {
             public TransientController(IMicroProcessor processor, IInstanceCollector instances) :
@@ -64,8 +65,7 @@ namespace Kingo.MicroServices.Endpoints
             public ScopedController(IMicroProcessor processor, IInstanceCollector instances) :
                 base(processor, instances) { }
         }
-
-        [MicroProcessorComponent(ServiceLifetime.Singleton)]
+        
         private sealed class SingletonController : AbstractController
         {
             public SingletonController(IMicroProcessor processor, IInstanceCollector instances) :

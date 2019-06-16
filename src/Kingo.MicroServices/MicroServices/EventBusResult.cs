@@ -4,12 +4,12 @@ namespace Kingo.MicroServices
 {
     internal sealed class EventBusResult : MessageHandlerOperationResult
     {
-        public EventBusResult(IReadOnlyList<object> events)
+        public EventBusResult(IReadOnlyList<IMessage> events)
         {
             Events = events;
         }
 
-        public override IReadOnlyList<object> Events
+        public override IReadOnlyList<IMessage> Events
         {
             get;
         }
