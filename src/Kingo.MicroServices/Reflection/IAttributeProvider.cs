@@ -10,7 +10,7 @@ namespace Kingo.Reflection
     public interface IAttributeProvider
     {        
         /// <summary>
-        /// Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/> defined on the associated <see cref="Target" />.
+        /// Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/>.
         /// </summary>
         /// <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
         /// <param name="attribute">
@@ -24,7 +24,7 @@ namespace Kingo.Reflection
         bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class;
 
         /// <summary>
-        /// Retrieves all attributes of type <typeparamref name="TAttribute"/> that are declared on the associated <see cref="Target"/>.
+        /// Retrieves all attributes of type <typeparamref name="TAttribute"/>.
         /// </summary>
         /// <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
         /// <returns>A collection of attributes.</returns>

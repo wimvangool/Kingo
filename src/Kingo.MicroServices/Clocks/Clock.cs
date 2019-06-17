@@ -91,7 +91,7 @@ namespace Kingo.Clocks
             _Context.OverrideThreadLocal(clock ?? throw new ArgumentNullException(nameof(clock)));
 
         /// <summary>
-        /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
+        /// Sets the current value that is accessible by all threads that share the same logical call context
         /// through <see cref="Current" /> as long as the scope is active.
         /// </summary>
         /// <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
@@ -106,7 +106,7 @@ namespace Kingo.Clocks
             _Context.OverrideAsyncLocal(new DelegateClock(timeFactory));
 
         /// <summary>
-        /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
+        /// Sets the current value that is accessible by all threads that share the same logical call context
         /// through <see cref="Current" /> as long as the scope is active.
         /// </summary>
         /// <param name="startTime">The time that will serve as the start time of the scope.</param>
@@ -118,7 +118,7 @@ namespace Kingo.Clocks
             OverrideThreadLocal(StopwatchClock.StartNew(startTime));
 
         /// <summary>
-        /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
+        /// Sets the current value that is accessible by all threads that share the same logical call context
         /// through <see cref="Current" /> as long as the scope is active.
         /// </summary>
         /// <param name="clock">The clock to set.</param>

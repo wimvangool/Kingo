@@ -39,6 +39,7 @@ namespace Kingo.MicroServices
             _contextParameter = new ParameterAttributeProvider(parameters[1]);
         }
 
+        /// <inheritdoc />
         public override string ToString() =>
             $"{MessageHandler.Type.FriendlyName()}.{Info.Name}({MessageParameter.Type.FriendlyName()}, ...)";
 

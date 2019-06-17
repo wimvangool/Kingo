@@ -22,6 +22,10 @@
     <Description>A library for creating event-driven micro-services that centers around a micro-service processor that can handle commands, events and queries. Given its design, it also lends itself quite nicely to apply patterns such as CQRS and Domain-Driven Design.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Sources\Kingo\src\Kingo.MicroServices\Kingo.MicroServices.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
   </ItemGroup>

@@ -203,10 +203,10 @@ namespace Kingo.Threading
             var newValue = _currentThreadLocal.Value = new Tuple<TValue>(value);
 
             return new ThreadLocalScope<TValue>(this, oldValue, newValue);
-        }        
+        }
 
         /// <summary>
-        /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
+        /// Sets the current value that is accessible by all threads that share the same logical call context
         /// through <see cref="Current" /> as long as the scope is active.
         /// </summary>
         /// <param name="value">The value to set.</param>
