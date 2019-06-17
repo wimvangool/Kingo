@@ -31,6 +31,13 @@ namespace Kingo.MicroServices
         #endregion
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void FromInstance_Throws_IfTypeIsValueType()
+        {
+            MicroProcessorComponent.FromInstance(0);
+        }
+
+        [TestMethod]
         public void ServiceTypes_ReturnsEmptyCollection_IfServiceTypesAreNotSpecified()
         {
             var component = MicroProcessorComponent.FromInstance(new object());

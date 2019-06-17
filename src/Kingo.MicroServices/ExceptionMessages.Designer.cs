@@ -151,6 +151,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot use instance of type &apos;{0}&apos; as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported..
+        /// </summary>
+        internal static string MicroProcessorComponent_TypeNotSupported {
+            get {
+                return ResourceManager.GetString("MicroProcessorComponent_TypeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
         internal static string ReadOnlyList_IndexOutOfRange {

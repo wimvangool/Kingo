@@ -100,9 +100,19 @@ namespace Kingo.MicroServices
 
         #region [====== FromTypes ======]
 
-        internal static MicroProcessorComponent FromInstance(object instance) =>
-            new MicroProcessorComponent(instance.GetType());
-        
+        internal static MicroProcessorComponent FromInstance(object instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+            if (IsMicroProcessorComponent(instance.GetType(), out var component))
+            {
+                return component;
+            }
+            throw NewTypeNotSupportedException(instance);
+        }        
+
         internal static IEnumerable<MicroProcessorComponent> FromTypes(IEnumerable<Type> types)
         {
             if (types == null)
@@ -118,20 +128,27 @@ namespace Kingo.MicroServices
             }
         }
         
-        public static bool IsMicroProcessorComponent(Type type, out MicroProcessorComponent component)
+        internal static bool IsMicroProcessorComponent(Type type, out MicroProcessorComponent component)
         {
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
-            if (type.IsAbstract || type.ContainsGenericParameters)
+            if (type.IsValueType || type.IsAbstract || type.ContainsGenericParameters)
             {
                 component = null;
                 return false;
             }
             component = new MicroProcessorComponent(type);
             return true;
-        }                 
+        }
+
+        private static Exception NewTypeNotSupportedException(object instance)
+        {
+            var messageFormat = ExceptionMessages.MicroProcessorComponent_TypeNotSupported;
+            var message = string.Format(messageFormat, instance.GetType().FriendlyName());
+            return new ArgumentException(message, nameof(instance));
+        }
 
         #endregion
     }

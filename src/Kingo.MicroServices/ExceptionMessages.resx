@@ -147,6 +147,9 @@
   <data name="MicroProcessorBuilder_InvalidProcessorType" xml:space="preserve">
     <value>Type '{0}' cannot be used as a MicroProcessor. Please provider a non-abstract, non-generic MicroProcessor-type.</value>
   </data>
+  <data name="MicroProcessorComponent_TypeNotSupported" xml:space="preserve">
+    <value>Cannot use instance of type '{0}' as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported.</value>
+  </data>
   <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>

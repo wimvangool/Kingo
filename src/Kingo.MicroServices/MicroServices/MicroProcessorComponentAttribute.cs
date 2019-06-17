@@ -7,7 +7,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// This attribute can be declared on any class or struct to configure its registration and run-time behavior.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    [AttributeUsage(AttributeTargets.Class)]
     public sealed class MicroProcessorComponentAttribute : Attribute, IMicroProcessorComponentConfiguration
     {       
         /// <summary>
