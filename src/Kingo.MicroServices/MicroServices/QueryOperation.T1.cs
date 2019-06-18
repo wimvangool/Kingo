@@ -10,16 +10,19 @@ namespace Kingo.MicroServices
     /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
     public abstract class QueryOperation<TResponse> : MicroProcessorOperation<QueryOperationResult<TResponse>>
     {
-        internal QueryOperation(MicroProcessor processor, CancellationToken? token)
+        internal QueryOperation(MicroProcessor processor, CancellationToken? token) :
+            this(new QueryOperationContext(processor), token) { }
+
+        internal QueryOperation(MicroProcessorOperationContext context, CancellationToken? token)
         {
-            Context = new QueryOperationContext(processor);
+            Context = context;
             Token = token ?? CancellationToken.None;
         }
 
         internal MicroProcessor Processor =>
             Context.Processor;            
         
-        private QueryOperationContext Context
+        private MicroProcessorOperationContext Context
         {
             get;
         }
@@ -36,7 +39,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override MicroProcessorOperationKinds Kind =>
-            MicroProcessorOperationKinds.RootOperation;
+            Context.StackTrace.Count == 0 ? MicroProcessorOperationKinds.RootOperation : MicroProcessorOperationKinds.BranchOperation;                        
 
         /// <inheritdoc />
         public override async Task<QueryOperationResult<TResponse>> ExecuteAsync()
@@ -61,7 +64,7 @@ namespace Kingo.MicroServices
             }
             catch (MessageHandlerOperationException exception)
             {
-                // When executing a query, MessageHandlerExceptions should not occur.
+                // When executing a query, MessageHandlerOperationExceptions should not occur.
                 // If they do, they are treated as internal server errors.
                 throw exception.AsInternalServerErrorException(exception.Message);
             }
@@ -75,7 +78,7 @@ namespace Kingo.MicroServices
             }
         }
 
-        private ExecuteAsyncMethodOperation<TResponse> CreateQueryOperationPipeline(QueryOperationContext context)
+        private ExecuteAsyncMethodOperation<TResponse> CreateQueryOperationPipeline(MicroProcessorOperationContext context)
         {
             // TODO: Create pipeline...
             return CreateMethodOperation(context);
@@ -86,6 +89,6 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="context">Context of the operation.</param>
         /// <returns>A new operation that is ready to be executed.</returns>
-        protected abstract ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(QueryOperationContext context);
+        protected abstract ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context);
     }
 }

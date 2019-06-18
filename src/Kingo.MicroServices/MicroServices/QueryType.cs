@@ -26,14 +26,24 @@ namespace Kingo.MicroServices
         {
             foreach (var component in components)
             {
-                if (IsQueryComponent(component, out var query))
+                if (IsQueryType(component, out var query))
                 {
                     yield return query;
                 }
             }
         }
 
-        private static bool IsQueryComponent(MicroProcessorComponent component, out QueryType query)
+        internal static bool IsQueryType(Type type, out QueryType query)
+        {
+            if (IsMicroProcessorComponent(type, out var component))
+            {
+                return IsQueryType(component, out query);
+            }
+            query = null;
+            return false;
+        }
+
+        private static bool IsQueryType(MicroProcessorComponent component, out QueryType query)
         {
             var interfaces = QueryInterface.FromComponent(component).ToArray();
             if (interfaces.Length == 0)

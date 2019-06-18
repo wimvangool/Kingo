@@ -14,7 +14,7 @@ namespace Kingo.MicroServices
             private readonly ExecuteAsyncMethod<TResponse> _method;
             private readonly QueryOperationContext _context;
 
-            public MethodOperation(QueryOperationImplementation<TResponse> operation, QueryOperationContext context)
+            public MethodOperation(QueryOperationImplementation<TResponse> operation, MicroProcessorOperationContext context)
             {
                 _operation = operation;
                 _method = new ExecuteAsyncMethod<TResponse>(operation._query);
@@ -53,10 +53,16 @@ namespace Kingo.MicroServices
             _query = query ?? throw new ArgumentNullException(nameof(query));
         }
 
+        public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TResponse> query, CancellationToken? token) :
+            base(context, token)
+        {
+            _query = query ?? throw new ArgumentNullException(nameof(query));
+        }
+
         public override IMessage Message =>
             null;
 
-        protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(QueryOperationContext context) =>
+        protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) =>
             new MethodOperation(this, context);
     }
 }

@@ -143,7 +143,7 @@ namespace Kingo.MicroServices.Endpoints
         /// this type represents a message handler.
         /// </summary>
         /// <typeparam name="TMessageHandler">Type of the message handler to add.</typeparam>
-        public void AddMessageHandler<TMessageHandler>() =>
+        public void AddMessageHandler<TMessageHandler>() where TMessageHandler : class =>
             AddMessageHandler(typeof(TMessageHandler));
 
         /// <summary>
@@ -247,6 +247,30 @@ namespace Kingo.MicroServices.Endpoints
             return services;
         }
 
+        /// <summary>
+        /// Adds <typeparamref name="TQuery"/> as a query, if and only if it is a valid component
+        /// that implements the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/> interface.
+        /// </summary>
+        /// <typeparam name="TQuery">Type of the query to add.</typeparam>
+        public void AddQuery<TQuery>() where TQuery : class =>
+            AddQuery(typeof(TQuery));
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a query, if and only if the specified type is a valid component
+        /// that implements the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/> interface.
+        /// </summary>
+        /// <param name="type">The type to add as a query.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public void AddQuery(Type type)
+        {
+            if (QueryType.IsQueryType(type, out var query))
+            {
+                _services.AddComponent(query);
+            }
+        }
+
         #endregion
 
         #region [====== AddMicroServiceBusController ======]
@@ -324,7 +348,7 @@ namespace Kingo.MicroServices.Endpoints
         /// it is also registered as a hosted service that will be started and stopped automatically.
         /// </summary>
         /// <typeparam name="TMicroServiceBus">Type of a service bus.</typeparam>
-        public void AddMicroServiceBus<TMicroServiceBus>() where TMicroServiceBus : IMicroServiceBus =>
+        public void AddMicroServiceBus<TMicroServiceBus>() where TMicroServiceBus : class, IMicroServiceBus =>
             AddMicroServiceBus(typeof(TMicroServiceBus));
 
         /// <summary>
