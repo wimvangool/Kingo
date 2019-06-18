@@ -12,6 +12,7 @@ namespace Kingo.MicroServices
             _messageHandler = messageHandler;
         }
 
+
         internal override object ResolveMessageHandler(IServiceProvider serviceProvider) =>
             _messageHandler;
 

@@ -34,7 +34,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddReadModel_AddsExpectedReadModel_IfTypeIsBothMessageHandlerAndQuery()
         {
-            ProcessorBuilder.Components.AddType<ReadModel>();
+            ProcessorBuilder.Components.AddToSearchSet<ReadModel>();
             ProcessorBuilder.Components.AddMessageHandlers();
             ProcessorBuilder.Components.AddQueries();
 

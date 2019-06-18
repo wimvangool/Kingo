@@ -260,9 +260,9 @@ namespace Kingo.MicroServices.Endpoints
         {
             const int controllerCount = 3;
 
-            ProcessorBuilder.Components.AddType<TransientController>();
-            ProcessorBuilder.Components.AddType<ScopedController>();
-            ProcessorBuilder.Components.AddType<SingletonController>();
+            ProcessorBuilder.Components.AddToSearchSet<TransientController>();
+            ProcessorBuilder.Components.AddToSearchSet<ScopedController>();
+            ProcessorBuilder.Components.AddToSearchSet<SingletonController>();
             ProcessorBuilder.Components.AddMicroServiceBusControllers();
 
             var processor = CreateProcessor();

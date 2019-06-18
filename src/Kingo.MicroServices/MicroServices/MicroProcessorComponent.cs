@@ -27,7 +27,10 @@ namespace Kingo.MicroServices
             _attributeProvider = component._attributeProvider;
             _configuration = component._configuration;
             _serviceTypes = serviceTypes.ToArray();
-        }              
+        }
+
+        internal MicroProcessorComponent MergeWith(MicroProcessorComponent component) =>
+            new MicroProcessorComponent(this, _serviceTypes.Concat(component._serviceTypes));
 
         #region [====== IMicroProcessorComponentConfiguration ======]
 
@@ -150,6 +153,6 @@ namespace Kingo.MicroServices
             return new ArgumentException(message, nameof(instance));
         }
 
-        #endregion
+        #endregion        
     }
 }

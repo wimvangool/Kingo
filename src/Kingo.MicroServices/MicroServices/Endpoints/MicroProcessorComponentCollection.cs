@@ -14,49 +14,52 @@ namespace Kingo.MicroServices.Endpoints
     /// messages, execute queries and publish events.
     /// </summary>
     public sealed class MicroProcessorComponentCollection : IServiceCollectionBuilder
-    {                
+    {
+        private readonly HashSet<MicroProcessorComponent> _searchSet;
         private readonly HashSet<MessageHandler> _messageHandlerInstances;
-        private readonly HashSet<MessageHandler> _messageHandlerTypes;
-        private readonly HashSet<MicroServiceBusControllerType> _serviceBusControllerTypes;
-        private readonly HashSet<MicroServiceBusType> _serviceBusTypes;
-        private readonly HashSet<MicroProcessorComponent> _components;
-        private readonly IServiceCollection _services;        
+        private readonly IServiceCollection _messageHandlerInstanceCollection;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicroProcessorComponentCollection" /> class.
-        /// </summary>
-        public MicroProcessorComponentCollection()
-        {            
+        private readonly HashSet<MessageHandler> _messageHandlerTypes;        
+        private readonly HashSet<MicroServiceBusType> _serviceBusTypes;
+        private readonly List<MicroProcessorComponent> _otherComponents;
+        
+        internal MicroProcessorComponentCollection()
+        {
+            _searchSet = new HashSet<MicroProcessorComponent>();
             _messageHandlerInstances = new HashSet<MessageHandler>();
-            _messageHandlerTypes = new HashSet<MessageHandler>();
-            _serviceBusControllerTypes = new HashSet<MicroServiceBusControllerType>();
-            _serviceBusTypes = new HashSet<MicroServiceBusType>();
-            _components = new HashSet<MicroProcessorComponent>();
-            _services = new ServiceCollection();            
-        }       
+            _messageHandlerInstanceCollection = new ServiceCollection();
+
+            _messageHandlerTypes = new HashSet<MessageHandler>();            
+            _serviceBusTypes = new HashSet<MicroServiceBusType>();    
+            _otherComponents = new List<MicroProcessorComponent>();
+        }
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_components.Count} type(s) added, {_services.Count} type registration(s) made.";
+            $"{_searchSet.Count} type(s) in search set";       
 
         IServiceCollection IServiceCollectionBuilder.BuildServiceCollection(IServiceCollection services) =>
             BuildServiceCollection(services ?? new ServiceCollection());
 
         private IServiceCollection BuildServiceCollection(IServiceCollection services)
         {
-            foreach (var service in _services)
+            foreach (var service in _messageHandlerInstanceCollection)
             {
                 services.Add(service);
             }
             return services
                 .AddSingleton(BuildMethodFactory())
-                .AddTransient(BuildMicroServiceBus);
+                .AddTransient(BuildMicroServiceBus)
+                .AddComponents(MergeComponents());
         }
 
         // When building the factory, we filter out all types that have also been registered as an instance
         // to prevent weird and unpredictable behavior - instances simply take precedence in that case.
         private IHandleAsyncMethodFactory BuildMethodFactory() =>
-            new HandleAsyncMethodFactory(_messageHandlerInstances.Concat(_messageHandlerTypes.Where(IsNotRegisteredAsInstance)));
+            new HandleAsyncMethodFactory(_messageHandlerInstances.Concat(MessageHandlerTypes));
+
+        private IEnumerable<MessageHandler> MessageHandlerTypes =>
+            _messageHandlerTypes.Where(IsNotRegisteredAsInstance);
 
         private bool IsNotRegisteredAsInstance(MessageHandler messageHandler) =>
             _messageHandlerInstances.All(instance => instance.Type != messageHandler.Type);
@@ -67,14 +70,45 @@ namespace Kingo.MicroServices.Endpoints
         internal IMicroServiceBus BuildMicroServiceBus(IServiceProvider provider) =>
             new MicroServiceBusComposite(_serviceBusTypes.Select(bus => provider.GetRequiredService(bus.Type)).OfType<IMicroServiceBus>());
 
-        #region [====== AddTypes ======]
+        // When adding/registering all components to a service collection, we first need to merge all the collections,
+        // such that we return only a single collection where each component-type occurs only once.
+        private IEnumerable<MicroProcessorComponent> MergeComponents()
+        {
+            var components = new Dictionary<Type, MicroProcessorComponent>();
+            AddOrMerge(components, MessageHandlerTypes);
+            AddOrMerge(components, _serviceBusTypes);
+            AddOrMerge(components, _otherComponents);
+            return components.Values;
+        }
+
+        private static void AddOrMerge(IDictionary<Type, MicroProcessorComponent> components, IEnumerable<MicroProcessorComponent> componentsToAdd)
+        {
+            foreach (var componentToAdd in componentsToAdd)
+            {
+                AddOrMerge(components, componentToAdd);                    
+            }
+        }
+
+        private static void AddOrMerge(IDictionary<Type, MicroProcessorComponent> components, MicroProcessorComponent componentToAdd)
+        {
+            if (components.TryGetValue(componentToAdd.Type, out var component))
+            {
+                components[componentToAdd.Type] = component.MergeWith(componentToAdd);
+            }
+            else
+            {
+                components.Add(componentToAdd.Type, componentToAdd);
+            }
+        }
+
+        #region [====== AddToSearchSet ======]
 
         /// <summary>
         /// Adds a type to the searchable type-set.
         /// </summary>
         /// <typeparam name="TComponent">Type to add.</typeparam>
-        public void AddType<TComponent>() =>
-            AddTypes(typeof(TComponent));
+        public void AddToSearchSet<TComponent>() =>
+            AddToSearchSet(typeof(TComponent));
 
         /// <summary>
         /// Adds all types defined in the assemblies that match the specified search criteria to the
@@ -95,8 +129,8 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission to access the specified path or its files.
         /// </exception>
-        public void AddTypes(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            AddTypes(TypeSet.Empty.Add(searchPattern, path, searchOption));
+        public void AddToSearchSet(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
+            AddToSearchSet(TypeSet.Empty.Add(searchPattern, path, searchOption));
 
         /// <summary>
         /// Adds the specified <paramref name="types"/> to the searchable type-set.
@@ -105,8 +139,8 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="types"/> is <c>null</c>.
         /// </exception>
-        public void AddTypes(params Type[] types) =>
-            AddTypes(types as IEnumerable<Type>);
+        public void AddToSearchSet(params Type[] types) =>
+            AddToSearchSet(types as IEnumerable<Type>);
 
         /// <summary>
         /// Adds the specified <paramref name="types"/> to the searchable type-set.
@@ -115,8 +149,8 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="types"/> is <c>null</c>.
         /// </exception>
-        public void AddTypes(IEnumerable<Type> types) =>
-            _components.UnionWith(MicroProcessorComponent.FromTypes(types));
+        public void AddToSearchSet(IEnumerable<Type> types) =>
+            _searchSet.UnionWith(MicroProcessorComponent.FromTypes(types));
 
         #endregion
 
@@ -125,18 +159,14 @@ namespace Kingo.MicroServices.Endpoints
         /// <summary>
         /// Automatically registers all message handlers that are found in the types that were added to this collection,
         /// which are types that implement the <see cref="IMessageHandler{TMessage}"/> interface.
-        /// </summary>        
-        /// <param name="predicate">Optional predicate that is used to filter specific types.</param>                
-        public void AddMessageHandlers(Func<MicroProcessorComponent, bool> predicate = null) =>
-            AddMessageHandlers(GetComponents(predicate));        
-        
-        private void AddMessageHandlers(IEnumerable<MicroProcessorComponent> components)
+        /// </summary>                
+        public void AddMessageHandlers()
         {
-            foreach (var messageHandler in MessageHandlerType.FromComponents(components))
+            foreach (var messageHandler in MessageHandlerType.FromComponents(_searchSet))
             {
                 AddMessageHandler(messageHandler);
             }
-        }
+        }               
 
         /// <summary>
         /// Adds the specified <typeparamref name="TMessageHandler"/> as a message handler for the processor, if and only if
@@ -161,14 +191,9 @@ namespace Kingo.MicroServices.Endpoints
                 AddMessageHandler(messageHandler);
             }
         }
-        
-        private void AddMessageHandler(MessageHandler messageHandler)
-        {
-            if (_messageHandlerTypes.Add(messageHandler))
-            {
-                _services.AddComponent(messageHandler);
-            }            
-        }
+
+        private void AddMessageHandler(MessageHandler messageHandler) =>
+            _messageHandlerTypes.Add(messageHandler);
 
         #endregion
 
@@ -185,12 +210,8 @@ namespace Kingo.MicroServices.Endpoints
         public void AddMessageHandler(object messageHandler)
         {
             if (MessageHandlerInstance.IsMessageHandlerInstance(messageHandler, out var instance) && _messageHandlerInstances.Add(instance))
-            {                
-                foreach (var @interface in instance.Interfaces)
-                {                    
-                    _services.AddTransient(@interface.Type, provider => provider.GetService(instance.Type));
-                }
-                _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
+            {
+                _messageHandlerInstanceCollection.AddComponent(instance, messageHandler);                
             }            
         }       
 
@@ -221,7 +242,7 @@ namespace Kingo.MicroServices.Endpoints
         {
             if (_messageHandlerInstances.Add(messageHandler))
             {
-                _services.AddTransient<IMessageHandler<TMessage>>(provider => messageHandler);
+                _messageHandlerInstanceCollection.AddTransient<IMessageHandler<TMessage>>(provider => messageHandler);
             }            
         }
 
@@ -233,19 +254,9 @@ namespace Kingo.MicroServices.Endpoints
         /// Automatically registers all queries that are found in the types that were added to this collection, which
         /// are types that implement the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/>
         /// interface.
-        /// </summary>
-        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
-        public void AddQueries(Func<MicroProcessorComponent, bool> predicate = null) =>
-            AddComponents(AddQueries, predicate);
-
-        private static IServiceCollection AddQueries(IEnumerable<MicroProcessorComponent> components, IServiceCollection services)
-        {
-            foreach (var query in QueryType.FromComponents(components))
-            {
-                services = services.AddComponent(query);
-            }            
-            return services;
-        }
+        /// </summary>        
+        public void AddQueries() =>
+            AddComponents(QueryType.FromComponent);
 
         /// <summary>
         /// Adds <typeparamref name="TQuery"/> as a query, if and only if it is a valid component
@@ -263,13 +274,8 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public void AddQuery(Type type)
-        {
-            if (QueryType.IsQueryType(type, out var query))
-            {
-                _services.AddComponent(query);
-            }
-        }
+        public void AddQuery(Type type) =>
+            AddComponent(type, QueryType.FromComponent);
 
         #endregion
 
@@ -279,15 +285,9 @@ namespace Kingo.MicroServices.Endpoints
         /// Automatically registers all types that are a <see cref="MicroServiceBusController" />. Each controller
         /// will also be registered as a <see cref="Microsoft.Extensions.Hosting.IHostedService"/> that will be
         /// started and stopped automatically.
-        /// </summary>
-        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
-        public void AddMicroServiceBusControllers(Func<MicroProcessorComponent, bool> predicate = null)
-        {
-            foreach (var controller in MicroServiceBusControllerType.FromComponents(GetComponents(predicate)))
-            {
-                AddMicroServiceBusController(controller);
-            }
-        }
+        /// </summary>        
+        public void AddMicroServiceBusControllers() =>
+            AddComponents(MicroServiceBusControllerType.FromComponent);
 
         /// <summary>
         /// Adds <typeparamref name="TController"/> as a <see cref="MicroServiceBusController"/>. If
@@ -308,21 +308,8 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public void AddMicroServiceBusController(Type type)
-        {
-            if (MicroServiceBusControllerType.IsMicroProcessorBusControllerType(type, out var controller))
-            {
-                AddMicroServiceBusController(controller);
-            }
-        }
-
-        private void AddMicroServiceBusController(MicroServiceBusControllerType controller)
-        {
-            if (_serviceBusControllerTypes.Add(controller))
-            {
-                _services.AddComponent(controller);
-            }
-        }
+        public void AddMicroServiceBusController(Type type) =>
+            AddComponent(type, MicroServiceBusControllerType.FromComponent);
 
         #endregion
 
@@ -332,11 +319,10 @@ namespace Kingo.MicroServices.Endpoints
         /// Automatically registers all types that implement the <see cref="IMicroServiceBus" /> interface as
         /// a service bus endpoint. Any type that also implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>
         /// is also registered as a hosted service that will be started and stopped automatically.
-        /// </summary>
-        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
-        public void AddMicroServiceBuses(Func<MicroProcessorComponent, bool> predicate = null)
+        /// </summary>        
+        public void AddMicroServiceBuses()
         {
-            foreach (var microServiceBus in MicroServiceBusType.FromComponents(GetComponents(predicate)))
+            foreach (var microServiceBus in MicroServiceBusType.FromComponents(_searchSet))
             {
                 AddMicroServiceBus(microServiceBus);
             }
@@ -369,42 +355,79 @@ namespace Kingo.MicroServices.Endpoints
             }
         }
 
-        private void AddMicroServiceBus(MicroServiceBusType microServiceBus)
-        {
-            if (_serviceBusTypes.Add(microServiceBus))
-            {
-                _services.AddComponent(microServiceBus);
-            }            
-        }
+        private void AddMicroServiceBus(MicroServiceBusType microServiceBus) =>
+            _serviceBusTypes.Add(microServiceBus);
 
         #endregion
 
         #region [====== AddComponents ======]
 
         /// <summary>
-        /// Adds a number of components by scanning and automatically registering a number of types.
+        /// Adds a number of components by looking through the search set and selecting/adding a
+        /// sub-set of these components to this collection.
         /// </summary>
-        /// <param name="serviceFactory">Delegate used to scan and register the components into a <see cref="IServiceCollection"/>.</param>
-        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
+        /// <param name="componentFactory">
+        /// Delegate that is used to filter and/or create the component to add. If the delegate returns <c>null</c>,
+        /// that component is ignored (filtered out). Otherwise, the returned component (which can be a different
+        /// component from the one that is passed into the delegate) is added to this collection.
+        /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="serviceFactory"/> is <c>null</c>.
+        /// <paramref name="componentFactory"/> is <c>null</c>.
         /// </exception>
-        public void AddComponents(Func<IEnumerable<MicroProcessorComponent>, IServiceCollection, IServiceCollection> serviceFactory, Func<MicroProcessorComponent, bool> predicate = null)
-        {            
-            if (serviceFactory == null)
+        public void AddComponents(Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
+        {
+            foreach (var componentToAdd in ComponentsToAdd(componentFactory))
             {
-                throw new ArgumentNullException(nameof(serviceFactory));
-            }
-            foreach (var service in serviceFactory.Invoke(GetComponents(predicate), new ServiceCollection()))
-            {                
-                _services.Add(service);
+                AddComponent(componentToAdd);
             }
         }
 
-        private IEnumerable<MicroProcessorComponent> GetComponents(Func<MicroProcessorComponent, bool> predicate = null) =>
-            from component in _components
-            where predicate == null || predicate.Invoke(component)
-            select component;
+        private IEnumerable<MicroProcessorComponent> ComponentsToAdd(Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
+        {
+            if (componentFactory == null)
+            {
+                throw new ArgumentNullException(nameof(componentFactory));
+            }
+            foreach (var component in _searchSet)
+            {
+                if (TryCreateComponent(componentFactory, component, out var componentToAdd))
+                {
+                    yield return componentToAdd;
+                }
+            }
+        }        
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a component if and only if the specified <paramref name="componentFactory"/>
+        /// returns a component to add. Note that <paramref name="componentFactory"/> is only invoked if the specified
+        /// <paramref name="type"/> is a valid component.
+        /// </summary>
+        /// <param name="type">Type to add as a component.</param>
+        /// <param name="componentFactory">
+        /// Delegate that is used to filter and/or create the component to add. If the delegate returns <c>null</c>,
+        /// that component is ignored (filtered out). Otherwise, the returned component (which can be a different
+        /// component from the one that is passed into the delegate) is added to this collection.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> or <paramref name="componentFactory"/> is <c>null</c>.
+        /// </exception>
+        public void AddComponent(Type type, Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
+        {
+            if (componentFactory == null)
+            {
+                throw new ArgumentNullException(nameof(componentFactory));
+            }
+            if (MicroProcessorComponent.IsMicroProcessorComponent(type, out var component) && TryCreateComponent(componentFactory, component, out var componentToAdd))
+            {
+                AddComponent(componentToAdd);
+            }
+        }
+
+        private void AddComponent(MicroProcessorComponent component) =>
+            _otherComponents.Add(component);
+
+        private static bool TryCreateComponent(Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory, MicroProcessorComponent component, out MicroProcessorComponent componentToAdd) =>
+            (componentToAdd = componentFactory.Invoke(component)) != null;
 
         #endregion
     }

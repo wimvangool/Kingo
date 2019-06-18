@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,56 +58,49 @@ namespace Kingo.MicroServices.Endpoints
 
         #endregion
 
-        #region [====== AddComponent ======]              
-
-        /// <summary>
-        /// Adds the specified <paramref name="component" /> to the service collection based on its configuration.        
-        /// </summary>
-        /// <param name="services">A collection of services.</param>
-        /// <param name="component">The component to add.</param>        
-        /// <returns>A configured service collection.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="services"/> or <paramref name="component"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="component"/> specifies an invalid service lifetime.
-        /// </exception>
-        public static IServiceCollection AddComponent(this IServiceCollection services, MicroProcessorComponent component)
+        #region [====== AddComponent ======]
+        
+        internal static IServiceCollection AddComponents(this IServiceCollection services, IEnumerable<MicroProcessorComponent> components)
         {
-            if (services == null)
+            foreach (var component in components)
             {
-                throw new ArgumentNullException(nameof(services));
+                services = services.AddComponent(component);
             }
-            if (component == null)
-            {
-                throw new ArgumentNullException(nameof(component));
-            }           
+            return services;
+        }            
+        
+        internal static IServiceCollection AddComponent(this IServiceCollection services, MicroProcessorComponent component, object instance = null)
+        {                      
             // First, we add mappings from the serviceTypes - which are presumably interfaces or abstract classes -
             // to the component type by factory, so that at run-time they will all resolve the same instance if requested.
+            // This will ensure that no matter through which (service) type the component is resolved, it will always
+            // be resolved correctly (that is, with the appropriate lifetime).
             foreach (var serviceType in component.ServiceTypes)
             {
                 services = services.AddTransient(serviceType, provider => provider.GetRequiredService(component.Type));
             }
 
-            // Secondly, we check whether or not the component has already been registered to prevent registering the same
-            // component twice.
-            if (services.Any(service => service.ServiceType == component.Type))
+            // Secondly, we add the component by its own type.
+            
+            // If no instance is provided, the component is registered with the specified lifetime.
+            if (instance == null)
             {
-                return services;
+                switch (component.Lifetime)
+                {
+                    case ServiceLifetime.Transient:
+                        return services.AddTransient(component.Type);
+                    case ServiceLifetime.Scoped:
+                        return services.AddScoped(component.Type);
+                    case ServiceLifetime.Singleton:
+                        return services.AddSingleton(component.Type);
+                    default:
+                        throw NewInvalidLifetimeSpecifiedException(component);
+                }
             }
-
-            // If the component wasn't added yet, we add it here with the specified lifetime.
-            switch (component.Lifetime)
-            {
-                case ServiceLifetime.Transient:
-                    return services.AddTransient(component.Type);
-                case ServiceLifetime.Scoped:
-                    return services.AddScoped(component.Type);
-                case ServiceLifetime.Singleton:
-                    return services.AddSingleton(component.Type);
-                default:
-                    throw NewInvalidLifetimeSpecifiedException(component);
-            }
+            // If an instance is provided, the lifetime is always implicitly set to singleton (because by definition, you always
+            // resolve the same instance). However, the mapping itself uses Transient because that will trigger the provided factory
+            // for each invocation.
+            return services.AddTransient(component.Type, provider => instance);
         }
 
         private static Exception NewInvalidLifetimeSpecifiedException(MicroProcessorComponent component)

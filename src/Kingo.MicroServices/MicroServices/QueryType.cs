@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Kingo.MicroServices
 {
@@ -20,40 +18,17 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== FromComponents ======]
+        #region [====== FromComponent ======]
 
-        public static IEnumerable<QueryType> FromComponents(IEnumerable<MicroProcessorComponent> components)
-        {
-            foreach (var component in components)
-            {
-                if (IsQueryType(component, out var query))
-                {
-                    yield return query;
-                }
-            }
-        }
-
-        internal static bool IsQueryType(Type type, out QueryType query)
-        {
-            if (IsMicroProcessorComponent(type, out var component))
-            {
-                return IsQueryType(component, out query);
-            }
-            query = null;
-            return false;
-        }
-
-        private static bool IsQueryType(MicroProcessorComponent component, out QueryType query)
+        public static QueryType FromComponent(MicroProcessorComponent component)
         {
             var interfaces = QueryInterface.FromComponent(component).ToArray();
             if (interfaces.Length == 0)
             {
-                query = null;
-                return false;
+                return null;
             }
-            query = new QueryType(component, interfaces);
-            return true;
-        }
+            return new QueryType(component, interfaces);
+        }        
 
         #endregion
     }

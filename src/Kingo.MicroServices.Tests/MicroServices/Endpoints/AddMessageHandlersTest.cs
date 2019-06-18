@@ -74,8 +74,8 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddMessageHandlers_AddsNoMessageHandlers_IfThereAreNoMessageHandlerTypesToAdd()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(object), typeof(int));
-            ProcessorBuilder.Components.AddTypes(typeof(AbstractMessageHandler), typeof(GenericMessageHandler<>));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(object), typeof(int));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(AbstractMessageHandler), typeof(GenericMessageHandler<>));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             Assert.AreEqual(DefaultServiceCount, BuildServiceCollection().Count);
@@ -84,7 +84,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddMessageHandlers_AddsExpectedMessageHandler_IfMessageHandlerIsClosedGenericType()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(GenericMessageHandler<object>));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(GenericMessageHandler<object>));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             var provider = BuildServiceProvider();
@@ -96,7 +96,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddMessageHandlers_AddsExpectedMessageHandler_IfMessageHandlerIsRegularType()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(MessageHandler1));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(MessageHandler1));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             var provider = BuildServiceProvider();
@@ -108,7 +108,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddMessageHandlers_AddsExpectedMessageHandler_IfMessageHandlerImplementsMultipleInterfaces()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(MessageHandler2));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(MessageHandler2));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             var provider = BuildServiceProvider();
@@ -121,7 +121,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddMessageHandlers_AddsExpectedMessageHandlers_IfMultipleMessageHandlersImplementTheSameInterface()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(MessageHandler1), typeof(MessageHandler2));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(MessageHandler1), typeof(MessageHandler2));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             var provider = BuildServiceProvider();
@@ -138,16 +138,18 @@ namespace Kingo.MicroServices.Endpoints
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void AddMessageHandlers_Throws_IfMessageHandlerHasInvalidLifetime()
+        public void BuildServiceProvider_Throws_IfMessageHandlerHasInvalidLifetime()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(InvalidLifetimeMessageHandler));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(InvalidLifetimeMessageHandler));
             ProcessorBuilder.Components.AddMessageHandlers();
+
+            BuildServiceProvider();
         }
 
         [TestMethod]
         public void AddMessageHandlers_AddsTransientMessageHandler_IfMessageHandlerHasTransientLifetime()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(MessageHandler1));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(MessageHandler1));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             var provider = BuildServiceProvider();
@@ -170,7 +172,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddMessageHandlers_AddsScopedMessageHandler_IfMessageHandlerHasScopedLifetime()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(ScopedMessageHandler));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(ScopedMessageHandler));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             var provider = BuildServiceProvider();
@@ -193,7 +195,7 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public void AddMessageHandlers_AddsSingletonMessageHandler_IfMessageHandlerHasSingletonLifetime()
         {
-            ProcessorBuilder.Components.AddTypes(typeof(SingletonMessageHandler));
+            ProcessorBuilder.Components.AddToSearchSet(typeof(SingletonMessageHandler));
             ProcessorBuilder.Components.AddMessageHandlers();
 
             var provider = BuildServiceProvider();

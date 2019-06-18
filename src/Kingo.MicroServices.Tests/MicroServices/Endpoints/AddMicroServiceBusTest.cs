@@ -288,9 +288,9 @@ namespace Kingo.MicroServices.Endpoints
         [TestMethod]
         public async Task AddMicroServiceBuses_BuildsExpectedServiceBus_IfMultipleServiceBusesWereAddedAsType()
         {
-            ProcessorBuilder.Components.AddType<TransientServiceBus>();
-            ProcessorBuilder.Components.AddType<ScopedServiceBus>();
-            ProcessorBuilder.Components.AddType<SingletonServiceBus>();
+            ProcessorBuilder.Components.AddToSearchSet<TransientServiceBus>();
+            ProcessorBuilder.Components.AddToSearchSet<ScopedServiceBus>();
+            ProcessorBuilder.Components.AddToSearchSet<SingletonServiceBus>();
             ProcessorBuilder.Components.AddMicroServiceBuses();
 
             var processor = CreateProcessor();
