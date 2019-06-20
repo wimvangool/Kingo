@@ -5,6 +5,9 @@ namespace Kingo.MicroServices
 {
     internal sealed class EventHandlerOperation<TEvent> : MessageHandlerRootOperation<TEvent>
     {
+        public EventHandlerOperation(MicroProcessor processor, IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token) :
+            this(processor, new HandleAsyncMethod<TEvent>(messageHandler), message, token) { }
+
         public EventHandlerOperation(MicroProcessor processor, HandleAsyncMethod<TEvent> method, TEvent message, CancellationToken? token) :
             base(processor, method, new Message<TEvent>(message, MessageKind.Event), token) { }
 

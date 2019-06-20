@@ -39,7 +39,22 @@ namespace Kingo.MicroServices
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
         Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null);
-        
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>       
+        Task<MessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null);
+
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>

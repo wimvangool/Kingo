@@ -5,9 +5,9 @@ namespace Kingo.MicroServices
 {
     internal sealed class NullTestResult : IRunTestResult
     {
-        private readonly IMicroProcessorTest _test;
+        private readonly IMicroProcessorOperationTest _test;
 
-        public NullTestResult(IMicroProcessorTest test)
+        public NullTestResult(IMicroProcessorOperationTest test)
         {
             _test = test;
         }

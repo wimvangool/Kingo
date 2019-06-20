@@ -130,7 +130,11 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
-            ExecuteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token));                                    
+            ExecuteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token));
+
+        /// <inheritdoc />
+        public Task<MessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
+            ExecuteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token));
 
         /// <inheritdoc />
         public Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>

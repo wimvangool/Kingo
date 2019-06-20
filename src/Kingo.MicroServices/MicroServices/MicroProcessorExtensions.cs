@@ -47,6 +47,44 @@ namespace Kingo.MicroServices
 
         #endregion
 
+        #region [====== HandleEventAsync ======]                  
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="processor">The processor used to handle the event.</param>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>        
+        public static Task<MessageHandlerOperationResult> HandleEventAsync<TEvent>(this IMicroProcessor processor, Action<TEvent, MessageHandlerOperationContext> messageHandler, TEvent message, CancellationToken? token = null) =>
+            processor.HandleEventAsync(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message, token);
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="processor">The processor used to handle the event.</param>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>         
+        public static Task<MessageHandlerOperationResult> HandleEventAsync<TEvent>(this IMicroProcessor processor, Func<TEvent, MessageHandlerOperationContext, Task> messageHandler, TEvent message, CancellationToken? token = null) =>
+            processor.HandleEventAsync(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message, token);
+
+        #endregion
+
         #region [====== ExecuteQueryAsync ======]
 
         /// <summary>

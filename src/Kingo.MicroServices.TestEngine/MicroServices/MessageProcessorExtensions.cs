@@ -8,28 +8,60 @@ namespace Kingo.MicroServices
     /// </summary>
     public static class MessageProcessorExtensions
     {
+        #region [====== ExecuteCommandAsync ======]
+
         /// <summary>
-        /// Processes the specified <paramref name="message" />.
+        /// Executes a command with a specified <paramref name="messageHandler"/>.
         /// </summary>
         /// <param name="processor">The processor that will process the message.</param>
-        /// <param name="message">The message to handle.</param>
-        /// <param name="handler">Optional handler to handle the message inside the processor.</param>
+        /// <param name="messageHandler">Delegate that will execute the command.</param>
+        /// <param name="message">The command to execute.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IMessageProcessor<TMessage> processor, TMessage message, Action<TMessage, MessageHandlerOperationContext> handler) =>
-            processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
+        public static Task ExecuteCommandAsync<TMessage>(this IMessageProcessor<TMessage> processor, Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message) =>
+            processor.ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
 
         /// <summary>
         /// Processes the specified <paramref name="message" />.
         /// </summary>
         /// <param name="processor">The processor that will process the message.</param>
-        /// <param name="message">The message to handle.</param>
-        /// <param name="handler">Optional handler to handle the message inside the processor.</param>
+        /// <param name="messageHandler">Delegate that will execute the command.</param>
+        /// <param name="message">The command to execute.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IMessageProcessor<TMessage> processor, TMessage message, Func<TMessage, MessageHandlerOperationContext, Task> handler) =>
-            processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
+        public static Task ExecuteCommandAsync<TMessage>(this IMessageProcessor<TMessage> processor, Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
+            processor.ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
+
+        #endregion
+
+        #region [====== HandleEventAsync ======]
+
+        /// <summary>
+        /// Executes a command with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <param name="processor">The processor that will process the message.</param>
+        /// <param name="messageHandler">Delegate that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        public static Task HandleEventAsync<TMessage>(this IMessageProcessor<TMessage> processor, Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message) =>
+            processor.HandleEventAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
+
+        /// <summary>
+        /// Processes the specified <paramref name="message" />.
+        /// </summary>
+        /// <param name="processor">The processor that will process the message.</param>
+        /// <param name="messageHandler">Delegate that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        public static Task HandleEventAsync<TMessage>(this IMessageProcessor<TMessage> processor, Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
+            processor.HandleEventAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
+
+        #endregion
     }
 }

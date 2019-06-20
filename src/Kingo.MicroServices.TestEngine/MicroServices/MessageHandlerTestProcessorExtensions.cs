@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Contains extensions methods for instances that implement the <see cref="IMessageHandlerTestProcessor" /> interface.
+    /// Contains extensions methods for instances that implement the <see cref="IHandleMessageOperationTestProcessor" /> interface.
     /// </summary>
     public static class MessageHandlerTestProcessorExtensions
     {
@@ -19,8 +19,8 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IMessageHandlerTestProcessor processor, TMessage message, MicroProcessorTestContext context, Action<TMessage, MessageHandlerOperationContext> handler) =>
-            processor.HandleAsync(message, context, MessageHandlerDecorator<TMessage>.Decorate(handler));
+        public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Action<TMessage, MessageHandlerOperationContext> handler) =>
+            processor.ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
 
         /// <summary>
         /// Handles the specified message.
@@ -33,7 +33,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IMessageHandlerTestProcessor processor, TMessage message, MicroProcessorTestContext context, Func<TMessage, MessageHandlerOperationContext, Task> handler) =>
-            processor.HandleAsync(message, context, MessageHandlerDecorator<TMessage>.Decorate(handler));
+        public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Func<TMessage, MessageHandlerOperationContext, Task> handler) =>
+            processor.ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
     }
 }

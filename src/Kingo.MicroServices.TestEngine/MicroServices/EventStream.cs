@@ -21,30 +21,34 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStream" /> class.
         /// </summary>
+        /// <param name="events">The stream to copy.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="events"/> is <c>null</c>.
+        /// </exception>
+        protected EventStream(EventStream events) :
+            this(events?._events) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStream" /> class.
+        /// </summary>
+        /// <param name="events">The events of this stream.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="events"/> is <c>null</c>.
+        /// </exception>
+        public EventStream(IEnumerable<IMessage> events) :
+            this(events.Where(@event => @event.Kind == MessageKind.Event).Select(@event => @event.Instance)) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStream" /> class.
+        /// </summary>
         /// <param name="events">The events of this stream.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
         public EventStream(IEnumerable<object> events)
         {
-            _events = events.WhereNotNull().ToArray();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventStream" /> class.
-        /// </summary>
-        /// <param name="stream">The stream to copy.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="stream"/> is <c>null</c>.
-        /// </exception>
-        protected EventStream(EventStream stream)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-            _events = stream._events;
-        }
+            _events = events.ToArray();
+        }        
 
         #region [====== ReadOnlyList ======]
 

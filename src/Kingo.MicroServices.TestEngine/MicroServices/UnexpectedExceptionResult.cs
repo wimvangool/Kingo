@@ -5,10 +5,10 @@ namespace Kingo.MicroServices
 {
     internal sealed class UnexpectedExceptionResult : IRunTestResult
     {
-        private readonly IMicroProcessorTest _test;
+        private readonly IMicroProcessorOperationTest _test;
         private readonly Exception _exception;
 
-        public UnexpectedExceptionResult(IMicroProcessorTest test, Exception exception)
+        public UnexpectedExceptionResult(IMicroProcessorOperationTest test, Exception exception)
         {
             _test = test;
             _exception = exception;
