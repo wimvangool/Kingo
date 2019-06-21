@@ -117,7 +117,7 @@ namespace Kingo.MicroServices
 
             private async Task ExecuteAsync(HandleMessageOperation<TMessage, TEventStream> operation)
             {
-                var result = await operation.ExecuteAsync(Test, Context);
+                var result = await operation.ExecuteAsync(Test, Context).ConfigureAwait(false);
 
                 try
                 {
@@ -287,7 +287,7 @@ namespace Kingo.MicroServices
             protected override Task WhenAsync() =>
                 Test.WhenAsync(this, Context);
 
-            public async Task ExecuteAsync(TRequest request, IQuery<TRequest, TResponse> query)
+            public async Task ExecuteAsync(IQuery<TRequest, TResponse> query, TRequest request)
             {
                 var result = await ExecuteQueryAsync(request, query, Context.Processor).ConfigureAwait(false);
 

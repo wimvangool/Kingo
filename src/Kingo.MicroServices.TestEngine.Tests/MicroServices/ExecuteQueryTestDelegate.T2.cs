@@ -11,7 +11,7 @@ namespace Kingo.MicroServices
         public ExecuteQueryTestDelegate()
         {
             _givenStatements = new GivenStatementCollection();
-            _whenStatement = (processor, testContext) => processor.ExecuteAsync(new TRequest(), (request, context) => Task.FromResult(default(TResponse)));
+            _whenStatement = (processor, testContext) => processor.ExecuteAsync((request, context) => Task.FromResult(default(TResponse)), new TRequest());
             _thenStatement = (request, result, testContext) => result.IsResponse(response => { });
         }
 

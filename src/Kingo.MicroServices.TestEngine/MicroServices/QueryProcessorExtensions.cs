@@ -41,25 +41,25 @@ namespace Kingo.MicroServices
         /// Executes the specified <paramref name="query"/>.
         /// </summary>
         /// <param name="processor">Processor that will execute the specified <paramref name="query"/>.</param>
-        /// <param name="request">Request message of the query.</param>
         /// <param name="query">Query to execute.</param>
+        /// <param name="request">Request message of the query.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, TRequest request, Func<TRequest, QueryOperationContext, TResponse> query) =>
-            processor.ExecuteAsync(request, QueryDecorator<TRequest, TResponse>.Decorate(query));
+        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, QueryOperationContext, TResponse> query, TRequest request) =>
+            processor.ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/>.
         /// </summary>
         /// <param name="processor">Processor that will execute the specified <paramref name="query"/>.</param>
-        /// <param name="request">Request message of the query.</param>
         /// <param name="query">Query to execute.</param>
+        /// <param name="request">Request message of the query.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, TRequest request, Func<TRequest, QueryOperationContext, Task<TResponse>> query) =>
-            processor.ExecuteAsync(request, QueryDecorator<TRequest, TResponse>.Decorate(query));
+        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, QueryOperationContext, Task<TResponse>> query, TRequest request) =>
+            processor.ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         #endregion
     }

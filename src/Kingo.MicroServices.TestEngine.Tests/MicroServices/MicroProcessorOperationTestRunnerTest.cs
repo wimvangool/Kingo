@@ -924,10 +924,10 @@ namespace Kingo.MicroServices
             var test = CreateQueryTest<object>()
                 .When(async (queryProcessor, testContext) =>
                 {
-                    await queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                    await queryProcessor.ExecuteAsync((message, context) =>
                     {
                         throw NewRandomInternalServerError();
-                    });
+                    }, new object());
                 });
 
             await RunAsync(test);
@@ -951,7 +951,7 @@ namespace Kingo.MicroServices
         {
             var expectedResponse = new object();
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) => Task.FromResult(expectedResponse)))
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) => Task.FromResult(expectedResponse), new object()))
                 .Then((request, result, testContext) =>
                 {
                     result.IsResponse(response => Assert.AreSame(expectedResponse, response));
@@ -978,10 +978,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Throws_IfSpecificExceptionIsExpected_But_OtherExceptionWasThrown()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomInternalServerError();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result.IsExceptionOfType<ArgumentNullException>();
@@ -994,10 +994,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Succeeds_IfSpecificExceptionIsExpected_And_ThatExceptionWasThrown()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomInternalServerError();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result.IsExceptionOfType<InternalServerErrorException>();
@@ -1011,10 +1011,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Fails_IfSpecificExceptionIsExpected_But_AssertionOfExceptionFailed()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomInternalServerError();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result.IsExceptionOfType<InternalServerErrorException>(exception =>
@@ -1030,10 +1030,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Succeeds_IfSpecificExceptionIsExpected_And_DerivedExceptionWasThrown()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomInternalServerError();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result.IsExceptionOfType<Exception>();
@@ -1047,10 +1047,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Fails_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsNull()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomInternalServerError();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result
@@ -1066,10 +1066,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Fails_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsOfOtherType()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomTechnicalException();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result
@@ -1084,10 +1084,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfThatType()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomTechnicalException();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result
@@ -1102,10 +1102,10 @@ namespace Kingo.MicroServices
         public async Task RunQueryTest2_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfDerivedType()
         {
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw NewRandomTechnicalException();
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result
@@ -1122,10 +1122,10 @@ namespace Kingo.MicroServices
         {
             var exception = NewRandomTechnicalException();
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw exception;
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result
@@ -1144,10 +1144,10 @@ namespace Kingo.MicroServices
         {
             var exception = NewRandomTechnicalException();
             var test = CreateQueryTest<object>()
-                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) =>
                 {
                     throw exception;
-                }))
+                }, new object()))
                 .Then((request, result, testContext) =>
                 {
                     result
