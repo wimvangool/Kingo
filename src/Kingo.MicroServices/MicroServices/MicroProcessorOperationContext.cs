@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
@@ -9,12 +10,14 @@ namespace Kingo.MicroServices
     public abstract class MicroProcessorOperationContext
     {        
         private readonly MicroProcessor _processor;
+        private readonly ClaimsPrincipal _user;
         private readonly AsyncMethodOperationStackTrace _stackTrace;
         private readonly IQueryProcessor _queryProcessor;
 
         internal MicroProcessorOperationContext(MicroProcessor processor, AsyncMethodOperationStackTrace stackTrace = null)
         {
             _processor = processor;
+            _user = processor.CreatePrincipal();
             _stackTrace = stackTrace ?? AsyncMethodOperationStackTrace.Empty;
             _queryProcessor = new QueryProcessor(this);
         }
@@ -22,12 +25,19 @@ namespace Kingo.MicroServices
         internal MicroProcessorOperationContext(MicroProcessorOperationContext context, IAsyncMethodOperation operation)
         {
             _processor = context._processor;
+            _user = context._user;
             _stackTrace = context._stackTrace.Push(operation);
             _queryProcessor = new QueryProcessor(this);
         }
 
         internal MicroProcessor Processor =>
             _processor;
+
+        /// <summary>
+        /// Gets the user that is executing the current operation.
+        /// </summary>
+        public ClaimsPrincipal User =>
+            _user;
 
         /// <summary>
         /// Returns a stack trace of all operations that are currently being executed.

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
@@ -62,6 +64,7 @@ namespace Kingo.MicroServices
         #endregion
                 
         private readonly Context<IMicroProcessorServiceProvider> _serviceProviderContext;
+        private readonly Context<IPrincipal> _principalContext;
         private readonly Lazy<IMicroProcessorOptions> _options;
 
         /// <summary>
@@ -73,6 +76,7 @@ namespace Kingo.MicroServices
         public MicroProcessor(IServiceProvider serviceProvider)
         {                                    
             _serviceProviderContext = new Context<IMicroProcessorServiceProvider>(CreateServiceProvider(serviceProvider));
+            _principalContext = new Context<IPrincipal>();
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
         }
 
@@ -93,7 +97,29 @@ namespace Kingo.MicroServices
                 return new MicroProcessorOptions();
             }
             return options;
-        }            
+        }
+
+        #endregion
+
+        #region [====== UsePrincipal ======]        
+
+        /// <inheritdoc />
+        public IDisposable AssignUser(IPrincipal user) =>
+            _principalContext.OverrideAsyncLocal(user ?? throw new ArgumentNullException(nameof(user)));
+
+        internal ClaimsPrincipal CreatePrincipal() =>
+            CreatePrincipal(_principalContext.Current);
+
+        /// <summary>
+        /// Creates and returns a <see cref="ClaimsPrincipal" /> based on the specified <paramref name="user"/>.
+        /// </summary>
+        /// <param name="user">The principal to convert to a <see cref="ClaimsPrincipal"/>.</param>
+        /// <returns>A new <see cref="ClaimsPrincipal"/> based on the specified <paramref name="user"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="user"/> is <c>null</c>.
+        /// </exception>
+        protected virtual ClaimsPrincipal CreatePrincipal(IPrincipal user) =>
+            user == null ? new ClaimsPrincipal() : new ClaimsPrincipal(user);
 
         #endregion
 
@@ -111,7 +137,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== MethodEndpoints ======]
+        #region [====== MethodEndpoints ======]        
 
         /// <inheritdoc />
         public virtual IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints()

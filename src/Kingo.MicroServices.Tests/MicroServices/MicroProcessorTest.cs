@@ -31,6 +31,8 @@ namespace Kingo.MicroServices
 
         #endregion
 
+        #region [====== ResolveProcessor ======]
+
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ResolveProcessor_Throws_IfProcessorIsAbstract()
@@ -104,7 +106,9 @@ namespace Kingo.MicroServices
                 AddProcessor(scope.ServiceProvider, instances);
             }
             instances.AssertInstanceCountIs(1);
-        }        
+        }
+
+        #endregion        
 
         private static void AddProcessor(IServiceProvider provider, IInstanceCollector instances) =>
             instances.Add(provider.GetRequiredService<IMicroProcessor>());
