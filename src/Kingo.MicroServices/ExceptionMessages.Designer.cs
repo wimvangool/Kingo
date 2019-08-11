@@ -79,11 +79,38 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value of type &apos;{0}&apos; could not be validated because the constraint expects an instance of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Constraint_UnsupportedType {
+            get {
+                return ResourceManager.GetString("Constraint_UnsupportedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
         /// </summary>
         internal static string Context_IllegalScopeStarted {
             get {
                 return ResourceManager.GetString("Context_IllegalScopeStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: version of type &apos;{1}&apos; introduced a circular update by returning an instance of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string DataContractExtensions_CircularReference {
+            get {
+                return ResourceManager.GetString("DataContractExtensions_CircularReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: could not convert latest version of type &apos;{1}&apos; to instance of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string DataContractExtensions_InvalidCast {
+            get {
+                return ResourceManager.GetString("DataContractExtensions_InvalidCast", resourceCulture);
             }
         }
         

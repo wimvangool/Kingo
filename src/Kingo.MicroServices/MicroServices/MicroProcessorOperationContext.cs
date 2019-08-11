@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using Kingo.Reflection;
+using Microsoft.Extensions.Hosting;
 
 namespace Kingo.MicroServices
 {
@@ -31,7 +32,7 @@ namespace Kingo.MicroServices
         }
 
         internal MicroProcessor Processor =>
-            _processor;
+            _processor;        
 
         /// <summary>
         /// Gets the user that is executing the current operation.

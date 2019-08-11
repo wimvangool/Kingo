@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Kingo.MicroServices.Contracts
+{
+    [TestClass]
+    public sealed class SomeCommandTest : RequestTest<SomeCommand>
+    {
+        [TestMethod]
+        public void SomeCommand_IsNotValid_IfPropertyAIsNull()
+        {
+
+        }
+
+
+    }
+}
