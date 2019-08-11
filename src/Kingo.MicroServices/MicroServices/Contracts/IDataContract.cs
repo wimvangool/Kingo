@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kingo.MicroServices.Contracts
+﻿namespace Kingo.MicroServices.Contracts
 {
     /// <summary>
     /// When implemented by a class, represents a data transfer object.

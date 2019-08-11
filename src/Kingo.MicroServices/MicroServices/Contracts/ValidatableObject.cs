@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.Serialization;
-using System.Text;
 
 namespace Kingo.MicroServices.Contracts
 {

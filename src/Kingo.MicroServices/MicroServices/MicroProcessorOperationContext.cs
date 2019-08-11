@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
 using Kingo.Reflection;
-using Microsoft.Extensions.Hosting;
 
 namespace Kingo.MicroServices
 {
