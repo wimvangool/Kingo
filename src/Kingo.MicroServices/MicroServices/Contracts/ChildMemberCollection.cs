@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices.Contracts
@@ -49,23 +52,20 @@ namespace Kingo.MicroServices.Contracts
 
         private static Func<ChildMember, IEnumerable<ChildMemberCollection>> CreateCollectionFactory(Type memberType)
         {
-            return CreateCollections;
+            var parameter = Expression.Parameter(typeof(ChildMember), "childMember");
+            var body = Expression.NewArrayInit(typeof(ChildMemberCollection), CreateCollectionElementExpressions(memberType, parameter));
+            return Expression.Lambda<Func<ChildMember, IEnumerable<ChildMemberCollection>>>(body, parameter).Compile();
         }
 
-        private static IEnumerable<ChildMemberCollection> CreateCollections(ChildMember member)
-        {
-            foreach (var enumerableType in member.Type.GetInterfacesOfType(typeof(IEnumerable<>)))
-            {
-                yield return CreateCollection(enumerableType.GetGenericArguments()[0], member);
-            }
-        }
+        private static IEnumerable<Expression> CreateCollectionElementExpressions(Type memberType, Expression childMember) =>
+            from enumerableType in memberType.GetInterfacesOfType(typeof(IEnumerable<>))
+            select CreateNewCollectionExpression(enumerableType.GetGenericArguments()[0], childMember);
 
-        private static ChildMemberCollection CreateCollection(Type itemType, ChildMember member)
-        {
-            var collectionType = CreateCollectionType(itemType);
-            var constructor = collectionType.GetConstructor(new [] { typeof(ChildMember) });
-            return (ChildMemberCollection) constructor.Invoke(new object[] { member });
-        }
+        private static Expression CreateNewCollectionExpression(Type itemType, Expression childMember) =>
+            Expression.New(GetCollectionConstructor(itemType), childMember);
+
+        private static ConstructorInfo GetCollectionConstructor(Type itemType) =>
+            CreateCollectionType(itemType).GetConstructor(new[] { typeof(ChildMember) });
 
         private static Type CreateCollectionType(Type itemType)
         {

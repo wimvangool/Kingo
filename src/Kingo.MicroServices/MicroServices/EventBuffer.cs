@@ -69,10 +69,8 @@ namespace Kingo.MicroServices
             _EventConstructors.GetOrAdd(messageType, GetEventConstructorFor);
 
         private static Func<object, Event> GetEventConstructorFor(Type messageType)
-        {
-            var eventTypeDefinition = typeof(Event<>);
-            var eventType = eventTypeDefinition.MakeGenericType(messageType);
-
+        {            
+            var eventType = typeof(Event<>).MakeGenericType(messageType);
             var constructor = eventType.GetConstructor(new[] { messageType });
             var messageParameter = Expression.Parameter(typeof(object), "event");
             var message = Expression.Convert(messageParameter, messageType);
