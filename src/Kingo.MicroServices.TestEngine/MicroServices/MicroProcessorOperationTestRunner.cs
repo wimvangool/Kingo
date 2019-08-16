@@ -21,6 +21,9 @@ namespace Kingo.MicroServices
 
         #region [====== ServiceProvider ======]
 
+        /// <summary>
+        /// Returns the <see cref="IServiceProvider" /> used by the <see cref="IMicroProcessor" />.
+        /// </summary>
         protected IServiceProvider ServiceProvider =>
             _serviceProvider.Value;
 
@@ -28,7 +31,7 @@ namespace Kingo.MicroServices
             ConfigureServices(new ServiceCollection()).BuildServiceProvider(true);
 
         /// <summary>
-        /// When overridden, configures <see cref="services"/> with a <see cref="IMicroProcessor" /> and other
+        /// When overridden, configures <paramref name="services"/> with a <see cref="IMicroProcessor" /> and other
         /// dependencies for the tests to run.
         /// </summary>
         /// <param name="services">The service collection to configure.</param>

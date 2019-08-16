@@ -2,6 +2,9 @@
 
 namespace Kingo.MicroServices
 {
+    /// <summary>
+    /// When implemented by a class, represents a result that can verify the type and details a an inner-exception.
+    /// </summary>
     public interface IInnerExceptionResult
     {
         /// <summary>

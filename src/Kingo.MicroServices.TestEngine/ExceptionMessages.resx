@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DataContractTest_InstanceNotValid" xml:space="preserve">
-    <value>Instance of type '{0}' was not valid; {1} validation error(s) occurred.</value>
-  </data>
-  <data name="DataContractTest_InstanceValid" xml:space="preserve">
-    <value>Instance of type '{0}' was valid; no validation errors occurred.</value>
-  </data>
   <data name="EventStream_EventNotFound" xml:space="preserve">
     <value>Event of type '{0}' not found at index '{1}': the EventStream contains only {2} event(s).</value>
   </data>
@@ -171,26 +165,26 @@
   <data name="NullTestResult_MissingResult" xml:space="preserve">
     <value>Test '{0}' did not produce any result. Please verify that the processor provided as an argument to the WhenAsync-method has been used to handle a message or execute a query.</value>
   </data>
-  <data name="RequestMessageTestBase_InvalidErrorCount" xml:space="preserve">
-    <value>The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1.</value>
+  <data name="Request_ErrorMessageNotFound" xml:space="preserve">
+    <value>Member '{0}' does not have expected validation-error '{1}'.</value>
   </data>
-  <data name="RequestMessageTestBase_MessageNotValid" xml:space="preserve">
-    <value>The specified message is not valid: {0}.</value>
+  <data name="Request_InstanceNotValid" xml:space="preserve">
+    <value>Instance of type '{0}' was expected to be valid, but {1} validation error(s) occurred.</value>
   </data>
-  <data name="RequestMessageTestBase_NoInstanceError" xml:space="preserve">
-    <value>An instance error was expected but the result of the validation contains no instance error.</value>
+  <data name="Request_InstanceValid" xml:space="preserve">
+    <value>Instance of type '{0}' was expected to be invalid, but no validation errors occurred.</value>
   </data>
-  <data name="RequestMessageTestBase_NoMemberError" xml:space="preserve">
-    <value>An error for member '{0}' was expected, but the result contains no error for this member.</value>
+  <data name="Request_InvalidNumberOfExpectedErrorsSpecified" xml:space="preserve">
+    <value>The number of expected validation errors ({0}) must be equal to or greater than 1.</value>
   </data>
-  <data name="RequestMessageTestBase_UnexpectedErrorCount" xml:space="preserve">
+  <data name="Request_MemberErrorsNotFound" xml:space="preserve">
+    <value>Member '{0}' does not have any validation-errors.</value>
+  </data>
+  <data name="Request_NoSuchErrorMessage" xml:space="preserve">
+    <value>Member '{0}' does not contain any validation-error that satisfies the specified predicate.</value>
+  </data>
+  <data name="Request_UnexpectedNumberOfErrorsOccurred" xml:space="preserve">
     <value>The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1}).</value>
-  </data>
-  <data name="RequestMessageTestBase_UnexpectedInstanceError" xml:space="preserve">
-    <value>The expected instance error ({0}) does not match the actual instance error ({1}) based on the type of comparison specified ({2}).</value>
-  </data>
-  <data name="RequestMessageTestBase_UnexpectedMemberError" xml:space="preserve">
-    <value>The expected error for member '{0}' ({1}) does not match the actual error ({2}) based on the type of comparison specified ({3}).</value>
   </data>
   <data name="UnexpectedExceptionResult_UnexpectedException" xml:space="preserve">
     <value>Test '{0}' threw unexpected exception of type '{1}'. See inner exception for details.</value>

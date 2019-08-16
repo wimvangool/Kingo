@@ -61,24 +61,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; was not valid; {1} validation error(s) occurred..
-        /// </summary>
-        internal static string DataContractTest_InstanceNotValid {
-            get {
-                return ResourceManager.GetString("DataContractTest_InstanceNotValid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; was valid; no validation errors occurred..
-        /// </summary>
-        internal static string DataContractTest_InstanceValid {
-            get {
-                return ResourceManager.GetString("DataContractTest_InstanceValid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Event of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the EventStream contains only {2} event(s)..
         /// </summary>
         internal static string EventStream_EventNotFound {
@@ -223,65 +205,65 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1..
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not have expected validation-error &apos;{1}&apos;..
         /// </summary>
-        internal static string RequestMessageTestBase_InvalidErrorCount {
+        internal static string Request_ErrorMessageNotFound {
             get {
-                return ResourceManager.GetString("RequestMessageTestBase_InvalidErrorCount", resourceCulture);
+                return ResourceManager.GetString("Request_ErrorMessageNotFound", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified message is not valid: {0}..
+        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be valid, but {1} validation error(s) occurred..
         /// </summary>
-        internal static string RequestMessageTestBase_MessageNotValid {
+        internal static string Request_InstanceNotValid {
             get {
-                return ResourceManager.GetString("RequestMessageTestBase_MessageNotValid", resourceCulture);
+                return ResourceManager.GetString("Request_InstanceNotValid", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An instance error was expected but the result of the validation contains no instance error..
+        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be invalid, but no validation errors occurred..
         /// </summary>
-        internal static string RequestMessageTestBase_NoInstanceError {
+        internal static string Request_InstanceValid {
             get {
-                return ResourceManager.GetString("RequestMessageTestBase_NoInstanceError", resourceCulture);
+                return ResourceManager.GetString("Request_InstanceValid", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error for member &apos;{0}&apos; was expected, but the result contains no error for this member..
+        ///   Looks up a localized string similar to The number of expected validation errors ({0}) must be equal to or greater than 1..
         /// </summary>
-        internal static string RequestMessageTestBase_NoMemberError {
+        internal static string Request_InvalidNumberOfExpectedErrorsSpecified {
             get {
-                return ResourceManager.GetString("RequestMessageTestBase_NoMemberError", resourceCulture);
+                return ResourceManager.GetString("Request_InvalidNumberOfExpectedErrorsSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not have any validation-errors..
+        /// </summary>
+        internal static string Request_MemberErrorsNotFound {
+            get {
+                return ResourceManager.GetString("Request_MemberErrorsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not contain any validation-error that satisfies the specified predicate..
+        /// </summary>
+        internal static string Request_NoSuchErrorMessage {
+            get {
+                return ResourceManager.GetString("Request_NoSuchErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1})..
         /// </summary>
-        internal static string RequestMessageTestBase_UnexpectedErrorCount {
+        internal static string Request_UnexpectedNumberOfErrorsOccurred {
             get {
-                return ResourceManager.GetString("RequestMessageTestBase_UnexpectedErrorCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The expected instance error ({0}) does not match the actual instance error ({1}) based on the type of comparison specified ({2})..
-        /// </summary>
-        internal static string RequestMessageTestBase_UnexpectedInstanceError {
-            get {
-                return ResourceManager.GetString("RequestMessageTestBase_UnexpectedInstanceError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The expected error for member &apos;{0}&apos; ({1}) does not match the actual error ({2}) based on the type of comparison specified ({3})..
-        /// </summary>
-        internal static string RequestMessageTestBase_UnexpectedMemberError {
-            get {
-                return ResourceManager.GetString("RequestMessageTestBase_UnexpectedMemberError", resourceCulture);
+                return ResourceManager.GetString("Request_UnexpectedNumberOfErrorsOccurred", resourceCulture);
             }
         }
         

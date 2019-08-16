@@ -100,39 +100,39 @@
               Looks up a localized string similar to Test &apos;{0}&apos; did not produce any result. Please verify that the processor provided as an argument to the WhenAsync-method has been used to handle a message or execute a query..
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.RequestMessageTestBase_InvalidErrorCount">
+        <member name="P:Kingo.ExceptionMessages.Request_ErrorMessageNotFound">
             <summary>
-              Looks up a localized string similar to The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1..
+              Looks up a localized string similar to Member &apos;{0}&apos; does not have expected validation-error &apos;{1}&apos;..
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.RequestMessageTestBase_MessageNotValid">
+        <member name="P:Kingo.ExceptionMessages.Request_InstanceNotValid">
             <summary>
-              Looks up a localized string similar to The specified message is not valid: {0}..
+              Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be valid, but {1} validation error(s) occurred..
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.RequestMessageTestBase_NoInstanceError">
+        <member name="P:Kingo.ExceptionMessages.Request_InstanceValid">
             <summary>
-              Looks up a localized string similar to An instance error was expected but the result of the validation contains no instance error..
+              Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be invalid, but no validation errors occurred..
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.RequestMessageTestBase_NoMemberError">
+        <member name="P:Kingo.ExceptionMessages.Request_InvalidNumberOfExpectedErrorsSpecified">
             <summary>
-              Looks up a localized string similar to An error for member &apos;{0}&apos; was expected, but the result contains no error for this member..
+              Looks up a localized string similar to The number of expected validation errors ({0}) must be equal to or greater than 1..
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.RequestMessageTestBase_UnexpectedErrorCount">
+        <member name="P:Kingo.ExceptionMessages.Request_MemberErrorsNotFound">
+            <summary>
+              Looks up a localized string similar to Member &apos;{0}&apos; does not have any validation-errors..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_NoSuchErrorMessage">
+            <summary>
+              Looks up a localized string similar to Member &apos;{0}&apos; does not contain any validation-error that satisfies the specified predicate..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_UnexpectedNumberOfErrorsOccurred">
             <summary>
               Looks up a localized string similar to The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1})..
-            </summary>
-        </member>
-        <member name="P:Kingo.ExceptionMessages.RequestMessageTestBase_UnexpectedInstanceError">
-            <summary>
-              Looks up a localized string similar to The expected instance error ({0}) does not match the actual instance error ({1}) based on the type of comparison specified ({2})..
-            </summary>
-        </member>
-        <member name="P:Kingo.ExceptionMessages.RequestMessageTestBase_UnexpectedMemberError">
-            <summary>
-              Looks up a localized string similar to The expected error for member &apos;{0}&apos; ({1}) does not match the actual error ({2}) based on the type of comparison specified ({3})..
             </summary>
         </member>
         <member name="P:Kingo.ExceptionMessages.UnexpectedExceptionResult_UnexpectedException">
@@ -140,42 +140,146 @@
               Looks up a localized string similar to Test &apos;{0}&apos; threw unexpected exception of type &apos;{1}&apos;. See inner exception for details..
             </summary>
         </member>
-        <member name="T:Kingo.MicroServices.Endpoints.IMicroProcessorConfiguration">
+        <member name="T:Kingo.MicroServices.Contracts.IIsNotValidResult">
             <summary>
-            When implemented by a class, represents a service collection that is to be
-            configured for a <see cref="T:Kingo.MicroServices.IMicroProcessor" /> and its dependencies.
+            When implemented by a class, represents the result of verifying whether or not a request is not valid.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.IMicroProcessorConfiguration.Setup(System.Action{Kingo.MicroServices.Endpoints.IMicroProcessorBuilder})">
+        <member name="M:Kingo.MicroServices.Contracts.IIsNotValidResult.And(System.Action{Kingo.MicroServices.Contracts.IValidationErrorCollection})">
             <summary>
-            Configures and registers a <see cref="T:Kingo.MicroServices.MicroProcessor" /> to use by the test-runner.
-            </summary>                
-            <param name="processorConfigurator">
-            Optional configuration callback that can be used to configure the specific parts of the processor.
+            Verifies all validation-errors using the specified <paramref name="errorValidator" />.
+            </summary>
+            <param name="errorValidator">
+            The validator that will be used to validate all validation errors.
             </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="errorValidator"/> is <c>null</c>.
+            </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.IMicroProcessorConfiguration.Setup``1(System.Action{Kingo.MicroServices.Endpoints.IMicroProcessorBuilder})">
+        <member name="T:Kingo.MicroServices.Contracts.IMemberErrorCollection">
             <summary>
-            Configures and registers a specific type of <see cref="T:Kingo.MicroServices.IMicroProcessor" /> to use in this application or service.
+            When implemented by a class, represents a collection of validation-errors of a single member.
             </summary>
-            <typeparam name="TProcessor">Type of the processor to register.</typeparam>        
-            <param name="processorConfigurator">
-            Optional configuration callback that can be used to configure the specific parts of the processor.
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.IMemberErrorCollection.MemberName">
+            <summary>
+            Returns the name of the member.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.IMemberErrorCollection.HasError(System.Func{System.String,System.Boolean},System.String,System.Object[])">
+            <summary>
+            Asserts that any error message on the associated member satisfies the specified
+            <paramref name="errorMessagePredicate"/>.
+            </summary>
+            <param name="errorMessagePredicate">
+            Predicate that is invoked for every error-message of the associated member until
+            the predicate is satisfied.
             </param>
+            <param name="message">Optional error-message to show when the assertion fails.</param>
+            <param name="args">Optional arguments for the specified <paramref name="message"/>.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="errorMessagePredicate"/> is <c>null</c>.
+            </exception>
         </member>
-        <member name="T:Kingo.MicroServices.Endpoints.IServiceCollectionConfiguration">
+        <member name="T:Kingo.MicroServices.Contracts.IRequest">
             <summary>
-            When implemented by a class, represents a configuration that can configure <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>
-            instances.
+            When implemented by a class, represents a request-message wrapper that can assert whether
+            a request message is valid or not.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.IServiceCollectionConfiguration.Configure(System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
+        <member name="M:Kingo.MicroServices.Contracts.IRequest.IsValid">
             <summary>
-            Configures a <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> by invoking the specified <paramref name="serviceConfigurator"/>.
+            Asserts that the message is valid.
             </summary>
-            <param name="serviceConfigurator">
-            Delegate that will configure the supplied <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
+            <exception cref="T:Kingo.TestFailedException">
+            The message is not valid.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.IRequest.IsNotValid(System.Int32)">
+            <summary>
+            Asserts that the message is not valid and has the specified number of validation errors.
+            </summary>
+            <param name="expectedNumberOfErrors">
+            The exact number of expected validation errors.
             </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="expectedNumberOfErrors"/> is less than <c>1</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.IValidationErrorCollection">
+            <summary>
+            When implemented by a class, represents a collection of validation-errors organized per member.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.IValidationErrorCollection.Item(System.String)">
+            <summary>
+            Returns the error-collection of the specified member.
+            </summary>
+            <param name="memberName">Name of the member.</param>
+            <returns>All validation-errors of the specified member.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="memberName"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:Kingo.TestFailedException">
+            The specified member has no errors.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.MemberCollectionExtensions">
+            <summary>
+            Contains extension methods for objects that implement the <see cref="T:Kingo.MicroServices.Contracts.IMemberErrorCollection"/> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.MemberCollectionExtensions.HasError(Kingo.MicroServices.Contracts.IMemberErrorCollection,System.String,System.StringComparison)">
+            <summary>
+            Asserts that the associated <paramref name="member"/> has the specified <paramref name="expectedErrorMessage"/>.
+            </summary>
+            <param name="member">A member with some validation-errors.</param>
+            <param name="expectedErrorMessage">The expected error message.</param>
+            <param name="comparison">Indicates how the expected and actual error messages should be compared.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="member"/> or <paramref name="expectedErrorMessage"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="comparison"/> is not a valid value.
+            </exception>
+            <exception cref="T:Kingo.TestFailedException">
+            The specified <paramref name="expectedErrorMessage"/> was not found in the collection of error messages.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.RequestTest`1">
+            <summary>
+            When implemented by a class, represents a test-class for a specific <see cref="T:Kingo.MicroServices.Contracts.Request" />.
+            </summary>    
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.RequestTest`1.AssertThat(System.Action{`0})">
+            <summary>
+            Creates and returns a wrapper for a request that is configured using the specified
+            <paramref name="requestConfigurator" />.
+            </summary>
+            <param name="requestConfigurator">
+            A delegate that is used to configure the properties of a request before its expected state is verified.
+            </param>
+            <returns>A new <see cref="T:Kingo.MicroServices.Contracts.IRequest"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="requestConfigurator"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.RequestTest`1.AssertThat(`0)">
+            <summary>
+            Creates and returns a wrapper for the specified <paramref name="request" /> that can be used
+            to assert whether or not the request is valid.
+            </summary>
+            <param name="request">The request to test.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.Contracts.IRequest"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="request"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.RequestTest`1.CreateRequest">
+            <summary>
+            Creates and returns a new request.
+            </summary>
+            <returns>A new request message.</returns>
         </member>
         <member name="T:Kingo.MicroServices.EventStream">
             <summary>
@@ -187,7 +291,16 @@
             Represents an empty event stream.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.EventStream.#ctor(System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:Kingo.MicroServices.EventStream.#ctor(Kingo.MicroServices.EventStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.EventStream" /> class.
+            </summary>
+            <param name="events">The stream to copy.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="events"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.EventStream.#ctor(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessage})">
             <summary>
             Initializes a new instance of the <see cref="T:Kingo.MicroServices.EventStream" /> class.
             </summary>
@@ -196,13 +309,13 @@
             <paramref name="events"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.EventStream.#ctor(Kingo.MicroServices.EventStream)">
+        <member name="M:Kingo.MicroServices.EventStream.#ctor(System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
             Initializes a new instance of the <see cref="T:Kingo.MicroServices.EventStream" /> class.
             </summary>
-            <param name="stream">The stream to copy.</param>
+            <param name="events">The events of this stream.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="stream"/> is <c>null</c>.
+            <paramref name="events"/> is <c>null</c>.
             </exception>
         </member>
         <member name="P:Kingo.MicroServices.EventStream.Item(System.Int32)">
@@ -244,60 +357,71 @@
             The event at the specified <paramref name="index"/> is not of type <typeparamref name="TEvent"/>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.IInnerExceptionResult.WithInnerExceptionOfType``1(System.Action{``0})">
+        <member name="T:Kingo.MicroServices.ExecuteQueryTest`1">
             <summary>
-            Asserts that the inner-exception of another exception is of type <typeparamref name="TException"/>.
-            </summary>        
-            <param name="assertion">Optional delegate to assert the details of the exception.</param>
+            Serves as a base-class for all test's that execute a query and return the resulting response.
+            </summary>
+            <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
         </member>
-        <member name="T:Kingo.MicroServices.IMessageHandlerResult">
+        <member name="M:Kingo.MicroServices.ExecuteQueryTest`1.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0},Kingo.MicroServices.MicroProcessorOperationTestContext)">
             <summary>
-            When implemented by a class, represents the result of a <see cref="T:Kingo.MicroServices.IMessageHandlerTest`2"/>,
-            where the result is either an exception or an empty event-stream.
+            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+            </summary>
+            <param name="processor">The processor to execute the query with.</param>
+            <param name="context">The context in which the test is running.</param>    
+        </member>
+        <member name="M:Kingo.MicroServices.ExecuteQueryTest`1.Then(Kingo.MicroServices.IExecuteQueryResult{`0},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Verifies the <paramref name="result"/> of this test.
+            </summary>
+            <param name="context">The context in which the test is running.</param>
+            <param name="result">The result of this test.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.ExecuteQueryTest`2">
+            <summary>
+            Serves as a base-class for all test's that execute a query and return the resulting response.
+            </summary>
+            <typeparam name="TRequest">Type of the request executed by the query.</typeparam>
+            <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.ExecuteQueryTest`2.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0,`1},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+            </summary>
+            <param name="processor">The processor to execute the query with.</param>
+            <param name="context">The context in which the test is running.</param> 
+        </member>
+        <member name="M:Kingo.MicroServices.ExecuteQueryTest`2.Then(`0,Kingo.MicroServices.IExecuteQueryResult{`1},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Verifies the <paramref name="result"/> of this test.
+            </summary>
+            <param name="request">Request that was executed by the query.</param>        
+            <param name="result">The result of this test.</param>
+            <param name="context">The context in which the test is running.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.HandleMessageResultExtensions">
+            <summary>
+            Contains extension methods for instances that implement the <see cref="T:Kingo.MicroServices.IHandleMessageResult" />
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.IMessageHandlerResult.IsEventStream(System.Action{Kingo.MicroServices.EventStream})">
+        <member name="M:Kingo.MicroServices.HandleMessageResultExtensions.IsEmptyStream(Kingo.MicroServices.IHandleMessageResult)">
             <summary>
-            Verifies that no events were published.
+            Verifies that a test produces an empty event-stream.
             </summary>
-            <param name="assertion">
-            Optional delegate to verify the details of all the published events.
-            </param>
+            <param name="result">The result to verify.</param>
+            <exception cref="T:Kingo.TestFailedException">
+            The result is either not an event-stream, or the event-stream contains one or more events.
+            </exception>
         </member>
-        <member name="T:Kingo.MicroServices.IMessageHandlerResult`1">
+        <member name="T:Kingo.MicroServices.HandleMessageTest`1">
             <summary>
-            Represents the result of a <see cref="T:Kingo.MicroServices.IMessageHandlerTest`2"/>.
+            Serves as a base-class for all tests that handle a message and return an empty stream or throw an exception.
             </summary>
-            <typeparam name="TEventStream">Type of the event-stream produced by the test.</typeparam>
         </member>
-        <member name="M:Kingo.MicroServices.IMessageHandlerResult`1.IsEventStream(System.Func{Kingo.MicroServices.EventStream,`0})">
-            <summary>
-            Asserts that the test produced a specific set of events.
-            </summary>        
-            <param name="assertion">
-            Delegate to verify the details of all the published events and to create and return
-            an event stream of type <typeparamref name="TEventStream" />.
-            </param>        
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="assertion"/> is <c>null</c>.
-            </exception>        
+        <member name="M:Kingo.MicroServices.HandleMessageTest`1.Then(`0,Kingo.MicroServices.IHandleMessageResult{Kingo.MicroServices.EventStream},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <inheritdoc />
         </member>
-        <member name="T:Kingo.MicroServices.IMessageHandlerTest`2">
-            <summary>
-            When implemented by a class, represents a test that handles a specific message with a <see cref="T:Kingo.MicroServices.IMicroProcessor" />
-            and produces a set of events as a result.
-            </summary>
-            <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
-            <typeparam name="TEventStream">Type of the event-stream that is produced by this test.</typeparam>
-        </member>
-        <member name="M:Kingo.MicroServices.IMessageHandlerTest`2.WhenAsync(Kingo.MicroServices.IMessageProcessor{`0},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Executes this test by handling a specific message using the specified <paramref name="processor"/>.
-            </summary>
-            <param name="processor">The processor to handle the message with.</param>
-            <param name="context">The context in which the test is running.</param>        
-        </member>
-        <member name="M:Kingo.MicroServices.IMessageHandlerTest`2.Then(`0,Kingo.MicroServices.IMessageHandlerResult{`1},Kingo.MicroServices.MicroProcessorTestContext)">
+        <member name="M:Kingo.MicroServices.HandleMessageTest`1.Then(`0,Kingo.MicroServices.IHandleMessageResult,Kingo.MicroServices.MicroProcessorOperationTestContext)">
             <summary>
             Verifies the <paramref name="result"/> of this test.
             </summary>
@@ -305,25 +429,116 @@
             <param name="result">The result of this test.</param>
             <param name="context">The context in which the test is running.</param>                
         </member>
-        <member name="T:Kingo.MicroServices.IMessageHandlerTestProcessor">
+        <member name="T:Kingo.MicroServices.HandleMessageTest`2">
+            <summary>
+            Serves as a base-class for all test's that handle a message and return the resulting event stream.
+            </summary>
+            <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
+            <typeparam name="TEventStream">Type of the resulting event stream.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.HandleMessageTest`2.WhenAsync(Kingo.MicroServices.IMessageProcessor{`0},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Executes this test by handling a specific message using the specified <paramref name="processor"/>.
+            </summary>
+            <param name="processor">The processor to handle the message with.</param>
+            <param name="context">The context in which the test is running.</param> 
+        </member>
+        <member name="M:Kingo.MicroServices.HandleMessageTest`2.Then(`0,Kingo.MicroServices.IHandleMessageResult{`1},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Verifies the <paramref name="result"/> of this test.
+            </summary>
+            <param name="message">The message that was handled by this test.</param>        
+            <param name="result">The result of this test.</param>
+            <param name="context">The context in which the test is running.</param>                
+        </member>
+        <member name="T:Kingo.MicroServices.IExecuteQueryResult`1">
+            <summary>
+            Represents the result of a <see cref="T:Kingo.MicroServices.IExecuteQueryTest`2"/> or <see cref="T:Kingo.MicroServices.IExecuteQueryTest`1"/>.
+            </summary>
+            <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.IExecuteQueryResult`1.IsResponse(System.Action{`0})">
+            <summary>
+            Asserts that the query returned the expected response.
+            </summary>
+            <param name="assertion">Delegate to verify the details of the response.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="assertion"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IExecuteQueryTest`1">
+            <summary>
+            When implemented by a class, represents a test that executes a query with a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
+            </summary>    
+            <typeparam name="TResponse">Type of the response of the test.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.IExecuteQueryTest`1.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+            </summary>
+            <param name="processor">The processor to execute the query with.</param>
+            <param name="context">The context in which the test is running.</param>                
+        </member>
+        <member name="M:Kingo.MicroServices.IExecuteQueryTest`1.Then(Kingo.MicroServices.IExecuteQueryResult{`0},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Verifies the <paramref name="result"/> of this test.
+            </summary>        
+            <param name="result">The result of this test.</param>
+            <param name="context">The context in which the test is running.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.IExecuteQueryTest`2">
+            <summary>
+            When implemented by a class, represents a test that executes a query with a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
+            </summary>
+            <typeparam name="TRequest">Type of the request of the test.</typeparam>
+            <typeparam name="TResponse">Type of the response of the test.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.IExecuteQueryTest`2.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0,`1},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+            </summary>
+            <param name="processor">The processor to execute the query with.</param>
+            <param name="context">The context in which the test is running.</param>                
+        </member>
+        <member name="M:Kingo.MicroServices.IExecuteQueryTest`2.Then(`0,Kingo.MicroServices.IExecuteQueryResult{`1},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Verifies the <paramref name="result"/> of this test.
+            </summary>
+            <param name="request">Request that was executed by the query.</param>        
+            <param name="result">The result of this test.</param>
+            <param name="context">The context in which the test is running.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.IHandleMessageOperationTestProcessor">
             <summary>
             When implemented by a class, represents a processor that can be used to handle specific messages or run specific tests
             as a means to setup another test.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.IMessageHandlerTestProcessor.HandleAsync``1(``0,Kingo.MicroServices.MicroProcessorTestContext,Kingo.MicroServices.IMessageHandler{``0})">
+        <member name="M:Kingo.MicroServices.IHandleMessageOperationTestProcessor.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,Kingo.MicroServices.MicroProcessorOperationTestContext)">
             <summary>
-            Handles the specified message.
+            Executes a command with a specific message handler.
             </summary>
-            <typeparam name="TMessage">Type of the message to handle.</typeparam>
-            <param name="message">The message to handle.</param>
+            <typeparam name="TCommand">Type of the command to handle.</typeparam>
+            <param name="messageHandler">The <see cref="T:Kingo.MicroServices.IMessageHandler`1"/> that is to handle the specified command.</param>
+            <param name="message">The command to execute.</param>
             <param name="context">The context in which the test is running.</param>
-            <param name="handler">Optional handler to handle the message with inside the processor.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
+            <paramref name="messageHandler"/>, <paramref name="message"/>, or <paramref name="context"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.IMessageHandlerTestProcessor.RunAsync``2(Kingo.MicroServices.IMessageHandlerTest{``0,``1},Kingo.MicroServices.MicroProcessorTestContext)">
+        <member name="M:Kingo.MicroServices.IHandleMessageOperationTestProcessor.HandleEventAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Handles an event with a specific event handler.
+            </summary>
+            <typeparam name="TEvent">Type of the event to handle.</typeparam>
+            <param name="messageHandler">The <see cref="T:Kingo.MicroServices.IMessageHandler`1"/> that is to handle the specified event.</param>
+            <param name="message">The event to handle.</param>
+            <param name="context">The context in which the test is running.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/>, <paramref name="message"/>, or <paramref name="context"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IHandleMessageOperationTestProcessor.RunAsync``2(Kingo.MicroServices.IHandleMessageTest{``0,``1},Kingo.MicroServices.MicroProcessorOperationTestContext)">
             <summary>
             Runs the specified <paramref name="test"/> and stores it's result into the specified <paramref name="context" />.
             </summary>
@@ -335,28 +550,104 @@
             <paramref name="test"/> or <paramref name="context"/> is <c>null</c>.
             </exception>
         </member>
+        <member name="T:Kingo.MicroServices.IHandleMessageResult">
+            <summary>
+            When implemented by a class, represents the result of a <see cref="T:Kingo.MicroServices.IHandleMessageTest`2"/>,
+            where the result is either an exception or an empty event-stream.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IHandleMessageResult.IsEventStream(System.Action{Kingo.MicroServices.EventStream})">
+            <summary>
+            Verifies that no events were published.
+            </summary>
+            <param name="assertion">
+            Optional delegate to verify the details of all the published events.
+            </param>
+        </member>
+        <member name="T:Kingo.MicroServices.IHandleMessageResult`1">
+            <summary>
+            Represents the result of a <see cref="T:Kingo.MicroServices.IHandleMessageTest`2"/>.
+            </summary>
+            <typeparam name="TEventStream">Type of the event-stream produced by the test.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.IHandleMessageResult`1.IsEventStream(System.Func{Kingo.MicroServices.EventStream,`0})">
+            <summary>
+            Asserts that the test produced a specific set of events.
+            </summary>        
+            <param name="assertion">
+            Delegate to verify the details of all the published events and to create and return
+            an event stream of type <typeparamref name="TEventStream" />.
+            </param>        
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="assertion"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="T:Kingo.MicroServices.IHandleMessageTest`2">
+            <summary>
+            When implemented by a class, represents a test that handles a specific message with a <see cref="T:Kingo.MicroServices.IMicroProcessor" />
+            and produces a set of events as a result.
+            </summary>
+            <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
+            <typeparam name="TEventStream">Type of the event-stream that is produced by this test.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.IHandleMessageTest`2.WhenAsync(Kingo.MicroServices.IMessageProcessor{`0},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Executes this test by handling a specific message using the specified <paramref name="processor"/>.
+            </summary>
+            <param name="processor">The processor to handle the message with.</param>
+            <param name="context">The context in which the test is running.</param>        
+        </member>
+        <member name="M:Kingo.MicroServices.IHandleMessageTest`2.Then(`0,Kingo.MicroServices.IHandleMessageResult{`1},Kingo.MicroServices.MicroProcessorOperationTestContext)">
+            <summary>
+            Verifies the <paramref name="result"/> of this test.
+            </summary>
+            <param name="message">The message that was handled by this test.</param>        
+            <param name="result">The result of this test.</param>
+            <param name="context">The context in which the test is running.</param>                
+        </member>
+        <member name="T:Kingo.MicroServices.IInnerExceptionResult">
+            <summary>
+            When implemented by a class, represents a result that can verify the type and details a an inner-exception.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IInnerExceptionResult.WithInnerExceptionOfType``1(System.Action{``0})">
+            <summary>
+            Asserts that the inner-exception of another exception is of type <typeparamref name="TException"/>.
+            </summary>        
+            <param name="assertion">Optional delegate to assert the details of the exception.</param>
+        </member>
         <member name="T:Kingo.MicroServices.IMessageProcessor`1">
             <summary>
             When implemented by a class, represents a processor that can process a specific message.
             </summary>
             <typeparam name="TMessage">Type of the message that can be processed.</typeparam>
         </member>
-        <member name="M:Kingo.MicroServices.IMessageProcessor`1.HandleAsync(`0,Kingo.MicroServices.IMessageHandler{`0})">
+        <member name="M:Kingo.MicroServices.IMessageProcessor`1.ExecuteCommandAsync(Kingo.MicroServices.IMessageHandler{`0},`0)">
             <summary>
-            Processes the specified <paramref name="message" />.
+            Executes a command with a specific message handler.
             </summary>
-            <param name="message">The message to handle.</param>
-            <param name="handler">Optional handler to handle the message inside the processor.</param>
+            <param name="messageHandler">Message handler that will handle the specified <paramref name="message"/>.</param>
+            <param name="message">The command to execute.</param>        
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="message"/> is <c>null</c>.
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="T:Kingo.MicroServices.IMicroProcessorTest">
+        <member name="M:Kingo.MicroServices.IMessageProcessor`1.HandleEventAsync(Kingo.MicroServices.IMessageHandler{`0},`0)">
+            <summary>
+            Handles an event with a specific message handler.
+            </summary>
+            <param name="messageHandler">Message handler that will handle the specified <paramref name="message"/>.</param>
+            <param name="message">The event to handle.</param>        
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IMicroProcessorOperationTest">
             <summary>
             When implemented by a class, represents a test that either handles a message or executes a query through a <see cref="T:Kingo.MicroServices.IMicroProcessor"/>.
             </summary>    
         </member>
-        <member name="M:Kingo.MicroServices.IMicroProcessorTest.GivenAsync(Kingo.MicroServices.IMessageHandlerTestProcessor,Kingo.MicroServices.MicroProcessorTestContext)">
+        <member name="M:Kingo.MicroServices.IMicroProcessorOperationTest.GivenAsync(Kingo.MicroServices.IHandleMessageOperationTestProcessor,Kingo.MicroServices.MicroProcessorOperationTestContext)">
             <summary>
             Prepares the test for execution.
             </summary>
@@ -365,12 +656,12 @@
             </param>
             <param name="context">The context in which the test is running.</param>                
         </member>
-        <member name="T:Kingo.MicroServices.IMicroProcessorTestResult">
+        <member name="T:Kingo.MicroServices.IMicroProcessorOperationTestResult">
             <summary>
             When implemented by a class, represents the result of a test.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.IMicroProcessorTestResult.IsExceptionOfType``1(System.Action{``0})">
+        <member name="M:Kingo.MicroServices.IMicroProcessorOperationTestResult.IsExceptionOfType``1(System.Action{``0})">
             <summary>
             Asserts that while running the test, an exception of type <typeparamref name="TException"/> was thrown.
             </summary>        
@@ -399,131 +690,22 @@
             <typeparam name="TRequest">Type of the request of the query.</typeparam>
             <typeparam name="TResponse">Type of the response of the query.</typeparam>
         </member>
-        <member name="M:Kingo.MicroServices.IQueryProcessor`2.ExecuteAsync(`0,Kingo.MicroServices.IQuery{`0,`1})">
+        <member name="M:Kingo.MicroServices.IQueryProcessor`2.ExecuteAsync(Kingo.MicroServices.IQuery{`0,`1},`0)">
             <summary>
             Executes the specified <paramref name="query"/> with the specified <paramref name="request"/>.
             </summary>
-            <param name="request">Request to execute.</param>
             <param name="query">Query to execute.</param>
+            <param name="request">Request to execute.</param>        
             <exception cref="T:System.ArgumentNullException">
             <paramref name="request"/> or <paramref name="query"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="T:Kingo.MicroServices.IQueryResult`1">
-            <summary>
-            Represents the result of a <see cref="T:Kingo.MicroServices.IQueryTest`2"/> or <see cref="T:Kingo.MicroServices.IQueryTest`1"/>.
-            </summary>
-            <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-        </member>
-        <member name="M:Kingo.MicroServices.IQueryResult`1.IsResponse(System.Action{`0})">
-            <summary>
-            Asserts that the query returned the expected response.
-            </summary>
-            <param name="assertion">Delegate to verify the details of the response.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="assertion"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="T:Kingo.MicroServices.IQueryTest`1">
-            <summary>
-            When implemented by a class, represents a test that executes a query with a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
-            </summary>    
-            <typeparam name="TResponse">Type of the response of the test.</typeparam>
-        </member>
-        <member name="M:Kingo.MicroServices.IQueryTest`1.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
-            </summary>
-            <param name="processor">The processor to execute the query with.</param>
-            <param name="context">The context in which the test is running.</param>                
-        </member>
-        <member name="M:Kingo.MicroServices.IQueryTest`1.Then(Kingo.MicroServices.IQueryResult{`0},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Verifies the <paramref name="result"/> of this test.
-            </summary>        
-            <param name="result">The result of this test.</param>
-            <param name="context">The context in which the test is running.</param>
-        </member>
-        <member name="T:Kingo.MicroServices.IQueryTest`2">
-            <summary>
-            When implemented by a class, represents a test that executes a query with a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
-            </summary>
-            <typeparam name="TRequest">Type of the request of the test.</typeparam>
-            <typeparam name="TResponse">Type of the response of the test.</typeparam>
-        </member>
-        <member name="M:Kingo.MicroServices.IQueryTest`2.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0,`1},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
-            </summary>
-            <param name="processor">The processor to execute the query with.</param>
-            <param name="context">The context in which the test is running.</param>                
-        </member>
-        <member name="M:Kingo.MicroServices.IQueryTest`2.Then(`0,Kingo.MicroServices.IQueryResult{`1},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Verifies the <paramref name="result"/> of this test.
-            </summary>
-            <param name="request">Request that was executed by the query.</param>        
-            <param name="result">The result of this test.</param>
-            <param name="context">The context in which the test is running.</param>
-        </member>
-        <member name="T:Kingo.MicroServices.MessageHandlerResultExtensions">
-            <summary>
-            Contains extension methods for instances that implement the <see cref="T:Kingo.MicroServices.IMessageHandlerResult" />
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerResultExtensions.IsEmptyStream(Kingo.MicroServices.IMessageHandlerResult)">
-            <summary>
-            Verifies that a test produces an empty event-stream.
-            </summary>
-            <param name="result">The result to verify.</param>
-            <exception cref="T:Kingo.TestFailedException">
-            The result is either not an event-stream, or the event-stream contains one or more events.
-            </exception>
-        </member>
-        <member name="T:Kingo.MicroServices.MessageHandlerTest`1">
-            <summary>
-            Serves as a base-class for all test's that handle a message and return an empty stream or throw an exception.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerTest`1.Then(`0,Kingo.MicroServices.IMessageHandlerResult{Kingo.MicroServices.EventStream},Kingo.MicroServices.MicroProcessorTestContext)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerTest`1.Then(`0,Kingo.MicroServices.IMessageHandlerResult,Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Verifies the <paramref name="result"/> of this test.
-            </summary>
-            <param name="message">The message that was handled by this test.</param>        
-            <param name="result">The result of this test.</param>
-            <param name="context">The context in which the test is running.</param>                
-        </member>
-        <member name="T:Kingo.MicroServices.MessageHandlerTest`2">
-            <summary>
-            Serves as a base-class for all test's that handle a message and return the resulting event stream.
-            </summary>
-            <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
-            <typeparam name="TEventStream">Type of the resulting event stream.</typeparam>
-        </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerTest`2.WhenAsync(Kingo.MicroServices.IMessageProcessor{`0},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Executes this test by handling a specific message using the specified <paramref name="processor"/>.
-            </summary>
-            <param name="processor">The processor to handle the message with.</param>
-            <param name="context">The context in which the test is running.</param> 
-        </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerTest`2.Then(`0,Kingo.MicroServices.IMessageHandlerResult{`1},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Verifies the <paramref name="result"/> of this test.
-            </summary>
-            <param name="message">The message that was handled by this test.</param>        
-            <param name="result">The result of this test.</param>
-            <param name="context">The context in which the test is running.</param>                
+            </exception>   
         </member>
         <member name="T:Kingo.MicroServices.MessageHandlerTestProcessorExtensions">
             <summary>
-            Contains extensions methods for instances that implement the <see cref="T:Kingo.MicroServices.IMessageHandlerTestProcessor" /> interface.
+            Contains extensions methods for instances that implement the <see cref="T:Kingo.MicroServices.IHandleMessageOperationTestProcessor" /> interface.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.IMessageHandlerTestProcessor,``0,Kingo.MicroServices.MicroProcessorTestContext,System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext})">
+        <member name="M:Kingo.MicroServices.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.IHandleMessageOperationTestProcessor,``0,Kingo.MicroServices.MicroProcessorOperationTestContext,System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext})">
             <summary>
             Handles the specified message.
             </summary>
@@ -536,7 +718,7 @@
             <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.IMessageHandlerTestProcessor,``0,Kingo.MicroServices.MicroProcessorTestContext,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task})">
+        <member name="M:Kingo.MicroServices.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.IHandleMessageOperationTestProcessor,``0,Kingo.MicroServices.MicroProcessorOperationTestContext,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task})">
             <summary>
             Handles the specified message.
             </summary>
@@ -554,34 +736,56 @@
             Contains extension-methods  for instances that implement the <see cref="T:Kingo.MicroServices.IMessageProcessor`1"/> interface.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.MessageProcessorExtensions.HandleAsync``1(Kingo.MicroServices.IMessageProcessor{``0},``0,System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext})">
+        <member name="M:Kingo.MicroServices.MessageProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0)">
+            <summary>
+            Executes a command with a specified <paramref name="messageHandler"/>.
+            </summary>
+            <param name="processor">The processor that will process the message.</param>
+            <param name="messageHandler">Delegate that will execute the command.</param>
+            <param name="message">The command to execute.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
             <summary>
             Processes the specified <paramref name="message" />.
             </summary>
             <param name="processor">The processor that will process the message.</param>
-            <param name="message">The message to handle.</param>
-            <param name="handler">Optional handler to handle the message inside the processor.</param>
+            <param name="messageHandler">Delegate that will execute the command.</param>
+            <param name="message">The command to execute.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="message"/> is <c>null</c>.
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.MessageProcessorExtensions.HandleAsync``1(Kingo.MicroServices.IMessageProcessor{``0},``0,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task})">
+        <member name="M:Kingo.MicroServices.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0)">
+            <summary>
+            Executes a command with a specified <paramref name="messageHandler"/>.
+            </summary>
+            <param name="processor">The processor that will process the message.</param>
+            <param name="messageHandler">Delegate that will handle the event.</param>
+            <param name="message">The event to handle.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
             <summary>
             Processes the specified <paramref name="message" />.
             </summary>
             <param name="processor">The processor that will process the message.</param>
-            <param name="message">The message to handle.</param>
-            <param name="handler">Optional handler to handle the message inside the processor.</param>
+            <param name="messageHandler">Delegate that will handle the event.</param>
+            <param name="message">The event to handle.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="message"/> is <c>null</c>.
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="T:Kingo.MicroServices.MicroProcessorTest">
+        <member name="T:Kingo.MicroServices.MicroProcessorOperationTest">
             <summary>
             Serves as a base-class for all test's.
             </summary>    
         </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorTest.GivenAsync(Kingo.MicroServices.IMessageHandlerTestProcessor,Kingo.MicroServices.MicroProcessorTestContext)">
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTest.GivenAsync(Kingo.MicroServices.IHandleMessageOperationTestProcessor,Kingo.MicroServices.MicroProcessorOperationTestContext)">
             <summary>
             Prepares this test for execution.
             </summary>
@@ -590,20 +794,20 @@
             </param>
             <param name="context">The context in which the test is running.</param>        
         </member>
-        <member name="T:Kingo.MicroServices.MicroProcessorTestContext">
+        <member name="T:Kingo.MicroServices.MicroProcessorOperationTestContext">
             <summary>
             When implemented by a class, represents the context in which a test executes.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.MicroProcessorTestContext.ServiceProvider">
+        <member name="P:Kingo.MicroServices.MicroProcessorOperationTestContext.ServiceProvider">
             <summary>
             The service provider that is used to resolve dependencies during test execution.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorTestContext.ToString">
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTestContext.ToString">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorTestContext.GetEventStream``2(Kingo.MicroServices.IMessageHandlerTest{``0,``1})">
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTestContext.GetEventStream``2(Kingo.MicroServices.IHandleMessageTest{``0,``1})">
             <summary>
             Returns the <see cref="T:Kingo.MicroServices.EventStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
             </summary>        
@@ -616,38 +820,46 @@
             No event-stream produced by the specified <paramref name="test"/> was stored in this context.
             </exception>
         </member>
-        <member name="P:Kingo.MicroServices.MicroProcessorTestContext.Current">
-            <summary>
-            Returns the current <see cref="T:Kingo.MicroServices.MicroProcessorTestContext"/>, or <c>null</c> if no test is currently running.
-            </summary>
-        </member>
-        <member name="T:Kingo.MicroServices.MicroProcessorTestRunner">
+        <member name="T:Kingo.MicroServices.MicroProcessorOperationTestRunner">
             <summary>
             Serves as a base-class for all test-classes that execute tests based on test's.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorTestRunner.RunAsync``2(Kingo.MicroServices.IMessageHandlerTest{``0,``1})">
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTestRunner.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MicroProcessorOperationTestRunner" /> class.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MicroProcessorOperationTestRunner.ServiceProvider">
+            <summary>
+            Returns the <see cref="T:System.IServiceProvider" /> used by the <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTestRunner.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            When overridden, configures <paramref name="services"/> with a <see cref="T:Kingo.MicroServices.IMicroProcessor" /> and other
+            dependencies for the tests to run.
+            </summary>
+            <param name="services">The service collection to configure.</param>
+            <returns>The configured service collection.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTestRunner.RunAsync``2(Kingo.MicroServices.IHandleMessageTest{``0,``1})">
             <summary>
             Runs the specified <paramref name="test" />.
             </summary>        
             <param name="test">The test to run.</param>        
         </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorTestRunner.RunAsync``1(Kingo.MicroServices.IQueryTest{``0})">
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTestRunner.RunAsync``1(Kingo.MicroServices.IExecuteQueryTest{``0})">
             <summary>
             Runs the specified <paramref name="test" />.
             </summary>        
             <param name="test">The test to run.</param>            
         </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorTestRunner.RunAsync``2(Kingo.MicroServices.IQueryTest{``0,``1})">
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationTestRunner.RunAsync``2(Kingo.MicroServices.IExecuteQueryTest{``0,``1})">
             <summary>
             Runs the specified <paramref name="test" />.
             </summary>        
             <param name="test">The test to run.</param>        
-        </member>
-        <member name="P:Kingo.MicroServices.MicroProcessorTestRunner.MicroProcessor">
-            <summary>
-            Returns the processor-configuration for the <see cref="T:Kingo.MicroServices.IMicroProcessor" /> that is to be used by all tests.
-            </summary>
         </member>
         <member name="T:Kingo.MicroServices.QueryProcessorExtensions">
             <summary>
@@ -675,69 +887,38 @@
             <paramref name="query"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.IQueryProcessor{``0,``1},``0,System.Func{``0,Kingo.MicroServices.QueryOperationContext,``1})">
+        <member name="M:Kingo.MicroServices.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.IQueryProcessor{``0,``1},System.Func{``0,Kingo.MicroServices.QueryOperationContext,``1},``0)">
             <summary>
             Executes the specified <paramref name="query"/>.
             </summary>
             <param name="processor">Processor that will execute the specified <paramref name="query"/>.</param>
-            <param name="request">Request message of the query.</param>
             <param name="query">Query to execute.</param>
+            <param name="request">Request message of the query.</param>        
             <exception cref="T:System.ArgumentNullException">
             <paramref name="query"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.IQueryProcessor{``0,``1},``0,System.Func{``0,Kingo.MicroServices.QueryOperationContext,System.Threading.Tasks.Task{``1}})">
+        <member name="M:Kingo.MicroServices.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.IQueryProcessor{``0,``1},System.Func{``0,Kingo.MicroServices.QueryOperationContext,System.Threading.Tasks.Task{``1}},``0)">
             <summary>
             Executes the specified <paramref name="query"/>.
             </summary>
             <param name="processor">Processor that will execute the specified <paramref name="query"/>.</param>
-            <param name="request">Request message of the query.</param>
             <param name="query">Query to execute.</param>
+            <param name="request">Request message of the query.</param>        
             <exception cref="T:System.ArgumentNullException">
             <paramref name="query"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="T:Kingo.MicroServices.QueryTest`1">
+        <member name="T:Kingo.ObjectExtensions">
             <summary>
-            Serves as a base-class for all test's that execute a query and return the resulting response.
+            Contains extension methods for any object.
             </summary>
-            <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
         </member>
-        <member name="M:Kingo.MicroServices.QueryTest`1.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0},Kingo.MicroServices.MicroProcessorTestContext)">
+        <member name="M:Kingo.ObjectExtensions.IgnoreValue(System.Object)">
             <summary>
-            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+            Represents a dummy method that does nothing but consume the specified instance.
             </summary>
-            <param name="processor">The processor to execute the query with.</param>
-            <param name="context">The context in which the test is running.</param>    
-        </member>
-        <member name="M:Kingo.MicroServices.QueryTest`1.Then(Kingo.MicroServices.IQueryResult{`0},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Verifies the <paramref name="result"/> of this test.
-            </summary>
-            <param name="context">The context in which the test is running.</param>
-            <param name="result">The result of this test.</param>
-        </member>
-        <member name="T:Kingo.MicroServices.QueryTest`2">
-            <summary>
-            Serves as a base-class for all test's that execute a query and return the resulting response.
-            </summary>
-            <typeparam name="TRequest">Type of the request executed by the query.</typeparam>
-            <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-        </member>
-        <member name="M:Kingo.MicroServices.QueryTest`2.WhenAsync(Kingo.MicroServices.IQueryProcessor{`0,`1},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Executes this test by executing a specific query using the specified <paramref name="processor"/>.
-            </summary>
-            <param name="processor">The processor to execute the query with.</param>
-            <param name="context">The context in which the test is running.</param> 
-        </member>
-        <member name="M:Kingo.MicroServices.QueryTest`2.Then(`0,Kingo.MicroServices.IQueryResult{`1},Kingo.MicroServices.MicroProcessorTestContext)">
-            <summary>
-            Verifies the <paramref name="result"/> of this test.
-            </summary>
-            <param name="request">Request that was executed by the query.</param>        
-            <param name="result">The result of this test.</param>
-            <param name="context">The context in which the test is running.</param>
+            <param name="instance">Any object.</param>
         </member>
         <member name="T:Kingo.TestFailedException">
             <summary>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Kingo.MicroServices.Contracts
@@ -58,7 +57,7 @@ namespace Kingo.MicroServices.Contracts
         {
             if (PropertyB >= PropertyC)
             {
-                yield return NewValidationError(Guid.NewGuid().ToString(), nameof(PropertyB), nameof(PropertyC));
+                yield return NewValidationError("PropertyC must be greater than PropertyB", nameof(PropertyB), nameof(PropertyC));
             }
         }        
     }

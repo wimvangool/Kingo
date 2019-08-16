@@ -1151,9 +1151,24 @@
               Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.Constraint_UnsupportedType">
+            <summary>
+              Looks up a localized string similar to Value of type &apos;{0}&apos; could not be validated because the constraint expects an instance of type &apos;{1}&apos;..
+            </summary>
+        </member>
         <member name="P:Kingo.ExceptionMessages.Context_IllegalScopeStarted">
             <summary>
               Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.DataContractExtensions_CircularReference">
+            <summary>
+              Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: version of type &apos;{1}&apos; introduced a circular update by returning an instance of type &apos;{2}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.DataContractExtensions_InvalidCast">
+            <summary>
+              Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: could not convert latest version of type &apos;{1}&apos; to instance of type &apos;{2}&apos;..
             </summary>
         </member>
         <member name="P:Kingo.ExceptionMessages.DateTimeSpan_InvalidTimeSpan">
@@ -1323,6 +1338,543 @@
             Returns <c>409</c>.
             </summary>
         </member>
+        <member name="M:Kingo.MicroServices.Contracts.AndConstraint.And(Kingo.MicroServices.Contracts.IConstraint)">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.ChildMemberAttribute">
+            <summary>
+            This attribute can be used to decorate fields or properties of a <see cref="T:Kingo.MicroServices.Contracts.ValidatableObject" />
+            to signal that it represents an item, collection or dictionary that should be validated in
+            and of itself. Any validation-errors of the child-member will be added to the set of validation-errors
+            of the parent.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ChildMemberAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Contracts.ChildMemberAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ChildMemberAttribute.ErrorMessage">
+            <summary>
+            If specified, defines the error-message that is added to the collection of validation-results
+            if any child-members are invalid. This property cannot be used in combination with the
+            <see cref="P:Kingo.MicroServices.Contracts.ChildMemberAttribute.ErrorMessageResourceType"/> and <see cref="P:Kingo.MicroServices.Contracts.ChildMemberAttribute.ErrorMessageResourceName"/> properties.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ChildMemberAttribute.ErrorMessageResourceType">
+            <summary>
+            If specified, defines the resource-type where the localized error-message can be retrieved
+            that is added to the collection of validation-results if any child-members are invalid.
+            This property should be used in combination with the <see cref="P:Kingo.MicroServices.Contracts.ChildMemberAttribute.ErrorMessageResourceName"/>-property.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ChildMemberAttribute.ErrorMessageResourceName">
+            <summary>
+            If specified, defines the resource-name of the localized error-message inside the resource-type
+            that is added to the collection of validation-results if any child-members are invalid.
+            This property should be used in combination with the <see cref="P:Kingo.MicroServices.Contracts.ChildMemberAttribute.ErrorMessageResourceType"/>-property.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.Constraint">
+            <summary>
+            Serves as a base-class implementation of the <see cref="T:Kingo.MicroServices.Contracts.IConstraint"/> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.And(Kingo.MicroServices.Contracts.IConstraint)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.Or(Kingo.MicroServices.Contracts.IConstraint)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.All(Kingo.MicroServices.Contracts.IConstraint[])">
+            <summary>
+            Creates and returns a new constraint that checks if all specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical AND-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.All(System.Collections.Generic.IEnumerable{Kingo.MicroServices.Contracts.IConstraint})">
+            <summary>
+            Creates and returns a new constraint that checks if all specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical AND-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.Any(Kingo.MicroServices.Contracts.IConstraint[])">
+            <summary>
+            Creates and returns a new constraint that checks if any of the specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical OR-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.Any(System.Collections.Generic.IEnumerable{Kingo.MicroServices.Contracts.IConstraint})">
+            <summary>
+            Creates and returns a new constraint that checks if any of the specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical OR-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.IsAlwaysValid``1">
+            <summary>
+            Returns a new constraint that declares any value as valid (with the exception
+            of <c>null</c>-values and instances that are not an instance of <typeparamref name="TValue"/>).
+            </summary>
+            <typeparam name="TValue">Type of value to check.</typeparam>
+            <returns>
+            A constraint that is satisfied with any compatible value.
+            </returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint.IsNeverValid``1(System.String)">
+            <summary>
+            Returns a new constraint that declares any value as invalid.
+            </summary>
+            <typeparam name="TValue">Type of value to check.</typeparam>
+            <param name="errorMessageFormat">
+            The error message that will be returned in formatted form when the constraint's
+            <see cref="M:Kingo.MicroServices.Contracts.IConstraint.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)"/> method is called.
+            If not specified, a default error message is used.
+            </param>
+            <returns>
+            A constraint that is always returns a validation error.
+            </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.Constraint`1">
+            <summary>
+            Serves as a base-class for all constraints that support validation of a specific type.
+            </summary>
+            <typeparam name="TValue">The supported type.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint`1.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.Constraint`1.IsValid(`0,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates the specified <paramref name="value"/> and returns the result.
+            </summary>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">Context of the value to validate.</param>
+            <returns>
+            <see cref="F:System.ComponentModel.DataAnnotations.ValidationResult.Success"/> if <paramref name="value"/> is valid; otherwise
+            it will return a result with the appropriate error message.
+            </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.ConstraintExtensions">
+            <summary>
+            Contains extension methods for <see cref="T:Kingo.MicroServices.Contracts.IConstraint"/> instances.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ConstraintExtensions.And``1(Kingo.MicroServices.Contracts.IConstraint,System.Func{``0,System.ComponentModel.DataAnnotations.ValidationContext,System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+            Creates and returns a new constraints that checks if a value satisfies
+            both this constraint and the specified <paramref name="constraint"/>.
+            </summary>
+            <param name="thisConstraint">First constraint to check.</param>
+            <param name="constraint">Second constraint to check.</param>
+            <returns>
+            A new constraint that represents the logical AND between this and the specified <paramref name="constraint"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraint"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ConstraintExtensions.Or``1(Kingo.MicroServices.Contracts.IConstraint,System.Func{``0,System.ComponentModel.DataAnnotations.ValidationContext,System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+            Creates and returns a new constraints that checks if a value satisfies
+            either this constraint or the specified <paramref name="constraint"/>.
+            </summary>
+            <param name="thisConstraint">First constraint to check.</param>
+            <param name="constraint">Second constraint to check.</param>
+            <returns>
+            A new constraint that represents the logical OR between this and the specified <paramref name="constraint"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraint"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ConstraintExtensions.IsNotValid(Kingo.MicroServices.Contracts.IConstraint,System.Object,System.ComponentModel.DataAnnotations.ValidationResult@)">
+            <summary>
+            Validates the specified <paramref name="value"/> and returns whether or not the value was invalid.
+            </summary>
+            <param name="thisConstraint">The constraint to check.</param>
+            <param name="value">The value to validate.</param>        
+            <param name="result">
+            <see cref="F:System.ComponentModel.DataAnnotations.ValidationResult.Success"/> if <paramref name="value"/> is valid; otherwise
+            it will be a result with the appropriate error message.
+            </param>
+            <returns>
+            <c>true</c> if the value was not valid; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ConstraintExtensions.IsNotValid(Kingo.MicroServices.Contracts.IConstraint,System.Object,System.ComponentModel.DataAnnotations.ValidationContext,System.ComponentModel.DataAnnotations.ValidationResult@)">
+            <summary>
+            Validates the specified <paramref name="value"/> and returns whether or not the value was invalid.
+            </summary>
+            <param name="thisConstraint">The constraint to check.</param>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">Context of the value that is being validated.</param>
+            <param name="result">
+            <see cref="F:System.ComponentModel.DataAnnotations.ValidationResult.Success"/> if <paramref name="value"/> is valid; otherwise
+            it will be a result with the appropriate error message.
+            </param>
+            <returns>
+            <c>true</c> if the value was not valid; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ConstraintExtensions.IsValid(Kingo.MicroServices.Contracts.IConstraint,System.Object)">
+            <summary>
+            Validates the specified <paramref name="value"/> and returns the validation-result.        
+            </summary>
+            <param name="thisConstraint">The constraint to check.</param>
+            <param name="value">The value to validate.</param>        
+            <returns>
+            <see cref="F:System.ComponentModel.DataAnnotations.ValidationResult.Success"/> if <paramref name="value"/> is valid; otherwise
+            it will return a result with the appropriate error message.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="value"/> is not an instance of the expected type.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.DataContract">
+            <summary>
+            Provides a base-implementation of the <see cref="T:Kingo.MicroServices.Contracts.IDataContract"/> interface.
+            </summary>    
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.DataContract.TryUpdateToNextVersion(Kingo.MicroServices.Contracts.IDataContract@)">
+            <summary>
+            Attempts to update this data contract to the next version. By default, this
+            method returns <c>false</c>.
+            </summary>
+            <param name="nextVersion">
+            If this method returns <c>true</c>, this parameter will refer to the next version;
+            otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
+            otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.DataContractExtensions">
+            <summary>
+            Contains extension methods for objects that implement the <see cref="T:Kingo.MicroServices.Contracts.IDataContract" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.DataContractExtensions.UpdateToLatestVersion``1(Kingo.MicroServices.Contracts.IDataContract)">
+            <summary>
+            Updates the specified <paramref name="dataContract"/> to the latest available version and casts
+            the result to an instance of <typeparamref name="TDataContract"/>.
+            </summary>
+            <typeparam name="TDataContract">Expected type of the latest version.</typeparam>
+            <param name="dataContract">The contract to update.</param>
+            <returns>The latest available version.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="dataContract"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.DataContractExtensions.UpdateToLatestVersion(Kingo.MicroServices.Contracts.IDataContract)">
+            <summary>
+            Updates the specified <paramref name="dataContract"/> to the latest available version.
+            </summary>
+            <param name="dataContract">The contract to update.</param>
+            <returns>The latest available version.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="dataContract"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.DataContractUpdateFailedException">
+            <summary>
+            This exception is thrown when an attempt to update a <see cref="T:Kingo.MicroServices.Contracts.IDataContract"/> to its latest
+            version fails for some reason.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.DataContractUpdateFailedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Contracts.DataContractUpdateFailedException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.DataContractUpdateFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Contracts.DataContractUpdateFailedException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+            <param name="innerException">The cause of this exception.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.DelegateConstraint`1">
+            <summary>
+            Represents a constraint that is implemented through a delegate.
+            </summary>
+            <typeparam name="TValue">Type of value that can be validated by this constraint.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.DelegateConstraint`1.#ctor(System.Func{`0,System.ComponentModel.DataAnnotations.ValidationContext,System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Contracts.DelegateConstraint`1" /> class.
+            </summary>
+            <param name="constraint">
+            Delegate that implements the validation logic.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraint"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.DelegateConstraint`1.IsValid(`0,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.ErrorMessages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ErrorMessages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ErrorMessages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ErrorMessages.Constraint_ValueNotValid">
+            <summary>
+              Looks up a localized string similar to The specified value ({0}) is not valid..
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ErrorMessages.OrConstraint_ValueNotValid">
+            <summary>
+              Looks up a localized string similar to The specified value ({0}) should satisfy any of the following constraints: [{1}]..
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.IConstraint">
+            <summary>
+            Represents a constraint that can be used to validate a specific value.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.IConstraint.And(Kingo.MicroServices.Contracts.IConstraint)">
+            <summary>
+            Creates and returns a new constraints that checks if a value satisfies
+            both this constraint and the specified <paramref name="constraint"/>.
+            </summary>
+            <param name="constraint">Another constraint.</param>
+            <returns>
+            A new constraint that represents the logical AND between this and the specified <paramref name="constraint"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraint"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.IConstraint.Or(Kingo.MicroServices.Contracts.IConstraint)">
+            <summary>
+            Creates and returns a new constraints that checks if a value satisfies
+            either this constraint or the specified <paramref name="constraint"/>.
+            </summary>
+            <param name="constraint">Another constraint.</param>
+            <returns>
+            A new constraint that represents the logical OR between this and the specified <paramref name="constraint"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraint"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.IConstraint.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates the specified <paramref name="value"/> and returns the validation-result.        
+            </summary>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">Context of the value that is being validated.</param>
+            <returns>
+            <see cref="F:System.ComponentModel.DataAnnotations.ValidationResult.Success"/> if <paramref name="value"/> is valid; otherwise
+            it will return a result with the appropriate error message.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> or <paramref name="validationContext"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="value"/> is not an instance of the expected type.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.IDataContract">
+            <summary>
+            When implemented by a class, represents a data transfer object.
+            </summary>    
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.IDataContract.TryUpdateToNextVersion(Kingo.MicroServices.Contracts.IDataContract@)">
+            <summary>
+            Attempts to update this data contract to the next version.
+            </summary>
+            <param name="nextVersion">
+            If this method returns <c>true</c>, this parameter will refer to the next version;
+            otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
+            otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.IOrConstraint">
+            <summary>
+            When implemented by a class, represents a composite constraint that represents a logica OR
+            of several other constraints.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.IOrConstraint.CombineErrors(System.Func{System.Collections.Generic.IEnumerable{System.String},System.Object,System.String})">
+            <summary>
+            Instructs the constraint to combine the error messages of all failed child-constraints
+            into one single error message with the specified <paramref name="mergeFunction"/>.
+            </summary>
+            <param name="mergeFunction">
+            The function that will be used by this constraint to merge all error messages of the child-
+            constraints into a single error message. The function also receives the value that was
+            validated by the constraint.
+            </param>
+            <returns>The new constraint.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="mergeFunction"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.ObjectExtensions">
+            <summary>
+            Contains extension-methods for every object.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ObjectExtensions.IsNotValid(System.Object,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult}@,System.IServiceProvider)">
+            <summary>
+            Determines whether or not the specified <paramref name="instance"/> is valid, and provides all validation errors
+            if it's not.
+            </summary>
+            <param name="instance">The message to validate.</param>
+            <param name="results">
+            If this instance is not valid, this collection will contain all validation-errors; will be <c>null</c> otherwise.
+            </param>
+            <param name="serviceProvider">
+            Optional service provider that can be used to obtain services for validating this instance.
+            </param>        
+            <returns><c>true</c> if the instance is not valid; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="instance"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.OrConstraint.Or(Kingo.MicroServices.Contracts.IConstraint)">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.ValidatableObject">
+            <summary>
+            Represents a data contract that can be validated.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidatableObject.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates all constraints that are not declared as a <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />.
+            </summary>
+            <param name="validationContext">The context of this validation-operation.</param>
+            <returns>A collection of validation-errors.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidatableObject.ValidateChildMembers(System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates all the constraints of child members. 
+            </summary>
+            <param name="validationContext">The context of this validation-operation.</param>
+            <returns>A collection of validation-errors, if any.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidatableObject.NewValidationError(System.String,System.String[])">
+            <summary>
+            Creates and returns a new <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> with a specific error message.
+            </summary>
+            <param name="errorMessage">Error message describing the validation error.</param>
+            <param name="memberNames">Names of the members that are considered invalid.</param>
+            <returns>A new <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult"/> that represents the validation error.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.Contracts.ValidationConstraintAttribute">
+            <summary>
+            Represents a validation-attribute that is implemented through a set of <see cref="T:Kingo.MicroServices.Contracts.IConstraint">constraints</see>.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.Contracts.ValidationConstraintAttribute.Constraint">
+            <summary>
+            When implemented by a class, returns the constraint
+            that will carry out the validation of (non-null) values.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidationConstraintAttribute.All(Kingo.MicroServices.Contracts.IConstraint[])">
+            <summary>
+            Creates and returns a new constraint that checks if all specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical AND-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidationConstraintAttribute.All(System.Collections.Generic.IEnumerable{Kingo.MicroServices.Contracts.IConstraint})">
+            <summary>
+            Creates and returns a new constraint that checks if all specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical AND-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidationConstraintAttribute.Any(Kingo.MicroServices.Contracts.IConstraint[])">
+            <summary>
+            Creates and returns a new constraint that checks if any of the specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical OR-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidationConstraintAttribute.Any(System.Collections.Generic.IEnumerable{Kingo.MicroServices.Contracts.IConstraint})">
+            <summary>
+            Creates and returns a new constraint that checks if any of the specified <paramref name="constraints"/>
+            are satisfied by a specific value.
+            </summary>
+            <param name="constraints">The constraints to check.</param>
+            <returns>A new constraint that represents a logical OR-operation for all specified <paramref name="constraints"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="constraints"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Contracts.ValidationConstraintAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates the specified <paramref name="value"/> and returns the validation-result.
+            This <paramref name="value"/> is <c>null</c> and
+            if so, whether that value can be accepted. Otherwise, it will invoke the
+            constraint of this attribute.
+            </summary>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">Context of the value that is being validated.</param>
+            <returns>
+            <see cref="F:System.ComponentModel.DataAnnotations.ValidationResult.Success"/> if <paramref name="value"/> is <c>null</c> or if it is valid;
+            otherwise it will return a result with the appropriate error message.
+            </returns>
+        </member>
         <member name="T:Kingo.MicroServices.EndpointAttribute">
             <summary>
             When applied to the <see cref="M:Kingo.MicroServices.IMessageHandler`1.HandleAsync(`0,Kingo.MicroServices.MessageHandlerOperationContext)"/> method implementation
@@ -1412,21 +1964,16 @@
             messages, execute queries and publish events.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection" /> class.
-            </summary>
-        </member>
         <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.ToString">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddType``1">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddToSearchSet``1">
             <summary>
             Adds a type to the searchable type-set.
             </summary>
             <typeparam name="TComponent">Type to add.</typeparam>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddTypes(System.String,System.String,System.IO.SearchOption)">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddToSearchSet(System.String,System.String,System.IO.SearchOption)">
             <summary>
             Adds all types defined in the assemblies that match the specified search criteria to the
             searchable type-set.
@@ -1447,7 +1994,7 @@
             The caller does not have the required permission to access the specified path or its files.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddTypes(System.Type[])">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddToSearchSet(System.Type[])">
             <summary>
             Adds the specified <paramref name="types"/> to the searchable type-set.
             </summary>
@@ -1456,7 +2003,7 @@
             <paramref name="types"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddTypes(System.Collections.Generic.IEnumerable{System.Type})">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddToSearchSet(System.Collections.Generic.IEnumerable{System.Type})">
             <summary>
             Adds the specified <paramref name="types"/> to the searchable type-set.
             </summary>
@@ -1465,12 +2012,11 @@
             <paramref name="types"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMessageHandlers(System.Func{Kingo.MicroServices.MicroProcessorComponent,System.Boolean})">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMessageHandlers">
             <summary>
             Automatically registers all message handlers that are found in the types that were added to this collection,
             which are types that implement the <see cref="T:Kingo.MicroServices.IMessageHandler`1"/> interface.
-            </summary>        
-            <param name="predicate">Optional predicate that is used to filter specific types.</param>                
+            </summary>                
         </member>
         <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMessageHandler``1">
             <summary>
@@ -1520,21 +2066,36 @@
             <paramref name="messageHandler"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddQueries(System.Func{Kingo.MicroServices.MicroProcessorComponent,System.Boolean})">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddQueries">
             <summary>
             Automatically registers all queries that are found in the types that were added to this collection, which
             are types that implement the <see cref="T:Kingo.MicroServices.IQuery`1"/> or <see cref="T:Kingo.MicroServices.IQuery`2"/>
             interface.
-            </summary>
-            <param name="predicate">Optional predicate to filter specific types to scan.</param>
+            </summary>        
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMicroServiceBusControllers(System.Func{Kingo.MicroServices.MicroProcessorComponent,System.Boolean})">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddQuery``1">
+            <summary>
+            Adds <typeparamref name="TQuery"/> as a query, if and only if it is a valid component
+            that implements the <see cref="T:Kingo.MicroServices.IQuery`1"/> or <see cref="T:Kingo.MicroServices.IQuery`2"/> interface.
+            </summary>
+            <typeparam name="TQuery">Type of the query to add.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddQuery(System.Type)">
+            <summary>
+            Adds the specified <paramref name="type"/> as a query, if and only if the specified type is a valid component
+            that implements the <see cref="T:Kingo.MicroServices.IQuery`1"/> or <see cref="T:Kingo.MicroServices.IQuery`2"/> interface.
+            </summary>
+            <param name="type">The type to add as a query.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMicroServiceBusControllers">
             <summary>
             Automatically registers all types that are a <see cref="T:Kingo.MicroServices.Endpoints.MicroServiceBusController" />. Each controller
             will also be registered as a <see cref="T:Microsoft.Extensions.Hosting.IHostedService"/> that will be
             started and stopped automatically.
-            </summary>
-            <param name="predicate">Optional predicate to filter specific types to scan.</param>
+            </summary>        
         </member>
         <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMicroServiceBusController``1">
             <summary>
@@ -1556,13 +2117,12 @@
             <paramref name="type"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMicroServiceBuses(System.Func{Kingo.MicroServices.MicroProcessorComponent,System.Boolean})">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMicroServiceBuses">
             <summary>
             Automatically registers all types that implement the <see cref="T:Kingo.MicroServices.Endpoints.IMicroServiceBus" /> interface as
             a service bus endpoint. Any type that also implements <see cref="T:Microsoft.Extensions.Hosting.IHostedService"/>
             is also registered as a hosted service that will be started and stopped automatically.
-            </summary>
-            <param name="predicate">Optional predicate to filter specific types to scan.</param>
+            </summary>        
         </member>
         <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddMicroServiceBus``1">
             <summary>
@@ -1584,14 +2144,34 @@
             <paramref name="type"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddComponents(System.Func{System.Collections.Generic.IEnumerable{Kingo.MicroServices.MicroProcessorComponent},Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.IServiceCollection},System.Func{Kingo.MicroServices.MicroProcessorComponent,System.Boolean})">
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddComponents(System.Func{Kingo.MicroServices.MicroProcessorComponent,Kingo.MicroServices.MicroProcessorComponent})">
             <summary>
-            Adds a number of components by scanning and automatically registering a number of types.
+            Adds a number of components by looking through the search set and selecting/adding a
+            sub-set of these components to this collection.
             </summary>
-            <param name="serviceFactory">Delegate used to scan and register the components into a <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.</param>
-            <param name="predicate">Optional predicate to filter specific types to scan.</param>
+            <param name="componentFactory">
+            Delegate that is used to filter and/or create the component to add. If the delegate returns <c>null</c>,
+            that component is ignored (filtered out). Otherwise, the returned component (which can be a different
+            component from the one that is passed into the delegate) is added to this collection.
+            </param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="serviceFactory"/> is <c>null</c>.
+            <paramref name="componentFactory"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Endpoints.MicroProcessorComponentCollection.AddComponent(System.Type,System.Func{Kingo.MicroServices.MicroProcessorComponent,Kingo.MicroServices.MicroProcessorComponent})">
+            <summary>
+            Adds the specified <paramref name="type"/> as a component if and only if the specified <paramref name="componentFactory"/>
+            returns a component to add. Note that <paramref name="componentFactory"/> is only invoked if the specified
+            <paramref name="type"/> is a valid component.
+            </summary>
+            <param name="type">Type to add as a component.</param>
+            <param name="componentFactory">
+            Delegate that is used to filter and/or create the component to add. If the delegate returns <c>null</c>,
+            that component is ignored (filtered out). Otherwise, the returned component (which can be a different
+            component from the one that is passed into the delegate) is added to this collection.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> or <paramref name="componentFactory"/> is <c>null</c>.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.Endpoints.MicroServiceBus">
@@ -1786,20 +2366,6 @@
             <returns>A configured service collection.</returns>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="services"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Endpoints.ServiceCollectionExtensions.AddComponent(Microsoft.Extensions.DependencyInjection.IServiceCollection,Kingo.MicroServices.MicroProcessorComponent)">
-            <summary>
-            Adds the specified <paramref name="component" /> to the service collection based on its configuration.        
-            </summary>
-            <param name="services">A collection of services.</param>
-            <param name="component">The component to add.</param>        
-            <returns>A configured service collection.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="services"/> or <paramref name="component"/> is <c>null</c>.
-            </exception>
-            <exception cref="T:System.ArgumentException">
-            <paramref name="component"/> specifies an invalid service lifetime.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.EventBus.Publish(System.Object)">
@@ -2113,6 +2679,17 @@
             Returns the service provider the processor uses to resolve its dependencies.
             </summary>
         </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessor.AssignUser(System.Security.Principal.IPrincipal)">
+            <summary>
+            Configures the processor to use the specified <paramref name="user"/> for each operation as long as the
+            returned scope is active.
+            </summary>
+            <param name="user">The principal to use.</param>
+            <returns>A scope that can be disposed when the principal can be reset to its previous value.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="user"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="M:Kingo.MicroServices.IMicroProcessor.CreateMethodEndpoints">
             <summary>
             Creates and returns all endpoints that reference the methods of all registered
@@ -2127,6 +2704,21 @@
             <typeparam name="TCommand">Type of the command.</typeparam>
             <param name="messageHandler">The message handler that will handle the command.</param>
             <param name="message">The command to handle.</param>
+            <param name="token">Optional token that can be used to cancel the operation.</param>
+            <returns>
+            The result of the operation, which includes all published events and the number of message handlers that were invoked.
+            </returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>       
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessor.HandleEventAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Handles an event with a specified <paramref name="messageHandler"/>.
+            </summary>
+            <typeparam name="TEvent">Type of the event.</typeparam>
+            <param name="messageHandler">The message handler that will handle the event.</param>
+            <param name="message">The event to handle.</param>
             <param name="token">Optional token that can be used to cancel the operation.</param>
             <returns>
             The result of the operation, which includes all published events and the number of message handlers that were invoked.
@@ -2310,6 +2902,35 @@
             <returns>The result of this query.</returns>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IQueryProcessor">
+            <summary>
+            When implemented by a class, represents a processor specifically for queries.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IQueryProcessor.ExecuteQueryAsync``1(Kingo.MicroServices.IQuery{``0})">
+            <summary>
+            Executes the specified <paramref name="query"/> and returns its result.
+            </summary>
+            <typeparam name="TResponse">Type of the response of the query.</typeparam>
+            <param name="query">The query to execute.</param>
+            <returns>The response of the query.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="query"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IQueryProcessor.ExecuteQueryAsync``2(Kingo.MicroServices.IQuery{``0,``1},``0)">
+            <summary>
+            Executes the specified <paramref name="query"/> and returns its result.
+            </summary>
+            <typeparam name="TRequest">Type of the request of the query.</typeparam>
+            <typeparam name="TResponse">Type of the response of the query.</typeparam>
+            <param name="query">The query to execute.</param>
+            <param name="message">Message that carries the parameters of the query.</param>
+            <returns>The response of the query.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="query"/> is <c>null</c>.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.IUnitOfWork">
@@ -2624,6 +3245,19 @@
         <member name="M:Kingo.MicroServices.MicroProcessor.ToString">
             <inheritdoc />
         </member>
+        <member name="M:Kingo.MicroServices.MicroProcessor.AssignUser(System.Security.Principal.IPrincipal)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessor.CreatePrincipal(System.Security.Principal.IPrincipal)">
+            <summary>
+            Creates and returns a <see cref="T:System.Security.Claims.ClaimsPrincipal" /> based on the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The principal to convert to a <see cref="T:System.Security.Claims.ClaimsPrincipal"/>.</param>
+            <returns>A new <see cref="T:System.Security.Claims.ClaimsPrincipal"/> based on the specified <paramref name="user"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="user"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="P:Kingo.MicroServices.MicroProcessor.ServiceProvider">
             <inheritdoc />
         </member>
@@ -2631,6 +3265,9 @@
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessor.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,System.Nullable{System.Threading.CancellationToken})">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessor.HandleEventAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,System.Nullable{System.Threading.CancellationToken})">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessor.ExecuteQueryAsync``1(Kingo.MicroServices.IQuery{``0},System.Nullable{System.Threading.CancellationToken})">
@@ -2763,6 +3400,38 @@
             <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>         
         </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.IMicroProcessor,System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Handles an event with a specified <paramref name="messageHandler"/>.
+            </summary>
+            <typeparam name="TEvent">Type of the event.</typeparam>
+            <param name="processor">The processor used to handle the event.</param>
+            <param name="messageHandler">The message handler that will handle the event.</param>
+            <param name="message">The event to handle.</param>
+            <param name="token">Optional token that can be used to cancel the operation.</param>
+            <returns>
+            The result of the operation, which includes all published events and the number of message handlers that were invoked.
+            </returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.IMicroProcessor,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Handles an event with a specified <paramref name="messageHandler"/>.
+            </summary>
+            <typeparam name="TEvent">Type of the event.</typeparam>
+            <param name="processor">The processor used to handle the event.</param>
+            <param name="messageHandler">The message handler that will handle the event.</param>
+            <param name="message">The event to handle.</param>
+            <param name="token">Optional token that can be used to cancel the operation.</param>
+            <returns>
+            The result of the operation, which includes all published events and the number of message handlers that were invoked.
+            </returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>         
+        </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.ExecuteQueryAsync``1(Kingo.MicroServices.IMicroProcessor,System.Func{Kingo.MicroServices.QueryOperationContext,``0},System.Nullable{System.Threading.CancellationToken})">
             <summary>
             Executes the specified <paramref name="query"/> and returns its result asynchronously.
@@ -2853,6 +3522,11 @@
             Represents the context in which a <see cref="T:Kingo.MicroServices.MicroProcessor"/> operates.
             </summary>    
         </member>
+        <member name="P:Kingo.MicroServices.MicroProcessorOperationContext.User">
+            <summary>
+            Gets the user that is executing the current operation.
+            </summary>
+        </member>
         <member name="P:Kingo.MicroServices.MicroProcessorOperationContext.StackTrace">
             <summary>
             Returns a stack trace of all operations that are currently being executed.
@@ -2861,6 +3535,11 @@
         <member name="P:Kingo.MicroServices.MicroProcessorOperationContext.ServiceProvider">
             <summary>
             Returns the <see cref="T:System.IServiceProvider" /> of this context.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MicroProcessorOperationContext.QueryProcessor">
+            <summary>
+            Returns the processor that can be used to execute (sub)queries during an operation.
             </summary>
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorOperationContext.ToString">
@@ -3134,7 +3813,7 @@
         <member name="M:Kingo.MicroServices.QueryOperation`1.ExecuteAsync">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.QueryOperation`1.CreateMethodOperation(Kingo.MicroServices.QueryOperationContext)">
+        <member name="M:Kingo.MicroServices.QueryOperation`1.CreateMethodOperation(Kingo.MicroServices.MicroProcessorOperationContext)">
             <summary>
             Creates and returns a new <see cref="T:Kingo.MicroServices.ExecuteAsyncMethodOperation`1"/> for the query that is to be executed.
             </summary>
