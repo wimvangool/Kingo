@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Kingo.MicroServices.Implementation.Endpoints.ServiceBus</AssemblyName>
+    <RootNamespace>Kingo</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="MicroServices\" />
+  </ItemGroup>
+
+</Project>

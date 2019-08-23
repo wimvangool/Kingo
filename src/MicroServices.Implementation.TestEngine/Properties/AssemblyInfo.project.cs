@@ -2,11 +2,11 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: Guid("4669F913-79B7-4581-921A-78F32A0946C6")]
+[assembly: Guid("c6102b0a-4d14-4f2b-9ef5-0e645cc438ba")]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
 
-[assembly: InternalsVisibleTo("Kingo.MicroServices.Tests," +
+[assembly: InternalsVisibleTo("Kingo.MicroServices.Implementation.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +
 "1310004000001000100033d27f9556e2293e38230218e9ca34b5e9d" +
 "a10d86fce2b4568d7147eb147505d6b68d32ff0074f848907c661fa" +

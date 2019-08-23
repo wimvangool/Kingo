@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{002BBBBE-42B2-4618-B560-509798888BE6}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,17 +9,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Kingo.snk = Kingo.snk
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.MicroServices", "Kingo.MicroServices", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroServices.Implementation", "MicroServices.Implementation", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.MicroServices.TestEngine", "Kingo.MicroServices.TestEngine", "{79712E74-AD85-4236-A12E-82A5E9B65264}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Implementation.Core", "MicroServices.Implementation.Core\03.Implementation.Core.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Kingo.MicroServices", "Kingo.MicroServices\02.Kingo.MicroServices.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Implementation.Tests", "MicroServices.Implementation.Tests\01.Implementation.Tests.csproj", "{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Kingo.MicroServices.Tests", "Kingo.MicroServices.Tests\01.Kingo.MicroServices.Tests.csproj", "{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Implementation.TestEngine", "MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Kingo.MicroServices.TestEngine", "Kingo.MicroServices.TestEngine\02.Kingo.MicroServices.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroServices.Contract", "MicroServices.Contract", "{FC29461B-E6CB-47E7-99D1-B72DD66B0E43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Kingo.MicroServices.TestEngine.Tests", "Kingo.MicroServices.TestEngine.Tests\01.Kingo.MicroServices.TestEngine.Tests.csproj", "{C8003300-58B0-43FA-BA62-4E11EACFAD99}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.Endpoints", "A.Endpoints", "{4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.DataAccess", "B.DataAccess", "{BE8D0BBC-36AA-4F00-94AA-AAFF950C8CAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.BusinessLogic", "C.BusinessLogic", "{88B6D91B-6E72-4957-8EFD-710B56518CE2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Endpoints.ServiceBus", "MicroServices.Implementation.Endpoints.ServiceBus\03.Endpoints.ServiceBus.csproj", "{038C70A1-09CB-4B4D-8A19-731BF7B4B266}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Endpoints.Tests", "MicroServices.Implementation.Endpoints.Tests\01.Endpoints.Tests.csproj", "{DA6AE8D4-0184-4E4F-A941-2AC15F7D9670}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +47,14 @@ Global
 		{E9203EC0-DEDF-4804-8F41-849AB36D8E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9203EC0-DEDF-4804-8F41-849AB36D8E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9203EC0-DEDF-4804-8F41-849AB36D8E20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8003300-58B0-43FA-BA62-4E11EACFAD99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8003300-58B0-43FA-BA62-4E11EACFAD99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8003300-58B0-43FA-BA62-4E11EACFAD99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8003300-58B0-43FA-BA62-4E11EACFAD99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{038C70A1-09CB-4B4D-8A19-731BF7B4B266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{038C70A1-09CB-4B4D-8A19-731BF7B4B266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{038C70A1-09CB-4B4D-8A19-731BF7B4B266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{038C70A1-09CB-4B4D-8A19-731BF7B4B266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA6AE8D4-0184-4E4F-A941-2AC15F7D9670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA6AE8D4-0184-4E4F-A941-2AC15F7D9670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA6AE8D4-0184-4E4F-A941-2AC15F7D9670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA6AE8D4-0184-4E4F-A941-2AC15F7D9670}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,8 +62,12 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{38B8F361-1B74-4BA5-890F-A2202C9CEA87} = {56143727-5946-49BD-8FFC-9BFDCFA345F0}
 		{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D} = {56143727-5946-49BD-8FFC-9BFDCFA345F0}
-		{E9203EC0-DEDF-4804-8F41-849AB36D8E20} = {79712E74-AD85-4236-A12E-82A5E9B65264}
-		{C8003300-58B0-43FA-BA62-4E11EACFAD99} = {79712E74-AD85-4236-A12E-82A5E9B65264}
+		{E9203EC0-DEDF-4804-8F41-849AB36D8E20} = {56143727-5946-49BD-8FFC-9BFDCFA345F0}
+		{4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C} = {56143727-5946-49BD-8FFC-9BFDCFA345F0}
+		{BE8D0BBC-36AA-4F00-94AA-AAFF950C8CAD} = {56143727-5946-49BD-8FFC-9BFDCFA345F0}
+		{88B6D91B-6E72-4957-8EFD-710B56518CE2} = {56143727-5946-49BD-8FFC-9BFDCFA345F0}
+		{038C70A1-09CB-4B4D-8A19-731BF7B4B266} = {4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}
+		{DA6AE8D4-0184-4E4F-A941-2AC15F7D9670} = {4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35

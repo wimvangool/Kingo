@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Kingo.MicroServices.Tests</AssemblyName>
+    <AssemblyName>Kingo.MicroServices.Implementation.Tests</AssemblyName>
     <AssemblyDescription>Contains all unit tests for the Kingo.MicroServices library.</AssemblyDescription>
     <RootNamespace>Kingo</RootNamespace>
     <SignAssembly>true</SignAssembly>
@@ -30,7 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.MicroServices\02.Kingo.MicroServices.csproj" />
+    <ProjectReference Include="..\MicroServices.Implementation.Core\03.Implementation.Core.csproj" />
+    <ProjectReference Include="..\MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
