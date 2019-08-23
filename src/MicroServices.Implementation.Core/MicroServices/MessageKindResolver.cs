@@ -18,6 +18,6 @@ namespace Kingo.MicroServices
         }
 
         private static string NameOf(Type messageType) =>
-            messageType.IsGenericType ? messageType.Name.RemoveTypeParameterCount() : messageType.Name;
+            messageType.FriendlyName(false, false);
     }
 }

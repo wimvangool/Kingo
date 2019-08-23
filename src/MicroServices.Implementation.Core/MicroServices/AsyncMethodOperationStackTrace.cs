@@ -166,7 +166,7 @@ namespace Kingo.MicroServices
 
         private static Exception NewIndexOutOfRangeException(int index, int count)
         {
-            var messageFormat = ExceptionMessages.ReadOnlyList_IndexOutOfRange;
+            var messageFormat = ExceptionMessages.AsyncMethodOperationStackTrace_IndexOutOfRange;
             var message = string.Format(messageFormat, index, count);
             return new IndexOutOfRangeException(message);
         }

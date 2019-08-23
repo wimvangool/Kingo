@@ -1,14 +1,26 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>Kingo.MicroServices.Implementation.Endpoints.Tests</AssemblyName>
+    <AssemblyName>Kingo.MicroServices.Tests</AssemblyName>
 
     <RootNamespace>Kingo</RootNamespace>
+
+    <SignAssembly>true</SignAssembly>
+
+    <AssemblyOriginatorKeyFile>C:\Sources\Kingo\src\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Kingo.snk" Link="Properties\Kingo.snk" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
@@ -20,7 +32,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MicroServices\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroServices\02.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

@@ -205,69 +205,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not have expected validation-error &apos;{1}&apos;..
-        /// </summary>
-        internal static string Request_ErrorMessageNotFound {
-            get {
-                return ResourceManager.GetString("Request_ErrorMessageNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be valid, but {1} validation error(s) occurred..
-        /// </summary>
-        internal static string Request_InstanceNotValid {
-            get {
-                return ResourceManager.GetString("Request_InstanceNotValid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be invalid, but no validation errors occurred..
-        /// </summary>
-        internal static string Request_InstanceValid {
-            get {
-                return ResourceManager.GetString("Request_InstanceValid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The number of expected validation errors ({0}) must be equal to or greater than 1..
-        /// </summary>
-        internal static string Request_InvalidNumberOfExpectedErrorsSpecified {
-            get {
-                return ResourceManager.GetString("Request_InvalidNumberOfExpectedErrorsSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not have any validation-errors..
-        /// </summary>
-        internal static string Request_MemberErrorsNotFound {
-            get {
-                return ResourceManager.GetString("Request_MemberErrorsNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not contain any validation-error that satisfies the specified predicate..
-        /// </summary>
-        internal static string Request_NoSuchErrorMessage {
-            get {
-                return ResourceManager.GetString("Request_NoSuchErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1})..
-        /// </summary>
-        internal static string Request_UnexpectedNumberOfErrorsOccurred {
-            get {
-                return ResourceManager.GetString("Request_UnexpectedNumberOfErrorsOccurred", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Test &apos;{0}&apos; threw unexpected exception of type &apos;{1}&apos;. See inner exception for details..
         /// </summary>
         internal static string UnexpectedExceptionResult_UnexpectedException {

@@ -159,3 +159,4 @@ $RECYCLE.BIN/
 /src/.vs/Kingo/DesignTimeBuild
 /.vs
 /src/.vs/Kingo/v16/Server/sqlite3
+/src/.vs/Kingo.MicroServices/v16/Server/sqlite3

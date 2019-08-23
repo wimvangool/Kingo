@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Kingo.Reflection
@@ -12,12 +13,15 @@ namespace Kingo.Reflection
             _attributeProvider = new MemberAttributeProvider<MethodInfo>(info);
         }
 
+        /// <inheritdoc />
         public MethodInfo Info =>
             _attributeProvider.Member;
 
+        /// <inheritdoc />
         public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
             _attributeProvider.TryGetAttributeOfType(out attribute);
 
+        /// <inheritdoc />
         public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
             _attributeProvider.GetAttributesOfType<TAttribute>();                        
     }

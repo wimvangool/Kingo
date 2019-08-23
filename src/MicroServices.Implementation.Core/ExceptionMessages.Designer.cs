@@ -61,74 +61,20 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
+        /// </summary>
+        internal static string AsyncMethodOperationStackTrace_IndexOutOfRange {
+            get {
+                return ResourceManager.GetString("AsyncMethodOperationStackTrace_IndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
         /// </summary>
         internal static string AttributeProvider_AmbiguousAttributeMatch {
             get {
                 return ResourceManager.GetString("AttributeProvider_AmbiguousAttributeMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
-        /// </summary>
-        internal static string Comparable_IncomparableType {
-            get {
-                return ResourceManager.GetString("Comparable_IncomparableType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Value of type &apos;{0}&apos; could not be validated because the constraint expects an instance of type &apos;{1}&apos;..
-        /// </summary>
-        internal static string Constraint_UnsupportedType {
-            get {
-                return ResourceManager.GetString("Constraint_UnsupportedType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
-        /// </summary>
-        internal static string Context_IllegalScopeStarted {
-            get {
-                return ResourceManager.GetString("Context_IllegalScopeStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: version of type &apos;{1}&apos; introduced a circular update by returning an instance of type &apos;{2}&apos;..
-        /// </summary>
-        internal static string DataContractExtensions_CircularReference {
-            get {
-                return ResourceManager.GetString("DataContractExtensions_CircularReference", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: could not convert latest version of type &apos;{1}&apos; to instance of type &apos;{2}&apos;..
-        /// </summary>
-        internal static string DataContractExtensions_InvalidCast {
-            get {
-                return ResourceManager.GetString("DataContractExtensions_InvalidCast", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid time span specified: [{0}, {1}]..
-        /// </summary>
-        internal static string DateTimeSpan_InvalidTimeSpan {
-            get {
-                return ResourceManager.GetString("DateTimeSpan_InvalidTimeSpan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is not allowed to be zero..
-        /// </summary>
-        internal static string DateTimeSpan_TimeSpanZeroNotAllowed {
-            get {
-                return ResourceManager.GetString("DateTimeSpan_TimeSpanZeroNotAllowed", resourceCulture);
             }
         }
         
@@ -183,24 +129,6 @@ namespace Kingo {
         internal static string MicroProcessorComponent_TypeNotSupported {
             get {
                 return ResourceManager.GetString("MicroProcessorComponent_TypeNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
-        /// </summary>
-        internal static string ReadOnlyList_IndexOutOfRange {
-            get {
-                return ResourceManager.GetString("ReadOnlyList_IndexOutOfRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The scopes were not nested correctly..
-        /// </summary>
-        internal static string Scope_IncorrectNesting {
-            get {
-                return ResourceManager.GetString("Scope_IncorrectNesting", resourceCulture);
             }
         }
         
