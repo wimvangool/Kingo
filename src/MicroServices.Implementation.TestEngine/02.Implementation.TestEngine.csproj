@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Sources\Kingo\src\Kingo.MicroServices.TestEngine\Kingo.MicroServices.TestEngine.xml</DocumentationFile>
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Implementation.TestEngine\Kingo.MicroServices.Implementation.TestEngine.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

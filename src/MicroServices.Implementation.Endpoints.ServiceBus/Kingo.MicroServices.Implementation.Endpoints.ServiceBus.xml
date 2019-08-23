@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Kingo.MicroServices.Implementation.Endpoints.ServiceBus</name>
+    </assembly>
+    <members>
+    </members>
+</doc>

@@ -6,6 +6,10 @@
     <RootNamespace>Kingo</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Implementation.Endpoints.ServiceBus\Kingo.MicroServices.Implementation.Endpoints.ServiceBus.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="MicroServices\" />
   </ItemGroup>

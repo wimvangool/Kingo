@@ -8,6 +8,10 @@
     <AssemblyOriginatorKeyFile>C:\Sources\Kingo\src\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Contract\Kingo.MicroServices.Contract.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
   </ItemGroup>
