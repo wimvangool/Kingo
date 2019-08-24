@@ -22,8 +22,20 @@ namespace Kingo.MicroServices
             _serviceTypes = new Type[0];
         }        
 
-        internal MicroProcessorComponent(MicroProcessorComponent component, IEnumerable<Type> serviceTypes)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MicroProcessorComponent" /> class.
+        /// </summary>
+        /// <param name="component">Component to copy.</param>
+        /// <param name="serviceTypes">A collection of service-types.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="component"/> or <paramref name="serviceTypes"/> is <c>null</c>.
+        /// </exception>
+        protected MicroProcessorComponent(MicroProcessorComponent component, IEnumerable<Type> serviceTypes)
         {
+            if (component == null)
+            {
+                throw new ArgumentNullException(nameof(component));
+            }
             _attributeProvider = component._attributeProvider;
             _configuration = component._configuration;
             _serviceTypes = serviceTypes.ToArray();

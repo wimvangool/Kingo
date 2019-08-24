@@ -279,40 +279,6 @@ namespace Kingo.MicroServices.Endpoints
 
         #endregion
 
-        #region [====== AddMicroServiceBusController ======]
-
-        /// <summary>
-        /// Automatically registers all types that are a <see cref="MicroServiceBusController" />. Each controller
-        /// will also be registered as a <see cref="Microsoft.Extensions.Hosting.IHostedService"/> that will be
-        /// started and stopped automatically.
-        /// </summary>        
-        public void AddMicroServiceBusControllers() =>
-            AddComponents(MicroServiceBusControllerType.FromComponent);
-
-        /// <summary>
-        /// Adds <typeparamref name="TController"/> as a <see cref="MicroServiceBusController"/>. If
-        /// <typeparamref name="TController"/> implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>,
-        /// it is also registered as a hosted service that will be started and stopped automatically.
-        /// </summary>
-        /// <typeparam name="TController">The type to register as a controller.</typeparam> 
-        public void AddMicroServiceBusController<TController>() where TController : MicroServiceBusController =>
-            AddMicroServiceBusController(typeof(TController));
-
-        /// <summary>
-        /// Adds the specified <paramref name="type"/> as a <see cref="MicroServiceBusController"/> if and only if
-        /// the specified <paramref name="type"/> actually is a <see cref="MicroServiceBusController"/>. If <paramref name="type"/>
-        /// implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>, it is also registered
-        /// as a hosted service that will be started and stopped automatically.
-        /// </summary>
-        /// <param name="type">The type to register as a controller.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> is <c>null</c>.
-        /// </exception>
-        public void AddMicroServiceBusController(Type type) =>
-            AddComponent(type, MicroServiceBusControllerType.FromComponent);
-
-        #endregion
-
         #region [====== AddMicroServiceBus ======]
 
         /// <summary>

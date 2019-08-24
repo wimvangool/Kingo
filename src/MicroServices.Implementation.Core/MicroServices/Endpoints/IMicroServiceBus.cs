@@ -10,21 +10,21 @@ namespace Kingo.MicroServices.Endpoints
     public interface IMicroServiceBus
     {
         /// <summary>
-        /// Publishes all specified <paramref name="messages" />.
+        /// Publishes all specified <paramref name="events" />.
         /// </summary>
-        /// <param name="messages">The messages to publish.</param>
+        /// <param name="events">A collection of events.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="messages"/> is <c>null</c>.
+        /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        Task PublishAsync(IEnumerable<IMessage> messages);
+        Task PublishAsync(IEnumerable<object> events);
 
         /// <summary>
-        /// Publishes the specified <paramref name="message" />.
+        /// Publishes the specified <paramref name="event" />.
         /// </summary>
-        /// <param name="message">The message to publish.</param>
+        /// <param name="event">An event.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
+        /// <paramref name="event"/> is <c>null</c>.
         /// </exception> 
-        Task PublishAsync(IMessage message);        
+        Task PublishAsync(object @event);        
     }
 }

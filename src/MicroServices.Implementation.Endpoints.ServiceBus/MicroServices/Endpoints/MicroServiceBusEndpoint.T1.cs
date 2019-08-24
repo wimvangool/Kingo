@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,7 +59,7 @@ namespace Kingo.MicroServices.Endpoints
         /// </summary>
         /// <param name="result">The result to handle.</param>        
         protected virtual Task HandleResultAsync(MessageHandlerOperationResult result) =>
-            ServiceBus.PublishAsync(result.Events);
+            ServiceBus.PublishAsync(result.Events.Select(@event => @event.Instance));
 
         /// <summary>
         /// Unpacks and deserializes the specified <paramref name="message"/> to return its contents.

@@ -1,6 +1,6 @@
 ﻿namespace Kingo.MicroServices
 {
-    internal interface IInstanceCollector
+    public interface IInstanceCollector
     {
         void Add(object instance);
 

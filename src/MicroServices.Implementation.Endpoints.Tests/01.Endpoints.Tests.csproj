@@ -14,13 +14,15 @@
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
     <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MicroServices\" />
+    <ProjectReference Include="..\MicroServices.Implementation.Endpoints.ServiceBus\03.Endpoints.ServiceBus.csproj" />
+    <ProjectReference Include="..\MicroServices.Implementation.Tests\01.Implementation.Tests.csproj" />
   </ItemGroup>
 
 </Project>

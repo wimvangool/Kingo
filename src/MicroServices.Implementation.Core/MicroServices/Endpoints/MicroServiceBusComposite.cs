@@ -14,11 +14,11 @@ namespace Kingo.MicroServices.Endpoints
             _microServiceBuses = microServiceBuses.ToArray();
         }
 
-        public override Task PublishAsync(IEnumerable<IMessage> messages) =>
-            Task.WhenAll(_microServiceBuses.Select(bus => bus.PublishAsync(messages)));
+        public override Task PublishAsync(IEnumerable<object> events) =>
+            Task.WhenAll(_microServiceBuses.Select(bus => bus.PublishAsync(events)));
 
-        public override Task PublishAsync(IMessage message) =>
-            Task.WhenAll(_microServiceBuses.Select(bus => bus.PublishAsync(message)));
+        public override Task PublishAsync(object @event) =>
+            Task.WhenAll(_microServiceBuses.Select(bus => bus.PublishAsync(@event)));
 
         public override string ToString() =>
             string.Join(" + ", _microServiceBuses.Select(bus => bus.GetType().FriendlyName()));

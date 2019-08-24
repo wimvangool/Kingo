@@ -83,12 +83,12 @@ namespace Kingo.MicroServices.Endpoints
         #region [====== IMicroServiceBus ======]        
 
         /// <inheritdoc />
-        public sealed override Task PublishAsync(IEnumerable<IMessage> messages) =>
-            PublishAsync(messages.WhereNotNull().Select(Serialize));
+        public sealed override Task PublishAsync(IEnumerable<object> events) =>
+            PublishAsync(events.WhereNotNull().Select(Serialize));
 
         /// <inheritdoc />
-        public sealed override Task PublishAsync(IMessage message) =>
-            PublishAsync(Serialize(message));
+        public sealed override Task PublishAsync(object @event) =>
+            PublishAsync(Serialize(@event));
 
         /// <summary>
         /// Publishes all specified <paramref name="messages"/>.
@@ -113,7 +113,7 @@ namespace Kingo.MicroServices.Endpoints
         /// </summary>
         /// <param name="message">The message to serialize.</param>
         /// <returns>The serialized version of the specified <paramref name="message"/>.</returns>       
-        protected abstract TSerializedMessage Serialize(IMessage message);
+        protected abstract TSerializedMessage Serialize(object message);
 
         #endregion
     }

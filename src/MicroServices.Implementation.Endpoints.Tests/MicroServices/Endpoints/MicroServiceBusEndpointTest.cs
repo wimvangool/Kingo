@@ -87,9 +87,9 @@ namespace Kingo.MicroServices.Endpoints
 
             private int _eventCount;
 
-            public override Task PublishAsync(IMessage message)
+            public override Task PublishAsync(object @event)
             {
-                Assert.AreSame(ExpectedEvent, message.Instance);
+                Assert.AreSame(ExpectedEvent, @event);
                 _eventCount++;
                 return Task.CompletedTask;
             }

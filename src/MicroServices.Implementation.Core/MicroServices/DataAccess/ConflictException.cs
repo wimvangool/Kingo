@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// This exception is thrown by a <see cref="IMicroProcessor" /> when a command or query failed because a concurreny
+    /// This exception is thrown by a <see cref="IMicroProcessor" /> when a command or query failed because a concurrency
     /// exception occurred while saving all changes. This type semantically maps to HTTP response code <c>409</c> (conflict).
     /// </summary>
     [Serializable]
