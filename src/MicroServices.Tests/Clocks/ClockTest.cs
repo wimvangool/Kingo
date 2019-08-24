@@ -218,8 +218,8 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(InvalidOperationException))]
         public void Dispose_Throws_If_Override_And_Override_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.Override(Clock.Default))
-            using (Clock.Override(Clock.Default))
+            using (var outerScope = Clock.Override(Clock.SystemClock))
+            using (Clock.Override(Clock.SystemClock))
             {
                 outerScope.Dispose();
             }
@@ -229,8 +229,8 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(InvalidOperationException))]
         public void Dispose_Throws_If_Override_And_OverrideAsyncLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.Override(Clock.Default))
-            using (Clock.OverrideAsyncLocal(Clock.Default))
+            using (var outerScope = Clock.Override(Clock.SystemClock))
+            using (Clock.OverrideAsyncLocal(Clock.SystemClock))
             {
                 outerScope.Dispose();
             }
@@ -240,8 +240,8 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(InvalidOperationException))]
         public void Dispose_Throws_If_Override_And_OverrideThreadLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.Override(Clock.Default))
-            using (Clock.OverrideThreadLocal(Clock.Default))
+            using (var outerScope = Clock.Override(Clock.SystemClock))
+            using (Clock.OverrideThreadLocal(Clock.SystemClock))
             {
                 outerScope.Dispose();
             }
@@ -251,8 +251,8 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(InvalidOperationException))]
         public void Dispose_Throws_If_OverrideAsyncLocal_And_OverrideAsyncLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.OverrideAsyncLocal(Clock.Default))
-            using (Clock.OverrideAsyncLocal(Clock.Default))
+            using (var outerScope = Clock.OverrideAsyncLocal(Clock.SystemClock))
+            using (Clock.OverrideAsyncLocal(Clock.SystemClock))
             {
                 outerScope.Dispose();
             }
@@ -262,8 +262,8 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(InvalidOperationException))]
         public void Dispose_Throws_If_OverrideAsyncLocal_And_OverrideThreadLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.OverrideAsyncLocal(Clock.Default))
-            using (Clock.OverrideThreadLocal(Clock.Default))
+            using (var outerScope = Clock.OverrideAsyncLocal(Clock.SystemClock))
+            using (Clock.OverrideThreadLocal(Clock.SystemClock))
             {
                 outerScope.Dispose();
             }
@@ -273,8 +273,8 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(InvalidOperationException))]
         public void Dispose_Throws_If_OverrideThreadLocal_And_OverrideThreadLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.OverrideThreadLocal(Clock.Default))
-            using (Clock.OverrideThreadLocal(Clock.Default))
+            using (var outerScope = Clock.OverrideThreadLocal(Clock.SystemClock))
+            using (Clock.OverrideThreadLocal(Clock.SystemClock))
             {
                 outerScope.Dispose();
             }
@@ -283,7 +283,7 @@ namespace Kingo.Clocks
         #endregion
 
         private static IClock CreateClock() =>
-             new DefaultClock();
+             Clock.SystemClock.Shift(TimeSpan.Zero);
 
         private static void AssertIsCurrent(IClock clock)
         {

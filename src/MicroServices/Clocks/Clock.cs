@@ -47,9 +47,9 @@ namespace Kingo.Clocks
         /// <summary>
         /// Returns the default clock of this system.
         /// </summary>
-        public static readonly IClock Default = new DefaultClock();
+        public static readonly IClock SystemClock = new SystemClock();
 
-        private static readonly Context<IClock> _Context = new Context<IClock>(Default);              
+        private static readonly Context<IClock> _Context = new Context<IClock>(SystemClock);              
 
         /// <summary>
         /// Returns the clock associated to the current thread.

@@ -162,7 +162,7 @@ namespace Kingo.Clocks
         /// </summary>        
         /// <returns>A new <see cref="HighResolutionClock" />.</returns>
         public static HighResolutionClock StartNew() =>
-            StartNew(Default);
+            StartNew(SystemClock);
 
         /// <summary>
         /// Creates and returns a new <see cref="HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.

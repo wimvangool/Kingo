@@ -2,7 +2,7 @@
 
 namespace Kingo.Clocks
 {    
-    internal sealed class DefaultClock : Clock
+    internal sealed class SystemClock : Clock
     {        
         /// <inheritdoc />
         public override DateTimeOffset LocalDateAndTime() =>

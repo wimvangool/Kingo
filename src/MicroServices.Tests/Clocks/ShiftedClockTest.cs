@@ -12,9 +12,9 @@ namespace Kingo.Clocks
             var startTime = DateTimeOffset.UtcNow;
             var offset = new TimeSpan(6, 4, 2, 0);
 
-            var stopwatch = new StopwatchClock(startTime);
-            var clock = ShiftedClock.Shift(stopwatch, offset);
-            var dateAndTime = clock.UtcDateAndTime();
+            var clock = new StopwatchClock(startTime);
+            var shiftedClock = clock.Shift(offset);
+            var dateAndTime = shiftedClock.UtcDateAndTime();
 
             Assert.AreEqual(startTime.Add(offset), dateAndTime);
         }
@@ -25,9 +25,9 @@ namespace Kingo.Clocks
             var startTime = DateTimeOffset.UtcNow;
             var offset = new TimeSpan(-6, -4, -2, 0);
 
-            var stopwatch = new StopwatchClock(startTime);
-            var clock = ShiftedClock.Shift(stopwatch, offset);
-            var dateAndTime = clock.UtcDateAndTime();
+            var clock = new StopwatchClock(startTime);
+            var shiftedClock = clock.Shift(offset);
+            var dateAndTime = shiftedClock.UtcDateAndTime();
 
             Assert.AreEqual(startTime.Add(offset), dateAndTime);
         }

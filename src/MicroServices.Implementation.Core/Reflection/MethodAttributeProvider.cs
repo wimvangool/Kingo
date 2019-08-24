@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Kingo.Reflection
@@ -13,16 +14,19 @@ namespace Kingo.Reflection
             _attributeProvider = new MemberAttributeProvider<MethodInfo>(info);
         }
 
-        /// <inheritdoc />
         public MethodInfo Info =>
             _attributeProvider.Member;
 
-        /// <inheritdoc />
         public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
             _attributeProvider.TryGetAttributeOfType(out attribute);
 
-        /// <inheritdoc />
         public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
-            _attributeProvider.GetAttributesOfType<TAttribute>();                        
+            _attributeProvider.GetAttributesOfType<TAttribute>();
+
+        public override string ToString() =>
+            ToString(Info.Name, Info.GetParameters().Select(parameter => parameter.ParameterType));
+
+        private static string ToString(string methodName, IEnumerable<Type> parameterTypes) =>
+            $"{methodName}({string.Join(", ", parameterTypes.Select(type => type.FriendlyName()))})";
     }
 }

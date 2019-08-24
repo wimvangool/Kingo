@@ -9,25 +9,25 @@ namespace Kingo.Clocks
         [TestMethod]
         public void LocalDate_ReturnsDateInLocalTime()
         {
-            Assert.AreEqual(LocalTimeOffset(), Clock.Default.LocalDate().Offset);
+            Assert.AreEqual(LocalTimeOffset(), Clock.SystemClock.LocalDate().Offset);
         }
 
         [TestMethod]
         public void LocalDateAndTime_ReturnsDateAndTimeInLocalTime()
         {
-            Assert.AreEqual(LocalTimeOffset(), Clock.Default.LocalDateAndTime().Offset);
+            Assert.AreEqual(LocalTimeOffset(), Clock.SystemClock.LocalDateAndTime().Offset);
         }
 
         [TestMethod]
         public void UtcDate_ReturnsDateInUniversalTime()
         {            
-            Assert.AreEqual(TimeSpan.Zero, Clock.Default.UtcDate().Offset);            
+            Assert.AreEqual(TimeSpan.Zero, Clock.SystemClock.UtcDate().Offset);            
         }
 
         [TestMethod]
         public void UtcDateAndTime_ReturnsDateAndTimeInUniversalTime()
         {
-            Assert.AreEqual(TimeSpan.Zero, Clock.Default.UtcDateAndTime().Offset);
+            Assert.AreEqual(TimeSpan.Zero, Clock.SystemClock.UtcDateAndTime().Offset);
         }        
 
         private static TimeSpan LocalTimeOffset() =>
