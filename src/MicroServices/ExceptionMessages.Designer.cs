@@ -88,6 +88,24 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: version of type &apos;{1}&apos; introduced a circular update by returning an instance of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string DataContractExtensions_CircularReference {
+            get {
+                return ResourceManager.GetString("DataContractExtensions_CircularReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: could not convert latest version of type &apos;{1}&apos; to instance of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string DataContractExtensions_InvalidCast {
+            get {
+                return ResourceManager.GetString("DataContractExtensions_InvalidCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid time span specified: [{0}, {1}]..
         /// </summary>
         internal static string DateTimeSpan_InvalidTimeSpan {

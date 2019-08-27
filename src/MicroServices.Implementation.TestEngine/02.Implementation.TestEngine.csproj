@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Contract.TestEngine\02.Contract.TestEngine.csproj" />
+    <ProjectReference Include="..\MicroServices.Contract.Api.TestEngine\02.Contract.Api.TestEngine.csproj" />
     <ProjectReference Include="..\MicroServices.Implementation.Core\03.Implementation.Core.csproj" />
   </ItemGroup>
 

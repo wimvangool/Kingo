@@ -2,10 +2,7 @@
 
 namespace Kingo.MicroServices
 {
-    /// <summary>
-    /// Represents a <see cref="MicroProcessor"/> type.
-    /// </summary>
-    public sealed class MicroProcessorType : MicroProcessorComponent
+    internal sealed class MicroProcessorType : MicroProcessorComponent
     {
         internal MicroProcessorType(MicroProcessorComponent component, params Type[] serviceTypes) :
             base(component, serviceTypes) { }        

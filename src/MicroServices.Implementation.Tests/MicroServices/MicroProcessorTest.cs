@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.MicroServices.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

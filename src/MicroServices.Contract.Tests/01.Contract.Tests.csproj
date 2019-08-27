@@ -27,11 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Contract.TestEngine\02.Contract.TestEngine.csproj" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <ProjectReference Include="..\MicroServices.Contract.Api.TestEngine\02.Contract.Api.TestEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
