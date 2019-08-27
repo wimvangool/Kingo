@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,8 +28,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 _instances.Add(this);
                 return Task.CompletedTask;
-            }                
-
+            }
         }
 
         private sealed class GenericController<T> : AbstractController
@@ -69,7 +69,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task AddMicroServiceBus_DoesNothing_IfTypeIsNoMicroServiceBusController()
+        public async Task AddMicroServiceBusController_DoesNothing_IfTypeIsNoMicroServiceBusController()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController(typeof(object));
 
@@ -79,7 +79,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task AddMicroServiceBus_DoesNothing_IfTypeIsAbstract()
+        public async Task AddMicroServiceBusController_DoesNothing_IfTypeIsAbstract()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController<AbstractController>();
 
@@ -89,7 +89,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task AddMicroServiceBus_DoesNothing_IfTypeIsGeneric()
+        public async Task AddMicroServiceBusController_DoesNothing_IfTypeIsGeneric()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController(typeof(GenericController<>));
 
@@ -99,7 +99,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task AddMicroServiceBus_AddsServiceBusWithExpectedLifetime_IfTypeIsTransientServiceBus()
+        public async Task AddMicroServiceBusController_AddsServiceBusWithExpectedLifetime_IfTypeIsTransientServiceBus()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
 
@@ -122,7 +122,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task AddMicroServiceBus_AddsServiceBusWithExpectedLifetime_IfTypeIsScopedServiceBus()
+        public async Task AddMicroServiceBusController_AddsServiceBusWithExpectedLifetime_IfTypeIsScopedServiceBus()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController<ScopedController>();
 
@@ -145,7 +145,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task AddMicroServiceBus_AddsServiceBusWithExpectedLifetime_IfTypeIsSingletonServiceBus()
+        public async Task AddMicroServiceBusController_AddsServiceBusWithExpectedLifetime_IfTypeIsSingletonServiceBus()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController<SingletonController>();
 
@@ -206,6 +206,34 @@ namespace Kingo.MicroServices.Controllers
                 await StartAllControllers(processor, controllerCount);
             }
             instances.AssertInstanceCountIs(7);
+        }
+
+        [TestMethod]
+        public void AddMicroServiceBus_DoesNotRegisterControllerAsMicroServiceBus_IfIsMainControllerIsFalse()
+        {
+            ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
+            ProcessorBuilder.Components.AddMicroServiceBusController<ScopedController>();
+            ProcessorBuilder.Components.AddMicroServiceBusController<SingletonController>();
+
+            var processor = CreateProcessor();
+            var buses = processor.ServiceProvider.GetService<IEnumerable<IMicroServiceBus>>();
+
+            Assert.IsNotNull(buses);
+            Assert.IsFalse(buses.Any());
+        }
+
+        [TestMethod]
+        public void AddMicroServiceBus_RegistersControllerAsMicroServiceBus_IfIsMainControllerIsTrue()
+        {
+            ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
+            ProcessorBuilder.Components.AddMicroServiceBusController<ScopedController>(true);
+            ProcessorBuilder.Components.AddMicroServiceBusController<SingletonController>();
+
+            var processor = CreateProcessor();
+            var buses = processor.ServiceProvider.GetService<IEnumerable<IMicroServiceBus>>().ToArray();
+
+            Assert.AreEqual(1, buses.Length);
+            Assert.AreSame(typeof(ScopedController), buses[0].GetType());
         }
 
         private static async Task StartAllControllers(IMicroProcessor processor, int expectedServiceCount = 1)

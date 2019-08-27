@@ -19,8 +19,7 @@ namespace Kingo.MicroServices.Controllers
         private readonly HashSet<MessageHandler> _messageHandlerInstances;
         private readonly IServiceCollection _messageHandlerInstanceCollection;
 
-        private readonly HashSet<MessageHandler> _messageHandlerTypes;        
-        private readonly HashSet<MicroServiceBusType> _serviceBusTypes;
+        private readonly HashSet<MessageHandler> _messageHandlerTypes;
         private readonly List<MicroProcessorComponent> _otherComponents;
         
         internal MicroProcessorComponentCollection()
@@ -29,8 +28,7 @@ namespace Kingo.MicroServices.Controllers
             _messageHandlerInstances = new HashSet<MessageHandler>();
             _messageHandlerInstanceCollection = new ServiceCollection();
 
-            _messageHandlerTypes = new HashSet<MessageHandler>();            
-            _serviceBusTypes = new HashSet<MicroServiceBusType>();    
+            _messageHandlerTypes = new HashSet<MessageHandler>();
             _otherComponents = new List<MicroProcessorComponent>();
         }
 
@@ -49,7 +47,6 @@ namespace Kingo.MicroServices.Controllers
             }
             return services
                 .AddSingleton(BuildMethodFactory())
-                .AddTransient(BuildMicroServiceBus)
                 .AddComponents(MergeComponents());
         }
 
@@ -64,19 +61,12 @@ namespace Kingo.MicroServices.Controllers
         private bool IsNotRegisteredAsInstance(MessageHandler messageHandler) =>
             _messageHandlerInstances.All(instance => instance.Type != messageHandler.Type);
 
-        // When building the service bus, we actually create a composite bus that encapsulates all registered service bus types.
-        // Only this composite bus is actually registered as an IMicroServiceBus instance, so that clients always get the right
-        // service bus instance.        
-        internal IMicroServiceBus BuildMicroServiceBus(IServiceProvider provider) =>
-            new MicroServiceBusComposite(_serviceBusTypes.Select(bus => provider.GetRequiredService(bus.Type)).OfType<IMicroServiceBus>());
-
         // When adding/registering all components to a service collection, we first need to merge all the collections,
         // such that we return only a single collection where each component-type occurs only once.
         private IEnumerable<MicroProcessorComponent> MergeComponents()
         {
             var components = new Dictionary<Type, MicroProcessorComponent>();
             AddOrMerge(components, MessageHandlerTypes);
-            AddOrMerge(components, _serviceBusTypes);
             AddOrMerge(components, _otherComponents);
             return components.Values;
         }
@@ -278,47 +268,6 @@ namespace Kingo.MicroServices.Controllers
             AddComponent(type, QueryType.FromComponent);
 
         #endregion
-
-        #region [====== AddMicroServiceBus ======]
-
-        /// <summary>
-        /// Automatically registers all types that implement the <see cref="IMicroServiceBus" /> interface.
-        /// </summary>        
-        public void AddMicroServiceBuses()
-        {
-            foreach (var microServiceBus in MicroServiceBusType.FromComponents(_searchSet))
-            {
-                AddMicroServiceBus(microServiceBus);
-            }
-        }
-
-        /// <summary>
-        /// Adds the specified <typeparamref name="TMicroServiceBus"/> as a <see cref="IMicroServiceBus" />.
-        /// </summary>
-        /// <typeparam name="TMicroServiceBus">Type of a service bus.</typeparam>
-        public void AddMicroServiceBus<TMicroServiceBus>() where TMicroServiceBus : class, IMicroServiceBus =>
-            AddMicroServiceBus(typeof(TMicroServiceBus));
-
-        /// <summary>
-        /// Adds the specified <paramref name="type"/> as a <see cref="IMicroServiceBus" /> instance, if
-        /// and only if this type implements the <see cref="IMicroServiceBus"/> interface.
-        /// </summary>
-        /// <param name="type">The type to register as a service bus.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> is <c>null</c>.
-        /// </exception>
-        public void AddMicroServiceBus(Type type)
-        {
-            if (MicroServiceBusType.IsMicroServiceBusType(type, out var microServiceBus))
-            {
-                AddMicroServiceBus(microServiceBus);
-            }
-        }
-
-        private void AddMicroServiceBus(MicroServiceBusType microServiceBus) =>
-            _serviceBusTypes.Add(microServiceBus);
-
-        #endregion 
 
         #region [====== AddComponents ======]
 

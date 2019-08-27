@@ -21,6 +21,8 @@
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
     <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
@@ -32,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MicroServices.Contract.Api.TestEngine\02.Contract.Api.TestEngine.csproj" />
+    <ProjectReference Include="..\MicroServices.Contract.ServiceBus\04.Contract.ServiceBus.csproj" />
   </ItemGroup>
 
   <ItemGroup>

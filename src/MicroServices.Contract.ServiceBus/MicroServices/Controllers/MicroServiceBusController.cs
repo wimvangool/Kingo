@@ -15,6 +15,7 @@ namespace Kingo.MicroServices.Controllers
     [MicroProcessorComponent(ServiceLifetime.Singleton)]
     public abstract class MicroServiceBusController : IMicroServiceBus, IHostedService
     {
+        // NB: When required, the controller needs to resolve a IEnumerable<IMicroServiceBus> to publish its events.
         private readonly IMicroServiceBusProcessor _processor;
 
         protected MicroServiceBusController(IMicroServiceBusProcessor processor)
