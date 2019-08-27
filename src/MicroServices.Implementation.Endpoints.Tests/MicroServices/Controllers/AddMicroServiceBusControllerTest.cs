@@ -11,16 +11,15 @@ namespace Kingo.MicroServices.Controllers
     [TestClass]
     public sealed class AddMicroServiceBusControllerTest : MicroProcessorTest<MicroProcessor>
     {
-        #region [====== MicroProcessorController Types ======]
+        #region [====== MicroServiceBusController Types ======]
 
         private abstract class AbstractController : MicroServiceBusController
         {
-            private readonly IMicroProcessor _processor;
             private readonly IInstanceCollector _instances;
 
-            protected AbstractController(IMicroProcessor processor, IInstanceCollector instances)
+            protected AbstractController(IMicroProcessor processor, IInstanceCollector instances) :
+                base(processor)
             {
-                _processor = processor;
                 _instances = instances;
             }
 
@@ -223,51 +222,6 @@ namespace Kingo.MicroServices.Controllers
 
         private static IEnumerable<IHostedService> ResolveServices(IMicroProcessor processor) =>
             processor.ServiceProvider.GetRequiredService<IEnumerable<IHostedService>>();
-
-        #endregion
-
-        #region [====== AddMicroServiceBusControllers ======]
-
-        [TestMethod]
-        public async Task AddMicroServiceBusControllers_DoesNothing_IfNoTypesWereAdded()
-        {
-            ProcessorBuilder.Components.AddMicroServiceBusControllers();
-
-            var processor = CreateProcessor();
-            var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
-
-            await StartAllControllers(processor, 0);
-
-            instances.AssertInstanceCountIs(0);
-        }
-
-        [TestMethod]
-        public async Task AddMicroServiceBusController_AddsExpectedControllers_IfMultipleControllerWereAreAddedAsType()
-        {
-            const int controllerCount = 3;
-
-            ProcessorBuilder.Components.AddToSearchSet<TransientController>();
-            ProcessorBuilder.Components.AddToSearchSet<ScopedController>();
-            ProcessorBuilder.Components.AddToSearchSet<SingletonController>();
-            ProcessorBuilder.Components.AddMicroServiceBusControllers();
-
-            var processor = CreateProcessor();
-            var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
-
-            using (processor.ServiceProvider.CreateScope())
-            {
-                await StartAllControllers(processor, controllerCount);
-                await StartAllControllers(processor, controllerCount);
-            }
-            instances.AssertInstanceCountIs(4);
-
-            using (processor.ServiceProvider.CreateScope())
-            {
-                await StartAllControllers(processor, controllerCount);
-                await StartAllControllers(processor, controllerCount);
-            }
-            instances.AssertInstanceCountIs(7);
-        }
 
         #endregion
     }

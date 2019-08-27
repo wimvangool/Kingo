@@ -42,7 +42,7 @@ namespace Kingo.MicroServices
         public override MessageKind MessageKind =>
             _isCommandEndpoint ? MessageKind.Command : MessageKind.Event;
 
-        public override Task<MessageHandlerOperationResult> InvokeAsync(object message, CancellationToken? token = null)
+        public override Task<IMessageHandlerOperationResult> InvokeAsync(object message, CancellationToken? token = null)
         {
             if (message == null)
             {
@@ -52,10 +52,10 @@ namespace Kingo.MicroServices
             {
                 return InvokeAsync(messageOfSupportedType, token);
             }
-            return Task.FromResult<MessageHandlerOperationResult>(EventBufferResult.Empty);
+            return Task.FromResult<IMessageHandlerOperationResult>(EventBufferResult.Empty);
         }
 
-        private async Task<MessageHandlerOperationResult> InvokeAsync(TMessage message, CancellationToken? token)
+        private async Task<IMessageHandlerOperationResult> InvokeAsync(TMessage message, CancellationToken? token)
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
             // the infrastructure does not create a scope upon receiving a new message (like in ASP.NET).

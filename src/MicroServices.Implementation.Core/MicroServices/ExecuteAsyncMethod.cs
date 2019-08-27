@@ -40,7 +40,7 @@ namespace Kingo.MicroServices
 
         #region [====== Component ======]
 
-        MicroProcessorComponent IAsyncMethod.Component =>
+        ITypeAttributeProvider IAsyncMethod.Component =>
             Query;        
 
         /// <summary>

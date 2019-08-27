@@ -21,7 +21,7 @@ namespace Kingo.MicroServices
         {
             if (typeof(MicroProcessor).IsAssignableFrom(component.Type))
             {
-                processor = new MicroProcessorType(component, typeof(IMicroProcessor));
+                processor = new MicroProcessorType(component, typeof(IMicroProcessor), typeof(IMicroServiceBusProcessor));
                 return true;
             }
             processor = null;

@@ -140,12 +140,12 @@ namespace Kingo.MicroServices
         #region [====== MethodEndpoints ======]        
 
         /// <inheritdoc />
-        public virtual IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints()
+        public virtual IEnumerable<IHandleAsyncMethodEndpoint> CreateMethodEndpoints()
         {
             var methodFactory = ServiceProvider.GetService<IHandleAsyncMethodFactory>();
             if (methodFactory == null)
             {
-                return Enumerable.Empty<HandleAsyncMethodEndpoint>();
+                return Enumerable.Empty<IHandleAsyncMethodEndpoint>();
             }
             return methodFactory.CreateMethodEndpoints(this);
         }            
