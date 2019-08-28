@@ -1,0 +1,315 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Kingo.MicroServices.Contract.ServiceBus</name>
+    </assembly>
+    <members>
+        <member name="T:Kingo.ExceptionMessages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.Controllers.IMicroServiceBus">
+            <summary>
+            When implemented by a class, represents a service bus that can publish messages.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.PublishAsync(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Publishes all specified <paramref name="events" />.
+            </summary>
+            <param name="events">A collection of events.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="events"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.PublishAsync(System.Object)">
+            <summary>
+            Publishes the specified <paramref name="event" />.
+            </summary>
+            <param name="event">An event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="event"/> is <c>null</c>.
+            </exception> 
+        </member>
+        <member name="T:Kingo.MicroServices.Controllers.MicroServiceBusController">
+            <summary>
+            When implemented, represents a controller that receives messages from a service-bus
+            and dispatches those messages to a <see cref="T:Kingo.MicroServices.IMicroServiceBusProcessor" /> for further
+            processing.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.#ctor(Kingo.MicroServices.IMicroServiceBusProcessor,Kingo.MicroServices.Controllers.IMicroServiceBus)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Controllers.MicroServiceBusController" /> class.
+            </summary>
+            <param name="processor">The processor that will be processing all commands and/or events.</param>
+            <param name="bus">The bus that will be used to publish all new events.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="processor"/> or <paramref name="bus"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.StartAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.StopAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishAsync(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Publishes all specified <paramref name="events" />.
+            </summary>
+            <param name="events">The events to publish.</param>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishAsync(System.Object)">
+            <summary>
+            Publishes the specified <paramref name="event"/>.
+            </summary>
+            <param name="event">The event to publish.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.IHandleAsyncMethodEndpoint">
+            <summary>
+            When implemented by a class, represents an endpoint that handles a specific command or event.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IHandleAsyncMethodEndpoint.MessageHandler">
+            <summary>
+            Returns the message handler this method has been implemented on.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IHandleAsyncMethodEndpoint.MessageParameter">
+            <summary>
+            Returns the parameter that represents the message to be handled.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IHandleAsyncMethodEndpoint.MessageKind">
+            <summary>
+            Indicates whether this endpoint handles a command or an event.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IHandleAsyncMethodEndpoint.InvokeAsync(System.Object,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Invokes the method of the associated message handler with the specified <paramref name="message" />
+            and returns its result.
+            </summary>
+            <param name="message">The message to handle.</param>
+            <param name="token">Optional token that can be used to cancel the operation.</param>
+            <returns>
+            The result of the operation, which includes all published events and the number of message handlers that were invoked.
+            If the specified <paramref name="message"/>  is not supported by this endpoint, it is ignored and an empty
+            result will be returned.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="T:Kingo.MicroServices.IMessage">
+            <summary>
+            When implemented by a class, represents a message that is being handled or executed by a processor.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessage.Instance">
+            <summary>
+            Returns the message instance.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageHandlerOperationResult">
+            <summary>
+            When implemented by a class, represents the result of handling a command or event.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.Events">
+            <summary>
+            The events that were published during the operation.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.MessageHandlerCount">
+            <summary>
+            The number of message handlers that have handled the message.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageType">
+            <summary>
+            When implemented by a class, represents a specific message type and kind.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageType.Kind">
+            <summary>
+            Indicates whether this message represents a command, event or request.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMicroProcessorComponentConfiguration">
+            <summary>
+            When implemented by a class, represents the configuration for a component.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroProcessorComponentConfiguration.Lifetime">
+            <summary>
+            Indicates the lifetime of the component.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroProcessorComponentConfiguration.ServiceTypes">
+            <summary>
+            Returns all service types for which this component is registered.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMicroProcessorServiceProvider">
+            <summary>
+            When implemented by a class, represents a <see cref="T:System.IServiceProvider"/> that manages
+            the dependencies of a processor;
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessorServiceProvider.CreateScope">
+            <summary>
+            Creates and returns a new <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScope"/> that manages the lifetime
+            of scoped dependencies.
+            </summary>
+            <returns>A new <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScope"/>.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.IMicroServiceBusProcessor">
+            <summary>
+            When implemented by a class, represents a processor that can be connected to a service bus to
+            process incoming commands and events.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroServiceBusProcessor.ServiceProvider">
+            <summary>
+            Returns the service provider the processor uses to resolve its dependencies.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroServiceBusProcessor.AssignUser(System.Security.Principal.IPrincipal)">
+            <summary>
+            Configures the processor to use the specified <paramref name="user"/> for each operation as long as the
+            returned scope is active.
+            </summary>
+            <param name="user">The principal to use.</param>
+            <returns>A scope that can be disposed when the principal can be reset to its previous value.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="user"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroServiceBusProcessor.CreateMethodEndpoints">
+            <summary>
+            Creates and returns all endpoints that are configured to handle commands or events from a service bus.
+            </summary>
+            <returns>A collection of endpoints.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageKind">
+            <summary>
+            Represents a specific role or kind a message that a message can have.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.Unspecified">
+            <summary>
+            Indicates the kind is yet to be specified.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.Command">
+            <summary>
+            Represents a command.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.Event">
+            <summary>
+            Represents an event.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.Request">
+            <summary>
+            Represents a request, carrying parameters for a query.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.MicroProcessorComponentAttribute">
+            <summary>
+            This attribute can be declared on any class or struct to configure its registration and run-time behavior.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorComponentAttribute.#ctor(Microsoft.Extensions.DependencyInjection.ServiceLifetime,System.Type[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MicroProcessorComponentAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MicroProcessorComponentAttribute.Lifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MicroProcessorComponentAttribute.ServiceTypes">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorComponentAttribute.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.Reflection.IAttributeProvider">
+            <summary>
+            When implemented by a class, serves as a provider of attributes declared on class, method, parameter, field, or any other member
+            that can be decorated with attributes.
+            </summary>
+        </member>
+        <member name="M:Kingo.Reflection.IAttributeProvider.TryGetAttributeOfType``1(``0@)">
+            <summary>
+            Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="attribute">
+            When this method returns <c>true</c>, this parameter will refer to the retrieved attribute;
+            otherwise it will be <c>null</c>.
+            </param>
+            <returns><c>true</c> if the attribute was retrieved; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Multiple attribute defined of the method are assignable to type <typeparamref name="TAttribute"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.IAttributeProvider.GetAttributesOfType``1">
+            <summary>
+            Retrieves all attributes of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <returns>A collection of attributes.</returns>
+        </member>
+        <member name="T:Kingo.Reflection.IMethodAttributeProvider">
+            <summary>
+            When implemented by a class, serves as a provider of attributes declared on a method.
+            </summary>
+        </member>
+        <member name="P:Kingo.Reflection.IMethodAttributeProvider.Info">
+            <summary>
+            The method for which the attributes are provided.
+            </summary>
+        </member>
+        <member name="T:Kingo.Reflection.IParameterAttributeProvider">
+            <summary>
+            When implemented by a class, represents a provider of attributes that are specified on a specific parameter.
+            </summary>
+        </member>
+        <member name="P:Kingo.Reflection.IParameterAttributeProvider.Type">
+            <summary>
+            Returns the parameter type.
+            </summary>
+        </member>
+        <member name="P:Kingo.Reflection.IParameterAttributeProvider.Info">
+            <summary>
+            Returns the parameter info.
+            </summary>
+        </member>
+        <member name="T:Kingo.Reflection.ITypeAttributeProvider">
+            <summary>
+            When implemented by a class, serves as a provider of attributes declared on a class or struct.
+            </summary>
+        </member>
+        <member name="P:Kingo.Reflection.ITypeAttributeProvider.Type">
+            <summary>
+            The type for which the attributes are provided.
+            </summary>
+        </member>
+    </members>
+</doc>

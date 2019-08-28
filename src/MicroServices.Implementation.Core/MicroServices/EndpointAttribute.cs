@@ -5,7 +5,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When applied to the <see cref="IMessageHandler{TMessage}.HandleAsync"/> method implementation
     /// of a message handler, indicates that that method serves as an endpoint and will be returned as such
-    /// by the microprocessor's <see cref="IMicroProcessor.CreateMethodEndpoints"/> method.
+    /// by the microprocessor's <see cref="IMicroServiceBusProcessor.CreateMethodEndpoints"/> method.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class EndpointAttribute : Attribute

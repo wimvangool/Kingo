@@ -4,6 +4,330 @@
         <name>Kingo.MicroServices</name>
     </assembly>
     <members>
+        <member name="T:Kingo.Clocks.Clock">
+            <summary>
+            Provides a basic implementation of the <see cref="T:Kingo.Clocks.IClock" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.LocalTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.LocalDate">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.LocalDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.UtcTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.UtcDate">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="F:Kingo.Clocks.Clock.SystemClock">
+            <summary>
+            Returns the default clock of this system.
+            </summary>
+        </member>
+        <member name="P:Kingo.Clocks.Clock.Current">
+            <summary>
+            Returns the clock associated to the current thread.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideThreadLocal(System.Func{System.DateTimeOffset})">
+            <summary>
+            Sets the current clock that is accessible by the current thread through <see cref="P:Kingo.Clocks.Clock.Current" />
+            only as long as the scope is active.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>                       
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideThreadLocal(System.DateTimeOffset)">
+            <summary>
+            Sets the current clock that is accessible by the current thread through <see cref="P:Kingo.Clocks.Clock.Current" />
+            only as long as the scope is active.
+            </summary>
+            <param name="startTime">The time that will serve as the start time of the scope.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideThreadLocal(Kingo.Clocks.IClock)">
+            <summary>
+            Sets the current clock that is accessible by the current thread through <see cref="P:Kingo.Clocks.Clock.Current" />
+            only as long as the scope is active.
+            </summary>
+            <param name="clock">The clock to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideAsyncLocal(System.Func{System.DateTimeOffset})">
+            <summary>
+            Sets the current value that is accessible by all threads that share the same logical call context
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside a thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideAsyncLocal(System.DateTimeOffset)">
+            <summary>
+            Sets the current value that is accessible by all threads that share the same logical call context
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="startTime">The time that will serve as the start time of the scope.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside a thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideAsyncLocal(Kingo.Clocks.IClock)">
+            <summary>
+            Sets the current value that is accessible by all threads that share the same logical call context
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="clock">The clock to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside a thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.Override(System.Func{System.DateTimeOffset})">
+            <summary>
+            Sets the current value that is accessible by all threads
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>        
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside an async local or thread local scope.
+            </exception>      
+        </member>
+        <member name="M:Kingo.Clocks.Clock.Override(System.DateTimeOffset)">
+            <summary>
+            Sets the current value that is accessible by all threads
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="startTime">The time that will serve as the start time of the scope.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside an async local or thread local scope.
+            </exception> 
+        </member>
+        <member name="M:Kingo.Clocks.Clock.Override(Kingo.Clocks.IClock)">
+            <summary>
+            Sets the current value that is accessible by all threads
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="clock">The clock to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>  
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside an async local or thread local scope.
+            </exception>      
+        </member>
+        <member name="T:Kingo.Clocks.ClockExtensions">
+            <summary>
+            Contains extension methods for the <see cref="T:Kingo.Clocks.IClock" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.ClockExtensions.Shift(Kingo.Clocks.IClock,System.TimeSpan)">
+            <summary>
+            Returns a clock that shows the time of the current clock, plus the given offset.
+            </summary>
+            <param name="clock">A clock.</param>
+            <param name="offset">The offset to add to the time of the current clock.</param>
+            <returns>A clock that shows the time of the current clock, plus the given offset.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.Clocks.DelegateClock">
+            <summary>
+            Represents a clock that implemented by a delegate.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.DelegateClock.#ctor(System.Func{System.DateTimeOffset})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Clocks.DelegateClock" /> class.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.DelegateClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.Clocks.HighResolutionClock">
+            <summary>
+            Represents a clock that uses a <see cref="T:System.Diagnostics.Stopwatch" /> in combination with
+            the system clock to simulate a high resolution system time clock.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="F:Kingo.Clocks.HighResolutionClock.DefaultSynchronizationInterval">
+            <summary>
+            The default synchronization interval used when not explicitly specified is 10 seconds.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.StartNew">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.HighResolutionClock" /> that is counting from the current date and time.
+            </summary>        
+            <returns>A new <see cref="T:Kingo.Clocks.HighResolutionClock" />.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.StartNew(Kingo.Clocks.IClock)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.
+            </summary> 
+            <param name="referenceClock">
+            The clock that will be used as a reference for this clock.
+            </param>        
+            <returns>A new <see cref="T:Kingo.Clocks.HighResolutionClock" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="referenceClock "/> is <c>null</c>.
+            </exception>         
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.StartNew(Kingo.Clocks.IClock,System.TimeSpan)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.
+            </summary> 
+            <param name="referenceClock">
+            The clock that will be used as a reference for this clock.
+            </param>
+            <param name="synchronizationInterval">
+            The interval that is used to periodically synchronize this clock with the specified <paramref name="referenceClock"/>.
+            A value of <see cref="F:System.TimeSpan.Zero" /> means this clock is never synchronized.
+            </param>
+            <returns>A new <see cref="T:Kingo.Clocks.HighResolutionClock" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="referenceClock "/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="synchronizationInterval"/> is a negative <see cref="T:System.TimeSpan" />.
+            </exception>               
+        </member>
+        <member name="T:Kingo.Clocks.IClock">
+            <summary>
+            When implemented by a class, represents a service that provides the current date and time.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.LocalTime">
+            <summary>
+            Returns the time of the day in local time.
+            </summary>
+            <returns>The time of the day in local time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.LocalDate">
+            <summary>
+            Returns the date in local time.
+            </summary>
+            <returns>The date in local time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.LocalDateAndTime">
+            <summary>
+            Returns the date and time in local time.
+            </summary>
+            <returns>The date and time in local time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.UtcTime">
+            <summary>
+            Returns the time of the day in UTC-time.
+            </summary>
+            <returns>Time of the day in UTC-time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.UtcDate">
+            <summary>
+            Returns the date in UTC-time.
+            </summary>
+            <returns>Date in UTC-time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.UtcDateAndTime">
+            <summary>
+            Returns the date and time in UTC-time.
+            </summary>
+            <returns>Date and time in UTC-time.</returns>
+        </member>
+        <member name="T:Kingo.Clocks.StopwatchClock">
+            <summary>
+            This clock represents a stopwatch that starts at a specified date and/or time and can be started and stopped.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.#ctor(System.DateTimeOffset)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Clocks.StopwatchClock" /> class.
+            </summary>
+            <param name="startTime">The initial date and time.</param>
+        </member>
+        <member name="P:Kingo.Clocks.StopwatchClock.IsRunning">
+            <summary>
+            Indicates whether or not this clock is running.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.Start">
+            <summary>
+            Starts the clock.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.Stop">
+            <summary>
+            Stops the clock.
+            </summary>
+        </member>
+        <member name="P:Kingo.Clocks.StopwatchClock.ElapsedTime">
+            <summary>
+            Returns the total amount of time the stopwatch has been running.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.StartNew">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.StopwatchClock" /> that is started immediately.
+            </summary>        
+            <returns>A new <see cref="T:Kingo.Clocks.StopwatchClock" />.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.StartNew(System.DateTimeOffset)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.StopwatchClock" /> that is started immediately.
+            </summary>    
+            <param name="startTime">The initial date and time.</param>    
+            <returns>A new <see cref="T:Kingo.Clocks.StopwatchClock" />.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.SystemClock.LocalDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.SystemClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
         <member name="T:Kingo.Collections.Generic.CollectionExtensions">
             <summary>
             Contains extension methods and helper methods for collection types.
@@ -832,6 +1156,16 @@
               Looks up a localized string similar to The scopes were not nested correctly..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.DataContractExtensions_CircularReference">
+            <summary>
+              Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: version of type &apos;{1}&apos; introduced a circular update by returning an instance of type &apos;{2}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.DataContractExtensions_InvalidCast">
+            <summary>
+              Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: could not convert latest version of type &apos;{1}&apos; to instance of type &apos;{2}&apos;..
+            </summary>
+        </member>
         <member name="P:Kingo.ExceptionMessages.DateTimeSpan_InvalidTimeSpan">
             <summary>
               Looks up a localized string similar to Invalid time span specified: [{0}, {1}]..
@@ -846,6 +1180,89 @@
             <summary>
               Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
             </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.DataContract">
+            <summary>
+            Provides a base-implementation of the <see cref="T:Kingo.MicroServices.IDataContract"/> interface.
+            </summary>    
+        </member>
+        <member name="M:Kingo.MicroServices.DataContract.TryUpdateToNextVersion(Kingo.MicroServices.IDataContract@)">
+            <summary>
+            Attempts to update this data contract to the next version. By default, this
+            method returns <c>false</c>.
+            </summary>
+            <param name="nextVersion">
+            If this method returns <c>true</c>, this parameter will refer to the next version;
+            otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
+            otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.DataContractExtensions">
+            <summary>
+            Contains extension methods for objects that implement the <see cref="T:Kingo.MicroServices.IDataContract" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractExtensions.UpdateToLatestVersion``1(Kingo.MicroServices.IDataContract)">
+            <summary>
+            Updates the specified <paramref name="dataContract"/> to the latest available version and casts
+            the result to an instance of <typeparamref name="TDataContract"/>.
+            </summary>
+            <typeparam name="TDataContract">Expected type of the latest version.</typeparam>
+            <param name="dataContract">The contract to update.</param>
+            <returns>The latest available version.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="dataContract"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractExtensions.UpdateToLatestVersion(Kingo.MicroServices.IDataContract)">
+            <summary>
+            Updates the specified <paramref name="dataContract"/> to the latest available version.
+            </summary>
+            <param name="dataContract">The contract to update.</param>
+            <returns>The latest available version.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="dataContract"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.DataContractUpdateFailedException">
+            <summary>
+            This exception is thrown when an attempt to update a <see cref="T:Kingo.MicroServices.IDataContract"/> to its latest
+            version fails for some reason.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractUpdateFailedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.DataContractUpdateFailedException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractUpdateFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.DataContractUpdateFailedException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+            <param name="innerException">The cause of this exception.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.IDataContract">
+            <summary>
+            When implemented by a class, represents a data transfer object.
+            </summary>    
+        </member>
+        <member name="M:Kingo.MicroServices.IDataContract.TryUpdateToNextVersion(Kingo.MicroServices.IDataContract@)">
+            <summary>
+            Attempts to update this data contract to the next version.
+            </summary>
+            <param name="nextVersion">
+            If this method returns <c>true</c>, this parameter will refer to the next version;
+            otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
+            otherwise <c>false</c>.
+            </returns>
         </member>
         <member name="T:Kingo.Reflection.TypeExtensions">
             <summary>

@@ -5,7 +5,7 @@ namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents a <see cref="IServiceProvider"/> that manages
-    /// the dependencies of a <see cref="IMicroProcessor"/>.
+    /// the dependencies of a processor;
     /// </summary>
     public interface IMicroProcessorServiceProvider : IServiceProvider, IServiceScopeFactory
     {

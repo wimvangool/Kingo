@@ -43,9 +43,11 @@ namespace Kingo.MicroServices.Controllers
         //
         // NB: Extend IMicroServiceBus-interface with:
         //      PublishAsync(object @event, TimeSpan timeout);
+        /// <inheritdoc />
         public virtual Task StartAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
+        /// <inheritdoc />
         public virtual Task StopAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 

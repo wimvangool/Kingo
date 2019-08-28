@@ -1,7 +1,7 @@
 ﻿namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents a specific role or kind a message that is handled or executed by a <see cref="MicroProcessor"/> can have.
+    /// Represents a specific role or kind a message that a message can have.
     /// </summary>
     public enum MessageKind
     {

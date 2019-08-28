@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// When implemented by a class, represents the configuration for a <see cref="MicroProcessorComponent" />.
+    /// When implemented by a class, represents the configuration for a component.
     /// </summary>
     public interface IMicroProcessorComponentConfiguration
     {

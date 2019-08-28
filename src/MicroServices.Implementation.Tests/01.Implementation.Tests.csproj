@@ -8,9 +8,7 @@
     <RootNamespace>Kingo</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon />
     <OutputType>Library</OutputType>
-    <StartupObject />
     <LangVersion>7.3</LangVersion>    
   </PropertyGroup>
 
