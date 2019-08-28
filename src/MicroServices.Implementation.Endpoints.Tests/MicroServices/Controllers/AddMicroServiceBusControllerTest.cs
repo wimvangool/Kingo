@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,8 +17,8 @@ namespace Kingo.MicroServices.Controllers
         {
             private readonly IInstanceCollector _instances;
 
-            protected AbstractController(IMicroProcessor processor, IInstanceCollector instances) :
-                base(processor)
+            protected AbstractController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
+                base(processor, bus)
             {
                 _instances = instances;
             }
@@ -29,32 +28,38 @@ namespace Kingo.MicroServices.Controllers
                 _instances.Add(this);
                 return Task.CompletedTask;
             }
+
+            protected override Task PublishAsync(object @event)
+            {
+                _instances.Add(new object());
+                return Task.CompletedTask;
+            }
         }
 
         private sealed class GenericController<T> : AbstractController
         {
-            public GenericController(IMicroProcessor processor, IInstanceCollector instances) :
-                base(processor, instances) { }
+            public GenericController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
+                base(processor, bus, instances) { }
         }
 
         [MicroProcessorComponent(ServiceLifetime.Transient)]
         private sealed class TransientController : AbstractController
         {
-            public TransientController(IMicroProcessor processor, IInstanceCollector instances) :
-                base(processor, instances) { }
+            public TransientController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
+                base(processor, bus, instances) { }
         }
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ScopedController : AbstractController
         {
-            public ScopedController(IMicroProcessor processor, IInstanceCollector instances) :
-                base(processor, instances) { }
+            public ScopedController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
+                base(processor, bus, instances) { }
         }
         
         private sealed class SingletonController : AbstractController
         {
-            public SingletonController(IMicroProcessor processor, IInstanceCollector instances) :
-                base(processor, instances) { }
+            public SingletonController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
+                base(processor, bus, instances) { }
         }
 
         #endregion
@@ -209,32 +214,60 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void AddMicroServiceBus_DoesNotRegisterControllerAsMicroServiceBus_IfIsMainControllerIsFalse()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task AddMicroServiceBus_DoesNotRegisterControllerAsMicroServiceBus_IfIsMainControllerIsFalse()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
             ProcessorBuilder.Components.AddMicroServiceBusController<ScopedController>();
             ProcessorBuilder.Components.AddMicroServiceBusController<SingletonController>();
 
             var processor = CreateProcessor();
-            var buses = processor.ServiceProvider.GetService<IEnumerable<IMicroServiceBus>>();
+            var bus = processor.ServiceProvider.GetRequiredService<IMicroServiceBus>();
 
-            Assert.IsNotNull(buses);
-            Assert.IsFalse(buses.Any());
+            try
+            {
+                await bus.PublishAsync(new object());
+            }
+            catch (InvalidOperationException exception)
+            {
+                Assert.AreEqual("Cannot publish specified event(s) because no instance or type implementing the 'IMicroServiceBus'-interface has been registered.", exception.Message);
+                throw;
+            }
         }
 
         [TestMethod]
-        public void AddMicroServiceBus_RegistersControllerAsMicroServiceBus_IfIsMainControllerIsTrue()
+        public async Task AddMicroServiceBus_RegistersControllerAsMicroServiceBus_IfIsMainControllerIsTrueForOneController()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
             ProcessorBuilder.Components.AddMicroServiceBusController<ScopedController>(true);
             ProcessorBuilder.Components.AddMicroServiceBusController<SingletonController>();
 
             var processor = CreateProcessor();
-            var buses = processor.ServiceProvider.GetService<IEnumerable<IMicroServiceBus>>().ToArray();
+            var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
 
-            Assert.AreEqual(1, buses.Length);
-            Assert.AreSame(typeof(ScopedController), buses[0].GetType());
+            await StartAllControllers(processor, 3);
+            await processor.ServiceProvider.GetRequiredService<IMicroServiceBus>().PublishAsync(new object());
+
+            instances.AssertInstanceCountIs(4);
         }
+
+        [TestMethod]
+        public async Task AddMicroServiceBus_RegistersControllersAsMicroServiceBus_IfIsMainControllerIsTrueForMultipleControllers()
+        {
+            ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
+            ProcessorBuilder.Components.AddMicroServiceBusController<ScopedController>(true);
+            ProcessorBuilder.Components.AddMicroServiceBusController<SingletonController>(true);
+
+            var processor = CreateProcessor();
+            var instances = processor.ServiceProvider.GetRequiredService<IInstanceCollector>();
+
+            await StartAllControllers(processor, 3);
+            await processor.ServiceProvider.GetRequiredService<IMicroServiceBus>().PublishAsync(new object());
+
+            instances.AssertInstanceCountIs(5);
+        }
+
+
 
         private static async Task StartAllControllers(IMicroProcessor processor, int expectedServiceCount = 1)
         {

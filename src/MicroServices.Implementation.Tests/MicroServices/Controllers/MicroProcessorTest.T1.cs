@@ -20,10 +20,8 @@ namespace Kingo.MicroServices.Controllers
                 _instances = new List<object>();
             }
 
-            public void Add(object instance)
-            {
+            public void Add(object instance) =>
                 _instances.Add(instance);
-            }
 
             public void AssertInstanceCountIs(int count) =>
                 Assert.AreEqual(count, _instances.Distinct().Count());
@@ -57,12 +55,12 @@ namespace Kingo.MicroServices.Controllers
         // in the service collection. This number can be used to verify whether or not
         // the appropriate services from a test were registered or not.
         // The default services are:
-        // - IMicroProcessor + TProcessor
+        // - IMicroProcessor + IMicroServiceBusProcessor + TProcessor
         // - MicroProcessorOptions
         // - IHandleAsyncMethodFactory
         // - IMicroServiceBus
         // - IInstanceCollector
         protected virtual int DefaultServiceCount =>
-            6;              
+            7;              
     }
 }

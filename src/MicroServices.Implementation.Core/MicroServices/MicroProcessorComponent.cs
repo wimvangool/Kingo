@@ -44,6 +44,18 @@ namespace Kingo.MicroServices
         internal MicroProcessorComponent MergeWith(MicroProcessorComponent component) =>
             new MicroProcessorComponent(this, _serviceTypes.Concat(component._serviceTypes));
 
+        internal bool TryRemoveServiceType(Type serviceType, out MicroProcessorComponent component)
+        {
+            var componentWithoutServiceType = new MicroProcessorComponent(this, _serviceTypes.Where(type => type != serviceType));
+            if (componentWithoutServiceType._serviceTypes.Length < _serviceTypes.Length)
+            {
+                component = componentWithoutServiceType;
+                return true;
+            }
+            component = null;
+            return false;
+        }
+
         #region [====== IMicroProcessorComponentConfiguration ======]
 
         /// <inheritdoc />
@@ -165,6 +177,6 @@ namespace Kingo.MicroServices
             return new ArgumentException(message, nameof(instance));
         }
 
-        #endregion        
+        #endregion
     }
 }

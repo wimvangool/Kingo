@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Hosting;
 
 namespace Kingo.MicroServices.Controllers
 {
@@ -10,9 +11,9 @@ namespace Kingo.MicroServices.Controllers
         #region [====== AddMicroServiceBusController ======]
 
         /// <summary>
-        /// Adds <typeparamref name="TController"/> as a <see cref="MicroServiceBusController"/>. If
-        /// <typeparamref name="TController"/> implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>,
-        /// it is also registered as a hosted service that will be started and stopped automatically.
+        /// Adds <typeparamref name="TController"/> as a <see cref="IHostedService" />.
+        /// If <paramref name="isMainController"/> is <c>true</c>, the controller is also registered as
+        /// a <see cref="IMicroServiceBus" />.
         /// </summary>
         /// <typeparam name="TController">The type to register as a controller.</typeparam>
         /// <param name="collection">A collection of components.</param>
@@ -21,17 +22,20 @@ namespace Kingo.MicroServices.Controllers
         /// If <c>true</c>, the specified controller <typeparamref name="TController"/> will be registered
         /// as the <see cref="IMicroServiceBus"/> of this service.
         /// </param>
+        /// <returns>
+        /// <c>true</c> if <typeparamref name="TController"/> was added as a controller; otherwise <c>false</c>.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="collection"/> is <c>null</c>.
         /// </exception>
-        public static void AddMicroServiceBusController<TController>(this MicroProcessorComponentCollection collection, bool isMainController = false) where TController : MicroServiceBusController =>
+        public static bool AddMicroServiceBusController<TController>(this MicroProcessorComponentCollection collection, bool isMainController = false) where TController : MicroServiceBusController =>
             collection.AddMicroServiceBusController(typeof(TController), isMainController);
 
         /// <summary>
-        /// Adds the specified <paramref name="type"/> as a <see cref="MicroServiceBusController"/> if and only if
-        /// the specified <paramref name="type"/> actually is a <see cref="MicroServiceBusController"/>. If <paramref name="type"/>
-        /// implements <see cref="Microsoft.Extensions.Hosting.IHostedService"/>, it is also registered
-        /// as a hosted service that will be started and stopped automatically.
+        /// Adds the specified <paramref name="type"/> as a <see cref="IHostedService" /> if and only if
+        /// <paramref name="type"/> is a <see cref="MicroServiceBusController" />.
+        /// If <paramref name="isMainController"/> is <c>true</c>, the controller is also registered as
+        /// a <see cref="IMicroServiceBus" />.
         /// </summary>
         /// <param name="collection">A collection of components.</param>
         /// <param name="type">The type to register as a controller.</param>
@@ -40,11 +44,29 @@ namespace Kingo.MicroServices.Controllers
         /// If <c>true</c>, the specified controller <paramref name="type"/> will be registered as the <see cref="IMicroServiceBus"/>
         /// of this service.
         /// </param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="type"/> was added as a controller; otherwise <c>false</c>.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="collection"/> or <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static void AddMicroServiceBusController(this MicroProcessorComponentCollection collection, Type type, bool isMainController = false) =>
-            collection.AddComponent(type, component => MicroServiceBusControllerType.FromComponent(component, isMainController));
+        public static bool AddMicroServiceBusController(this MicroProcessorComponentCollection collection, Type type, bool isMainController = false)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (collection.AddComponent(type, MicroServiceBusControllerType.FromComponent))
+            {
+                if (isMainController)
+                {
+                    collection.AddMicroServiceBus(type);
+                }
+                return true;
+            }
+            return false;
+        }
+            
 
         #endregion
     }

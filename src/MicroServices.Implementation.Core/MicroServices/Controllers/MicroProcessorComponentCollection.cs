@@ -41,14 +41,29 @@ namespace Kingo.MicroServices.Controllers
 
         private IServiceCollection BuildServiceCollection(IServiceCollection services)
         {
+            services = AddMessageHandlerInstancesTo(services);
+            services = AddMessageHandlerTypesTo(services);
+            services = AddComponentsTo(services);
+            return services;
+        }
+
+        #region [====== AddMessageHandlerInstancesTo ======]
+
+        private IServiceCollection AddMessageHandlerInstancesTo(IServiceCollection services)
+        {
             foreach (var service in _messageHandlerInstanceCollection)
             {
                 services.Add(service);
             }
-            return services
-                .AddSingleton(BuildMethodFactory())
-                .AddComponents(MergeComponents());
+            return services;
         }
+
+        #endregion
+
+        #region [====== AddMessageHandlerTypesTo ======]
+
+        private IServiceCollection AddMessageHandlerTypesTo(IServiceCollection services) =>
+            services.AddSingleton(BuildMethodFactory());
 
         // When building the factory, we filter out all types that have also been registered as an instance
         // to prevent weird and unpredictable behavior - instances simply take precedence in that case.
@@ -61,35 +76,114 @@ namespace Kingo.MicroServices.Controllers
         private bool IsNotRegisteredAsInstance(MessageHandler messageHandler) =>
             _messageHandlerInstances.All(instance => instance.Type != messageHandler.Type);
 
+        #endregion
+
+        #region [====== AddComponentsTo ======]
+
+        private sealed class MicroServiceBusRelay : IMicroServiceBus
+        {
+            private readonly Lazy<IMicroServiceBus> _bus;
+
+            public MicroServiceBusRelay(IServiceProvider serviceProvider, IEnumerable<Type> serviceBusTypes)
+            {
+                _bus = new Lazy<IMicroServiceBus>(() => CreateServiceBus(serviceProvider, serviceBusTypes), true);
+            }
+
+            private IMicroServiceBus Bus
+            {
+                get
+                {
+                    try
+                    {
+                        return _bus.Value;
+                    }
+                    catch (InvalidOperationException exception)
+                    {
+                        throw NewCircularReferenceDetectedException(exception);
+                    }
+                }
+            }
+
+            public Task PublishAsync(IEnumerable<object> events) =>
+                Bus.PublishAsync(events);
+
+            public Task PublishAsync(object @event) =>
+                Bus.PublishAsync(@event);
+
+            private static Exception NewCircularReferenceDetectedException(Exception innerException)
+            {
+                var messageFormat = ExceptionMessages.MicroServiceBusRelay_CircularReferenceDetected;
+                var message = string.Format(messageFormat, typeof(IMicroServiceBus).FriendlyName());
+                return new InvalidOperationException(message, innerException);
+            }
+        }
+
+        // Before registering components, we first sanitize the components that were added to the collection.
+        // First, we merge all components of the same type, so that each type is only registered once.
+        // Then, we check which components are IMicroServiceBus-components and replace their IMicroServiceBus-mapping
+        // with a single mapping to a MicroServiceBusRelay-instance. This mechanism allows any component to be injected
+        // with a single IMicroServiceBus-instance, even if there are multiple components that implement this interface.
+        // In addition, this mechanism allows IMicroServiceBus-components such as the MicroServiceBusControllers to
+        // be injected with an IMicroServiceBus-instance, where this would normally result in a circular dependency error.
+        private IServiceCollection AddComponentsTo(IServiceCollection services)
+        {
+            var componentsToAdd = new List<MicroProcessorComponent>();
+            var serviceBusTypes = new List<Type>();
+
+            foreach (var component in MergeComponents(MessageHandlerTypes, _otherComponents))
+            {
+                if (component.TryRemoveServiceType(typeof(IMicroServiceBus), out var componentWithoutServiceType))
+                {
+                    componentsToAdd.Add(componentWithoutServiceType);
+                    serviceBusTypes.Add(componentWithoutServiceType.Type);
+                }
+                else
+                {
+                    componentsToAdd.Add(component);
+                }
+            }
+            return services
+                .AddComponents(componentsToAdd)
+                .AddSingleton<IMicroServiceBus>(provider => new MicroServiceBusRelay(provider, serviceBusTypes));
+        }
+
+        private static IMicroServiceBus CreateServiceBus(IServiceProvider serviceProvider, IEnumerable<Type> serviceBusTypes) =>
+            CreateServiceBus(serviceBusTypes.Select(serviceProvider.GetRequiredService).OfType<IMicroServiceBus>().ToArray());
+
+        private static IMicroServiceBus CreateServiceBus(IMicroServiceBus[] serviceBusCollection)
+        {
+            if (serviceBusCollection.Length == 0)
+            {
+                return new MicroServiceBusStub();
+            }
+            if (serviceBusCollection.Length == 1)
+            {
+                return serviceBusCollection[0];
+            }
+            return new MicroServiceBusComposite(serviceBusCollection);
+        }
+
         // When adding/registering all components to a service collection, we first need to merge all the collections,
         // such that we return only a single collection where each component-type occurs only once.
-        private IEnumerable<MicroProcessorComponent> MergeComponents()
+        private static IEnumerable<MicroProcessorComponent> MergeComponents(params IEnumerable<MicroProcessorComponent>[] componentsToMerge)
         {
-            var components = new Dictionary<Type, MicroProcessorComponent>();
-            AddOrMerge(components, MessageHandlerTypes);
-            AddOrMerge(components, _otherComponents);
-            return components.Values;
+            var mergedComponents = new Dictionary<Type, MicroProcessorComponent>();
+
+            foreach (var componentToAdd in componentsToMerge.SelectMany(components => components))
+            {
+                if (mergedComponents.TryGetValue(componentToAdd.Type, out var component))
+                {
+                    mergedComponents[componentToAdd.Type] = component.MergeWith(componentToAdd);
+                }
+                else
+                {
+                    mergedComponents.Add(componentToAdd.Type, componentToAdd);
+                }
+            }
+            return mergedComponents.Values;
         }
 
-        private static void AddOrMerge(IDictionary<Type, MicroProcessorComponent> components, IEnumerable<MicroProcessorComponent> componentsToAdd)
-        {
-            foreach (var componentToAdd in componentsToAdd)
-            {
-                AddOrMerge(components, componentToAdd);                    
-            }
-        }
-
-        private static void AddOrMerge(IDictionary<Type, MicroProcessorComponent> components, MicroProcessorComponent componentToAdd)
-        {
-            if (components.TryGetValue(componentToAdd.Type, out var component))
-            {
-                components[componentToAdd.Type] = component.MergeWith(componentToAdd);
-            }
-            else
-            {
-                components.Add(componentToAdd.Type, componentToAdd);
-            }
-        }
+        #endregion
 
         #region [====== AddToSearchSet ======]
 
@@ -149,21 +243,28 @@ namespace Kingo.MicroServices.Controllers
         /// <summary>
         /// Automatically registers all message handlers that are found in the types that were added to this collection,
         /// which are types that implement the <see cref="IMessageHandler{TMessage}"/> interface.
-        /// </summary>                
-        public void AddMessageHandlers()
+        /// </summary>
+        /// <returns>The number of message handlers that were added.</returns> 
+        public int AddMessageHandlers()
         {
-            foreach (var messageHandler in MessageHandlerType.FromComponents(_searchSet))
+            var messageHandlerTypes = MessageHandlerType.FromComponents(_searchSet).ToArray();
+
+            foreach (var messageHandler in messageHandlerTypes)
             {
                 AddMessageHandler(messageHandler);
             }
-        }               
+            return messageHandlerTypes.Length;
+        }
 
         /// <summary>
         /// Adds the specified <typeparamref name="TMessageHandler"/> as a message handler for the processor, if and only if
         /// this type represents a message handler.
         /// </summary>
+        /// <returns>
+        /// <c>true</c> if the specified <typeparamref name="TMessageHandler"/> was added as a message handler; otherwise <c>false</c>.
+        /// </returns>
         /// <typeparam name="TMessageHandler">Type of the message handler to add.</typeparam>
-        public void AddMessageHandler<TMessageHandler>() where TMessageHandler : class =>
+        public bool AddMessageHandler<TMessageHandler>() where TMessageHandler : class =>
             AddMessageHandler(typeof(TMessageHandler));
 
         /// <summary>
@@ -171,15 +272,20 @@ namespace Kingo.MicroServices.Controllers
         /// this type represents a message handler.
         /// </summary>
         /// <param name="type">The type to add as a message handler.</param>
+        /// <returns>
+        /// <c>true</c> if the specified <paramref name="type"/> was added as a message handler; otherwise <c>false</c>.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public void AddMessageHandler(Type type)
+        public bool AddMessageHandler(Type type)
         {
             if (MessageHandlerType.IsMessageHandlerComponent(type, out var messageHandler))
             {
                 AddMessageHandler(messageHandler);
+                return true;
             }
+            return false;
         }
 
         private void AddMessageHandler(MessageHandler messageHandler) =>
@@ -253,7 +359,10 @@ namespace Kingo.MicroServices.Controllers
         /// that implements the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/> interface.
         /// </summary>
         /// <typeparam name="TQuery">Type of the query to add.</typeparam>
-        public void AddQuery<TQuery>() where TQuery : class =>
+        /// <returns>
+        /// <c>true</c> if the specified <typeparamref name="TQuery"/> was added as a query; otherwise <c>false</c>.
+        /// </returns>
+        public bool AddQuery<TQuery>() where TQuery : class =>
             AddQuery(typeof(TQuery));
 
         /// <summary>
@@ -261,11 +370,42 @@ namespace Kingo.MicroServices.Controllers
         /// that implements the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/> interface.
         /// </summary>
         /// <param name="type">The type to add as a query.</param>
+        /// <returns>
+        /// <c>true</c> if the specified <paramref name="type"/> was added as a query; otherwise <c>false</c>.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public void AddQuery(Type type) =>
+        public bool AddQuery(Type type) =>
             AddComponent(type, QueryType.FromComponent);
+
+        #endregion
+
+        #region [====== AddMicroServiceBus ======]
+
+        /// <summary>
+        /// Adds <typeparamref name="TServiceBus"/> as a service bus if it is a valid component.
+        /// </summary>
+        /// <typeparam name="TServiceBus">Type of the service bus to add.</typeparam>
+        /// <returns>
+        /// <c>true</c> if the specified <typeparamref name="TServiceBus"/> was added as a query; otherwise <c>false</c>.
+        /// </returns>
+        public bool AddMicroServiceBus<TServiceBus>() where TServiceBus : class, IMicroServiceBus =>
+            AddMicroServiceBus(typeof(TServiceBus));
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a service bus, if and only if the specified type is a valid component
+        /// that implements the <see cref="IMicroServiceBus"/> interface.
+        /// </summary>
+        /// <param name="type">The type to add as a service bus.</param>
+        /// <returns>
+        /// <c>true</c> if the specified <paramref name="type"/> was added as a service bus; otherwise <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public bool AddMicroServiceBus(Type type) =>
+            AddComponent(type, MicroServiceBusType.FromComponent);
 
         #endregion
 
@@ -280,15 +420,19 @@ namespace Kingo.MicroServices.Controllers
         /// that component is ignored (filtered out). Otherwise, the returned component (which can be a different
         /// component from the one that is passed into the delegate) is added to this collection.
         /// </param>
+        /// <returns>The number of components that were added.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="componentFactory"/> is <c>null</c>.
         /// </exception>
-        public void AddComponents(Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
+        public int AddComponents(Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
         {
-            foreach (var componentToAdd in ComponentsToAdd(componentFactory))
+            var componentsToAdd = ComponentsToAdd(componentFactory).ToArray();
+
+            foreach (var componentToAdd in componentsToAdd)
             {
                 AddComponent(componentToAdd);
             }
+            return componentsToAdd.Length;
         }
 
         private IEnumerable<MicroProcessorComponent> ComponentsToAdd(Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
@@ -317,10 +461,13 @@ namespace Kingo.MicroServices.Controllers
         /// that component is ignored (filtered out). Otherwise, the returned component (which can be a different
         /// component from the one that is passed into the delegate) is added to this collection.
         /// </param>
+        /// <returns>
+        /// <c>true</c> if the specified <paramref name="type"/> was added as a component; otherwise <c>false</c>.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> or <paramref name="componentFactory"/> is <c>null</c>.
         /// </exception>
-        public void AddComponent(Type type, Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
+        public bool AddComponent(Type type, Func<MicroProcessorComponent, MicroProcessorComponent> componentFactory)
         {
             if (componentFactory == null)
             {
@@ -329,7 +476,9 @@ namespace Kingo.MicroServices.Controllers
             if (MicroProcessorComponent.IsMicroProcessorComponent(type, out var component) && TryCreateComponent(componentFactory, component, out var componentToAdd))
             {
                 AddComponent(componentToAdd);
+                return true;
             }
+            return false;
         }
 
         private void AddComponent(MicroProcessorComponent component) =>

@@ -8,14 +8,10 @@ namespace Kingo.MicroServices.Controllers
         private MicroServiceBusControllerType(MicroProcessorComponent component, params Type[] serviceTypes) :
             base(component, serviceTypes) { }                       
         
-        internal static MicroServiceBusControllerType FromComponent(MicroProcessorComponent component, bool isMainController)
+        internal static MicroServiceBusControllerType FromComponent(MicroProcessorComponent component)
         {
             if (typeof(MicroServiceBusController).IsAssignableFrom(component.Type))
             {
-                if (isMainController)
-                {
-                    return new MicroServiceBusControllerType(component, typeof(IHostedService), typeof(IMicroServiceBus));
-                }
                 return new MicroServiceBusControllerType(component, typeof(IHostedService));                
             }
             return null;

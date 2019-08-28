@@ -4,10 +4,10 @@ namespace Kingo.MicroServices
 {
     internal sealed class MicroProcessorType : MicroProcessorComponent
     {
-        internal MicroProcessorType(MicroProcessorComponent component, params Type[] serviceTypes) :
+        private MicroProcessorType(MicroProcessorComponent component, params Type[] serviceTypes) :
             base(component, serviceTypes) { }        
 
-        internal static bool IsMicroProcessorType(Type type, out MicroProcessorType processor)
+        public static bool IsMicroProcessorType(Type type, out MicroProcessorType processor)
         {
             if (IsMicroProcessorComponent(type, out var component))
             {

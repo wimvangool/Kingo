@@ -81,7 +81,6 @@ namespace Kingo.MicroServices.Controllers
             }
 
             // Secondly, we add the component by its own type.
-            
             // If no instance is provided, the component is registered with the specified lifetime.
             if (instance == null)
             {

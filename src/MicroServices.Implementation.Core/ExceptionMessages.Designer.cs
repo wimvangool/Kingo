@@ -124,6 +124,24 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot publish the specified event(s) inside the constructor of a type that is registered as a &apos;{0}&apos;-type, because this causes a circular reference..
+        /// </summary>
+        internal static string MicroServiceBusRelay_CircularReferenceDetected {
+            get {
+                return ResourceManager.GetString("MicroServiceBusRelay_CircularReferenceDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot publish specified event(s) because no instance or type implementing the &apos;{0}&apos;-interface has been registered..
+        /// </summary>
+        internal static string MicroServiceBusStub_NoBusRegistered {
+            get {
+                return ResourceManager.GetString("MicroServiceBusStub_NoBusRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Component of type &apos;{0}&apos; could not be added because it is configured with an invalid lifetime ({1})..
         /// </summary>
         internal static string ServiceCollectionExtensions_InvalidComponentLifetime {

@@ -59,14 +59,5 @@ namespace Kingo {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot publish specified event(s) because no instance or type implementing the &apos;{0}&apos;-interface has been registered..
-        /// </summary>
-        internal static string MicroServiceBusStub_NoBusRegistered {
-            get {
-                return ResourceManager.GetString("MicroServiceBusStub_NoBusRegistered", resourceCulture);
-            }
-        }
     }
 }
