@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Implementation.Core\03.Implementation.Core.csproj" />
     <ProjectReference Include="..\MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj" />
   </ItemGroup>
 

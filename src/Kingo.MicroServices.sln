@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Implementation", "Implementation", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Implementation.Core", "MicroServices.Implementation.Core\03.Implementation.Core.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Implementation", "MicroServices.Implementation\03.Implementation.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Implementation.Tests", "MicroServices.Implementation.Tests\01.Implementation.Tests.csproj", "{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D}"
 EndProject
@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.SharedKernel", "MicroSer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.SharedKernel.Tests", "MicroServices.Tests\01.SharedKernel.Tests.csproj", "{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Contract.ServiceBus", "MicroServices.Contract.ServiceBus\04.Contract.ServiceBus.csproj", "{BB17F6EC-A63B-4A33-A4CA-0A03E441B35C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "04.Contract.ServiceBus", "MicroServices.Contract.ServiceBus\04.Contract.ServiceBus.csproj", "{BB17F6EC-A63B-4A33-A4CA-0A03E441B35C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Endpoints.ServiceBus", "MicroServices.Implementation.Endpoints.ServiceBus\03.Endpoints.ServiceBus.csproj", "{96E74DB4-B102-4384-AC1C-263DF62C10C2}"
 EndProject
@@ -114,8 +114,8 @@ Global
 		{9B91B3F6-BF0E-4294-862F-8DFF49DB7AA4} = {4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 	GlobalSection(TestsCaseManagementSettings) = postSolution
 		CategoryFile = YellowFlare.Cqrs.vsmdi

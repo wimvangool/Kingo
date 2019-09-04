@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Implementation.Core\03.Implementation.Core.csproj" />
+    <ProjectReference Include="..\MicroServices.Implementation\03.Implementation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

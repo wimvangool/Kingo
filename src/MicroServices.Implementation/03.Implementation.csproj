@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Kingo</RootNamespace>
-    <AssemblyName>Kingo.MicroServices.Implementation.Core</AssemblyName>
+    <AssemblyName>Kingo.MicroServices.Implementation</AssemblyName>
     <AssemblyDescription>A library for building event-driven micro-services.</AssemblyDescription>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Implementation.Core\Kingo.MicroServices.Implementation.Core.xml</DocumentationFile>
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Implementation.Core\Kingo.MicroServices.Implementation.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
