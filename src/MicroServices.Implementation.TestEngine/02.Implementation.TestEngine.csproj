@@ -2,22 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Kingo</RootNamespace>
     <AssemblyName>Kingo.MicroServices.Implementation.TestEngine</AssemblyName>
-    <AssemblyDescription>A library that can be used to write BDD-style tests for micro-services that are built using the Kingo.MicroServices framework.</AssemblyDescription>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
-    <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">4.0</Version>
-    <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
-    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/test.png?raw=true</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
-    <RepositoryType />
-    <PackageTags>MicroService Event-Driven BDD TDD Test</PackageTags>
-    <Company>Kingo</Company>
-    <Authors>Wim van Gool</Authors>
-    <Description>A library for creating Behavioral-Driven (Given-When-Then) tests for the Implementation-component (back-end) of a MicroService.</Description>
-    <LangVersion>7.3</LangVersion>    
+    <Description>Contains components to implement Behavior-Driven tests for the Implementation-component(s) of a (Micro)Service.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

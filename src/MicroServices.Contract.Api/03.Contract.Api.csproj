@@ -2,15 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Kingo.MicroServices.Contract</AssemblyName>
-    <RootNamespace>Kingo</RootNamespace>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Kingo.MicroServices.Contract.Api</AssemblyName>
+    <Description>Contains components to implement the Contract.Api-component(s) of a (Micro)Service.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Contract\Kingo.MicroServices.Contract.xml</DocumentationFile>
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Contract.Api\Kingo.MicroServices.Contract.Api.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Kingo.MicroServices.Implementation.Endpoints.ServiceBus</AssemblyName>
-    <RootNamespace>Kingo</RootNamespace>
+    <Description>Contains components to implement the Implementation.Endpoints.ServiceBus-component(s) of a (Micro)Service.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

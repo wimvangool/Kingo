@@ -3,10 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Kingo.MicroServices.Contract.TestEngine</AssemblyName>
-    <RootNamespace>Kingo</RootNamespace>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <LangVersion>7.3</LangVersion>
+    <Description>Contains components to implement tests for the Contract.Api-component(s) of a (Micro)Service.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

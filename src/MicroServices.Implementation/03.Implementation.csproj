@@ -9,17 +9,18 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
     <LangVersion>7.3</LangVersion>    
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>MicroService Event-Driven CQRS DDD SOA</PackageTags>
+    <PackageTags>MicroService SOA EDA BDD TDD DDD CQRS</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/logic.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
     <Authors>Wim van Gool</Authors>
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
-    <RepositoryType>GitHub</RepositoryType>    
+    <RepositoryType>Git</RepositoryType>    
     <Company>Kingo</Company>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">4.0</Version>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
-    <Description>Contains a collection of core components to develop the Implementation-component (back-end) of a MicroService.</Description>
+    <Description>Contains components to implement the Implementation-component (back-end) of a MicroService.</Description>
+    <NeutralLanguage></NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
