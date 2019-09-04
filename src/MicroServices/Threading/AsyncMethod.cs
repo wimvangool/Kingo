@@ -124,6 +124,30 @@ namespace Kingo.Threading
 
         #region [====== Cancellation ======]
 
+
+        public static Task OrAbort(this Task task, CancellationToken token, TimeSpan? timeout = null) =>
+            Task.WhenAny(task, token.WaitForCancellation(timeout));
+
+        /// <summary>
+        /// Creates and returns a <see cref="Task"/> that will complete in the cancelled state as soon as the specified
+        /// <paramref name="token"/> is signaled or as soon as the specified <paramref name="timeout"/> expires.
+        /// </summary>
+        /// <param name="token">
+        /// The token that can be used to cancel and abort the operation immediately.
+        /// </param>
+        /// <param name="timeout">
+        /// The maximum time to wait for the operation to be cancelled. If not specified, the timeout is infinite.
+        /// </param>
+        /// <returns>
+        /// A task that will be completed as soon as <paramref name="token"/> is signaled or the specified
+        /// <paramref name="timeout"/> expires.
+        /// </returns>
+        public static Task WaitForCancellation(this CancellationToken token, TimeSpan? timeout = null) =>
+            token.WaitForCancellation(timeout ?? Timeout.InfiniteTimeSpan);
+
+        private static Task WaitForCancellation(this CancellationToken token, TimeSpan timeout) =>
+            Task.Delay(timeout, token);
+
         private static bool TryGetCanceledTask(CancellationToken? token, OperationCanceledException exception, out Task canceledTask)
         {
             if (token.HasValue && token.Value.IsCancellationRequested && token.Value.Equals(exception.CancellationToken))

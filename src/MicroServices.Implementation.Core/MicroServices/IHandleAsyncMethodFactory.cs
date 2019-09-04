@@ -5,7 +5,7 @@ namespace Kingo.MicroServices
 {    
     internal interface IHandleAsyncMethodFactory
     {
-        IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints(MicroProcessor processor);
+        IEnumerable<MicroServiceBusEndpoint> CreateMicroServiceBusEndpoints(MicroProcessor processor);
 
         IEnumerable<HandleAsyncMethod<TMessage>> CreateMethodsFor<TMessage>(MicroProcessorOperationKinds operationKind, IServiceProvider serviceProvider);        
     }

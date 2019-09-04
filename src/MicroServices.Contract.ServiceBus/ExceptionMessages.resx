@@ -117,4 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="MicroServiceBusClient_MessageKindNotSupported" xml:space="preserve">
+    <value>Cannot connect endpoint '{0}' to the service-bus because the specified message-kind ({1}) is not supported.</value>
+  </data>
+  <data name="MicroServiceBusController_AlreadyStarted" xml:space="preserve">
+    <value>Controller of type '{0}' cannot be started because it has already been started.</value>
+  </data>
+  <data name="MicroServiceBusController_CannotPublishEvents" xml:space="preserve">
+    <value>Controller of type '{0}' cannot publish the specified event(s) because it has not been (fully) started yet.</value>
+  </data>
 </root>

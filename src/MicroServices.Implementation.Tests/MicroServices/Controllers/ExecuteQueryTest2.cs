@@ -88,7 +88,7 @@ namespace Kingo.MicroServices.Controllers
 
                 Assert.IsNotNull(operation.Message);
                 Assert.AreSame(message, operation.Message.Instance);
-                Assert.AreEqual(MessageKind.Request, operation.Message.Kind);
+                Assert.AreEqual(MessageKind.QueryRequest, operation.Message.Kind);
 
                 Assert.IsNotNull(operation.Method.MessageParameter);
                 Assert.AreSame(typeof(object), operation.Method.MessageParameter.Type);

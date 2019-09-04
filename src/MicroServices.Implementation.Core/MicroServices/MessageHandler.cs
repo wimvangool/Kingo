@@ -75,10 +75,10 @@ namespace Kingo.MicroServices
 
         #region [====== IHandleAsyncMethodFactory.CreateMethodEndpoints(MicroProcessor) ======]
 
-        IEnumerable<HandleAsyncMethodEndpoint> IHandleAsyncMethodFactory.CreateMethodEndpoints(MicroProcessor processor) =>
-            HandlesExternalMessages ? CreateMethodEndpoints(processor) : Enumerable.Empty<HandleAsyncMethodEndpoint>();
+        IEnumerable<MicroServiceBusEndpoint> IHandleAsyncMethodFactory.CreateMicroServiceBusEndpoints(MicroProcessor processor) =>
+            HandlesExternalMessages ? CreateMethodEndpoints(processor) : Enumerable.Empty<MicroServiceBusEndpoint>();
 
-        private IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints(MicroProcessor processor)
+        private IEnumerable<MicroServiceBusEndpoint> CreateMethodEndpoints(MicroProcessor processor)
         {
             foreach (var method in Methods())
             {

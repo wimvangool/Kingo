@@ -23,6 +23,6 @@
         /// <summary>
         /// Represents a request, carrying parameters for a query.
         /// </summary>
-        Request
+        QueryRequest
     }
 }

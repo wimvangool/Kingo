@@ -16,9 +16,9 @@ namespace Kingo.MicroServices
         public override string ToString() =>
             $"{_methodFactories.Length} MessageHandler(s) registered";
 
-        public IEnumerable<HandleAsyncMethodEndpoint> CreateMethodEndpoints(MicroProcessor processor) =>
+        public IEnumerable<MicroServiceBusEndpoint> CreateMicroServiceBusEndpoints(MicroProcessor processor) =>
             from factory in _methodFactories
-            from method in factory.CreateMethodEndpoints(processor)
+            from method in factory.CreateMicroServiceBusEndpoints(processor)
             select method;
 
         public IEnumerable<HandleAsyncMethod<TMessage>> CreateMethodsFor<TMessage>(MicroProcessorOperationKinds operationKind, IServiceProvider serviceProvider) =>

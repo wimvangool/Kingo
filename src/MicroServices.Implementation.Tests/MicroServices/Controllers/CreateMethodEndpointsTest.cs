@@ -49,7 +49,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMethodEndpoints_ReturnsEmptyCollection_IfNoMessageHandlersHaveBeenRegistered()
         {
-            Assert.AreEqual(0, CreateProcessor().CreateMethodEndpoints().Count());
+            Assert.AreEqual(0, CreateProcessor().CreateServiceBusEndpoints().Count());
         }
 
         [TestMethod]
@@ -57,7 +57,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler1>();            
 
-            Assert.AreEqual(0, CreateProcessor().CreateMethodEndpoints().Count());
+            Assert.AreEqual(0, CreateProcessor().CreateServiceBusEndpoints().Count());
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler2>();            
 
-            Assert.AreEqual(0, CreateProcessor().CreateMethodEndpoints().Count());
+            Assert.AreEqual(0, CreateProcessor().CreateServiceBusEndpoints().Count());
         }
 
         [TestMethod]
@@ -73,7 +73,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();            
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             Assert.AreEqual(typeof(MessageHandler3), endpoint.MessageHandler.Type);
             Assert.AreSame(typeof(object), endpoint.MessageParameter.Type);            
@@ -84,7 +84,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler4>();            
 
-            var endpoints = CreateProcessor().CreateMethodEndpoints().ToArray();
+            var endpoints = CreateProcessor().CreateServiceBusEndpoints().ToArray();
 
             Assert.AreEqual(2, endpoints.Length);
             Assert.AreSame(typeof(MessageHandler4), endpoints[0].MessageHandler.Type);
@@ -99,7 +99,7 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler4>();            
 
-            var endpoints = CreateProcessor().CreateMethodEndpoints().ToArray();
+            var endpoints = CreateProcessor().CreateServiceBusEndpoints().ToArray();
 
             Assert.AreEqual(3, endpoints.Length);            
             Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(object)));
@@ -113,7 +113,7 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.Components.AddMessageHandler(new MessageHandler3());
             ProcessorBuilder.Components.AddMessageHandler(new MessageHandler4());          
 
-            var endpoints = CreateProcessor().CreateMethodEndpoints().ToArray();
+            var endpoints = CreateProcessor().CreateServiceBusEndpoints().ToArray();
 
             Assert.AreEqual(3, endpoints.Length);
             Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(object)));
@@ -127,7 +127,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class RequestHandler : IMessageHandler<object>
         {
-            [Endpoint(MessageKind.Request)]
+            [Endpoint(MessageKind.QueryRequest)]
             public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
@@ -188,7 +188,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<RequestHandler>();            
 
-            CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
+            CreateProcessor().CreateServiceBusEndpoints().Single().IgnoreValue();
         }
 
         [TestMethod]
@@ -197,7 +197,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<UnknownMessageKindHandler>();            
 
-            CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
+            CreateProcessor().CreateServiceBusEndpoints().Single().IgnoreValue();
         }
 
         [TestMethod]
@@ -205,7 +205,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<ExplicitEventHandler>();            
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             Assert.AreEqual(MessageKind.Event, endpoint.MessageKind);
         }
@@ -215,7 +215,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<ImplicitEventHandler>();            
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             Assert.AreEqual(MessageKind.Event, endpoint.MessageKind);
         }
@@ -225,7 +225,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<ExplicitCommandHandler>();            
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             Assert.AreEqual(MessageKind.Command, endpoint.MessageKind);
         }
@@ -235,7 +235,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             Assert.AreEqual(MessageKind.Command, endpoint.MessageKind);
         }
@@ -246,7 +246,7 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.Unspecified);
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             Assert.AreEqual(MessageKind.Command, endpoint.MessageKind);
         }
@@ -255,10 +255,10 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void CreateMethodEndpoints_Throws_IfCustomMessageKindResolver_ReturnsRequest()
         {
-            ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.Request);
+            ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.QueryRequest);
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
-            CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
+            CreateProcessor().CreateServiceBusEndpoints().Single().IgnoreValue();
         }
 
         [TestMethod]
@@ -268,7 +268,7 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver((MessageKind) (-1));
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
-            CreateProcessor().CreateMethodEndpoints().Single().IgnoreValue();
+            CreateProcessor().CreateServiceBusEndpoints().Single().IgnoreValue();
         }
 
         #endregion
@@ -301,7 +301,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             await endpoint.InvokeAsync(null);
         }
@@ -311,7 +311,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
             var result = await endpoint.InvokeAsync(new object());
 
             Assert.AreEqual(0, result.MessageHandlerCount);
@@ -327,7 +327,7 @@ namespace Kingo.MicroServices.Controllers
                 context.EventBus.Publish(new object());
             });
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
             var result = await endpoint.InvokeAsync(DateTimeOffset.UtcNow.Second);
 
             Assert.AreEqual(2, result.MessageHandlerCount);
@@ -346,7 +346,7 @@ namespace Kingo.MicroServices.Controllers
                     tokenSource.Cancel();
                 });
 
-                var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+                var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
                 try
                 {
@@ -372,7 +372,7 @@ namespace Kingo.MicroServices.Controllers
                 throw exceptionToThrow;
             });
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             try
             {
@@ -397,7 +397,7 @@ namespace Kingo.MicroServices.Controllers
                 throw exceptionToThrow;
             });
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             try
             {
@@ -419,7 +419,7 @@ namespace Kingo.MicroServices.Controllers
                 context.EventBus.Publish(new object());
             });
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
             var result = await endpoint.InvokeAsync(DateTimeOffset.UtcNow.Second);
 
             Assert.AreEqual(2, result.MessageHandlerCount);
@@ -438,7 +438,7 @@ namespace Kingo.MicroServices.Controllers
                     tokenSource.Cancel();
                 });
 
-                var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+                var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
                 try
                 {
@@ -464,7 +464,7 @@ namespace Kingo.MicroServices.Controllers
                 throw exceptionToThrow;
             });
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             try
             {
@@ -489,7 +489,7 @@ namespace Kingo.MicroServices.Controllers
                 throw exceptionToThrow;
             });
 
-            var endpoint = CreateProcessor().CreateMethodEndpoints().Single();
+            var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
             try
             {

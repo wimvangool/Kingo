@@ -29,11 +29,14 @@ namespace Kingo.MicroServices.Controllers
                 return Task.CompletedTask;
             }
 
-            protected override Task PublishAsync(object @event)
+            public override Task PublishAsync(object @event)
             {
                 _instances.Add(new object());
                 return Task.CompletedTask;
             }
+
+            protected override Task<IMicroServiceBusClient> CreateClientAsync(IMicroServiceBus bus) =>
+                throw new NotSupportedException();
         }
 
         private sealed class GenericController<T> : AbstractController

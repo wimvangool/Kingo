@@ -33,6 +33,6 @@ namespace Kingo.MicroServices
         /// Creates and returns all endpoints that are configured to handle commands or events from a service bus.
         /// </summary>
         /// <returns>A collection of endpoints.</returns>
-        IEnumerable<IHandleAsyncMethodEndpoint> CreateMethodEndpoints();
+        IEnumerable<IMicroServiceBusEndpoint> CreateServiceBusEndpoints();
     }
 }

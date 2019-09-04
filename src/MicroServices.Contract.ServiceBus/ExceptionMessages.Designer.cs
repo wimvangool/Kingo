@@ -59,5 +59,32 @@ namespace Kingo {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; to the service-bus because the specified message-kind ({1}) is not supported..
+        /// </summary>
+        internal static string MicroServiceBusClient_MessageKindNotSupported {
+            get {
+                return ResourceManager.GetString("MicroServiceBusClient_MessageKindNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot be started because it has already been started..
+        /// </summary>
+        internal static string MicroServiceBusController_AlreadyStarted {
+            get {
+                return ResourceManager.GetString("MicroServiceBusController_AlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot publish the specified event(s) because it has not been (fully) started yet..
+        /// </summary>
+        internal static string MicroServiceBusController_CannotPublishEvents {
+            get {
+                return ResourceManager.GetString("MicroServiceBusController_CannotPublishEvents", resourceCulture);
+            }
+        }
     }
 }

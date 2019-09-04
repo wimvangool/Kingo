@@ -52,14 +52,14 @@ namespace Kingo.MicroServices
             base(processor, token)
         {                                  
             _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = new Message<TRequest>(message, MessageKind.Request);
+            _message = new Message<TRequest>(message, MessageKind.QueryRequest);
         }
 
         public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token) :
             base(context, token)
         {
             _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = new Message<TRequest>(message, MessageKind.Request);
+            _message = new Message<TRequest>(message, MessageKind.QueryRequest);
         }
 
         public override IMessage Message =>
