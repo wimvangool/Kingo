@@ -2035,6 +2035,52 @@
             this property returns the directory of the main assembly or executable.
             </summary>
         </member>
+        <member name="T:Kingo.StringExtensions">
+            <summary>
+            Contains extensions methods for instances of type <see cref="T:System.String"/>.
+            </summary>
+        </member>
+        <member name="M:Kingo.StringExtensions.RemovePostfix(System.String,System.String,System.StringComparison)">
+            <summary>
+            Removes the specified <paramref name="postfix"/> from <paramref name="value"/>.
+            </summary>
+            <param name="value">The value to remove the postfix from.</param>
+            <param name="postfix">The postfix to remove.</param>
+            <param name="comparison">
+            Indicates which comparison must be used when checking if <paramref name="value"/> ends with <paramref name="postfix"/>.
+            </param>
+            <returns>
+            The value where the postfix has been removed if <paramref name="value"/> ends with the specified <paramref name="postfix"/>;
+            otherwise it will just return <paramref name="value"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> or <paramref name="postfix"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="comparison"/> is not a valid value.
+            </exception>
+        </member>
+        <member name="M:Kingo.StringExtensions.TryRemovePostfix(System.String,System.String,System.String@,System.StringComparison)">
+            <summary>
+            Attempts to remove the specified <paramref name="postfix"/> from the string.
+            </summary>
+            <param name="value">The value to remove the postfix from.</param>
+            <param name="postfix">The postfix to remove.</param>
+            <param name="newValue">
+            If <paramref name="value"/> ends with <paramref name="postfix"/>, this parameter will be assigned the
+            value where this postfix has been removed.
+            </param>
+            <param name="comparison">
+            Indicates which comparison must be used when checking if <paramref name="value"/> ends with <paramref name="postfix"/>.
+            </param>
+            <returns><c>true</c> if the postfix was removed; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> or <paramref name="postfix"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="comparison"/> is not a valid value.
+            </exception>
+        </member>
         <member name="T:Kingo.Threading.AsyncMethod">
             <summary>
             Contains several helper methods for async methods.
@@ -2088,6 +2134,22 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="func"/> is <c>null</c>.
             </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.WaitForCancellation(System.Threading.CancellationToken,System.Nullable{System.TimeSpan})">
+            <summary>
+            Creates and returns a <see cref="T:System.Threading.Tasks.Task"/> that will complete in the cancelled state as soon as the specified
+            <paramref name="token"/> is signaled or as soon as the specified <paramref name="timeout"/> expires.
+            </summary>
+            <param name="token">
+            The token that can be used to cancel and abort the operation immediately.
+            </param>
+            <param name="timeout">
+            The maximum time to wait for the operation to be cancelled. If not specified, the timeout is infinite.
+            </param>
+            <returns>
+            A task that will be completed as soon as <paramref name="token"/> is signaled or the specified
+            <paramref name="timeout"/> expires.
+            </returns>
         </member>
         <member name="M:Kingo.Threading.AsyncMethod.Throw(System.Exception)">
             <summary>

@@ -9,7 +9,7 @@
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
     <Authors>Wim van Gool</Authors>
     <Company>Kingo</Company>
-    <Copyright>Wim van Gool © 2019</Copyright>
+    <Copyright>Copyright © Wim van Gool 2019</Copyright>
     <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>

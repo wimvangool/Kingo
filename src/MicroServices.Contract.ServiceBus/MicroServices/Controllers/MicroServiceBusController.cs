@@ -227,8 +227,8 @@ namespace Kingo.MicroServices.Controllers
             public Task PublishAsync(object @event) =>
                 throw _controller.NewCannotPublishException();
 
-            public Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint) =>
-                Task.CompletedTask;
+            public Task<bool> ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint) =>
+                Task.FromResult(false);
         }
 
         #endregion

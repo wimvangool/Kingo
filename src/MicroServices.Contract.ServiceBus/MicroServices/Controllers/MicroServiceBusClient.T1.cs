@@ -84,7 +84,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== ConnectToEndpointAsync ======]
 
         /// <inheritdoc />
-        public async Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint)
+        public async Task<bool> ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint)
         {
             if (IsDisposed)
             {
@@ -97,7 +97,9 @@ namespace Kingo.MicroServices.Controllers
             if (IsSupportedEndpoint(endpoint))
             {
                 _connections.Add(await ConnectToQueueAsync(endpoint));
+                return true;
             }
+            return false;
         }
 
         /// <summary>
