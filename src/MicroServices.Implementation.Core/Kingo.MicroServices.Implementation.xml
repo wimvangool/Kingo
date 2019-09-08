@@ -25,11 +25,6 @@
               Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.AttributeProvider_AmbiguousAttributeMatch">
-            <summary>
-              Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
-            </summary>
-        </member>
         <member name="P:Kingo.ExceptionMessages.EndpointAttribute_InvalidMessageKindSpecified">
             <summary>
               Looks up a localized string similar to Invalid MessageKind ({0}) specified. Endpoints only support commands and events..
@@ -444,12 +439,6 @@
             Specifies the message kind of the message that is handled by this endpoint
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.EventBus.Publish(System.Object)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.MicroServices.EventBus.ToString">
-            <inheritdoc />
-        </member>
         <member name="T:Kingo.MicroServices.ExecuteAsyncMethod">
             <summary>
             When implemented, represents the <see cref="M:Kingo.MicroServices.IQuery`1.ExecuteAsync(Kingo.MicroServices.QueryOperationContext)"/> or
@@ -458,22 +447,16 @@
         </member>
         <member name="P:Kingo.MicroServices.ExecuteAsyncMethod.Query">
             <summary>
-            The message handler that implements this method.
+            The query that implements this method.
             </summary>
         </member>
         <member name="P:Kingo.MicroServices.ExecuteAsyncMethod.Info">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.ExecuteAsyncMethod.TryGetAttributeOfType``1(``0@)">
+        <member name="P:Kingo.MicroServices.ExecuteAsyncMethod.MessageParameterInfo">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.ExecuteAsyncMethod.GetAttributesOfType``1">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.ExecuteAsyncMethod.MessageParameter">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.ExecuteAsyncMethod.ContextParameter">
+        <member name="P:Kingo.MicroServices.ExecuteAsyncMethod.ContextParameterInfo">
             <inheritdoc />
         </member>
         <member name="T:Kingo.MicroServices.ExecuteAsyncMethodOperation`1">
@@ -515,16 +498,10 @@
         <member name="P:Kingo.MicroServices.HandleAsyncMethod.Info">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.HandleAsyncMethod.TryGetAttributeOfType``1(``0@)">
+        <member name="P:Kingo.MicroServices.HandleAsyncMethod.MessageParameterInfo">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.HandleAsyncMethod.GetAttributesOfType``1">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.HandleAsyncMethod.MessageParameter">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.HandleAsyncMethod.ContextParameter">
+        <member name="P:Kingo.MicroServices.HandleAsyncMethod.ContextParameterInfo">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.HandleAsyncMethod`1.HandleAsync(`0,Kingo.MicroServices.MessageHandlerOperationContext)">
@@ -558,7 +535,7 @@
         </member>
         <member name="T:Kingo.MicroServices.IAsyncMethod">
             <summary>
-            When implemented by a class, a method that handles a specific message and is provided with
+            When implemented by a class, represents a method that handles a specific message and is provided with
             a context for processing this message.
             </summary>
         </member>
@@ -567,14 +544,19 @@
             Returns the message handler or query type this method has been implemented on.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IAsyncMethod.MessageParameter">
+        <member name="P:Kingo.MicroServices.IAsyncMethod.Info">
             <summary>
-            Returns the parameter that represents the message to be handled.
+            Returns the <see cref="T:System.Reflection.MethodInfo"/> of the method.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IAsyncMethod.ContextParameter">
+        <member name="P:Kingo.MicroServices.IAsyncMethod.MessageParameterInfo">
             <summary>
-            Returns the parameter that represents the context that is supplied to the method.
+            Returns the <see cref="T:System.Reflection.ParameterInfo" /> that represents the message to be handled.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IAsyncMethod.ContextParameterInfo">
+            <summary>
+            Returns the <see cref="T:System.Reflection.ParameterInfo" /> that represents the context that is supplied to the method.
             </summary>
         </member>
         <member name="T:Kingo.MicroServices.IAsyncMethodOperation">
@@ -615,31 +597,34 @@
             Returns the operation that is currently being executed.
             </summary>
         </member>
-        <member name="T:Kingo.MicroServices.IEventBus">
+        <member name="T:Kingo.MicroServices.IMessageBus">
             <summary>
             When implemented by a class, represent a bus to which events can be published.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.IEventBus.Publish(System.Object)">
+        <member name="M:Kingo.MicroServices.IMessageBus.Send(System.Object,System.Nullable{System.DateTimeOffset})">
             <summary>
-            Publishes the specified <paramref name="message"/>.
+            Schedules the specified <paramref name="command"/> to be sent on the service-bus.
             </summary>
-            <param name="message">The message to publish.</param>
+            <param name="command">The command to send.</param>
+            <param name="deliveryTime">
+            If specified, indicates at what time the command should be sent on the service-bus.
+            </param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="message"/> is <c>null</c>.
+            <paramref name="command"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="T:Kingo.MicroServices.IMessage`1">
+        <member name="M:Kingo.MicroServices.IMessageBus.Publish(System.Object,System.Nullable{System.DateTimeOffset})">
             <summary>
-            When implemented by a class, represents a message that is being handled or executed
-            by a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
+            Schedules the specified <paramref name="event"/> to be published on the service-bus.
             </summary>
-            <typeparam name="TMessage">Type of the message.</typeparam>
-        </member>
-        <member name="P:Kingo.MicroServices.IMessage`1.Instance">
-            <summary>
-            Returns the message instance.
-            </summary>
+            <param name="event">The event to publish.</param>
+            <param name="deliveryTime">
+            If specified, indicates at what time the event should be published on the service-bus.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="event"/> is <c>null</c>.
+            </exception>
         </member>
         <member name="T:Kingo.MicroServices.IMessageHandler`1">
             <summary>
@@ -691,6 +676,18 @@
             <see cref="F:Kingo.MicroServices.MessageKind.Command"/> if the message is a command;
             <see cref="F:Kingo.MicroServices.MessageKind.Event"/> if the message is an event.
             </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageToProcess`1">
+            <summary>
+            When implemented by a class, represents a message that is being handled or executed
+            by a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
+            </summary>
+            <typeparam name="TMessage">Type of the message.</typeparam>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageToProcess`1.Content">
+            <summary>
+            Returns the message instance.
+            </summary>
         </member>
         <member name="T:Kingo.MicroServices.IMicroProcessor">
             <summary>
@@ -960,6 +957,15 @@
             A concurrency exception occurred.
             </exception>
         </member>
+        <member name="M:Kingo.MicroServices.MessageBus.Send(System.Object,System.Nullable{System.DateTimeOffset})">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageBus.Publish(System.Object,System.Nullable{System.DateTimeOffset})">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageBus.ToString">
+            <inheritdoc />
+        </member>
         <member name="T:Kingo.MicroServices.MessageHandler">
             <summary>
             Represent a component that implements one or more variations of the <see cref="T:Kingo.MicroServices.IMessageHandler`1"/> interface.
@@ -1072,9 +1078,6 @@
         <member name="P:Kingo.MicroServices.MessageHandlerOperation.Type">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerOperation`1.ExecuteAsync">
-            <inheritdoc />
-        </member>
         <member name="T:Kingo.MicroServices.MessageHandlerOperationContext">
             <summary>
             Represents the context in which a <see cref="T:Kingo.MicroServices.MicroProcessor"/> invokes a <see cref="T:Kingo.MicroServices.IMessageHandler`1"/>.
@@ -1085,9 +1088,10 @@
             Represents the unit of work that is associated to the current operation.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.MessageHandlerOperationContext.EventBus">
+        <member name="P:Kingo.MicroServices.MessageHandlerOperationContext.MessageBus">
             <summary>
-            Represents the event bus to which all events resulting from the current operation can be published.
+            Represents the message bus that can be used to schedule commands to be sent or events to be published
+            after the operation has completed.
             </summary>
         </member>
         <member name="T:Kingo.MicroServices.MessageHandlerOperationException">
@@ -1132,7 +1136,7 @@
             When implemented, represents the result of handling a command or event.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.MessageHandlerOperationResult.Events">
+        <member name="P:Kingo.MicroServices.MessageHandlerOperationResult.Messages">
             <inheritdoc />
         </member>
         <member name="P:Kingo.MicroServices.MessageHandlerOperationResult.MessageHandlerCount">
@@ -1257,6 +1261,11 @@
             <paramref name="component"/> or <paramref name="serviceTypes"/> is <c>null</c>.
             </exception>
         </member>
+        <member name="P:Kingo.MicroServices.MicroProcessorComponent.Type">
+            <summary>
+            Type of the component.
+            </summary>
+        </member>
         <member name="P:Kingo.MicroServices.MicroProcessorComponent.Lifetime">
             <inheritdoc />
         </member>
@@ -1273,17 +1282,6 @@
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorComponent.ToString">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.MicroProcessorComponent.Type">
-            <summary>
-            Type of the component.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorComponent.TryGetAttributeOfType``1(``0@)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorComponent.GetAttributesOfType``1">
             <inheritdoc />
         </member>
         <member name="T:Kingo.MicroServices.MicroProcessorEndpointOptions">

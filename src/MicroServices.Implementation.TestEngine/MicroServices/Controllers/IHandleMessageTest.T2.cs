@@ -9,7 +9,7 @@ namespace Kingo.MicroServices.Controllers
     /// <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
     /// <typeparam name="TEventStream">Type of the event-stream that is produced by this test.</typeparam>
     public interface IHandleMessageTest<TMessage, out TEventStream> : IMicroProcessorOperationTest
-        where TEventStream : EventStream
+        where TEventStream : MessageStream
     {
         /// <summary>
         /// Executes this test by handling a specific message using the specified <paramref name="processor"/>.

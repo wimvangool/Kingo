@@ -29,7 +29,7 @@ namespace Kingo.MicroServices.Controllers
                 return Task.CompletedTask;
             }
 
-            public override Task PublishAsync(object @event)
+            public override Task PublishAsync(IEnumerable<IMessageToDispatch> events)
             {
                 _instances.Add(new object());
                 return Task.CompletedTask;

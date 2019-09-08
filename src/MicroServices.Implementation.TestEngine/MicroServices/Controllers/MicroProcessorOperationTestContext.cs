@@ -9,12 +9,12 @@ namespace Kingo.MicroServices.Controllers
     /// </summary>
     public sealed class MicroProcessorOperationTestContext
     {        
-        private readonly Dictionary<IMicroProcessorOperationTest, EventStream> _eventStreams;
+        private readonly Dictionary<IMicroProcessorOperationTest, MessageStream> _messageStreams;
         private readonly IMicroProcessor _processor;        
 
         internal MicroProcessorOperationTestContext(IMicroProcessor processor)
         {                        
-            _eventStreams = new Dictionary<IMicroProcessorOperationTest, EventStream>();
+            _messageStreams = new Dictionary<IMicroProcessorOperationTest, MessageStream>();
             _processor = processor;            
         }
 
@@ -29,15 +29,15 @@ namespace Kingo.MicroServices.Controllers
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_eventStreams.Count} event stream(s) stored.";        
+            $"{_messageStreams.Count} message stream(s) stored.";        
 
-        #region [====== SetEventStream ======]
+        #region [====== SetMessageStream ======]
 
-        internal void SetEventStream<TEventStream>(IMicroProcessorOperationTest test, TEventStream stream) where TEventStream : EventStream
+        internal void SetMessageStream<TMessageStream>(IMicroProcessorOperationTest test, TMessageStream stream) where TMessageStream : MessageStream
         {
             try
             {
-                _eventStreams.Add(test, stream);
+                _messageStreams.Add(test, stream);
             }
             catch (ArgumentException exception)
             {
@@ -54,20 +54,20 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== GetEventStream ======]        
+        #region [====== GetMessageStream ======]        
 
         /// <summary>
-        /// Returns the <see cref="EventStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
+        /// Returns the <see cref="MessageStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
         /// </summary>        
-        /// <param name="test">The test that produced the event-stream.</param>
-        /// <returns>The event-stream that was stored in this context.</returns>
+        /// <param name="test">The test that produced the message-stream.</param>
+        /// <returns>The message-stream that was stored in this context.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="test"/> is <c>null</c>.        
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// No event-stream produced by the specified <paramref name="test"/> was stored in this context.
+        /// No message-stream produced by the specified <paramref name="test"/> was stored in this context.
         /// </exception>
-        public TEventStream GetEventStream<TMessage, TEventStream>(IHandleMessageTest<TMessage, TEventStream> test) where TEventStream : EventStream
+        public TMessageStream GetEventStream<TMessage, TMessageStream>(IHandleMessageTest<TMessage, TMessageStream> test) where TMessageStream : MessageStream
         {
             if (test == null)
             {
@@ -75,17 +75,17 @@ namespace Kingo.MicroServices.Controllers
             }
             try
             {
-                return (TEventStream) _eventStreams[test];
+                return (TMessageStream) _messageStreams[test];
             }
             catch (KeyNotFoundException exception)
             {
-                throw NewEventStreamNotFoundException(test, exception);
+                throw NewMessageStreamNotFoundException(test, exception);
             }            
         }
 
-        private static Exception NewEventStreamNotFoundException(object test, Exception innerException)            
+        private static Exception NewMessageStreamNotFoundException(object test, Exception innerException)            
         {
-            var messageFormat = ExceptionMessages.MicroProcessorTestContext_EventStreamNotFound;
+            var messageFormat = ExceptionMessages.MicroProcessorTestContext_MessageStreamNotFound;
             var message = string.Format(messageFormat, test.GetType().FriendlyName());
             return new ArgumentException(message, nameof(test), innerException);
         }

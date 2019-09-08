@@ -39,7 +39,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== HandleEventAsync ======]
 
         /// <summary>
-        /// Executes a command with a specified <paramref name="messageHandler"/>.
+        /// Processes the specified <paramref name="message"/> with the specified <paramref name="messageHandler"/>.
         /// </summary>
         /// <param name="processor">The processor that will process the message.</param>
         /// <param name="messageHandler">Delegate that will handle the event.</param>
@@ -51,7 +51,7 @@ namespace Kingo.MicroServices.Controllers
             processor.HandleEventAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
 
         /// <summary>
-        /// Processes the specified <paramref name="message" />.
+        /// Processes the specified <paramref name="message"/> with the specified <paramref name="messageHandler"/>.
         /// </summary>
         /// <param name="processor">The processor that will process the message.</param>
         /// <param name="messageHandler">Delegate that will handle the event.</param>

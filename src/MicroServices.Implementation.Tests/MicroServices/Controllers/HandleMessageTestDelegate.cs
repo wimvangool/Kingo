@@ -11,7 +11,7 @@ namespace Kingo.MicroServices.Controllers
         {
             _givenStatements = new GivenStatementCollection();
             _whenStatement = (messageProcessor, testContext) => messageProcessor.ExecuteCommandAsync((message, context) => { }, new object());
-            _thenStatement = (message, result, context) => result.IsEventStream();
+            _thenStatement = (message, result, context) => result.IsMessageStream();
         }
 
         #region [====== Given ======]

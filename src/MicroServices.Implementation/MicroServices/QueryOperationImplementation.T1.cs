@@ -21,7 +21,7 @@ namespace Kingo.MicroServices
                 _context = context.PushOperation(this);
             }
 
-            public override IMessage Message =>
+            public override IMessageToProcess Message =>
                 _operation.Message;
 
             public override CancellationToken Token =>
@@ -59,7 +59,7 @@ namespace Kingo.MicroServices
             _query = query ?? throw new ArgumentNullException(nameof(query));
         }
 
-        public override IMessage Message =>
+        public override IMessageToProcess Message =>
             null;
 
         protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) =>

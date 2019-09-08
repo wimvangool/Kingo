@@ -31,17 +31,17 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        public Task<MessageHandlerOperationResult> HandleAsync<TMessage>(IMessage<TMessage> message, MessageHandlerOperationContext context)
+        public Task<MessageHandlerOperationResult> HandleAsync<TMessage>(IMessageToProcess<TMessage> message, MessageHandlerOperationContext context)
         {
             if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
-            Assert.IsInstanceOfType(message.Instance, typeof(TMessage));
+            Assert.IsInstanceOfType(message.Content, typeof(TMessage));
 
-            _messages.Add(message.Instance);
+            _messages.Add(message.Content);
 
-            return Task.FromResult<MessageHandlerOperationResult>(EventBufferResult.Empty);                      
+            return Task.FromResult<MessageHandlerOperationResult>(MessageBufferResult.Empty);                      
         }             
     }
 }

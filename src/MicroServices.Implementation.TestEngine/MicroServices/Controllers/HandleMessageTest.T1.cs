@@ -5,15 +5,15 @@ namespace Kingo.MicroServices.Controllers
     /// <summary>
     /// Serves as a base-class for all tests that handle a message and return an empty stream or throw an exception.
     /// </summary>
-    public abstract class HandleMessageTest<TMessage> : HandleMessageTest<TMessage, EventStream>
+    public abstract class HandleMessageTest<TMessage> : HandleMessageTest<TMessage, MessageStream>
     {
         #region [====== HandleMessageResult ======]
 
         private sealed class HandleMessageResult : IHandleMessageResult
         {
-            private readonly IHandleMessageResult<EventStream> _result;
+            private readonly IHandleMessageResult<MessageStream> _result;
 
-            public HandleMessageResult(IHandleMessageResult<EventStream> result)
+            public HandleMessageResult(IHandleMessageResult<MessageStream> result)
             {
                 _result = result;
             }
@@ -21,9 +21,9 @@ namespace Kingo.MicroServices.Controllers
             public IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) where TException : Exception =>
                 _result.IsExceptionOfType(assertion);
 
-            public void IsEventStream(Action<EventStream> assertion = null)
+            public void IsMessageStream(Action<MessageStream> assertion = null)
             {
-                _result.IsEventStream(stream =>
+                _result.IsMessageStream(stream =>
                 {
                     assertion?.Invoke(stream);
                     return stream;
@@ -34,7 +34,7 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         /// <inheritdoc />
-        protected sealed override void Then(TMessage message, IHandleMessageResult<EventStream> result, MicroProcessorOperationTestContext context) =>
+        protected sealed override void Then(TMessage message, IHandleMessageResult<MessageStream> result, MicroProcessorOperationTestContext context) =>
             Then(message, new HandleMessageResult(result), context);
 
         /// <summary>

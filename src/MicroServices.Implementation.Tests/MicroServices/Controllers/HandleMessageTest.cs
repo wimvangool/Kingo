@@ -52,7 +52,7 @@ namespace Kingo.MicroServices.Controllers
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.MessageHandlerCount);
-            Assert.AreEqual(0, result.Events.Count);
+            Assert.AreEqual(0, result.Messages.Count);
         }
 
         [TestMethod]
@@ -61,13 +61,13 @@ namespace Kingo.MicroServices.Controllers
             var command = new object();
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.EventBus.Publish(message);
+                context.MessageBus.Publish(message);
             }, command);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.MessageHandlerCount);
-            Assert.AreEqual(1, result.Events.Count);
-            Assert.AreSame(command, result.Events[0].Instance);
+            Assert.AreEqual(1, result.Messages.Count);
+            Assert.AreSame(command, result.Messages[0].Content);
         }
 
         [TestMethod]
@@ -80,19 +80,19 @@ namespace Kingo.MicroServices.Controllers
             // Handles Event A.
             ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
             {
-                context.EventBus.Publish(eventB);
+                context.MessageBus.Publish(eventB);
             });
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.EventBus.Publish(eventA);
+                context.MessageBus.Publish(eventA);
             }, command);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Events.Count);
-            Assert.AreSame(eventA, result.Events[0].Instance);
-            Assert.AreSame(eventB, result.Events[1].Instance);
+            Assert.AreEqual(2, result.Messages.Count);
+            Assert.AreSame(eventA, result.Messages[0].Content);
+            Assert.AreSame(eventB, result.Messages[1].Content);
         }
 
         [TestMethod]
@@ -107,33 +107,33 @@ namespace Kingo.MicroServices.Controllers
             // Handles Event A.
             ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
             {
-                context.EventBus.Publish(eventB);
+                context.MessageBus.Publish(eventB);
             });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
             {
-                context.EventBus.Publish(eventC);
+                context.MessageBus.Publish(eventC);
             });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
             {
-                context.EventBus.Publish(eventD);
+                context.MessageBus.Publish(eventD);
             });
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.EventBus.Publish(eventA);
+                context.MessageBus.Publish(eventA);
             }, command);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(4, result.MessageHandlerCount);
-            Assert.AreEqual(4, result.Events.Count);
-            Assert.AreSame(eventA, result.Events[0].Instance);
-            Assert.AreEqual(eventB, result.Events[1].Instance);
-            Assert.AreSame(eventC, result.Events[2].Instance);
-            Assert.AreSame(eventD, result.Events[3].Instance);
+            Assert.AreEqual(4, result.Messages.Count);
+            Assert.AreSame(eventA, result.Messages[0].Content);
+            Assert.AreEqual(eventB, result.Messages[1].Content);
+            Assert.AreSame(eventC, result.Messages[2].Content);
+            Assert.AreSame(eventD, result.Messages[3].Content);
         }
 
         #endregion
@@ -153,43 +153,43 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 2, message, MessageKind.Event);
-                AssertEventBus(context.EventBus, 0);
+                AssertEventBus(context.MessageBus, 0);
 
-                context.EventBus.Publish(eventB);
+                context.MessageBus.Publish(eventB);
 
-                AssertEventBus(context.EventBus, 1);
+                AssertEventBus(context.MessageBus, 1);
             });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
-                AssertEventBus(context.EventBus, 0);
+                AssertEventBus(context.MessageBus, 0);
 
-                context.EventBus.Publish(eventC);
+                context.MessageBus.Publish(eventC);
 
-                AssertEventBus(context.EventBus, 1);
+                AssertEventBus(context.MessageBus, 1);
             });
 
             // Handles Event B.
             ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
-                AssertEventBus(context.EventBus, 0);
+                AssertEventBus(context.MessageBus, 0);
 
-                context.EventBus.Publish(eventD);
+                context.MessageBus.Publish(eventD);
 
-                AssertEventBus(context.EventBus, 1);
+                AssertEventBus(context.MessageBus, 1);
             });
 
             await HandleMessageAsync((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 1, message, MessageKind);
-                AssertEventBus(context.EventBus, 0);
+                AssertEventBus(context.MessageBus, 0);
 
-                context.EventBus.Publish(eventA);
+                context.MessageBus.Publish(eventA);
 
-                AssertEventBus(context.EventBus, 1);
+                AssertEventBus(context.MessageBus, 1);
             }, command);
         }
 
@@ -211,7 +211,7 @@ namespace Kingo.MicroServices.Controllers
         {
             Assert.IsNotNull(operation);
             Assert.AreEqual(MicroProcessorOperationType.MessageHandlerOperation, operation.Type);
-            Assert.AreEqual(message, operation.Message.Instance);
+            Assert.AreEqual(message, operation.Message.Content);
             Assert.AreEqual(messageKind, operation.Message.Kind);
         }
 
@@ -552,7 +552,7 @@ namespace Kingo.MicroServices.Controllers
                 }
                 finally
                 {
-                    context.EventBus.Publish(string.Empty);
+                    context.MessageBus.Publish(string.Empty);
                 }
             }
 
@@ -580,15 +580,15 @@ namespace Kingo.MicroServices.Controllers
 
             private void AssertOperation<TMessage>(TMessage message, IAsyncMethodOperation operation)
             {
-                Assert.AreEqual(message, operation.Message.Instance);
+                Assert.AreEqual(message, operation.Message.Content);
                 AssertMethod(typeof(TMessage), operation.Method);
                 AssertMessageHandler(GetType(), operation.Method.Component as MessageHandler);
             }
 
             private static void AssertMethod(Type messageType, IAsyncMethod method)
             {
-                Assert.AreSame(messageType, method.MessageParameter.Type);
-                Assert.AreSame(typeof(MessageHandlerOperationContext), method.ContextParameter.Type);
+                Assert.AreSame(messageType, method.MessageParameterInfo.ParameterType);
+                Assert.AreSame(typeof(MessageHandlerOperationContext), method.ContextParameterInfo.ParameterType);
             }
 
             private static void AssertMessageHandler(Type messageHandlerType, MessageHandler messageHandler)
@@ -742,7 +742,7 @@ namespace Kingo.MicroServices.Controllers
         {
             Action<int, MessageHandlerOperationContext> messageHandler = (message, context) =>
             {
-                context.EventBus.Publish(string.Empty);
+                context.MessageBus.Publish(string.Empty);
             };
 
             ProcessorBuilder.Components.AddMessageHandler(messageHandler);
@@ -750,11 +750,11 @@ namespace Kingo.MicroServices.Controllers
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
+                context.MessageBus.Publish(DateTimeOffset.UtcNow.Second);
             }, new object());
 
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Events.Count);
+            Assert.AreEqual(2, result.Messages.Count);
         }
 
         [TestMethod]
@@ -762,7 +762,7 @@ namespace Kingo.MicroServices.Controllers
         {
             Func<int, MessageHandlerOperationContext, Task> messageHandler = (message, context) =>
             {
-                context.EventBus.Publish(string.Empty);
+                context.MessageBus.Publish(string.Empty);
                 return Task.CompletedTask;
             };
 
@@ -771,11 +771,11 @@ namespace Kingo.MicroServices.Controllers
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
+                context.MessageBus.Publish(DateTimeOffset.UtcNow.Second);
             }, new object());
 
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Events.Count);
+            Assert.AreEqual(2, result.Messages.Count);
         }
 
         private Task HandleMessageAsync<TMessageHandler>(IMicroProcessor processor) where TMessageHandler : IMessageHandler<int> =>
@@ -787,7 +787,7 @@ namespace Kingo.MicroServices.Controllers
         private static void AssertMessageHandlerResult(MessageHandlerOperationResult result)
         {
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(1, result.Events.Count);
+            Assert.AreEqual(1, result.Messages.Count);
         }
 
         private static void AssertInstanceCount(IMicroProcessor processor, int count) =>

@@ -126,4 +126,7 @@
   <data name="MicroServiceBusController_CannotPublishEvents" xml:space="preserve">
     <value>Controller of type '{0}' cannot publish the specified event(s) because it has not been (fully) started yet.</value>
   </data>
+  <data name="MicroServiceBusController_CannotSendCommands" xml:space="preserve">
+    <value>Controller of type '{0}' cannot send the specified command(s) because it has not been (fully) started yet.</value>
+  </data>
 </root>

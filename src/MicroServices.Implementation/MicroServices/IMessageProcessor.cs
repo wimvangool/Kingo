@@ -4,6 +4,6 @@ namespace Kingo.MicroServices
 {    
     internal interface IMessageProcessor
     {        
-        Task<MessageHandlerOperationResult> HandleAsync<TMessage>(IMessage<TMessage> message, MessageHandlerOperationContext context);
+        Task<MessageHandlerOperationResult> HandleAsync<TMessage>(IMessageToProcess<TMessage> message, MessageHandlerOperationContext context);
     }
 }

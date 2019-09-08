@@ -52,7 +52,7 @@ namespace Kingo.MicroServices
             {
                 return InvokeAsync(messageOfSupportedType, token);
             }
-            return Task.FromResult<IMessageHandlerOperationResult>(EventBufferResult.Empty);
+            return Task.FromResult<IMessageHandlerOperationResult>(MessageBufferResult.Empty);
         }
 
         private async Task<IMessageHandlerOperationResult> InvokeAsync(TMessage message, CancellationToken? token)

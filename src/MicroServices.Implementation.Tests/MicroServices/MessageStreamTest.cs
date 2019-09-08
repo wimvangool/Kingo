@@ -1,20 +1,21 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class EventStreamTest
+    public sealed class MessageStreamTest
     {
-        #region [====== EventStreamStub ======]
+        #region [====== MessageStreamStub ======]
 
-        private sealed class EventStreamStub : EventStream
+        private sealed class MessageStreamStub : MessageStream
         {
-            public EventStreamStub(EventStream stream) :
+            public MessageStreamStub(MessageStream stream) :
                 base(stream) { }
 
-            public new TEvent GetEvent<TEvent>(int index) =>
-                base.GetEvent<TEvent>(index);
+            public new TMessage GetMessage<TMessage>(int index) =>
+                base.GetMessage<TMessage>(index);
         }
 
         #endregion
@@ -25,7 +26,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfEventsIsNull()
         {
-            new EventStream(null);
+            new MessageStream(null);
         }
 
         #endregion
@@ -36,14 +37,14 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void AssertEvent_Throws_IfIndexIsNegative()
         {
-            EventStream.Empty.AssertEvent<object>(-1);
+            MessageStream.Empty.AssertEvent<object>(-1);
         }
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
         public void AssertEvent_Throws_IfIndexIsOutOfRange()
         {
-            EventStream.Empty.AssertEvent<object>(0);
+            MessageStream.Empty.AssertEvent<object>(0);
         }
 
         [TestMethod]
@@ -83,47 +84,47 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== GetEvent ======]
+        #region [====== GetMessage ======]
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void GetEvent_Throws_IfIndexIsNegative()
+        public void GetMessage_Throws_IfIndexIsNegative()
         {
-            CreateEventStreamStub().GetEvent<object>(-1);
+            CreateEventStreamStub().GetMessage<object>(-1);
         }
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void GetEvent_Throws_IfIndexIsOutOfRange()
+        public void GetMessage_Throws_IfIndexIsOutOfRange()
         {
-            CreateEventStreamStub().GetEvent<object>(0);
+            CreateEventStreamStub().GetMessage<object>(0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidCastException))]
-        public void GetEvent_Throws_IfEventIsNotOfExpectedType()
+        public void GetMessage_Throws_IfEventIsNotOfExpectedType()
         {
-            CreateEventStreamStub(string.Empty).GetEvent<int>(0);
+            CreateEventStreamStub(string.Empty).GetMessage<int>(0);
         }
 
         [TestMethod]        
-        public void GetEvent_ReturnsEvent_IfEventIsNotOfDerivedType()
+        public void GetMessage_ReturnsEvent_IfEventIsNotOfDerivedType()
         {
-            Assert.AreSame(string.Empty, CreateEventStreamStub(string.Empty).GetEvent<object>(0));
+            Assert.AreSame(string.Empty, CreateEventStreamStub(string.Empty).GetMessage<object>(0));
         }
 
         [TestMethod]
-        public void GetEvent_ReturnsEvent_IfEventIsNotOfExpectedType()
+        public void GetMessage_ReturnsEvent_IfEventIsNotOfExpectedType()
         {
-            Assert.AreSame(string.Empty, CreateEventStreamStub(string.Empty).GetEvent<string>(0));
+            Assert.AreSame(string.Empty, CreateEventStreamStub(string.Empty).GetMessage<string>(0));
         }
 
         #endregion
 
-        private static EventStreamStub CreateEventStreamStub(params object[] events) =>
-            new EventStreamStub(CreateEventStream(events));
+        private static MessageStreamStub CreateEventStreamStub(params object[] events) =>
+            new MessageStreamStub(CreateEventStream(events));
 
-        private static EventStream CreateEventStream(params object[] events) =>
-            new EventStream(events);
+        private static MessageStream CreateEventStream(params object[] events) =>
+            new MessageStream(events.Select(@event => MessageToDispatch.CreateEvent(@event, null)));
     }
 }

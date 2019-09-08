@@ -18,10 +18,10 @@ namespace Kingo.MicroServices.Controllers
                 bus.PublishAsync(new object()).GetAwaiter().GetResult();
             }
 
-            public Task PublishAsync(IEnumerable<object> events) =>
+            public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
                 Task.CompletedTask;
 
-            public Task PublishAsync(object @event) =>
+            public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
                 Task.CompletedTask;
         }
 

@@ -75,8 +75,8 @@ namespace Kingo.MicroServices.Controllers
 
             var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
 
-            Assert.AreEqual(typeof(MessageHandler3), endpoint.MessageHandler.Type);
-            Assert.AreSame(typeof(object), endpoint.MessageParameter.Type);            
+            Assert.AreEqual(typeof(MessageHandler3), endpoint.MessageHandlerType);
+            Assert.AreSame(typeof(object), endpoint.MessageParameterInfo.ParameterType);            
         }
 
         [TestMethod]
@@ -87,10 +87,10 @@ namespace Kingo.MicroServices.Controllers
             var endpoints = CreateProcessor().CreateServiceBusEndpoints().ToArray();
 
             Assert.AreEqual(2, endpoints.Length);
-            Assert.AreSame(typeof(MessageHandler4), endpoints[0].MessageHandler.Type);
-            Assert.AreSame(typeof(MessageHandler4), endpoints[1].MessageHandler.Type);
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(int)));
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(string)));
+            Assert.AreSame(typeof(MessageHandler4), endpoints[0].MessageHandlerType);
+            Assert.AreSame(typeof(MessageHandler4), endpoints[1].MessageHandlerType);
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(int)));
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(string)));
         }
 
         [TestMethod]
@@ -102,9 +102,9 @@ namespace Kingo.MicroServices.Controllers
             var endpoints = CreateProcessor().CreateServiceBusEndpoints().ToArray();
 
             Assert.AreEqual(3, endpoints.Length);            
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(object)));
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(int)));
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(string)));
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(object)));
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(int)));
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(string)));
         }
 
         [TestMethod]
@@ -116,9 +116,9 @@ namespace Kingo.MicroServices.Controllers
             var endpoints = CreateProcessor().CreateServiceBusEndpoints().ToArray();
 
             Assert.AreEqual(3, endpoints.Length);
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(object)));
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(int)));
-            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameter.Type == typeof(string)));
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(object)));
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(int)));
+            Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(string)));
         }
 
         #endregion
@@ -280,7 +280,7 @@ namespace Kingo.MicroServices.Controllers
             [Endpoint(MessageKind.Command)]
             public Task HandleAsync(int message, MessageHandlerOperationContext context)
             {
-                context.EventBus.Publish(string.Empty);
+                context.MessageBus.Publish(string.Empty);
                 return Task.CompletedTask;
             }
         }
@@ -290,7 +290,7 @@ namespace Kingo.MicroServices.Controllers
             [Endpoint(MessageKind.Event)]
             public Task HandleAsync(int message, MessageHandlerOperationContext context)
             {
-                context.EventBus.Publish(string.Empty);
+                context.MessageBus.Publish(string.Empty);
                 return Task.CompletedTask;
             }
         }
@@ -315,7 +315,7 @@ namespace Kingo.MicroServices.Controllers
             var result = await endpoint.InvokeAsync(new object());
 
             Assert.AreEqual(0, result.MessageHandlerCount);
-            Assert.AreEqual(0, result.Events.Count);
+            Assert.AreEqual(0, result.Messages.Count);
         }
 
         [TestMethod]
@@ -324,14 +324,14 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
             ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
             {
-                context.EventBus.Publish(new object());
+                context.MessageBus.Publish(new object());
             });
 
             var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
             var result = await endpoint.InvokeAsync(DateTimeOffset.UtcNow.Second);
 
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Events.Count);
+            Assert.AreEqual(2, result.Messages.Count);
         }
 
         [TestMethod]
@@ -416,14 +416,14 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.Components.AddMessageHandler(new SomeEventHandler());
             ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
             {
-                context.EventBus.Publish(new object());
+                context.MessageBus.Publish(new object());
             });
 
             var endpoint = CreateProcessor().CreateServiceBusEndpoints().Single();
             var result = await endpoint.InvokeAsync(DateTimeOffset.UtcNow.Second);
 
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Events.Count);
+            Assert.AreEqual(2, result.Messages.Count);
         }
 
         [TestMethod]

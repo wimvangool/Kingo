@@ -78,7 +78,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.EventBus.Publish(@event);
+                        context.MessageBus.Publish(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -100,7 +100,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsEventStream(stream =>
+                    result.IsMessageStream(stream =>
                     {
                         Assert.AreEqual(1, stream.Count);
                     });
@@ -118,12 +118,12 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.EventBus.Publish(@event);
+                        context.MessageBus.Publish(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsEventStream(stream =>
+                    result.IsMessageStream(stream =>
                     {
                         Assert.AreSame(@event, stream[0]);                        
                     });
@@ -142,12 +142,12 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.EventBus.Publish(@event);
+                        context.MessageBus.Publish(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsEventStream(stream =>
+                    result.IsMessageStream(stream =>
                     {                        
                         Assert.AreNotSame(@event, stream[0]);                     
                     });
@@ -461,12 +461,12 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.EventBus.Publish(@event);
+                        context.MessageBus.Publish(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsEventStream();
+                    result.IsMessageStream();
                 });
 
             var testB = CreateMessageHandlerTest()
@@ -507,7 +507,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsEventStream();
+                    result.IsMessageStream();
                 });
 
             await RunAsync(test);
@@ -520,16 +520,16 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== MessageHandlerTests (2) ======]
 
-        private sealed class OutputStream : EventStream
+        private sealed class OutputStream : MessageStream
         {            
             public OutputStream() :
                 this(Empty) { }
 
-            public OutputStream(EventStream stream) :
+            public OutputStream(MessageStream stream) :
                 base(stream) { }
 
             public int Value =>
-                GetEvent<int>(0);
+                GetMessage<int>(0);
         }
 
         [TestMethod]
@@ -570,12 +570,12 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((message, context) =>
                     {
-                        context.EventBus.Publish(DateTimeOffset.UtcNow.Millisecond);
+                        context.MessageBus.Publish(DateTimeOffset.UtcNow.Millisecond);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsEventStream(stream => new OutputStream(stream));
+                    result.IsMessageStream(stream => new OutputStream(stream));
                 });
 
             var testB = CreateMessageHandlerTest()
@@ -598,7 +598,7 @@ namespace Kingo.MicroServices.Controllers
             await RunAsync(testB);
         }
 
-        private static HandleMessageTestDelegate<TEventStream> CreateMessageHandlerTest<TEventStream>() where TEventStream : EventStream, new() =>
+        private static HandleMessageTestDelegate<TEventStream> CreateMessageHandlerTest<TEventStream>() where TEventStream : MessageStream, new() =>
             new HandleMessageTestDelegate<TEventStream>();
 
         #endregion

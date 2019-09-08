@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
@@ -64,10 +65,10 @@ namespace Kingo.MicroServices
 
         #region [====== CreateMethodAttributeProvider ======]
 
-        internal MethodAttributeProvider CreateMethodAttributeProvider(MicroProcessorComponent component) =>
-            CreateMethodAttributeProvider(component.Type, Type, MethodName);
+        internal MethodInfo ResolveMethodInfo(MicroProcessorComponent component) =>
+            ResolveMethodInfo(component.Type, Type, MethodName);
 
-        private static MethodAttributeProvider CreateMethodAttributeProvider(Type type, Type interfaceType, string methodName)
+        private static MethodInfo ResolveMethodInfo(Type type, Type interfaceType, string methodName)
         {
             var methods =
                 from method in type.GetInterfaceMap(interfaceType).TargetMethods
@@ -76,7 +77,7 @@ namespace Kingo.MicroServices
 
             try
             {
-                return new MethodAttributeProvider(methods.Single());
+                return methods.Single();
             }
             catch (InvalidOperationException)
             {

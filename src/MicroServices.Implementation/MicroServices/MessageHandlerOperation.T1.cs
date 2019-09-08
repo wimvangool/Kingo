@@ -25,7 +25,7 @@ namespace Kingo.MicroServices
             public override HandleAsyncMethod Method =>
                 _method;
 
-            public override IMessage Message =>
+            public override IMessageToProcess Message =>
                 _operation._message;
 
             public override MessageHandlerOperationContext Context =>
@@ -39,20 +39,20 @@ namespace Kingo.MicroServices
 
             public override async Task<MessageHandlerOperationResult> ExecuteAsync()
             {
-                await _method.HandleAsync(_operation._message.Instance, _context).ConfigureAwait(false);
-                return new EventBusResult(_context.EventBus);
+                await _method.HandleAsync(_operation._message.Content, _context).ConfigureAwait(false);
+                return new MessageBusResult(_context.MessageBus);
             }
         }
 
         #endregion
 
         private readonly MessageHandlerOperationContext _context;
-        private readonly IMessage<TMessage> _message;                
+        private readonly IMessageToProcess<TMessage> _message;                
 
-        private MessageHandlerOperation(MessageHandlerOperationContext context, IMessage<TMessage> message) :
+        private MessageHandlerOperation(MessageHandlerOperationContext context, IMessageToProcess<TMessage> message) :
             this(context, message, context.StackTrace.CurrentOperation.Token) { }
 
-        protected MessageHandlerOperation(MessageHandlerOperationContext context, IMessage<TMessage> message, CancellationToken? token) :
+        protected MessageHandlerOperation(MessageHandlerOperationContext context, IMessageToProcess<TMessage> message, CancellationToken? token) :
             base(token)
         {
             _context = context;
@@ -62,19 +62,18 @@ namespace Kingo.MicroServices
         internal MicroProcessor Processor =>
             _context.Processor;
 
-        Task<MessageHandlerOperationResult> IMessageProcessor.HandleAsync<TEvent>(IMessage<TEvent> @event, MessageHandlerOperationContext context) =>
+        Task<MessageHandlerOperationResult> IMessageProcessor.HandleAsync<TEvent>(IMessageToProcess<TEvent> @event, MessageHandlerOperationContext context) =>
             new MessageHandlerOperation<TEvent>(context, @event).ExecuteAsync();
 
-        public override IMessage Message =>
+        public override IMessageToProcess Message =>
             _message;
 
         public override MicroProcessorOperationKinds Kind =>
             MicroProcessorOperationKinds.BranchOperation;        
 
-        /// <inheritdoc />
         public override async Task<MessageHandlerOperationResult> ExecuteAsync()
         {
-            var result = EventBufferResult.Empty;
+            var result = MessageBufferResult.Empty;
 
             foreach (var operation in CreateMethodOperationPipelines(_context))
             {
@@ -93,9 +92,9 @@ namespace Kingo.MicroServices
                 // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
                 // sub-tree of events are handled before the next event in the stream.
                 var result = await operation.ExecuteAsync().ConfigureAwait(false);
-                if (result.Events.Count > 0)
+                if (result.Messages.Count > 0)
                 {
-                    return await HandleEventsAsync(result.ToEventBufferResult(), operation.Context).ConfigureAwait(false);
+                    return await HandleEventsAsync(result.ToMessageBufferResult(), operation.Context).ConfigureAwait(false);
                 }
                 return result;
             }
@@ -105,8 +104,8 @@ namespace Kingo.MicroServices
             }            
         }
 
-        private async Task<MessageHandlerOperationResult> HandleEventsAsync(EventBufferResult result, MessageHandlerOperationContext context) =>
-            result.Append(await result.EventBuffer.HandleWith(this, context).ConfigureAwait(false));
+        private async Task<MessageHandlerOperationResult> HandleEventsAsync(MessageBufferResult result, MessageHandlerOperationContext context) =>
+            result.Append(await result.MessageBuffer.HandleEventsWith(this, context).ConfigureAwait(false));
 
         private IEnumerable<HandleAsyncMethodOperation> CreateMethodOperationPipelines(MessageHandlerOperationContext context)
         {

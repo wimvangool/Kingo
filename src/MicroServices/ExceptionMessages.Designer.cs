@@ -124,6 +124,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string MemberInfoExtensions_AmbiguousAttributeMatch {
+            get {
+                return ResourceManager.GetString("MemberInfoExtensions_AmbiguousAttributeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
         internal static string ReadOnlyList_IndexOutOfRange {

@@ -20,24 +20,24 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.EventStream_EventNotFound">
+        <member name="P:Kingo.ExceptionMessages.MessageHandlerResult_AssertionOfMessageStreamFailed">
             <summary>
-              Looks up a localized string similar to Event of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the EventStream contains only {2} event(s)..
-            </summary>
-        </member>
-        <member name="P:Kingo.ExceptionMessages.EventStream_EventNotOfExpectedType">
-            <summary>
-              Looks up a localized string similar to Expected event of type &apos;{0}&apos; at index &apos;{1}&apos;, but found event of type &apos;{2}&apos;..
-            </summary>
-        </member>
-        <member name="P:Kingo.ExceptionMessages.MessageHandlerResult_AssertionOfEventStreamFailed">
-            <summary>
-              Looks up a localized string similar to One or more assertions for the published events failed. See inner exception for details. .
+              Looks up a localized string similar to One or more assertions for the published messages failed. See inner exception for details. .
             </summary>
         </member>
         <member name="P:Kingo.ExceptionMessages.MessageHandlerResult_StreamNotEmpty">
             <summary>
-              Looks up a localized string similar to Expected an empty stream, but stream contains {0} event(s)..
+              Looks up a localized string similar to Expected an empty stream, but stream contains {0} message(s)..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.MessageStream_MessageNotFound">
+            <summary>
+              Looks up a localized string similar to Message of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the MessageStream contains only {2} message(s)..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.MessageStream_MessageNotOfExpectedType">
+            <summary>
+              Looks up a localized string similar to Expected message of type &apos;{0}&apos; at index &apos;{1}&apos;, but found message of type &apos;{2}&apos;..
             </summary>
         </member>
         <member name="P:Kingo.ExceptionMessages.MicroProcessorConfiguration_ProcessorAlreadyConfigured">
@@ -55,14 +55,14 @@
               Looks up a localized string similar to Cannot invoke &apos;{0}&apos; at this point: the service collection has already been configured..
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.MicroProcessorTestContext_EventStreamNotFound">
+        <member name="P:Kingo.ExceptionMessages.MicroProcessorTestContext_MessageStreamNotFound">
             <summary>
-              Looks up a localized string similar to Cannot retrieve the EventStream of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
+              Looks up a localized string similar to Cannot retrieve the MessageStream of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
             </summary>
         </member>
         <member name="P:Kingo.ExceptionMessages.MicroProcessorTestContext_TestAlreadyRun">
             <summary>
-              Looks up a localized string similar to Cannot save the EventStream of &apos;{0}&apos; because a previous result of this test has already been saved..
+              Looks up a localized string similar to Cannot save the MessageStream of &apos;{0}&apos; because a previous result of this test has already been saved..
             </summary>
         </member>
         <member name="P:Kingo.ExceptionMessages.MicroProcessorTestResult_AssertionOfExceptionFailed">
@@ -104,82 +104,6 @@
             <summary>
               Looks up a localized string similar to Test &apos;{0}&apos; threw unexpected exception of type &apos;{1}&apos;. See inner exception for details..
             </summary>
-        </member>
-        <member name="T:Kingo.MicroServices.Controllers.EventStream">
-            <summary>
-            Represents a set of published events.
-            </summary>
-        </member>
-        <member name="F:Kingo.MicroServices.Controllers.EventStream.Empty">
-            <summary>
-            Represents an empty event stream.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.EventStream.#ctor(Kingo.MicroServices.Controllers.EventStream)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Controllers.EventStream" /> class.
-            </summary>
-            <param name="events">The stream to copy.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="events"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.EventStream.#ctor(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessage})">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Controllers.EventStream" /> class.
-            </summary>
-            <param name="events">The events of this stream.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="events"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.EventStream.#ctor(System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Controllers.EventStream" /> class.
-            </summary>
-            <param name="events">The events of this stream.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="events"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="P:Kingo.MicroServices.Controllers.EventStream.Item(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.Controllers.EventStream.Count">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.EventStream.GetEnumerator">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.EventStream.AssertEvent``1(System.Int32,System.Action{``0})">
-            <summary>
-            Asserts that this stream contains an event at the specified <paramref name="index"/>
-            that is of the specified type <typeparamref name="TEvent"/>.
-            </summary>
-            <typeparam name="TEvent">Expected type of the event.</typeparam>
-            <param name="index">Index of the event.</param>
-            <param name="assertion">Optional delegate to verify the details of the event.</param>        
-            <exception cref="T:System.IndexOutOfRangeException">
-            <paramref name="index"/> is negative.
-            </exception>
-            <exception cref="T:Kingo.TestFailedException">
-            There is no event at the specified <paramref name="index"/>, or the event at that
-            <paramref name="index"/> is not of type <typeparamref name="TEvent"/>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.EventStream.GetEvent``1(System.Int32)">
-            <summary>
-            Returns the event at the specified <paramref name="index" />.
-            </summary>
-            <typeparam name="TEvent">Expected type of the event.</typeparam>
-            <param name="index">Index of the requested event.</param>
-            <returns>The event at index <paramref name="index"/>.</returns>
-            <exception cref="T:System.IndexOutOfRangeException">
-            <paramref name="index"/> is not a valid index for this stream.
-            </exception>
-            <exception cref="T:System.InvalidCastException">
-            The event at the specified <paramref name="index"/> is not of type <typeparamref name="TEvent"/>.
-            </exception>
         </member>
         <member name="T:Kingo.MicroServices.Controllers.ExecuteQueryTest`1">
             <summary>
@@ -230,11 +154,11 @@
         </member>
         <member name="M:Kingo.MicroServices.Controllers.HandleMessageResultExtensions.IsEmptyStream(Kingo.MicroServices.Controllers.IHandleMessageResult)">
             <summary>
-            Verifies that a test produces an empty event-stream.
+            Verifies that a test produces an empty message-stream.
             </summary>
             <param name="result">The result to verify.</param>
             <exception cref="T:Kingo.TestFailedException">
-            The result is either not an event-stream, or the event-stream contains one or more events.
+            The result is either not an message-stream, or the message-stream contains one or more events.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.Controllers.HandleMessageTest`1">
@@ -242,7 +166,7 @@
             Serves as a base-class for all tests that handle a message and return an empty stream or throw an exception.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.HandleMessageTest`1.Then(`0,Kingo.MicroServices.Controllers.IHandleMessageResult{Kingo.MicroServices.Controllers.EventStream},Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext)">
+        <member name="M:Kingo.MicroServices.Controllers.HandleMessageTest`1.Then(`0,Kingo.MicroServices.Controllers.IHandleMessageResult{Kingo.MicroServices.MessageStream},Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext)">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.Controllers.HandleMessageTest`1.Then(`0,Kingo.MicroServices.Controllers.IHandleMessageResult,Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext)">
@@ -255,10 +179,10 @@
         </member>
         <member name="T:Kingo.MicroServices.Controllers.HandleMessageTest`2">
             <summary>
-            Serves as a base-class for all test's that handle a message and return the resulting event stream.
+            Serves as a base-class for all test's that handle a message and return the resulting message-stream.
             </summary>
             <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
-            <typeparam name="TEventStream">Type of the resulting event stream.</typeparam>
+            <typeparam name="TMessageStream">Type of the resulting message-stream.</typeparam>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.HandleMessageTest`2.WhenAsync(Kingo.MicroServices.Controllers.IMessageProcessor{`0},Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext)">
             <summary>
@@ -377,30 +301,31 @@
         <member name="T:Kingo.MicroServices.Controllers.IHandleMessageResult">
             <summary>
             When implemented by a class, represents the result of a <see cref="T:Kingo.MicroServices.Controllers.IHandleMessageTest`2"/>,
-            where the result is either an exception or an empty event-stream.
+            where the result is either an exception or an empty message-stream.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.IHandleMessageResult.IsEventStream(System.Action{Kingo.MicroServices.Controllers.EventStream})">
+        <member name="M:Kingo.MicroServices.Controllers.IHandleMessageResult.IsMessageStream(System.Action{Kingo.MicroServices.MessageStream})">
             <summary>
             Verifies that no events were published.
             </summary>
             <param name="assertion">
-            Optional delegate to verify the details of all the published events.
+            Optional delegate to verify the details of all the messages.
             </param>
         </member>
         <member name="T:Kingo.MicroServices.Controllers.IHandleMessageResult`1">
             <summary>
             Represents the result of a <see cref="T:Kingo.MicroServices.Controllers.IHandleMessageTest`2"/>.
             </summary>
-            <typeparam name="TEventStream">Type of the event-stream produced by the test.</typeparam>
+            <typeparam name="TMessageStream">Type of the event-stream produced by the test.</typeparam>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.IHandleMessageResult`1.IsEventStream(System.Func{Kingo.MicroServices.Controllers.EventStream,`0})">
+        <member name="M:Kingo.MicroServices.Controllers.IHandleMessageResult`1.IsMessageStream(System.Func{Kingo.MicroServices.MessageStream,`0})">
             <summary>
-            Asserts that the test produced a specific set of events.
+            Asserts that the test produced a specific set of messages.
             </summary>        
             <param name="assertion">
-            Delegate to verify the details of all the published events and to create and return
-            an event stream of type <typeparamref name="TEventStream" />.
+            Delegate to verify the details of all the messages. When verified, the delegate also creates and returns
+            a message stream of type <typeparamref name="TMessageStream" /> that can be used by other tests
+            to access the contents of each message.
             </param>        
             <exception cref="T:System.ArgumentNullException">
             <paramref name="assertion"/> is <c>null</c>.
@@ -584,7 +509,7 @@
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0)">
             <summary>
-            Executes a command with a specified <paramref name="messageHandler"/>.
+            Processes the specified <paramref name="message"/> with the specified <paramref name="messageHandler"/>.
             </summary>
             <param name="processor">The processor that will process the message.</param>
             <param name="messageHandler">Delegate that will handle the event.</param>
@@ -595,7 +520,7 @@
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
             <summary>
-            Processes the specified <paramref name="message" />.
+            Processes the specified <paramref name="message"/> with the specified <paramref name="messageHandler"/>.
             </summary>
             <param name="processor">The processor that will process the message.</param>
             <param name="messageHandler">Delegate that will handle the event.</param>
@@ -633,20 +558,20 @@
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext.GetEventStream``2(Kingo.MicroServices.Controllers.IHandleMessageTest{``0,``1})">
             <summary>
-            Returns the <see cref="T:Kingo.MicroServices.Controllers.EventStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
+            Returns the <see cref="T:Kingo.MicroServices.MessageStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
             </summary>        
-            <param name="test">The test that produced the event-stream.</param>
-            <returns>The event-stream that was stored in this context.</returns>
+            <param name="test">The test that produced the message-stream.</param>
+            <returns>The message-stream that was stored in this context.</returns>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="test"/> is <c>null</c>.        
             </exception>
             <exception cref="T:System.ArgumentException">
-            No event-stream produced by the specified <paramref name="test"/> was stored in this context.
+            No message-stream produced by the specified <paramref name="test"/> was stored in this context.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.Controllers.MicroProcessorOperationTestController">
             <summary>
-            Serves as a base-class for all test-classes that execute tests based on test's.
+            Serves as a base-class for all test-classes that execute tests based on test scenarios.
             </summary>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestController.#ctor">
@@ -732,6 +657,106 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="query"/> is <c>null</c>.
             </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageStream">
+            <summary>
+            Represents a set of messages that were produced by a <see cref="T:Kingo.MicroServices.IMicroProcessor"/> as a result of running
+            a test.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageStream.Empty">
+            <summary>
+            Represents an empty message-stream.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageStream.#ctor(Kingo.MicroServices.MessageStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MessageStream" /> class.
+            </summary>
+            <param name="stream">The stream to copy.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="stream"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageStream.#ctor(System.Collections.Generic.IEnumerable{Kingo.MicroServices.MessageToDispatch})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MessageStream" /> class.
+            </summary>
+            <param name="messages">The messages of this stream.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messages"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageStream.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageStream.Count">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageStream.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageStream.AssertCommand``1(System.Int32,System.Action{Kingo.MicroServices.MessageToDispatch{``0}})">
+            <summary>
+            Asserts that this stream contains a command at the specified <paramref name="index"/> and that
+            this message is an instance of type <typeparamref name="TCommand"/>.
+            </summary>
+            <typeparam name="TCommand">Expected type of the command.</typeparam>
+            <param name="index">Index of the message.</param>
+            <param name="assertion">Optional delegate to verify the details of the message.</param>        
+            <exception cref="T:System.IndexOutOfRangeException">
+            <paramref name="index"/> is negative.
+            </exception>
+            <exception cref="T:Kingo.TestFailedException">
+            There is no message at the specified <paramref name="index"/>, or the message at that
+            <paramref name="index"/> is not a command of type <typeparamref name="TCommand"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageStream.AssertEvent``1(System.Int32,System.Action{Kingo.MicroServices.MessageToDispatch{``0}})">
+            <summary>
+            Asserts that this stream contains an event at the specified <paramref name="index"/> and that
+            this message is an instance of type <typeparamref name="TEvent"/>.
+            </summary>
+            <typeparam name="TEvent">Expected type of the event.</typeparam>
+            <param name="index">Index of the message.</param>
+            <param name="assertion">Optional delegate to verify the details of the message.</param>        
+            <exception cref="T:System.IndexOutOfRangeException">
+            <paramref name="index"/> is negative.
+            </exception>
+            <exception cref="T:Kingo.TestFailedException">
+            There is no message at the specified <paramref name="index"/>, or the message at that
+            <paramref name="index"/> is not an event of type <typeparamref name="TEvent"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageStream.GetMessage``1(System.Int32)">
+            <summary>
+            Returns the message at the specified <paramref name="index" />.
+            </summary>
+            <typeparam name="TMessage">Expected message type.</typeparam>
+            <param name="index">Index of the requested message.</param>
+            <returns>The message at index <paramref name="index"/>.</returns>
+            <exception cref="T:System.IndexOutOfRangeException">
+            <paramref name="index"/> is not a valid index for this stream.
+            </exception>
+            <exception cref="T:System.InvalidCastException">
+            The message at the specified <paramref name="index"/> is not of type <typeparamref name="TMessage"/>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageToDispatch`1">
+            <summary>
+            Represents a command or event that is to be sent or published on a service-bus.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch`1.Content">
+            <summary>
+            Returns the contents of the message.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch`1.Kind">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch`1.DeliveryTimeUtc">
+            <inheritdoc />
         </member>
     </members>
 </doc>

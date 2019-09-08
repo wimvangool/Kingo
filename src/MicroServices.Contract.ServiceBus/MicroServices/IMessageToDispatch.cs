@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Kingo.MicroServices
+{
+    /// <summary>
+    /// When implemented by a class, represents a message that is to be delivered by means of a service-bus.
+    /// </summary>
+    public interface IMessageToDispatch : IMessageEnvelope
+    {
+        /// <summary>
+        /// If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+        /// </summary>
+        DateTimeOffset? DeliveryTimeUtc
+        {
+            get;
+        }
+    }
+}

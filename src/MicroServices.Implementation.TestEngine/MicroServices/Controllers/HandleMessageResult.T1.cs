@@ -3,12 +3,12 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices.Controllers
 {
-    internal sealed class HandleMessageResult<TEventStream> : MicroProcessorOperationTestResult, IHandleMessageResult<TEventStream>
-        where TEventStream : EventStream
+    internal sealed class HandleMessageResult<TMessageStream> : MicroProcessorOperationTestResult, IHandleMessageResult<TMessageStream>
+        where TMessageStream : MessageStream
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroProcessorOperationTestResultBase, IHandleMessageResult<TEventStream>
+        private sealed class ExceptionResult : MicroProcessorOperationTestResultBase, IHandleMessageResult<TMessageStream>
         {
             private readonly Exception _exception;            
 
@@ -23,7 +23,7 @@ namespace Kingo.MicroServices.Controllers
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 IsExpectedException(_exception, assertion);
 
-            public void IsEventStream(Func<EventStream, TEventStream> assertion) =>
+            public void IsMessageStream(Func<MessageStream, TMessageStream> assertion) =>
                 throw NewExceptionThrownException(_exception);
         }
 
@@ -31,24 +31,24 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== EventStreamResult ======]
 
-        private sealed class EventStreamResult : MicroProcessorOperationTestResultBase, IHandleMessageResult<TEventStream>
+        private sealed class EventStreamResult : MicroProcessorOperationTestResultBase, IHandleMessageResult<TMessageStream>
         {                        
-            private readonly EventStream _stream;
-            private readonly Action<TEventStream> _streamConsumer;
+            private readonly MessageStream _stream;
+            private readonly Action<TMessageStream> _streamConsumer;
 
-            public EventStreamResult(EventStream stream, Action<TEventStream> streamConsumer)
+            public EventStreamResult(MessageStream stream, Action<TMessageStream> streamConsumer)
             {
                 _stream = stream;
                 _streamConsumer = streamConsumer;
             }
 
             public override string ToString() =>
-                $"{nameof(EventStream)} ({_stream})";
+                $"{nameof(MessageStream)} ({_stream})";
 
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 throw NewExceptionNotThrownException(typeof(TException));
 
-            public void IsEventStream(Func<EventStream, TEventStream> assertion)
+            public void IsMessageStream(Func<MessageStream, TMessageStream> assertion)
             {
                 if (assertion == null)
                 {
@@ -57,7 +57,7 @@ namespace Kingo.MicroServices.Controllers
                 _streamConsumer.Invoke(AssertAndConvert(_stream, assertion));
             }                                    
             
-            private static TEventStream AssertAndConvert(EventStream stream, Func<EventStream, TEventStream> assertion)
+            private static TMessageStream AssertAndConvert(MessageStream stream, Func<MessageStream, TMessageStream> assertion)
             {
                 try
                 {
@@ -71,22 +71,22 @@ namespace Kingo.MicroServices.Controllers
 
             private static Exception NewAssertionOfEventStreamFailedException(Exception innerException)
             {
-                var messageFormat = ExceptionMessages.MessageHandlerResult_AssertionOfEventStreamFailed;
-                var message = string.Format(messageFormat, typeof(TEventStream).FriendlyName());
+                var messageFormat = ExceptionMessages.MessageHandlerResult_AssertionOfMessageStreamFailed;
+                var message = string.Format(messageFormat, typeof(TMessageStream).FriendlyName());
                 throw new TestFailedException(message, innerException);
             }
         }
 
         #endregion
 
-        private readonly IHandleMessageResult<TEventStream> _result;
+        private readonly IHandleMessageResult<TMessageStream> _result;
 
         public HandleMessageResult(Exception exception)
         {
             _result = new ExceptionResult(exception);
         }
 
-        public HandleMessageResult(EventStream stream, Action<TEventStream> streamConsumer)
+        public HandleMessageResult(MessageStream stream, Action<TMessageStream> streamConsumer)
         {
             _result = new EventStreamResult(stream, streamConsumer);
         }
@@ -106,11 +106,11 @@ namespace Kingo.MicroServices.Controllers
             }
         }            
 
-        public void IsEventStream(Func<EventStream, TEventStream> assertion)
+        public void IsMessageStream(Func<MessageStream, TMessageStream> assertion)
         {
             try
             {
-                _result.IsEventStream(assertion);
+                _result.IsMessageStream(assertion);
             }
             finally
             {

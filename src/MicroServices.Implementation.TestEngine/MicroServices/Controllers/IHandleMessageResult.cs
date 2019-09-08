@@ -3,8 +3,8 @@
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// When implemented by a class, represents the result of a <see cref="IHandleMessageTest{TMessage,TEventStream}"/>,
-    /// where the result is either an exception or an empty event-stream.
+    /// When implemented by a class, represents the result of a <see cref="IHandleMessageTest{TMessage, TMessagetStream}"/>,
+    /// where the result is either an exception or an empty message-stream.
     /// </summary>
     public interface IHandleMessageResult : IMicroProcessorOperationTestResult
     {
@@ -12,8 +12,8 @@ namespace Kingo.MicroServices.Controllers
         /// Verifies that no events were published.
         /// </summary>
         /// <param name="assertion">
-        /// Optional delegate to verify the details of all the published events.
+        /// Optional delegate to verify the details of all the messages.
         /// </param>
-        void IsEventStream(Action<EventStream> assertion = null);
+        void IsMessageStream(Action<MessageStream> assertion = null);
     }
 }

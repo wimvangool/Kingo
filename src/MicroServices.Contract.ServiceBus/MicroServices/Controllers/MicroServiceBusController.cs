@@ -11,7 +11,7 @@ namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// When implemented, represents a controller that can send and receive messages to and from a
-    /// service-bus and dispatches any received messages to a <see cref="IMicroServiceBusProcessor" />
+    /// service-bus and dispatches any received messages to a <see cref="IMicroServiceBusEndpoint" />
     /// for further processing.
     /// </summary>
     [MicroProcessorComponent(ServiceLifetime.Singleton)]
@@ -38,9 +38,9 @@ namespace Kingo.MicroServices.Controllers
 
             public abstract Task StopAsync(CancellationToken cancellationToken);
 
-            public abstract Task PublishAsync(IEnumerable<object> events);
+            public abstract Task SendAsync(IEnumerable<IMessageToDispatch> commands);
 
-            public abstract Task PublishAsync(object @event);
+            public abstract Task PublishAsync(IEnumerable<IMessageToDispatch> events);
 
             public override void Dispose()
             {
@@ -96,11 +96,11 @@ namespace Kingo.MicroServices.Controllers
             public override Task StopAsync(CancellationToken cancellationToken) =>
                 Task.CompletedTask;
 
-            public override Task PublishAsync(IEnumerable<object> events) =>
-                throw Controller.NewCannotPublishException();
+            public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+                throw Controller.NewCannotSendCommandsException();
 
-            public override Task PublishAsync(object @event) =>
-                throw Controller.NewCannotPublishException();
+            public override Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+                throw Controller.NewCannotPublishEventsException();
         }
 
         #endregion
@@ -162,11 +162,11 @@ namespace Kingo.MicroServices.Controllers
                 return Controller._state.StopAsync(cancellationToken);
             }
 
-            public override Task PublishAsync(IEnumerable<object> events) =>
-                _client.PublishAsync(events);
+            public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+                throw new NotImplementedException();
 
-            public override Task PublishAsync(object @event) =>
-                _client.PublishAsync(@event);
+            public override Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+                _client.PublishAsync(events);
 
             protected override void Dispose(bool disposing)
             {
@@ -197,14 +197,13 @@ namespace Kingo.MicroServices.Controllers
             public override Task StopAsync(CancellationToken cancellationToken) =>
                 throw Controller.NewObjectDisposedException();
 
-            public override Task PublishAsync(IEnumerable<object> events) =>
+            public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw Controller.NewObjectDisposedException();
 
-            public override Task PublishAsync(object @event) =>
+            public override Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
                 throw Controller.NewObjectDisposedException();
 
-            // When dispose is called while we're already in the DisposedState, we don't have to
-            // do anything...
+            // When dispose is called while we're already in the DisposedState, we don't have to do anything...
             public override void Dispose() { }
         }
 
@@ -221,11 +220,11 @@ namespace Kingo.MicroServices.Controllers
                 _controller = controller;
             }
 
-            public Task PublishAsync(IEnumerable<object> events) =>
-                throw _controller.NewCannotPublishException();
+            public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+                throw _controller.NewCannotSendCommandsException();
 
-            public Task PublishAsync(object @event) =>
-                throw _controller.NewCannotPublishException();
+            public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+                throw _controller.NewCannotPublishEventsException();
 
             public Task<bool> ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint) =>
                 Task.FromResult(false);
@@ -306,7 +305,7 @@ namespace Kingo.MicroServices.Controllers
             return client;
         }
 
-        private bool IsCancellationRequested(CancellationToken token, ref IMicroServiceBusClient client)
+        private static bool IsCancellationRequested(CancellationToken token, ref IMicroServiceBusClient client)
         {
             // When cancellation is requested while the service-bus client is being created and connected,
             // we immediately dispose of the created client and return null.
@@ -331,12 +330,12 @@ namespace Kingo.MicroServices.Controllers
         #region [====== IMicroServiceBus ======]
 
         /// <inheritdoc />
-        public virtual Task PublishAsync(IEnumerable<object> events) =>
-            _state.PublishAsync(events);
+        public virtual Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+            throw new NotImplementedException();
 
         /// <inheritdoc />
-        public virtual Task PublishAsync(object @event) =>
-            _state.PublishAsync(@event);
+        public virtual Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+            _state.PublishAsync(events);
 
         #endregion
 
@@ -350,7 +349,14 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== Exception Factory Methods ======]
 
-        private Exception NewCannotPublishException()
+        private Exception NewCannotSendCommandsException()
+        {
+            var messageFormat = ExceptionMessages.MicroServiceBusController_CannotPublishEvents;
+            var message = string.Format(messageFormat, GetType().FriendlyName());
+            return new InvalidOperationException(message);
+        }
+
+        private Exception NewCannotPublishEventsException()
         {
             var messageFormat = ExceptionMessages.MicroServiceBusController_CannotPublishEvents;
             var message = string.Format(messageFormat, GetType().FriendlyName());

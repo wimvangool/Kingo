@@ -138,6 +138,9 @@
   <data name="DateTimeSpan_TimeSpanZeroNotAllowed" xml:space="preserve">
     <value>'{0}' is not allowed to be zero.</value>
   </data>
+  <data name="MemberInfoExtensions_AmbiguousAttributeMatch" xml:space="preserve">
+    <value>Cannot obtain single attribute of type '{0}' declared on '{1}' because multiple attributes are of type '{0}'.</value>
+  </data>
   <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>

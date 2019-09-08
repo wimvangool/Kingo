@@ -104,11 +104,11 @@ namespace Kingo.MicroServices.Controllers
                 }
             }
 
-            public Task PublishAsync(IEnumerable<object> events) =>
-                Bus.PublishAsync(events);
+            public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+                Bus.SendAsync(commands);
 
-            public Task PublishAsync(object @event) =>
-                Bus.PublishAsync(@event);
+            public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+                Bus.PublishAsync(events);
 
             private static Exception NewCircularReferenceDetectedException(Exception innerException)
             {

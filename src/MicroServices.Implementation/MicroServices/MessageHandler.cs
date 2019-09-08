@@ -49,7 +49,7 @@ namespace Kingo.MicroServices
 
         private IMessageHandlerConfiguration GetConfiguration()
         {
-            if (TryGetAttributeOfType(out MessageHandlerAttribute attribute))
+            if (Type.TryGetAttributeOfType(out MessageHandlerAttribute attribute))
             {
                 return attribute;
             }

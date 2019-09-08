@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
 
@@ -9,8 +10,8 @@ namespace Kingo.MicroServices
         internal MicroServiceBusEndpoint(HandleAsyncMethod method) :
             base(method) { }
 
-        ITypeAttributeProvider IMicroServiceBusEndpoint.MessageHandler =>
-            MessageHandler;
+        Type IMicroServiceBusEndpoint.MessageHandlerType =>
+            MessageHandler.Type;
 
         public abstract MessageKind MessageKind
         {
@@ -20,6 +21,6 @@ namespace Kingo.MicroServices
         public abstract Task<IMessageHandlerOperationResult> InvokeAsync(object message, CancellationToken? token = null);
 
         public override string ToString() =>
-            $"{MessageHandler.Type.FriendlyName()}.{Info.Name}([{MessageKind}] {MessageParameter.Type.FriendlyName()}, ...)";
+            $"{MessageHandler.Type.FriendlyName()}.{Info.Name}([{MessageKind}] {MessageParameterInfo.ParameterType.FriendlyName()}, ...)";
     }
 }

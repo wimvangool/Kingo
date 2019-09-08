@@ -61,38 +61,38 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Event of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the EventStream contains only {2} event(s)..
+        ///   Looks up a localized string similar to One or more assertions for the published messages failed. See inner exception for details. .
         /// </summary>
-        internal static string EventStream_EventNotFound {
+        internal static string MessageHandlerResult_AssertionOfMessageStreamFailed {
             get {
-                return ResourceManager.GetString("EventStream_EventNotFound", resourceCulture);
+                return ResourceManager.GetString("MessageHandlerResult_AssertionOfMessageStreamFailed", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected event of type &apos;{0}&apos; at index &apos;{1}&apos;, but found event of type &apos;{2}&apos;..
-        /// </summary>
-        internal static string EventStream_EventNotOfExpectedType {
-            get {
-                return ResourceManager.GetString("EventStream_EventNotOfExpectedType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to One or more assertions for the published events failed. See inner exception for details. .
-        /// </summary>
-        internal static string MessageHandlerResult_AssertionOfEventStreamFailed {
-            get {
-                return ResourceManager.GetString("MessageHandlerResult_AssertionOfEventStreamFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expected an empty stream, but stream contains {0} event(s)..
+        ///   Looks up a localized string similar to Expected an empty stream, but stream contains {0} message(s)..
         /// </summary>
         internal static string MessageHandlerResult_StreamNotEmpty {
             get {
                 return ResourceManager.GetString("MessageHandlerResult_StreamNotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the MessageStream contains only {2} message(s)..
+        /// </summary>
+        internal static string MessageStream_MessageNotFound {
+            get {
+                return ResourceManager.GetString("MessageStream_MessageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected message of type &apos;{0}&apos; at index &apos;{1}&apos;, but found message of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string MessageStream_MessageNotOfExpectedType {
+            get {
+                return ResourceManager.GetString("MessageStream_MessageNotOfExpectedType", resourceCulture);
             }
         }
         
@@ -124,16 +124,16 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot retrieve the EventStream of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
+        ///   Looks up a localized string similar to Cannot retrieve the MessageStream of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
         /// </summary>
-        internal static string MicroProcessorTestContext_EventStreamNotFound {
+        internal static string MicroProcessorTestContext_MessageStreamNotFound {
             get {
-                return ResourceManager.GetString("MicroProcessorTestContext_EventStreamNotFound", resourceCulture);
+                return ResourceManager.GetString("MicroProcessorTestContext_MessageStreamNotFound", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot save the EventStream of &apos;{0}&apos; because a previous result of this test has already been saved..
+        ///   Looks up a localized string similar to Cannot save the MessageStream of &apos;{0}&apos; because a previous result of this test has already been saved..
         /// </summary>
         internal static string MicroProcessorTestContext_TestAlreadyRun {
             get {

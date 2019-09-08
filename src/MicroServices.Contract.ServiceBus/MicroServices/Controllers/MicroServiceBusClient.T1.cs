@@ -29,10 +29,48 @@ namespace Kingo.MicroServices.Controllers
             get;
         }
 
+        #region [====== SendAsync ======]
+
+        /// <inheritdoc />
+        public Task SendAsync(IEnumerable<IMessageToDispatch> commands)
+        {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }
+            if (commands == null)
+            {
+                throw new ArgumentNullException(nameof(commands));
+            }
+            return SendAsync(commands.Select(Pack));
+        }
+
+        /// <summary>
+        /// Sends all specified <paramref name="commands"/> to the appropriate service(s).
+        /// By default, every command is sent one after another. If you wish to support sending
+        /// entire batches at once, you may override this method to provide your own implementation.
+        /// </summary>
+        /// <param name="commands">The commands to send.</param>
+        protected virtual async Task SendAsync(IEnumerable<TMessage> commands)
+        {
+            foreach (var command in commands)
+            {
+                await SendAsync(command);
+            }
+        }
+
+        /// <summary>
+        /// Sends the specified <paramref name="command"/>.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        protected abstract Task SendAsync(TMessage command);
+
+        #endregion
+
         #region [====== PublishAsync ======]
 
         /// <inheritdoc />
-        public Task PublishAsync(IEnumerable<object> events)
+        public Task PublishAsync(IEnumerable<IMessageToDispatch> events)
         {
             if (IsDisposed)
             {
@@ -43,20 +81,6 @@ namespace Kingo.MicroServices.Controllers
                 throw new ArgumentNullException(nameof(events));
             }
             return PublishAsync(events.Select(Pack));
-        }
-
-        /// <inheritdoc />
-        public Task PublishAsync(object @event)
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
-            if (@event == null)
-            {
-                throw new ArgumentNullException(nameof(@event));
-            }
-            return PublishAsync(Pack(@event));
         }
 
         /// <summary>

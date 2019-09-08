@@ -10,72 +10,59 @@ namespace Kingo.MicroServices
     /// </summary>
     public class ExecuteAsyncMethod : IAsyncMethod
     {
-        private readonly Query _component;
-        private readonly MethodAttributeProvider _attributeProvider;
-        private readonly IParameterAttributeProvider _messageParameter;
-        private readonly IParameterAttributeProvider _contextParameter;
+        internal ExecuteAsyncMethod(Query query, QueryInterface @interface) :
+            this(query, @interface.ResolveMethodInfo(query)) { }
 
-        internal ExecuteAsyncMethod(Query component, QueryInterface @interface) :
-            this(component, @interface.CreateMethodAttributeProvider(component)) { }
+        private ExecuteAsyncMethod(Query query, MethodInfo info) :
+            this(query, info, info.GetParameters()) { }
 
-        private ExecuteAsyncMethod(Query component, MethodAttributeProvider attributeProvider) :
-            this(component, attributeProvider, attributeProvider.Info.GetParameters()) { }
-
-        private ExecuteAsyncMethod(Query component, MethodAttributeProvider attributeProvider, ParameterInfo[] parameters)
+        private ExecuteAsyncMethod(Query query, MethodInfo info, ParameterInfo[] parameters)
         {
-            _component = component;
-            _attributeProvider = attributeProvider;
+            Query = query;
+            Info = info;
 
             if (parameters.Length == 1)
             {
-                _messageParameter = null;
-                _contextParameter = new ParameterAttributeProvider(parameters[0]);
+                MessageParameterInfo = null;
+                ContextParameterInfo = parameters[0];
             }
             else
             {
-                _messageParameter = new ParameterAttributeProvider(parameters[0]);
-                _contextParameter = new ParameterAttributeProvider(parameters[1]);
+                MessageParameterInfo = parameters[0];
+                ContextParameterInfo = parameters[1];
             }
         }
 
-        #region [====== Component ======]
+        #region [====== IAsyncMethod ======]
 
-        ITypeAttributeProvider IAsyncMethod.Component =>
+        MicroProcessorComponent IAsyncMethod.Component =>
             Query;        
 
         /// <summary>
-        /// The message handler that implements this method.
+        /// The query that implements this method.
         /// </summary>
-        public Query Query =>
-            _component;
-
-        #endregion
-
-        #region [====== IMethodAttributeProvider ======]
+        public Query Query
+        {
+            get;
+        }
 
         /// <inheritdoc />
-        public MethodInfo Info =>
-            _attributeProvider.Info;
+        public MethodInfo Info
+        {
+            get;
+        }
 
         /// <inheritdoc />
-        public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            _attributeProvider.TryGetAttributeOfType(out attribute);
+        public ParameterInfo MessageParameterInfo
+        {
+            get;
+        }
 
         /// <inheritdoc />
-        public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
-            _attributeProvider.GetAttributesOfType<TAttribute>();
-
-        #endregion
-
-        #region [====== Parameters ======]
-
-        /// <inheritdoc />
-        public IParameterAttributeProvider MessageParameter =>
-            _messageParameter;
-
-        /// <inheritdoc />
-        public IParameterAttributeProvider ContextParameter =>
-            _contextParameter;       
+        public ParameterInfo ContextParameterInfo
+        {
+            get;
+        }
 
         #endregion
     }

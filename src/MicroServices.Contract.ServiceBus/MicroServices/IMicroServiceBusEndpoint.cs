@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
@@ -8,20 +9,36 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When implemented by a class, represents an endpoint that handles a specific command or event.
     /// </summary>
-    public interface IMicroServiceBusEndpoint : IMethodAttributeProvider
+    public interface IMicroServiceBusEndpoint
     {
         /// <summary>
-        /// Returns the message handler this method has been implemented on.
+        /// Returns the type of the message handler this endpoint is implemented on.
         /// </summary>
-        ITypeAttributeProvider MessageHandler
+        Type MessageHandlerType
         {
             get;
         }
 
         /// <summary>
-        /// Returns the parameter that represents the message to be handled.
+        /// Returns the <see cref="MethodInfo"/> of the method.
         /// </summary>
-        IParameterAttributeProvider MessageParameter
+        MethodInfo Info
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Returns the <see cref="ParameterInfo" /> that represents the message to be handled.
+        /// </summary>
+        ParameterInfo MessageParameterInfo
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Returns the <see cref="ParameterInfo" /> that represents the context that is supplied to the method.
+        /// </summary>
+        ParameterInfo ContextParameterInfo
         {
             get;
         }

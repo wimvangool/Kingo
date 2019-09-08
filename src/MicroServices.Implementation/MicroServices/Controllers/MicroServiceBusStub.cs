@@ -7,10 +7,10 @@ namespace Kingo.MicroServices.Controllers
 {
     internal sealed class MicroServiceBusStub : IMicroServiceBus
     {
-        public Task PublishAsync(IEnumerable<object> events) =>
+        public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
             throw NewNoBusRegisteredException();
 
-        public Task PublishAsync(object @event) =>
+        public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
             throw NewNoBusRegisteredException();
 
         public override string ToString() =>

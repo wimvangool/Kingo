@@ -22,8 +22,8 @@ namespace Kingo.MicroServices.Controllers
 
             public async Task HandleAsync(int message, MessageHandlerOperationContext context)
             {
-                context.EventBus.Publish(await _constantProvider.GetConstantAsync(context));
-                context.EventBus.Publish(await _multiplier.MultiplyByTwoAsync(message, context));
+                context.MessageBus.Publish(await _constantProvider.GetConstantAsync(context));
+                context.MessageBus.Publish(await _multiplier.MultiplyByTwoAsync(message, context));
             }                
         }
 
@@ -100,9 +100,9 @@ namespace Kingo.MicroServices.Controllers
             var result = await processor.ExecuteCommandAsync(messageHandler, 3);
 
             Assert.AreEqual(1, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Events.Count);
-            Assert.AreEqual(10, result.Events[0].Instance);
-            Assert.AreEqual(6, result.Events[1].Instance);
+            Assert.AreEqual(2, result.Messages.Count);
+            Assert.AreEqual(10, result.Messages[0].Content);
+            Assert.AreEqual(6, result.Messages[1].Content);
         }
 
         [TestMethod]

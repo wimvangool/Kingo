@@ -5,12 +5,12 @@
     /// by a <see cref="IMicroProcessor" />.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message.</typeparam>
-    public interface IMessage<out TMessage> : IMessage
+    public interface IMessageToProcess<out TMessage> : IMessageToProcess
     {
         /// <summary>
         /// Returns the message instance.
         /// </summary>
-        new TMessage Instance
+        new TMessage Content
         {
             get;
         }

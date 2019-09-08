@@ -124,7 +124,16 @@ namespace Kingo.Threading
 
         #region [====== Cancellation ======]
 
-
+        /// <summary>
+        /// Returns a task that completes as the specified <paramref name="task"/> is completed, unless
+        /// the specified <paramref name="token"/> request cancellation before the task is completed or
+        /// the specified <paramref name="timeout"/> expires. In that case, the returned task will complete
+        /// in the cancelled state.
+        /// </summary>
+        /// <param name="task">The task to await.</param>
+        /// <param name="token">Token that may signal cancellation of <paramref name="task"/>.</param>
+        /// <param name="timeout">Optional timeout period that may also cancel the specified <paramref name="task"/>.</param>
+        /// <returns>A new task representing the operation.</returns>
         public static Task OrAbort(this Task task, CancellationToken token, TimeSpan? timeout = null) =>
             Task.WhenAny(task, token.WaitForCancellation(timeout));
 

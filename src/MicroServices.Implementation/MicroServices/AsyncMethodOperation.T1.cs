@@ -23,7 +23,7 @@ namespace Kingo.MicroServices
             _operation.Method;
 
         /// <inheritdoc />
-        public override IMessage Message =>
+        public override IMessageToProcess Message =>
             _operation.Message;
 
         /// <inheritdoc />

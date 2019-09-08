@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Kingo.Reflection;
@@ -12,75 +13,62 @@ namespace Kingo.MicroServices
     /// </summary>
     public class HandleAsyncMethod : IAsyncMethod
     {
-        private readonly MessageHandler _component;
-        private readonly MethodAttributeProvider _attributeProvider;
-        private readonly IParameterAttributeProvider _messageParameter;
-        private readonly IParameterAttributeProvider _contextParameter;
-
         internal HandleAsyncMethod(HandleAsyncMethod method)
         {
-            _component = method._component;
-            _attributeProvider = method._attributeProvider;
-            _messageParameter = method._messageParameter;
-            _contextParameter = method._contextParameter;
+            MessageHandler = method.MessageHandler;
+            Info = method.Info;
+            MessageParameterInfo = method.MessageParameterInfo;
+            ContextParameterInfo = method.ContextParameterInfo;
         }
 
-        internal HandleAsyncMethod(MessageHandler component, MessageHandlerInterface @interface) :
-            this(component, @interface.CreateMethodAttributeProvider(component)) { }
+        internal HandleAsyncMethod(MessageHandler messageHandler, MessageHandlerInterface @interface) :
+            this(messageHandler, @interface.ResolveMethodInfo(messageHandler)) { }
 
-        private HandleAsyncMethod(MessageHandler component, MethodAttributeProvider attributeProvider) :
-            this(component, attributeProvider, attributeProvider.Info.GetParameters()) { }
+        private HandleAsyncMethod(MessageHandler messageHandler, MethodInfo info) :
+            this(messageHandler, info, info.GetParameters()) { }
 
-        private HandleAsyncMethod(MessageHandler component, MethodAttributeProvider attributeProvider, ParameterInfo[] parameters)
+        private HandleAsyncMethod(MessageHandler messageHandler, MethodInfo info, ParameterInfo[] parameters)
         {
-            _component = component;
-            _attributeProvider = attributeProvider;
-            _messageParameter = new ParameterAttributeProvider(parameters[0]);
-            _contextParameter = new ParameterAttributeProvider(parameters[1]);
+            MessageHandler = messageHandler;
+            Info = info;
+            MessageParameterInfo = parameters[0];
+            ContextParameterInfo = parameters[1];
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{MessageHandler.Type.FriendlyName()}.{Info.Name}({MessageParameter.Type.FriendlyName()}, ...)";
+            $"{MessageHandler.Type.FriendlyName()}.{Info.Name}({MessageParameterInfo.ParameterType.FriendlyName()}, ...)";
 
-        #region [====== Component ======]
+        #region [====== IAsyncMethod ======]
 
-        ITypeAttributeProvider IAsyncMethod.Component =>
+        MicroProcessorComponent IAsyncMethod.Component =>
             MessageHandler;        
 
         /// <summary>
         /// The message handler that implements this method.
         /// </summary>
-        public MessageHandler MessageHandler =>
-            _component;
-
-        #endregion
-
-        #region [====== IMethodAttributeProvider ======]
+        public MessageHandler MessageHandler
+        {
+            get;
+        }
 
         /// <inheritdoc />
-        public MethodInfo Info =>
-            _attributeProvider.Info;
+        public MethodInfo Info
+        {
+            get;
+        }
+        
+        /// <inheritdoc />
+        public ParameterInfo MessageParameterInfo
+        {
+            get;
+        }
 
         /// <inheritdoc />
-        public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            _attributeProvider.TryGetAttributeOfType(out attribute);
-
-        /// <inheritdoc />
-        public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
-            _attributeProvider.GetAttributesOfType<TAttribute>();
-
-        #endregion
-
-        #region [====== Parameters ======]
-
-        /// <inheritdoc />
-        public IParameterAttributeProvider MessageParameter =>
-            _messageParameter;
-
-        /// <inheritdoc />
-        public IParameterAttributeProvider ContextParameter =>
-            _contextParameter;
+        public ParameterInfo ContextParameterInfo
+        {
+            get;
+        }
 
         #endregion
 
@@ -91,7 +79,7 @@ namespace Kingo.MicroServices
 
         internal bool TryCreateEndpoint(MicroProcessor processor, out MicroServiceBusEndpoint endpoint)
         {
-            if (TryGetAttributeOfType(out EndpointAttribute attribute))
+            if (Info.TryGetAttributeOfType(out EndpointAttribute attribute))
             {
                 endpoint = CreateEndpoint(processor, attribute);
                 return true;
@@ -101,7 +89,7 @@ namespace Kingo.MicroServices
         }
 
         private MicroServiceBusEndpoint CreateEndpoint(MicroProcessor processor, EndpointAttribute attribute) =>
-            _EndpointConstructors.GetOrAdd(MessageParameter.Type, CreateEndpointConstructor).Invoke(this, processor, attribute);
+            _EndpointConstructors.GetOrAdd(MessageParameterInfo.ParameterType, CreateEndpointConstructor).Invoke(this, processor, attribute);
 
         private static Func<HandleAsyncMethod, MicroProcessor, EndpointAttribute, MicroServiceBusEndpoint> CreateEndpointConstructor(Type messageType)
         {

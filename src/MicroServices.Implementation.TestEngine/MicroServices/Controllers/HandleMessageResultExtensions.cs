@@ -8,16 +8,16 @@ namespace Kingo.MicroServices.Controllers
     public static class HandleMessageResultExtensions
     {
         /// <summary>
-        /// Verifies that a test produces an empty event-stream.
+        /// Verifies that a test produces an empty message-stream.
         /// </summary>
         /// <param name="result">The result to verify.</param>
         /// <exception cref="TestFailedException">
-        /// The result is either not an event-stream, or the event-stream contains one or more events.
+        /// The result is either not an message-stream, or the message-stream contains one or more events.
         /// </exception>
         public static void IsEmptyStream(this IHandleMessageResult result) =>
-            result.IsEventStream(IsEmpty);
+            result.IsMessageStream(IsEmpty);
 
-        private static void IsEmpty(EventStream stream)
+        private static void IsEmpty(MessageStream stream)
         {
             if (stream.Count == 0)
             {
@@ -26,7 +26,7 @@ namespace Kingo.MicroServices.Controllers
             throw NewStreamNotEmptyException(stream);
         }
 
-        private static Exception NewStreamNotEmptyException(EventStream stream)
+        private static Exception NewStreamNotEmptyException(MessageStream stream)
         {
             var messageFormat = ExceptionMessages.MessageHandlerResult_StreamNotEmpty;
             var message = string.Format(messageFormat, stream.Count);

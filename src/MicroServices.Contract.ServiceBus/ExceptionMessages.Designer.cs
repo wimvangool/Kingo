@@ -86,5 +86,14 @@ namespace Kingo {
                 return ResourceManager.GetString("MicroServiceBusController_CannotPublishEvents", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot send the specified command(s) because it has not been (fully) started yet..
+        /// </summary>
+        internal static string MicroServiceBusController_CannotSendCommands {
+            get {
+                return ResourceManager.GetString("MicroServiceBusController_CannotSendCommands", resourceCulture);
+            }
+        }
     }
 }

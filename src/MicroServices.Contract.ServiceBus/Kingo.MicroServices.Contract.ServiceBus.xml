@@ -35,12 +35,26 @@
               Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot publish the specified event(s) because it has not been (fully) started yet..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.MicroServiceBusController_CannotSendCommands">
+            <summary>
+              Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot send the specified command(s) because it has not been (fully) started yet..
+            </summary>
+        </member>
         <member name="T:Kingo.MicroServices.Controllers.IMicroServiceBus">
             <summary>
             When implemented by a class, represents a service bus that can publish messages.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.PublishAsync(System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+            <summary>
+            Sends all specified <paramref name="commands" /> to the appropriate service(s).
+            </summary>
+            <param name="commands">A collection of commands.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="commands"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <summary>
             Publishes all specified <paramref name="events" />.
             </summary>
@@ -48,15 +62,6 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="events"/> is <c>null</c>.
             </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.PublishAsync(System.Object)">
-            <summary>
-            Publishes the specified <paramref name="event" />.
-            </summary>
-            <param name="event">An event.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="event"/> is <c>null</c>.
-            </exception> 
         </member>
         <member name="T:Kingo.MicroServices.Controllers.IMicroServiceBusClient">
             <summary>
@@ -103,10 +108,24 @@
             The bus to which all events that are created when processing command or events should be published.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.PublishAsync(System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.PublishAsync(System.Object)">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.SendAsync(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Sends all specified <paramref name="commands"/> to the appropriate service(s).
+            By default, every command is sent one after another. If you wish to support sending
+            entire batches at once, you may override this method to provide your own implementation.
+            </summary>
+            <param name="commands">The commands to send.</param>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.SendAsync(`0)">
+            <summary>
+            Sends the specified <paramref name="command"/>.
+            </summary>
+            <param name="command">The command to send.</param>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.PublishAsync(System.Collections.Generic.IEnumerable{`0})">
@@ -201,7 +220,7 @@
         <member name="T:Kingo.MicroServices.Controllers.MicroServiceBusController">
             <summary>
             When implemented, represents a controller that can send and receive messages to and from a
-            service-bus and dispatches any received messages to a <see cref="T:Kingo.MicroServices.IMicroServiceBusProcessor" />
+            service-bus and dispatches any received messages to a <see cref="T:Kingo.MicroServices.IMicroServiceBusEndpoint" />
             for further processing.
             </summary>
         </member>
@@ -252,23 +271,68 @@
             </param>
             <returns>A new client.</returns>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishAsync(System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishAsync(System.Object)">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.Dispose">
             <inheritdoc />
         </member>
-        <member name="T:Kingo.MicroServices.IMessage">
+        <member name="T:Kingo.MicroServices.Controllers.MicroServiceBusExtensions">
             <summary>
-            When implemented by a class, represents a message that is being handled or executed by a processor.
+            Contains extension method for instance of type <see cref="T:Kingo.MicroServices.Controllers.IMicroServiceBus" />.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IMessage.Instance">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Object[])">
             <summary>
-            Returns the message instance.
+            Sends all specified commands to the appropriate service(s).
+            </summary>
+            <param name="bus">The bus that will send the commands.</param>
+            <param name="commands">A collection of commands to send.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Sends all specified commands to the appropriate service(s).
+            </summary>
+            <param name="bus">The bus that will send the commands.</param>
+            <param name="commands">A collection of commands to send.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Object[])">
+            <summary>
+            Publishes all specified events.
+            </summary>
+            <param name="bus">The bus that will publish the events.</param>
+            <param name="events">A collection of events to publish.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Publishes all specified events.
+            </summary>
+            <param name="bus">The bus that will publish the events.</param>
+            <param name="events">A collection of events to publish.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageEnvelope">
+            <summary>
+            When implemented by a class, represents an envelope of a message.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelope.Content">
+            <summary>
+            Returns the contents of the message.
             </summary>
         </member>
         <member name="T:Kingo.MicroServices.IMessageHandlerOperationResult">
@@ -276,9 +340,9 @@
             When implemented by a class, represents the result of handling a command or event.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.Events">
+        <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.Messages">
             <summary>
-            The events that were published during the operation.
+            The commands and events that are to be sent or published.
             </summary>
         </member>
         <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.MessageHandlerCount">
@@ -286,12 +350,22 @@
             The number of message handlers that have handled the message.
             </summary>
         </member>
-        <member name="T:Kingo.MicroServices.IMessageType">
+        <member name="T:Kingo.MicroServices.IMessageToDispatch">
             <summary>
-            When implemented by a class, represents a specific message type and kind.
+            When implemented by a class, represents a message that is to be delivered by means of a service-bus.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IMessageType.Kind">
+        <member name="P:Kingo.MicroServices.IMessageToDispatch.DeliveryTimeUtc">
+            <summary>
+            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageToProcess">
+            <summary>
+            When implemented by a class, represents a message that is being handled or executed by a processor.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageToProcess.Kind">
             <summary>
             Indicates whether this message represents a command, event or request.
             </summary>
@@ -329,14 +403,24 @@
             When implemented by a class, represents an endpoint that handles a specific command or event.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.MessageHandler">
+        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.MessageHandlerType">
             <summary>
-            Returns the message handler this method has been implemented on.
+            Returns the type of the message handler this endpoint is implemented on.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.MessageParameter">
+        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.Info">
             <summary>
-            Returns the parameter that represents the message to be handled.
+            Returns the <see cref="T:System.Reflection.MethodInfo"/> of the method.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.MessageParameterInfo">
+            <summary>
+            Returns the <see cref="T:System.Reflection.ParameterInfo" /> that represents the message to be handled.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.ContextParameterInfo">
+            <summary>
+            Returns the <see cref="T:System.Reflection.ParameterInfo" /> that represents the context that is supplied to the method.
             </summary>
         </member>
         <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.MessageKind">
@@ -413,6 +497,53 @@
             Represents a request, carrying parameters for a query.
             </summary>
         </member>
+        <member name="T:Kingo.MicroServices.MessageToDispatch">
+            <summary>
+            Represents a command or event that is to be sent or published on a service-bus.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.Content">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.Kind">
+            <summary>
+            Indicates which kind of message is to be dispatched.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.DeliveryTimeUtc">
+            <summary>
+            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.CreateCommand(System.Object,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Creates and returns a command that is ready to be dispatched.
+            </summary>
+            <param name="command">The command to dispatch.</param>
+            <param name="deliveryTime">
+            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+            </param>
+            <returns>The message to dispatch.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="command"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.CreateEvent(System.Object,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Creates and returns an event that is ready to be dispatched.
+            </summary>
+            <param name="event">The event to dispatch.</param>
+            <param name="deliveryTime">
+            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+            </param>
+            <returns>The message to dispatch.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="event"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="T:Kingo.MicroServices.MicroProcessorComponentAttribute">
             <summary>
             This attribute can be declared on any class or struct to configure its registration and run-time behavior.
@@ -431,68 +562,6 @@
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorComponentAttribute.ToString">
             <inheritdoc />
-        </member>
-        <member name="T:Kingo.Reflection.IAttributeProvider">
-            <summary>
-            When implemented by a class, serves as a provider of attributes declared on class, method, parameter, field, or any other member
-            that can be decorated with attributes.
-            </summary>
-        </member>
-        <member name="M:Kingo.Reflection.IAttributeProvider.TryGetAttributeOfType``1(``0@)">
-            <summary>
-            Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/>.
-            </summary>
-            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
-            <param name="attribute">
-            When this method returns <c>true</c>, this parameter will refer to the retrieved attribute;
-            otherwise it will be <c>null</c>.
-            </param>
-            <returns><c>true</c> if the attribute was retrieved; otherwise <c>false</c>.</returns>
-            <exception cref="T:System.InvalidOperationException">
-            Multiple attribute defined of the method are assignable to type <typeparamref name="TAttribute"/>.
-            </exception>
-        </member>
-        <member name="M:Kingo.Reflection.IAttributeProvider.GetAttributesOfType``1">
-            <summary>
-            Retrieves all attributes of type <typeparamref name="TAttribute"/>.
-            </summary>
-            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
-            <returns>A collection of attributes.</returns>
-        </member>
-        <member name="T:Kingo.Reflection.IMethodAttributeProvider">
-            <summary>
-            When implemented by a class, serves as a provider of attributes declared on a method.
-            </summary>
-        </member>
-        <member name="P:Kingo.Reflection.IMethodAttributeProvider.Info">
-            <summary>
-            The method for which the attributes are provided.
-            </summary>
-        </member>
-        <member name="T:Kingo.Reflection.IParameterAttributeProvider">
-            <summary>
-            When implemented by a class, represents a provider of attributes that are specified on a specific parameter.
-            </summary>
-        </member>
-        <member name="P:Kingo.Reflection.IParameterAttributeProvider.Type">
-            <summary>
-            Returns the parameter type.
-            </summary>
-        </member>
-        <member name="P:Kingo.Reflection.IParameterAttributeProvider.Info">
-            <summary>
-            Returns the parameter info.
-            </summary>
-        </member>
-        <member name="T:Kingo.Reflection.ITypeAttributeProvider">
-            <summary>
-            When implemented by a class, serves as a provider of attributes declared on a class or struct.
-            </summary>
-        </member>
-        <member name="P:Kingo.Reflection.ITypeAttributeProvider.Type">
-            <summary>
-            The type for which the attributes are provided.
-            </summary>
         </member>
     </members>
 </doc>

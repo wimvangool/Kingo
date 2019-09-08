@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Reflection
 {
     [TestClass]
-    public sealed class TypeAttributeProviderTest
+    public sealed class MemberInfoExtensionTest
     {
         #region [====== Attributes ======]
 
@@ -66,27 +66,21 @@ namespace Kingo.Reflection
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfClassDoesNotHaveAnyAttributesAtAll()
         {
-            var provider = new TypeAttributeProvider(typeof(NoAttributeClass));            
-
-            Assert.IsFalse(provider.TryGetAttributeOfType(out AllowOneAttribute attribute));
+            Assert.IsFalse(typeof(NoAttributeClass).TryGetAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfClassDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));            
-
-            Assert.IsFalse(provider.TryGetAttributeOfType(out AllowManyAttribute attribute));
+            Assert.IsFalse(typeof(OneAttributeClass).TryGetAttributeOfType(out AllowManyAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfClassHasExactlyOneAttributesOfTheSpecifiedConcreteType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));            
-
-            Assert.IsTrue(provider.TryGetAttributeOfType(out AllowOneAttribute attribute));
+            Assert.IsTrue(typeof(OneAttributeClass).TryGetAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -94,9 +88,7 @@ namespace Kingo.Reflection
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfClassHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));            
-
-            Assert.IsTrue(provider.TryGetAttributeOfType(out IHasValue attribute));
+            Assert.IsTrue(typeof(OneAttributeClass).TryGetAttributeOfType(out IHasValue attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -105,9 +97,7 @@ namespace Kingo.Reflection
         [ExpectedException(typeof(InvalidOperationException))]
         public void TryGetTypeAttributeOfType_Throws_IfClassHasManyAttributesOfTheSpecifiedType()
         {
-            var provider = new TypeAttributeProvider(typeof(ManyAttributesClass));             
-
-            provider.TryGetAttributeOfType(out AllowManyAttribute attribute);
+            typeof(ManyAttributesClass).TryGetAttributeOfType(out AllowManyAttribute attribute);
         }
 
         #endregion
@@ -117,8 +107,7 @@ namespace Kingo.Reflection
         [TestMethod]
         public void GetTypeAttributesOfType_ReturnsEmptyCollection_IfClassDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
-            var provider = new TypeAttributeProvider(typeof(NoAttributeClass));
-            var attributes = provider.GetAttributesOfType<AllowOneAttribute>();
+            var attributes = typeof(NoAttributeClass).GetAttributesOfType<AllowOneAttribute>();
 
             Assert.IsNotNull(attributes);
             Assert.AreEqual(0, attributes.Count());
@@ -127,8 +116,7 @@ namespace Kingo.Reflection
         [TestMethod]
         public void GetTypeAttributesOfType_ReturnsOneItem_IfClassHasOneAttributeOfTheSpecifiedConcreteType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));
-            var attributes = provider.GetAttributesOfType<AllowOneAttribute>().ToArray();
+            var attributes = typeof(OneAttributeClass).GetAttributesOfType<AllowOneAttribute>().ToArray();
 
             Assert.IsNotNull(attributes);
             Assert.AreEqual(1, attributes.Length);
@@ -138,8 +126,7 @@ namespace Kingo.Reflection
         [TestMethod]
         public void GetTypeAttributesOfType_ReturnsOneItem_IfClassHasOneAttributeOfTheSpecifiedInterfaceType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));
-            var attributes = provider.GetAttributesOfType<IHasValue>().ToArray();
+            var attributes = typeof(OneAttributeClass).GetAttributesOfType<IHasValue>().ToArray();
 
             Assert.IsNotNull(attributes);
             Assert.AreEqual(1, attributes.Length);
@@ -149,8 +136,7 @@ namespace Kingo.Reflection
         [TestMethod]
         public void GetTypeAttributesOfType_ReturnsManyItems_IfClassHasManyAttributesOfTheSpecifiedConcreteType()
         {
-            var provider = new TypeAttributeProvider(typeof(ManyAttributesClass));
-            var attributes = provider.GetAttributesOfType<AllowManyAttribute>().ToArray();
+            var attributes = typeof(ManyAttributesClass).GetAttributesOfType<AllowManyAttribute>().ToArray();
 
             Assert.IsNotNull(attributes);
             Assert.AreEqual(2, attributes.Length);
@@ -161,8 +147,7 @@ namespace Kingo.Reflection
         [TestMethod]
         public void GetTypeAttributesOfType_ReturnsManyItems_IfClassHasOneAttributeOfTheSpecifiedInterfaceType()
         {
-            var provider = new TypeAttributeProvider(typeof(ManyAttributesClass));
-            var attributes = provider.GetAttributesOfType<IHasValue>().ToArray();
+            var attributes = typeof(ManyAttributesClass).GetAttributesOfType<IHasValue>().ToArray();
 
             Assert.IsNotNull(attributes);
             Assert.AreEqual(3, attributes.Length);

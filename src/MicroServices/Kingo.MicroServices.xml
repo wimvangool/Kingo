@@ -1176,6 +1176,11 @@
               Looks up a localized string similar to &apos;{0}&apos; is not allowed to be zero..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.MemberInfoExtensions_AmbiguousAttributeMatch">
+            <summary>
+              Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
+            </summary>
+        </member>
         <member name="P:Kingo.ExceptionMessages.ReadOnlyList_IndexOutOfRange">
             <summary>
               Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
@@ -1263,6 +1268,85 @@
             <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
             otherwise <c>false</c>.
             </returns>
+        </member>
+        <member name="T:Kingo.Reflection.MemberInfoExtensions">
+            <summary>
+            Contains extension methods for instances of type <see cref="T:System.Reflection.MemberInfo" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.TryGetAttributeOfType``1(System.Reflection.MemberInfo,``0@,System.Boolean)">
+            <summary>
+            Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="member">The member to obtain the attributes for.</param>
+            <param name="attribute">
+            When this method returns <c>true</c>, this parameter will refer to the retrieved attribute;
+            otherwise it will be <c>null</c>.
+            </param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns><c>true</c> if the attribute was retrieved; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="member"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Multiple attribute defined of the method are assignable to type <typeparamref name="TAttribute"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.GetAttributesOfType``1(System.Reflection.MemberInfo,System.Boolean)">
+            <summary>
+            Retrieves all attributes of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="member">The member to obtain the attributes for.</param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns>A collection of attributes.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="member"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.TryGetAttributeOfType``1(System.Reflection.ParameterInfo,``0@,System.Boolean)">
+            <summary>
+            Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="parameter">The member to obtain the attributes for.</param>
+            <param name="attribute">
+            When this method returns <c>true</c>, this parameter will refer to the retrieved attribute;
+            otherwise it will be <c>null</c>.
+            </param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns><c>true</c> if the attribute was retrieved; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="parameter"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Multiple attribute defined of the method are assignable to type <typeparamref name="TAttribute"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.GetAttributesOfType``1(System.Reflection.ParameterInfo,System.Boolean)">
+            <summary>
+            Retrieves all attributes of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="parameter">The member to obtain the attributes for.</param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns>A collection of attributes.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="parameter"/> is <c>null</c>.
+            </exception>
         </member>
         <member name="T:Kingo.Reflection.TypeExtensions">
             <summary>
@@ -2134,6 +2218,18 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="func"/> is <c>null</c>.
             </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.OrAbort(System.Threading.Tasks.Task,System.Threading.CancellationToken,System.Nullable{System.TimeSpan})">
+            <summary>
+            Returns a task that completes as the specified <paramref name="task"/> is completed, unless
+            the specified <paramref name="token"/> request cancellation before the task is completed or
+            the specified <paramref name="timeout"/> expires. In that case, the returned task will complete
+            in the cancelled state.
+            </summary>
+            <param name="task">The task to await.</param>
+            <param name="token">Token that may signal cancellation of <paramref name="task"/>.</param>
+            <param name="timeout">Optional timeout period that may also cancel the specified <paramref name="task"/>.</param>
+            <returns>A new task representing the operation.</returns>
         </member>
         <member name="M:Kingo.Threading.AsyncMethod.WaitForCancellation(System.Threading.CancellationToken,System.Nullable{System.TimeSpan})">
             <summary>

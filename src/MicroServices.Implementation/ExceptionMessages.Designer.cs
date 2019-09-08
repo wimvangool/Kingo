@@ -70,15 +70,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
-        /// </summary>
-        internal static string AttributeProvider_AmbiguousAttributeMatch {
-            get {
-                return ResourceManager.GetString("AttributeProvider_AmbiguousAttributeMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invalid MessageKind ({0}) specified. Endpoints only support commands and events..
         /// </summary>
         internal static string EndpointAttribute_InvalidMessageKindSpecified {

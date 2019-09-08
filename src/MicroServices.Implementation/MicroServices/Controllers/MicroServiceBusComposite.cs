@@ -8,16 +8,16 @@ namespace Kingo.MicroServices.Controllers
     {
         private readonly IMicroServiceBus[] _microServiceBusCollection;
 
-        public MicroServiceBusComposite(IMicroServiceBus[] microServiceBusCollection)
+        public MicroServiceBusComposite(IEnumerable<IMicroServiceBus> microServiceBusCollection)
         {
             _microServiceBusCollection = microServiceBusCollection.ToArray();
         }
 
-        public Task PublishAsync(IEnumerable<object> events) =>
-            Task.WhenAll(_microServiceBusCollection.Select(bus => bus.PublishAsync(events)));
+        public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+            Task.WhenAll(_microServiceBusCollection.Select(bus => bus.SendAsync(commands)));
 
-        public Task PublishAsync(object @event) =>
-            Task.WhenAll(_microServiceBusCollection.Select(bus => bus.PublishAsync(@event)));
+        public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+            Task.WhenAll(_microServiceBusCollection.Select(bus => bus.PublishAsync(events)));
 
         public override string ToString() =>
             $"{nameof(IMicroServiceBus)}[{_microServiceBusCollection.Length}]";

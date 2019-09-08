@@ -21,7 +21,7 @@ namespace Kingo.MicroServices
                 _context = context.PushOperation(this);
             }
 
-            public override IMessage Message =>
+            public override IMessageToProcess Message =>
                 _operation.Message;
 
             public override CancellationToken Token =>
@@ -40,29 +40,29 @@ namespace Kingo.MicroServices
                 _context;
 
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
-                new QueryOperationResult<TResponse>(await _method.ExecuteAsync(_operation._message.Instance, _context).ConfigureAwait(false));
+                new QueryOperationResult<TResponse>(await _method.ExecuteAsync(_operation._message.Content, _context).ConfigureAwait(false));
         }
 
         #endregion
         
         private readonly IQuery<TRequest, TResponse> _query;
-        private readonly Message<TRequest> _message;
+        private readonly MessageToProcess<TRequest> _message;
 
         public QueryOperationImplementation(MicroProcessor processor, IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token) :
             base(processor, token)
         {                                  
             _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = new Message<TRequest>(message, MessageKind.QueryRequest);
+            _message = new MessageToProcess<TRequest>(message, MessageKind.QueryRequest);
         }
 
         public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token) :
             base(context, token)
         {
             _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = new Message<TRequest>(message, MessageKind.QueryRequest);
+            _message = new MessageToProcess<TRequest>(message, MessageKind.QueryRequest);
         }
 
-        public override IMessage Message =>
+        public override IMessageToProcess Message =>
             _message;
 
         protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) => 

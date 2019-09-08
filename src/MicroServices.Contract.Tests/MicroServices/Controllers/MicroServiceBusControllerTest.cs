@@ -59,6 +59,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class MicroServiceBusClientStub : MicroServiceBusClient<int>
         {
+            private int _sendCount;
             private int _publishCount;
             private int _disposeCount;
 
@@ -70,6 +71,12 @@ namespace Kingo.MicroServices.Controllers
             protected override IMicroServiceBus Bus
             {
                 get;
+            }
+
+            protected override Task SendAsync(int command)
+            {
+                Interlocked.Increment(ref _sendCount);
+                return Task.CompletedTask;
             }
 
             protected override Task PublishAsync(int @event)

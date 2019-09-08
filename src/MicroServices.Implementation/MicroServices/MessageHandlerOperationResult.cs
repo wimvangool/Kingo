@@ -5,13 +5,13 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When implemented, represents the result of handling a command or event.
     /// </summary>
-    public abstract class MessageHandlerOperationResult : IMicroProcessorOperationResult<IReadOnlyList<IMessage>>, IMessageHandlerOperationResult
+    public abstract class MessageHandlerOperationResult : IMicroProcessorOperationResult<IReadOnlyList<MessageToDispatch>>, IMessageHandlerOperationResult
     {                        
-        IReadOnlyList<IMessage> IMicroProcessorOperationResult<IReadOnlyList<IMessage>>.Value =>
-            Events;
+        IReadOnlyList<MessageToDispatch> IMicroProcessorOperationResult<IReadOnlyList<MessageToDispatch>>.Value =>
+            Messages;
 
         /// <inheritdoc />
-        public abstract IReadOnlyList<IMessage> Events
+        public abstract IReadOnlyList<MessageToDispatch> Messages
         {
             get;
         }
@@ -22,10 +22,10 @@ namespace Kingo.MicroServices
             get;
         }
 
-        internal abstract EventBufferResult ToEventBufferResult();
+        internal abstract MessageBufferResult ToMessageBufferResult();
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Events} ({nameof(MessageHandlerCount)} = {MessageHandlerCount})";        
+            $"{Messages} ({nameof(MessageHandlerCount)} = {MessageHandlerCount})";        
     }
 }

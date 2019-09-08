@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
             this(processor, new HandleAsyncMethod<TCommand>(messageHandler), message, token) { }
 
         public CommandHandlerOperation(MicroProcessor processor, HandleAsyncMethod<TCommand> method, TCommand message, CancellationToken? token) :
-            base(processor, method, new Message<TCommand>(message, MessageKind.Command), token) { }        
+            base(processor, method, new MessageToProcess<TCommand>(message, MessageKind.Command), token) { }        
 
         protected override MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException exception) =>
             exception.AsBadRequestException(exception.Message);        

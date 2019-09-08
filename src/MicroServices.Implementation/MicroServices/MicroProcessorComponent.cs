@@ -9,15 +9,15 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a type that can be registered as a component of a <see cref="MicroProcessor" />.
     /// </summary>
-    public class MicroProcessorComponent : IEquatable<MicroProcessorComponent>, ITypeAttributeProvider, IMicroProcessorComponentConfiguration
+    public class MicroProcessorComponent : IEquatable<MicroProcessorComponent>, IMicroProcessorComponentConfiguration
     {
-        private readonly TypeAttributeProvider _attributeProvider;
         private readonly Lazy<IMicroProcessorComponentConfiguration> _configuration;
+        private readonly Type _type;
         private readonly Type[] _serviceTypes;
         
         private MicroProcessorComponent(Type type)
         {
-            _attributeProvider = new TypeAttributeProvider(type ?? throw new ArgumentNullException(nameof(type)));
+            _type = type ?? throw new ArgumentNullException(nameof(type));
             _configuration = new Lazy<IMicroProcessorComponentConfiguration>(GetConfiguration);
             _serviceTypes = new Type[0];
         }        
@@ -36,10 +36,16 @@ namespace Kingo.MicroServices
             {
                 throw new ArgumentNullException(nameof(component));
             }
-            _attributeProvider = component._attributeProvider;
+            _type = component._type;
             _configuration = component._configuration;
             _serviceTypes = serviceTypes.ToArray();
         }
+
+        /// <summary>
+        /// Type of the component.
+        /// </summary>
+        public Type Type =>
+            _type;
 
         internal MicroProcessorComponent MergeWith(MicroProcessorComponent component) =>
             new MicroProcessorComponent(this, _serviceTypes.Concat(component._serviceTypes));
@@ -68,7 +74,7 @@ namespace Kingo.MicroServices
 
         private IMicroProcessorComponentConfiguration GetConfiguration()
         {
-            if (TryGetAttributeOfType(out MicroProcessorComponentAttribute attribute))
+            if (Type.TryGetAttributeOfType(out MicroProcessorComponentAttribute attribute))
             {
                 return attribute;
             }
@@ -104,24 +110,6 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public override string ToString() =>
             Type.FriendlyName();        
-
-        #endregion        
-
-        #region [====== ITypeAttributeProvider ======]        
-
-        /// <summary>
-        /// Type of the component.
-        /// </summary>
-        public Type Type =>
-            _attributeProvider.Type;
-
-        /// <inheritdoc />
-        public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            _attributeProvider.TryGetAttributeOfType(out attribute);
-
-        /// <inheritdoc />
-        public IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() where TAttribute : class =>
-            _attributeProvider.GetAttributesOfType<TAttribute>();
 
         #endregion
 

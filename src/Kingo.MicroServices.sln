@@ -20,11 +20,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Implementation.TestEngin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{FC29461B-E6CB-47E7-99D1-B72DD66B0E43}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.Endpoints", "A.Endpoints", "{4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.DataAccess", "B.DataAccess", "{BE8D0BBC-36AA-4F00-94AA-AAFF950C8CAD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{BE8D0BBC-36AA-4F00-94AA-AAFF950C8CAD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.BusinessLogic", "C.BusinessLogic", "{88B6D91B-6E72-4957-8EFD-710B56518CE2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogic", "BusinessLogic", "{88B6D91B-6E72-4957-8EFD-710B56518CE2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Contract.Tests", "MicroServices.Contract.Tests\01.Contract.Tests.csproj", "{9102A1F2-4356-4C92-8AA8-37AF9C873664}"
 EndProject
@@ -115,8 +115,8 @@ Global
 		{9B91B3F6-BF0E-4294-862F-8DFF49DB7AA4} = {4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 	GlobalSection(TestsCaseManagementSettings) = postSolution
 		CategoryFile = YellowFlare.Cqrs.vsmdi

@@ -43,6 +43,6 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="test"/> or <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        Task RunAsync<TMessage, TEventStream>(IHandleMessageTest<TMessage, TEventStream> test, MicroProcessorOperationTestContext context) where TEventStream : EventStream;
+        Task RunAsync<TMessage, TEventStream>(IHandleMessageTest<TMessage, TEventStream> test, MicroProcessorOperationTestContext context) where TEventStream : MessageStream;
     }
 }

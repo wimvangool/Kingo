@@ -117,17 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EventStream_EventNotFound" xml:space="preserve">
-    <value>Event of type '{0}' not found at index '{1}': the EventStream contains only {2} event(s).</value>
-  </data>
-  <data name="EventStream_EventNotOfExpectedType" xml:space="preserve">
-    <value>Expected event of type '{0}' at index '{1}', but found event of type '{2}'.</value>
-  </data>
-  <data name="MessageHandlerResult_AssertionOfEventStreamFailed" xml:space="preserve">
-    <value>One or more assertions for the published events failed. See inner exception for details. </value>
+  <data name="MessageHandlerResult_AssertionOfMessageStreamFailed" xml:space="preserve">
+    <value>One or more assertions for the published messages failed. See inner exception for details. </value>
   </data>
   <data name="MessageHandlerResult_StreamNotEmpty" xml:space="preserve">
-    <value>Expected an empty stream, but stream contains {0} event(s).</value>
+    <value>Expected an empty stream, but stream contains {0} message(s).</value>
+  </data>
+  <data name="MessageStream_MessageNotFound" xml:space="preserve">
+    <value>Message of type '{0}' not found at index '{1}': the MessageStream contains only {2} message(s).</value>
+  </data>
+  <data name="MessageStream_MessageNotOfExpectedType" xml:space="preserve">
+    <value>Expected message of type '{0}' at index '{1}', but found message of type '{2}'.</value>
   </data>
   <data name="MicroProcessorConfiguration_ProcessorAlreadyConfigured" xml:space="preserve">
     <value>Cannot invoke '{0}' at this point: the processor has already been configured.</value>
@@ -138,11 +138,11 @@
   <data name="MicroProcessorConfiguration_ServicesAlreadyConfigured" xml:space="preserve">
     <value>Cannot invoke '{0}' at this point: the service collection has already been configured.</value>
   </data>
-  <data name="MicroProcessorTestContext_EventStreamNotFound" xml:space="preserve">
-    <value>Cannot retrieve the EventStream of '{0}' because its results haven't been saved in this context.</value>
+  <data name="MicroProcessorTestContext_MessageStreamNotFound" xml:space="preserve">
+    <value>Cannot retrieve the MessageStream of '{0}' because its results haven't been saved in this context.</value>
   </data>
   <data name="MicroProcessorTestContext_TestAlreadyRun" xml:space="preserve">
-    <value>Cannot save the EventStream of '{0}' because a previous result of this test has already been saved.</value>
+    <value>Cannot save the MessageStream of '{0}' because a previous result of this test has already been saved.</value>
   </data>
   <data name="MicroProcessorTestResult_AssertionOfExceptionFailed" xml:space="preserve">
     <value>One or more assertions for exception of type '{0}' failed. See inner exception for details.</value>

@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
             this(processor, new HandleAsyncMethod<TEvent>(messageHandler), message, token) { }
 
         public EventHandlerOperation(MicroProcessor processor, HandleAsyncMethod<TEvent> method, TEvent message, CancellationToken? token) :
-            base(processor, method, new Message<TEvent>(message, MessageKind.Event), token) { }
+            base(processor, method, new MessageToProcess<TEvent>(message, MessageKind.Event), token) { }
 
         public override async Task<MessageHandlerOperationResult> ExecuteAsync()
         {

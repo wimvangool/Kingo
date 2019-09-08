@@ -1,4 +1,5 @@
-﻿using Kingo.Reflection;
+﻿using System.Reflection;
+using Kingo.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
@@ -9,12 +10,18 @@ namespace Kingo.MicroServices
         protected static void AssertComponentProperties<TComponent>(IAsyncMethod method, int value)
         {
             Assert.AreSame(typeof(TComponent), method.Component.Type);
-            AssertValue(method.Component, value);
+            AssertValue(method.Info, value);
         }
 
-        protected static void AssertValue(IAttributeProvider provider, int value)
+        protected static void AssertValue(MemberInfo member, int value)
         {
-            Assert.IsTrue(provider.TryGetAttributeOfType(out ValueAttribute attribute));
+            Assert.IsTrue(member.TryGetAttributeOfType(out ValueAttribute attribute));
+            Assert.AreEqual(value, attribute.Value);
+        }
+
+        protected static void AssertValue(ParameterInfo parameter, int value)
+        {
+            Assert.IsTrue(parameter.TryGetAttributeOfType(out ValueAttribute attribute));
             Assert.AreEqual(value, attribute.Value);
         }
     }

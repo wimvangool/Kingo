@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
     public abstract class MicroProcessorOperation : IMicroProcessorOperation
     {
         /// <inheritdoc />
-        public abstract IMessage Message
+        public abstract IMessageToProcess Message
         {
             get;
         }
