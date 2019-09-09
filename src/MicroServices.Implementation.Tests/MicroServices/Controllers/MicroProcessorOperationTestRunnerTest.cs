@@ -12,7 +12,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedEventStream_And_GivenThrowsException()
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedMessageStream_And_GivenThrowsException()
         {
             var test = CreateMessageHandlerTest()
                 .Given((processor, context) => throw NewRandomBusinessRuleException());                
@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedEventStream_And_ResultIsNotProduced()
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedMessageStream_And_ResultIsNotProduced()
         {
             var test = CreateMessageHandlerTest()
                 .When((messageProcessor, testContext) => Task.CompletedTask);                
@@ -32,7 +32,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedEventStream_And_ResultIsNotVerified()
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedMessageStream_And_ResultIsNotVerified()
         {
             var test = CreateMessageHandlerTest()
                 .Then((message, result, testContext) => { });
@@ -42,7 +42,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfEmptyEventStreamIsExpected_But_ResultIsException()
+        public async Task RunMessageHandlerTest_Throws_IfEmptyMessageStreamIsExpected_But_ResultIsException()
         {
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
@@ -57,7 +57,7 @@ namespace Kingo.MicroServices.Controllers
         }        
 
         [TestMethod]        
-        public async Task RunMessageHandlerTest_Succeeds_IfEmptyEventStreamIsExpected_And_NoEventsWerePublished()
+        public async Task RunMessageHandlerTest_Succeeds_IfEmptyMessageStreamIsExpected_And_NoEventsWerePublished()
         {
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
@@ -70,7 +70,28 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfEmptyEventStreamIsExpected_But_OneEventWasPublished()
+        public async Task RunMessageHandlerTest_Throws_IfEmptyMessageStreamIsExpected_But_OneCommandWasSent()
+        {
+            var command = new object();
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.ExecuteCommandAsync((processor, context) =>
+                    {
+                        context.MessageBus.Send(command);
+                    }, new object());
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsEmptyStream();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfEmptyMessageStreamIsExpected_But_OneEventWasPublished()
         {
             var @event = new object();
             var test = CreateMessageHandlerTest()
@@ -91,7 +112,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfOneEventIsExpected_But_NoEventsWerePublished()
+        public async Task RunMessageHandlerTest_Throws_IfOneMessageIsExpected_But_NoMessagesWereProduced()
         {            
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
@@ -103,6 +124,55 @@ namespace Kingo.MicroServices.Controllers
                     result.IsMessageStream(stream =>
                     {
                         Assert.AreEqual(1, stream.Count);
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunMessageHandlerTest_Succeeds_IfOneCommandIsExpected_And_OneCommandWasSent()
+        {
+            var command = new object();
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.ExecuteCommandAsync((processor, context) =>
+                    {
+                        context.MessageBus.Send(command);
+                    }, new object());
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsMessageStream(stream =>
+                    {
+                        stream.AssertCommand<object>(0, sentCommand =>
+                        {
+                            Assert.AreSame(command, sentCommand.Content);
+                        });
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfOneCommandIsExpected_But_OneEventWasPublished()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.ExecuteCommandAsync((processor, context) =>
+                    {
+                        context.MessageBus.Publish(new object());
+                    }, new object());
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsMessageStream(stream =>
+                    {
+                        stream.AssertCommand<object>(0);
                     });
                 });
 
@@ -125,7 +195,33 @@ namespace Kingo.MicroServices.Controllers
                 {
                     result.IsMessageStream(stream =>
                     {
-                        Assert.AreSame(@event, stream[0].Content);                        
+                        stream.AssertEvent<object>(0, publishedEvent =>
+                        {
+                            Assert.AreSame(@event, publishedEvent.Content);
+                        });
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfOneEventIsExpected_But_OneCommandWasSent()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.ExecuteCommandAsync((processor, context) =>
+                    {
+                        context.MessageBus.Send(new object());
+                    }, new object());
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsMessageStream(stream =>
+                    {
+                        stream.AssertEvent<object>(0);
                     });
                 });
 
@@ -403,7 +499,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfWhenStatementAttemptsToObtainEventStreamThatIsNotFound()
+        public async Task RunMessageHandlerTest_Throws_IfWhenStatementAttemptsToObtainMessageStreamThatIsNotFound()
         {
             var testA = CreateMessageHandlerTest();
 
@@ -412,7 +508,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     try
                     {
-                        testContext.GetEventStream(testA);
+                        testContext.GetMessageStream(testA);
                     }
                     finally
                     {
@@ -452,7 +548,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]        
-        public async Task RunMessageHandlerTest_Succeeds_IfGivenRunsAnotherTest_And_WhenStatementAttemptsToObtainEventStreamThatIsFound()
+        public async Task RunMessageHandlerTest_Succeeds_IfGivenRunsAnotherTest_And_WhenStatementAttemptsToObtainMessageStreamThatIsFound()
         {
             var @event = new object();
 
@@ -476,7 +572,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .When(async (messageProcessor, testContext) =>
                 {
-                    testContext.GetEventStream(testA).AssertEvent<object>(0, actualEvent =>
+                    testContext.GetMessageStream(testA).AssertEvent<object>(0, actualEvent =>
                     {
                         Assert.AreSame(@event, actualEvent.Content);
                     });
@@ -488,7 +584,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task RunMessageHandlerTest_Succeeds_IfGivenHandlesAnotherMessage_And_WhenStatementAttemptsToObtainEventStreamThatIsFound()
+        public async Task RunMessageHandlerTest_Succeeds_IfGivenHandlesAnotherMessage_And_WhenStatementAttemptsToObtainMessageStreamThatIsFound()
         {            
             var test = CreateMessageHandlerTest()
                 .Given(async (testProcessor, testContext) =>
@@ -534,7 +630,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedEventStream_And_GivenThrowsException()
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedMessageStream_And_GivenThrowsException()
         {
             var test = CreateMessageHandlerTest<OutputStream>()
                 .Given((processor, context) => throw NewRandomBusinessRuleException());                
@@ -544,7 +640,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedEventStream_And_ResultIsNotProduced()
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedMessageStream_And_ResultIsNotProduced()
         {
             var test = CreateMessageHandlerTest<OutputStream>()
                 .When((messageProcessor, testContext) => Task.CompletedTask);                
@@ -554,7 +650,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedEventStream_And_ResultIsNotVerified()
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedMessageStream_And_ResultIsNotVerified()
         {
             var test = CreateMessageHandlerTest<OutputStream>()
                 .Then((message, result, testContext) => { });
@@ -563,7 +659,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task RunMessageHandlerTest_Succeeds_IfTypedEventStreamIsCorrectlyStoredAndRetrieved()
+        public async Task RunMessageHandlerTest_Succeeds_IfTypedMessageStreamIsCorrectlyStoredAndRetrieved()
         {
             var testA = CreateMessageHandlerTest<OutputStream>()
                 .When(async (messageProcessor, testContext) =>
@@ -588,7 +684,7 @@ namespace Kingo.MicroServices.Controllers
                     await messageProcessor.ExecuteCommandAsync((message, context) =>
                     {
                         Assert.IsInstanceOfType(message, typeof(int));
-                    }, testContext.GetEventStream(testA).Value);
+                    }, testContext.GetMessageStream(testA).Value);
                 })
                 .Then((message, result, testContext) =>
                 {
@@ -598,8 +694,8 @@ namespace Kingo.MicroServices.Controllers
             await RunAsync(testB);
         }
 
-        private static HandleMessageTestDelegate<TEventStream> CreateMessageHandlerTest<TEventStream>() where TEventStream : MessageStream, new() =>
-            new HandleMessageTestDelegate<TEventStream>();
+        private static HandleMessageTestDelegate<TMessageStream> CreateMessageHandlerTest<TMessageStream>() where TMessageStream : MessageStream, new() =>
+            new HandleMessageTestDelegate<TMessageStream>();
 
         #endregion
 
