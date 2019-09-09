@@ -129,9 +129,8 @@ namespace Kingo.MicroServices.Controllers
                 {
                     // When starting, we connect all endpoints to the service-bus. We then
                     // attempt to change the controller's state to a started-state where we have a
-                    // fully initialized client. If the controller's state has been changed while
-                    // the client was starting, we immediately dispose of the created state.
-                    var client = await Controller.ConnectToServiceBusAsync(cancellationToken);
+                    // fully initialized client. 
+                    var client = await Controller.ConnectToServiceBusAsync(cancellationToken).ConfigureAwait(false);
                     if (client == null)
                     {
                         // If client is null, then the start-operation was aborted while connecting.
@@ -145,6 +144,8 @@ namespace Kingo.MicroServices.Controllers
                     {
                         return;
                     }
+                    // If the controller's state has been changed while
+                    // the client was starting, we immediately dispose of the created state.
                     startedState.Dispose(true);
                     return;
                 }
@@ -287,7 +288,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw NewObjectDisposedException();
             }
-            var client = await CreateClientAsync(_bus);
+            var client = await CreateClientAsync(_bus).ConfigureAwait(false);
 
             if (IsCancellationRequested(token, ref client))
             {
@@ -295,7 +296,7 @@ namespace Kingo.MicroServices.Controllers
             }
             foreach (var endpoint in _processor.CreateMicroServiceBusEndpoints())
             {
-                await client.ConnectToEndpointAsync(endpoint).OrAbort(token);
+                await client.ConnectToEndpointAsync(endpoint).OrAbort(token).ConfigureAwait(false);
 
                 if (IsCancellationRequested(token, ref client))
                 {

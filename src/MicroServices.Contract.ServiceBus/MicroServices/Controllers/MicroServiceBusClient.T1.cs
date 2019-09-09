@@ -55,7 +55,7 @@ namespace Kingo.MicroServices.Controllers
         {
             foreach (var command in commands)
             {
-                await SendAsync(command);
+                await SendAsync(command).ConfigureAwait(false);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Kingo.MicroServices.Controllers
         {
             foreach (var @event in events)
             {
-                await PublishAsync(@event);
+                await PublishAsync(@event).ConfigureAwait(false);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Kingo.MicroServices.Controllers
             }
             if (IsSupportedEndpoint(endpoint))
             {
-                _connections.Add(await ConnectToQueueAsync(endpoint));
+                _connections.Add(await ConnectToQueueAsync(endpoint).ConfigureAwait(false));
                 return true;
             }
             return false;
