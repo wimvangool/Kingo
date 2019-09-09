@@ -125,7 +125,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     result.IsMessageStream(stream =>
                     {
-                        Assert.AreSame(@event, stream[0]);                        
+                        Assert.AreSame(@event, stream[0].Content);                        
                     });
                 });
 
@@ -149,7 +149,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     result.IsMessageStream(stream =>
                     {                        
-                        Assert.AreNotSame(@event, stream[0]);                     
+                        Assert.AreNotSame(@event, stream[0].Content);                     
                     });
                 });
 
@@ -478,7 +478,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     testContext.GetEventStream(testA).AssertEvent<object>(0, actualEvent =>
                     {
-                        Assert.AreSame(@event, actualEvent);
+                        Assert.AreSame(@event, actualEvent.Content);
                     });
 
                     await messageProcessor.ExecuteCommandAsync((message, context) => { }, new object());

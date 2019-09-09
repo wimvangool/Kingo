@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -102,7 +101,7 @@ namespace Kingo.MicroServices
 
             await messageBuffer.HandleEventsWith(processor, null);
 
-            Assert.AreEqual(eventsWithoutDeliveryTime, processor.Count);
+            Assert.AreEqual(eventsWithoutDeliveryTime.Count, processor.Count);
             Assert.IsTrue(processor.All(item => item.Equals(eventsWithoutDeliveryTime.First().Content)));
         }
 
@@ -114,7 +113,7 @@ namespace Kingo.MicroServices
             CreateMessageBuffer(value => MessageToDispatch.CreateCommand(value, deliveryTime));
 
         private static MessageBuffer CreateEventBuffer(DateTimeOffset? deliveryTime = null) =>
-            CreateMessageBuffer(value => MessageToDispatch.CreateCommand(value, deliveryTime));
+            CreateMessageBuffer(value => MessageToDispatch.CreateEvent(value, deliveryTime));
 
         private static MessageBuffer CreateMessageBuffer(Func<int, MessageToDispatch> messageFactory)
         {

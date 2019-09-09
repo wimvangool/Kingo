@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Xml.Schema;
-using Kingo.Reflection;
+﻿using System.Reflection;
 
 namespace Kingo.MicroServices
 {

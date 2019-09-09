@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Kingo.Reflection;
 
@@ -40,8 +39,18 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public override string ToString() =>
-            $"{Content.GetType().FriendlyName()} ({nameof(Kind)} = {Kind}, {nameof(DeliveryTimeUtc)} = {DeliveryTimeUtc})";
+        public override string ToString()
+        {
+            var message = new StringBuilder(Content.GetType().FriendlyName());
+
+            message.Append(" (").Append($"{nameof(Kind)} = {Kind}");
+
+            if (DeliveryTimeUtc.HasValue)
+            {
+                message.Append($"{nameof(DeliveryTimeUtc)} = {DeliveryTimeUtc}");
+            }
+            return message.Append(")").ToString();
+        }
 
         /// <summary>
         /// Creates and returns a command that is ready to be dispatched.

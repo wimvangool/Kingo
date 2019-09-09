@@ -88,8 +88,8 @@ namespace Kingo.MicroServices.Controllers
             public void AssertPublishCountIs(int count) =>
                 Assert.AreEqual(count, _publishCount);
 
-            protected override int Pack(object message) =>
-                (int) message;
+            protected override int Pack(IMessageToDispatch message) =>
+                (int) message.Content;
 
             protected override object Unpack(int message) =>
                 message;

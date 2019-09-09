@@ -37,7 +37,7 @@ namespace Kingo.MicroServices
             var query = new Query1();
             var method = new ExecuteAsyncMethod<object, int>(query);
 
-            Assert.AreSame(typeof(Query1), method.Query.Type);
+            AssertComponentProperties<Query1>(method, 12);
             AssertMethodProperties<object, int>(method, 2, 3);
         }
 
@@ -47,7 +47,7 @@ namespace Kingo.MicroServices
             var query = new Query1();
             var method = new ExecuteAsyncMethod<string, int>(query);
 
-            Assert.AreSame(typeof(Query1), method.Query.Type);
+            AssertComponentProperties<Query1>(method, 12);
             AssertMethodProperties<object, int>(method, 2, 3);
         }
 

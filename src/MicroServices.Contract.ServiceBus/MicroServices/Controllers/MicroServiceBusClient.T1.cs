@@ -180,11 +180,11 @@ namespace Kingo.MicroServices.Controllers
         #region [====== Pack & Unpack ======]
 
         /// <summary>
-        /// Packs the specified <paramref name="message"/> into a message(-envelope) that can be sent to the service-bus.
+        /// Packs the specified <paramref name="message"/> into a message that can be sent to the service-bus.
         /// </summary>
         /// <param name="message">The message to pack.</param>
-        /// <returns>A message containing the specified <paramref name="message"/> as content.</returns>
-        protected abstract TMessage Pack(object message);
+        /// <returns>A message that is ready to be dispatched by the service-bus.</returns>
+        protected abstract TMessage Pack(IMessageToDispatch message);
 
         /// <summary>
         /// Unpacks the specified <paramref name="message"/> and returns its (deserialized) contents.

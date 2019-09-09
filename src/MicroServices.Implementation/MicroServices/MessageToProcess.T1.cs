@@ -5,13 +5,13 @@ namespace Kingo.MicroServices
 {        
     internal sealed class MessageToProcess<TMessage> : IMessageToProcess<TMessage>
     {
-        public MessageToProcess(TMessage message, MessageKind kind)
+        public MessageToProcess(TMessage content, MessageKind kind)
         {                       
-            if (ReferenceEquals(message, null))
+            if (ReferenceEquals(content, null))
             {
-                throw new ArgumentNullException(nameof(message));
+                throw new ArgumentNullException(nameof(content));
             }
-            Content = Content;
+            Content = content;
             Kind = kind;
         }
         object IMessageEnvelope.Content =>

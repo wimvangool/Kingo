@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Kingo.Collections.Generic;
-using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {    
@@ -121,9 +120,9 @@ namespace Kingo.MicroServices
         private static Func<object, BufferedMessage> GetBufferedMessageConstructorFor(Type messageType)
         {            
             var bufferedMessageType = typeof(BufferedMessage<>).MakeGenericType(messageType);
-            var constructor = bufferedMessageType.GetConstructor(new[] { messageType });
+            var constructor = bufferedMessageType.GetConstructor(new[] { typeof(MessageToDispatch) });
             var messageParameter = Expression.Parameter(typeof(object), "message");
-            var message = Expression.Convert(messageParameter, messageType);
+            var message = Expression.Convert(messageParameter, typeof(MessageToDispatch));
             var body = Expression.New(constructor, message);
 
             return Expression.Lambda<Func<object, BufferedMessage>>(body, messageParameter).Compile();

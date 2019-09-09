@@ -24,9 +24,69 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Constructor_Throws_IfEventsIsNull()
+        public void Constructor_Throws_IfMessageCollectionIsNull()
         {
             new MessageStream(null);
+        }
+
+        #endregion
+
+        #region [====== AssertCommand ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void AssertCommand_Throws_IfIndexIsNegative()
+        {
+            MessageStream.Empty.AssertCommand<object>(-1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public void AssertCommand_Throws_IfIndexIsOutOfRange()
+        {
+            MessageStream.Empty.AssertCommand<object>(0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public void AssertCommand_Throws_IfMessageIsEvent()
+        {
+            CreateEventStream(new object()).AssertCommand<object>(0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public void AssertCommand_Throws_IfCommandIsNotOfExpectedType()
+        {
+            CreateCommandStream(string.Empty).AssertCommand<int>(0);
+        }
+
+        [TestMethod]
+        public void AssertCommand_InvokesSpecifiedAssertion_IfCommandIsOfDerivedType()
+        {
+            var counter = new InvocationCounter();
+
+            CreateCommandStream(string.Empty).AssertCommand<object>(0, command =>
+            {
+                Assert.AreSame(string.Empty, command.Content);
+                counter.Increment();
+            });
+
+            counter.AssertExactly(1);
+        }
+
+        [TestMethod]
+        public void AssertCommand_InvokesSpecifiedAssertion_IfCommandIsOfExpectedType()
+        {
+            var counter = new InvocationCounter();
+
+            CreateCommandStream(string.Empty).AssertCommand<string>(0, command =>
+            {
+                Assert.AreSame(string.Empty, command.Content);
+                counter.Increment();
+            });
+
+            counter.AssertExactly(1);
         }
 
         #endregion
@@ -49,6 +109,13 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
+        public void AssertEvent_Throws_IfMessageIsCommand()
+        {
+            CreateCommandStream(new object()).AssertEvent<object>(0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertEvent_Throws_IfEventIsNotOfExpectedType()
         {
             CreateEventStream(string.Empty).AssertEvent<int>(0);
@@ -61,7 +128,7 @@ namespace Kingo.MicroServices
 
             CreateEventStream(string.Empty).AssertEvent<object>(0, @event =>
             {
-                Assert.AreSame(string.Empty, @event);
+                Assert.AreSame(string.Empty, @event.Content);
                 counter.Increment();
             });
 
@@ -75,7 +142,7 @@ namespace Kingo.MicroServices
 
             CreateEventStream(string.Empty).AssertEvent<string>(0, @event =>
             {
-                Assert.AreSame(string.Empty, @event);
+                Assert.AreSame(string.Empty, @event.Content);
                 counter.Increment();
             });
 
@@ -124,7 +191,10 @@ namespace Kingo.MicroServices
         private static MessageStreamStub CreateEventStreamStub(params object[] events) =>
             new MessageStreamStub(CreateEventStream(events));
 
+        private static MessageStream CreateCommandStream(params object[] commands) =>
+            new MessageStream(commands.Select(command => MessageToDispatch.CreateCommand(command)));
+
         private static MessageStream CreateEventStream(params object[] events) =>
-            new MessageStream(events.Select(@event => MessageToDispatch.CreateEvent(@event, null)));
+            new MessageStream(events.Select(@event => MessageToDispatch.CreateEvent(@event)));
     }
 }
