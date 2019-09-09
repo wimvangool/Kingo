@@ -349,44 +349,12 @@ namespace Kingo.Reflection
 
         #region [====== Current Directory ======]
 
-        private static readonly Context<string> _CurrentDirectory = new Context<string>(DefaultDirectory);
-
-        /// <summary>
-        /// Sets the current directory to the location of the specified <paramref name="assembly"/>.
-        /// If <paramref name="assembly"/> is <c>null</c>, the location of the calling assembly
-        /// is used.
-        /// </summary>
-        /// <param name="assembly">The assembly that is used to set the current directory.</param>
-        /// <returns>A scope that, when disposed, will reset the value of the directory to its previous value.</returns>
-        public static IDisposable OverrideCurrentDirectory(Assembly assembly = null) =>
-            OverrideCurrentDirectory(DetermineDirectoryNameOf(assembly ?? Assembly.GetCallingAssembly()));
-
-        /// <summary>
-        /// Sets the current directory to the specified <paramref name="path"/>.
-        /// </summary>
-        /// <param name="path">The path that will serve as the current directory.</param>
-        /// <returns>A scope that, when disposed, will reset the value of the directory to its previous value.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> is <c>null</c>.
-        /// </exception>
-        public static IDisposable OverrideCurrentDirectory(string path) =>
-            _CurrentDirectory.Override(path ?? throw new ArgumentNullException(nameof(path)));        
-
         /// <summary>
         /// Returns the directory that has been configured as the default or current directory. If not overridden,
         /// this property returns the directory of the main assembly or executable.
         /// </summary>
         public static string CurrentDirectory =>
-            _CurrentDirectory.Current;
-
-        private static string DefaultDirectory =>
-            Directory.GetCurrentDirectory();
-
-        private static string DetermineDirectoryNameOf(Assembly assembly) =>
-            Path.GetDirectoryName(DetermineDirectoryPath(assembly));
-
-        private static string DetermineDirectoryPath(Assembly assembly) =>
-            Uri.UnescapeDataString(new UriBuilder(assembly.CodeBase).Path);
+            AppDomain.CurrentDomain.BaseDirectory;
 
         private static IEnumerable<Assembly> FindAssemblies(string path, string searchPattern, SearchOption searchOption) =>
             from file in Directory.GetFiles(path ?? CurrentDirectory, searchPattern, searchOption)

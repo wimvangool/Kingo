@@ -45,15 +45,9 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw new ArgumentNullException(nameof(services));
             }
-            // We override the current directory to the directory of the calling assembly, since
-            // the calling assembly is typically the main assembly where all configuration takes place,
-            // and we want its location to serve as the reference location.
-            using (TypeSet.OverrideCurrentDirectory(Assembly.GetCallingAssembly()))
-            {
-                var builder = new MicroProcessorBuilder<TProcessor>();
-                processorConfiguration?.Invoke(builder);
-                return builder.BuildServiceCollection(services);                
-            }
+            var builder = new MicroProcessorBuilder<TProcessor>();
+            processorConfiguration?.Invoke(builder);
+            return builder.BuildServiceCollection(services);
         }
 
         #endregion
