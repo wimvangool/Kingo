@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{BE8D0BBC-36AA-4F00-94AA-AAFF950C8CAD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogic", "BusinessLogic", "{88B6D91B-6E72-4957-8EFD-710B56518CE2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logic", "Logic", "{88B6D91B-6E72-4957-8EFD-710B56518CE2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Contract.Tests", "MicroServices.Contract.Tests\01.Contract.Tests.csproj", "{9102A1F2-4356-4C92-8AA8-37AF9C873664}"
 EndProject

@@ -10,6 +10,14 @@ namespace Kingo.MicroServices
     public interface IMicroProcessor : IMicroServiceBusProcessor
     {
         /// <summary>
+        /// Returns the service provider the processor uses to resolve its dependencies.
+        /// </summary>
+        new IMicroProcessorServiceProvider ServiceProvider
+        {
+            get;
+        }
+
+        /// <summary>
         /// Executes a command with a specified <paramref name="messageHandler"/>.
         /// </summary>
         /// <typeparam name="TCommand">Type of the command.</typeparam>

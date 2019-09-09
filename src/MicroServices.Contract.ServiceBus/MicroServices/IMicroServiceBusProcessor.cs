@@ -13,7 +13,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Returns the service provider the processor uses to resolve its dependencies.
         /// </summary>
-        IMicroProcessorServiceProvider ServiceProvider
+        IServiceProvider ServiceProvider
         {
             get;
         }
@@ -33,6 +33,6 @@ namespace Kingo.MicroServices
         /// Creates and returns all endpoints that are configured to handle commands or events from a service bus.
         /// </summary>
         /// <returns>A collection of endpoints.</returns>
-        IEnumerable<IMicroServiceBusEndpoint> CreateServiceBusEndpoints();
+        IEnumerable<IMicroServiceBusEndpoint> CreateMicroServiceBusEndpoints();
     }
 }

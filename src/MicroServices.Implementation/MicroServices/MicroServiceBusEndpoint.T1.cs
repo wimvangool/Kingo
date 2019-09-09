@@ -32,7 +32,7 @@ namespace Kingo.MicroServices
         private readonly MicroProcessor _processor;
         private readonly bool _isCommandEndpoint;
 
-        public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, EndpointAttribute attribute) :
+        public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, MicroServiceBusEndpointAttribute attribute) :
             base(method)
         {            
             _processor = processor;

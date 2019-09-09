@@ -293,7 +293,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 return client;
             }
-            foreach (var endpoint in _processor.CreateServiceBusEndpoints())
+            foreach (var endpoint in _processor.CreateMicroServiceBusEndpoints())
             {
                 await client.ConnectToEndpointAsync(endpoint).OrAbort(token);
 

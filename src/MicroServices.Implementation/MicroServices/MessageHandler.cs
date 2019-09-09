@@ -82,7 +82,7 @@ namespace Kingo.MicroServices
         {
             foreach (var method in Methods())
             {
-                if (method.TryCreateEndpoint(processor, out var endpoint))
+                if (method.TryCreateMicroServiceBusEndpoint(processor, out var endpoint))
                 {
                     yield return endpoint;
                 }

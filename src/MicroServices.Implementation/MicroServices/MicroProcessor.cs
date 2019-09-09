@@ -123,7 +123,10 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== ServiceProvider ======]        
+        #region [====== ServiceProvider ======]    
+
+        IServiceProvider IMicroServiceBusProcessor.ServiceProvider =>
+            ServiceProvider;
 
         /// <inheritdoc />
         public virtual IMicroProcessorServiceProvider ServiceProvider =>
@@ -140,7 +143,7 @@ namespace Kingo.MicroServices
         #region [====== MethodEndpoints ======]        
 
         /// <inheritdoc />
-        public virtual IEnumerable<IMicroServiceBusEndpoint> CreateServiceBusEndpoints()
+        public virtual IEnumerable<IMicroServiceBusEndpoint> CreateMicroServiceBusEndpoints()
         {
             var methodFactory = ServiceProvider.GetService<IHandleAsyncMethodFactory>();
             if (methodFactory == null)

@@ -1,32 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// When applied to the <see cref="IMessageHandler{TMessage}.HandleAsync"/> method implementation
-    /// of a message handler, indicates that that method serves as an endpoint and will be returned as such
-    /// by the microprocessor's <see cref="IMicroServiceBusProcessor.CreateServiceBusEndpoints"/> method.
+    /// When applied to an implementation of the <see cref="IMessageHandler{TMessage}.HandleAsync"/>
+    /// method, indicates that the message-handler will receive commands or events from the service bus.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class EndpointAttribute : Attribute
+    public sealed class MicroServiceBusEndpointAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EndpointAttribute" /> class.
+        /// Initializes a new instance of the <see cref="MicroServiceBusEndpointAttribute" /> class.
         /// </summary>
-        /// <param name="messageKind">Specifies the message kind of the message that is handled by this endpoint.</param>
-        public EndpointAttribute(MessageKind messageKind = MessageKind.Unspecified)
+        /// <param name="name">Name of this endpoint. </param>
+        public MicroServiceBusEndpointAttribute(string name = null)
         {
-            MessageKind = messageKind;
+            Name = name;
         }
 
-        #region [====== MessageKind ======]
+        /// <summary>
+        /// Name of this endpoint.
+        /// </summary>
+        public string Name
+        {
+            get;
+        }
 
         /// <summary>
-        /// Specifies the message kind of the message that is handled by this endpoint
+        /// Gets or sets the message kind of the message that is handled by this endpoint.
         /// </summary>
         public MessageKind MessageKind
         {
             get;
+            set;
         }
 
         internal bool IsCommandEndpoint(IMessageKindResolver resolver, Type messageType) =>
@@ -52,7 +60,5 @@ namespace Kingo.MicroServices
             var message = string.Format(messageFormat, messageKind);
             return new InvalidOperationException(message);
         }
-
-        #endregion
     }
 }
