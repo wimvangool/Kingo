@@ -40,9 +40,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.SharedKernel.Tests", "Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "04.Contract.ServiceBus", "MicroServices.Contract.ServiceBus\04.Contract.ServiceBus.csproj", "{BB17F6EC-A63B-4A33-A4CA-0A03E441B35C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Endpoints.ServiceBus", "MicroServices.Implementation.Endpoints.ServiceBus\03.Endpoints.ServiceBus.csproj", "{96E74DB4-B102-4384-AC1C-263DF62C10C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Controllers.ServiceBus", "MicroServices.Implementation.Controllers.ServiceBus\03.Controllers.ServiceBus.csproj", "{96E74DB4-B102-4384-AC1C-263DF62C10C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Endpoints.Tests", "MicroServices.Implementation.Endpoints.Tests\01.Endpoints.Tests.csproj", "{9B91B3F6-BF0E-4294-862F-8DFF49DB7AA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Controllers.Tests", "MicroServices.Implementation.Controllers.Tests\01.Controllers.Tests.csproj", "{9B91B3F6-BF0E-4294-862F-8DFF49DB7AA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,8 +115,8 @@ Global
 		{9B91B3F6-BF0E-4294-862F-8DFF49DB7AA4} = {4BB549CA-BD75-4F02-8ACC-8FB6C4F9A38C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
 	EndGlobalSection
 	GlobalSection(TestsCaseManagementSettings) = postSolution
 		CategoryFile = YellowFlare.Cqrs.vsmdi

@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Kingo.MicroServices.Implementation.Endpoints.ServiceBus</AssemblyName>
-    <Description>Contains components to implement the Implementation.Endpoints.ServiceBus-component(s) of a (Micro)Service.</Description>
+    <AssemblyName>Kingo.MicroServices.Implementation.Controllers.ServiceBus</AssemblyName>
+    <Description>Contains components to implement the Implementation.Controllers.ServiceBus-component(s) of a (Micro)Service.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Implementation.Endpoints.ServiceBus\Kingo.MicroServices.Implementation.Endpoints.ServiceBus.xml</DocumentationFile>
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Implementation.Controllers.ServiceBus\Kingo.MicroServices.Implementation.Controllers.ServiceBus.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

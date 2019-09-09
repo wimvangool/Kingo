@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>Kingo.MicroServices.Implementation.Endpoints.Tests</AssemblyName>
+    <AssemblyName>Kingo.MicroServices.Implementation.Controllers.Tests</AssemblyName>
 
     <RootNamespace>Kingo</RootNamespace>
   </PropertyGroup>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Implementation.Endpoints.ServiceBus\03.Endpoints.ServiceBus.csproj" />
+    <ProjectReference Include="..\MicroServices.Implementation.Controllers.ServiceBus\03.Controllers.ServiceBus.csproj" />
     <ProjectReference Include="..\MicroServices.Implementation.Tests\01.Implementation.Tests.csproj" />
   </ItemGroup>
 
