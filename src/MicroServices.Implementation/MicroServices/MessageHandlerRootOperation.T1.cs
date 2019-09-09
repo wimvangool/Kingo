@@ -20,8 +20,8 @@ namespace Kingo.MicroServices
             _unitOfWork = unitOfWork;
         }
 
-        public override MicroProcessorOperationKinds Kind =>
-            MicroProcessorOperationKinds.RootOperation;      
+        public override MicroProcessorOperationKind Kind =>
+            MicroProcessorOperationKind.RootOperation;      
 
         public override async Task<MessageHandlerOperationResult> ExecuteAsync()
         {

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Security;
 using Kingo.Collections.Generic;
-using Kingo.Threading;
 
 namespace Kingo.Reflection
 {

@@ -38,8 +38,8 @@ namespace Kingo.MicroServices
             MicroProcessorOperationType.QueryOperation;
 
         /// <inheritdoc />
-        public override MicroProcessorOperationKinds Kind =>
-            Context.StackTrace.Count == 0 ? MicroProcessorOperationKinds.RootOperation : MicroProcessorOperationKinds.BranchOperation;                        
+        public override MicroProcessorOperationKind Kind =>
+            Context.StackTrace.Count == 0 ? MicroProcessorOperationKind.RootOperation : MicroProcessorOperationKind.BranchOperation;                        
 
         /// <inheritdoc />
         public override async Task<QueryOperationResult<TResponse>> ExecuteAsync()

@@ -7,6 +7,6 @@ namespace Kingo.MicroServices
     {
         IEnumerable<MicroServiceBusEndpoint> CreateMicroServiceBusEndpoints(MicroProcessor processor);
 
-        IEnumerable<HandleAsyncMethod<TMessage>> CreateMethodsFor<TMessage>(MicroProcessorOperationKinds operationKind, IServiceProvider serviceProvider);        
+        IEnumerable<HandleAsyncMethod<TMessage>> CreateInternalEventBusEndpointsFor<TMessage>(IServiceProvider serviceProvider);        
     }
 }

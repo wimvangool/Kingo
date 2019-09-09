@@ -27,7 +27,7 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public abstract MicroProcessorOperationKinds Kind
+        public abstract MicroProcessorOperationKind Kind
         {
             get;
         }

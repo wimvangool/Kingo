@@ -30,7 +30,7 @@ namespace Kingo.MicroServices
             public override MicroProcessorOperationType Type =>
                 _operation.Type;
 
-            public override MicroProcessorOperationKinds Kind =>
+            public override MicroProcessorOperationKind Kind =>
                 _operation.Kind;
 
             public override ExecuteAsyncMethod Method =>

@@ -19,17 +19,17 @@ namespace Kingo.MicroServices
             _messageHandler = messageHandler;            
         }
 
-        public override bool HandlesExternalMessages =>
-            false;
-
-        public override bool HandlesInternalMessages =>
-            true;
-
         public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
             _messageHandler.HandleAsync(message, context);
 
         internal override object ResolveMessageHandler(IServiceProvider serviceProvider) =>
             _messageHandler;
+
+        internal override bool IsInternalEventBusEndpoint(MessageHandlerInterface @interface, out InternalEventBusEndpointAttribute attribute)
+        {
+            attribute = new InternalEventBusEndpointAttribute();
+            return true;
+        }
 
         #region [====== Equals, GetHashCode & ToString ======]
 
@@ -49,7 +49,7 @@ namespace Kingo.MicroServices
             _messageHandler.GetHashCode();
 
         public override string ToString() =>
-            $"{_messageHandler} ({MessageHandlerAttribute.ToString(this)})";
+            _messageHandler.ToString();
 
         #endregion
     }

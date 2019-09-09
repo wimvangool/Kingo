@@ -34,7 +34,7 @@ namespace Kingo.MicroServices
             public override CancellationToken Token =>
                 _operation.Token;
 
-            public override MicroProcessorOperationKinds Kind =>
+            public override MicroProcessorOperationKind Kind =>
                 _operation.Kind;            
 
             public override async Task<MessageHandlerOperationResult> ExecuteAsync()
@@ -68,8 +68,8 @@ namespace Kingo.MicroServices
         public override IMessageToProcess Message =>
             _message;
 
-        public override MicroProcessorOperationKinds Kind =>
-            MicroProcessorOperationKinds.BranchOperation;        
+        public override MicroProcessorOperationKind Kind =>
+            MicroProcessorOperationKind.BranchOperation;        
 
         public override async Task<MessageHandlerOperationResult> ExecuteAsync()
         {
@@ -118,7 +118,7 @@ namespace Kingo.MicroServices
             var methodFactory = Processor.ServiceProvider.GetService<IHandleAsyncMethodFactory>();
             if (methodFactory != null)
             {
-                foreach (var method in methodFactory.CreateMethodsFor<TMessage>(Kind, Processor.ServiceProvider))
+                foreach (var method in methodFactory.CreateInternalEventBusEndpointsFor<TMessage>(Processor.ServiceProvider))
                 {
                     yield return CreateMethodOperation(method, context);
                 }

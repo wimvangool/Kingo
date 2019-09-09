@@ -12,9 +12,14 @@ namespace Kingo.MicroServices
             _messageHandler = messageHandler;
         }
 
-
         internal override object ResolveMessageHandler(IServiceProvider serviceProvider) =>
             _messageHandler;
+
+        internal override bool IsInternalEventBusEndpoint(MessageHandlerInterface @interface, out InternalEventBusEndpointAttribute attribute)
+        {
+            attribute = new InternalEventBusEndpointAttribute();
+            return true;
+        }
 
         public override bool Equals(MicroProcessorComponent other) =>
             Equals(other as MessageHandlerInstance);

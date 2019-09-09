@@ -157,6 +157,9 @@
             Verifies that a test produces an empty message-stream.
             </summary>
             <param name="result">The result to verify.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="result"/> is <c>null</c>.
+            </exception>
             <exception cref="T:Kingo.TestFailedException">
             The result is either not an message-stream, or the message-stream contains one or more events.
             </exception>
@@ -464,7 +467,7 @@
             <param name="context">The context in which the test is running.</param>
             <param name="handler">Optional handler to handle the message with inside the processor.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.Controllers.IHandleMessageOperationTestProcessor,``0,Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task})">
@@ -477,7 +480,7 @@
             <param name="context">The context in which the test is running.</param>
             <param name="handler">Optional handler to handle the message with inside the processor.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.Controllers.MessageProcessorExtensions">
@@ -493,7 +496,7 @@
             <param name="messageHandler">Delegate that will execute the command.</param>
             <param name="message">The command to execute.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
@@ -504,7 +507,7 @@
             <param name="messageHandler">Delegate that will execute the command.</param>
             <param name="message">The command to execute.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0)">
@@ -515,7 +518,7 @@
             <param name="messageHandler">Delegate that will handle the event.</param>
             <param name="message">The event to handle.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
@@ -526,7 +529,7 @@
             <param name="messageHandler">Delegate that will handle the event.</param>
             <param name="message">The event to handle.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.Controllers.MicroProcessorOperationTest">
@@ -556,7 +559,7 @@
         <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext.ToString">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext.GetEventStream``2(Kingo.MicroServices.Controllers.IHandleMessageTest{``0,``1})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext.GetMessageStream``2(Kingo.MicroServices.Controllers.IHandleMessageTest{``0,``1})">
             <summary>
             Returns the <see cref="T:Kingo.MicroServices.MessageStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
             </summary>        

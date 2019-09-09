@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Indicates whether this operation is an internal or external operation.
         /// </summary>
-        MicroProcessorOperationKinds Kind
+        MicroProcessorOperationKind Kind
         {
             get;
         }

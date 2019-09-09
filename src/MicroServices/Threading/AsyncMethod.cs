@@ -35,7 +35,7 @@ namespace Kingo.Threading
         }
 
         /// <summary>
-        /// Executes the specified <paramref name="@delegate"/> synchronously and
+        /// Executes the specified <paramref name="delegate"/> synchronously and
         /// returns a completed <see cref="Task" /> while encapsulating any exceptions
         /// that might be thrown.
         /// </summary>

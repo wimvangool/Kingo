@@ -39,7 +39,7 @@ namespace Kingo.MicroServices
             _operation.Type;
 
         /// <inheritdoc />
-        public override MicroProcessorOperationKinds Kind =>
+        public override MicroProcessorOperationKind Kind =>
             _operation.Kind;
 
         /// <inheritdoc />

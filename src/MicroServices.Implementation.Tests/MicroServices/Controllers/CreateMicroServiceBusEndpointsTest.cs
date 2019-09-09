@@ -17,7 +17,6 @@ namespace Kingo.MicroServices.Controllers
                 Task.CompletedTask;
         }
 
-        [MessageHandler(HandlesExternalMessages = false)]
         private sealed class MessageHandler2 : IMessageHandler<object>
         {
             [MicroServiceBusEndpoint]
@@ -25,14 +24,7 @@ namespace Kingo.MicroServices.Controllers
                 Task.CompletedTask;
         }
 
-        private sealed class MessageHandler3 : IMessageHandler<object>
-        {
-            [MicroServiceBusEndpoint]
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
-                Task.CompletedTask;
-        }
-
-        private sealed class MessageHandler4 : IMessageHandler<object>, IMessageHandler<int>, IMessageHandler<string>
+        private sealed class MessageHandler3 : IMessageHandler<object>, IMessageHandler<int>, IMessageHandler<string>
         {
             public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
@@ -47,13 +39,13 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsEmptyCollection_IfNoMessageHandlersHaveBeenRegistered()
+        public void CreateMicroServiceBusEndpoints_ReturnsEmptyCollection_IfNoMessageHandlersHaveBeenRegistered()
         {
             Assert.AreEqual(0, CreateProcessor().CreateMicroServiceBusEndpoints().Count());
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsEmptyCollection_IfMethodHasNoEndpointAttribute()
+        public void CreateMicroServiceBusEndpoints_ReturnsEmptyCollection_IfMethodHasNoEndpointAttribute()
         {
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler1>();            
 
@@ -61,43 +53,35 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsEmptyCollection_IfMethodHasEndpointAttribute_But_MessageHandlerHandlesNoExternalMessages()
+        public void CreateMicroServiceBusEndpoints_ReturnsOneEndpoint_IfMethodHasEndpointAttribute()
         {
             ProcessorBuilder.Components.AddMessageHandler<MessageHandler2>();            
 
-            Assert.AreEqual(0, CreateProcessor().CreateMicroServiceBusEndpoints().Count());
-        }
-
-        [TestMethod]
-        public void CreateMethodEndpoints_ReturnsOneEndpoint_IfMethodHasEndpointAttribute()
-        {
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();            
-
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
-            Assert.AreEqual(typeof(MessageHandler3), endpoint.MessageHandlerType);
+            Assert.AreEqual(typeof(MessageHandler2), endpoint.MessageHandlerType);
             Assert.AreSame(typeof(object), endpoint.MessageParameterInfo.ParameterType);            
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsMultipleEndpoints_IfMultipleMethodsHaveEndpointAttribute()
+        public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMethodsHaveEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler4>();            
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();            
 
             var endpoints = CreateProcessor().CreateMicroServiceBusEndpoints().ToArray();
 
             Assert.AreEqual(2, endpoints.Length);
-            Assert.AreSame(typeof(MessageHandler4), endpoints[0].MessageHandlerType);
-            Assert.AreSame(typeof(MessageHandler4), endpoints[1].MessageHandlerType);
+            Assert.AreSame(typeof(MessageHandler3), endpoints[0].MessageHandlerType);
+            Assert.AreSame(typeof(MessageHandler3), endpoints[1].MessageHandlerType);
             Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(int)));
             Assert.IsTrue(endpoints.Any(endpoint => endpoint.MessageParameterInfo.ParameterType == typeof(string)));
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsMultipleEndpoints_IfMultipleMessageHandlersHaveEndpointAttribute()
+        public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMessageHandlersHaveEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler4>();            
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler2>();
+            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();            
 
             var endpoints = CreateProcessor().CreateMicroServiceBusEndpoints().ToArray();
 
@@ -108,10 +92,10 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsExpectedEndpoints_IfMessageHandlerWasAddedAsSingleton()
+        public void CreateMicroServiceBusEndpoints_ReturnsExpectedEndpoints_IfMessageHandlerWasAddedAsSingleton()
         {
-            ProcessorBuilder.Components.AddMessageHandler(new MessageHandler3());
-            ProcessorBuilder.Components.AddMessageHandler(new MessageHandler4());          
+            ProcessorBuilder.Components.AddMessageHandler(new MessageHandler2());
+            ProcessorBuilder.Components.AddMessageHandler(new MessageHandler3());          
 
             var endpoints = CreateProcessor().CreateMicroServiceBusEndpoints().ToArray();
 
@@ -184,7 +168,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMethodEndpoints_Throws_IfMessageKindIsSetToRequest()
+        public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsSetToRequest()
         {
             ProcessorBuilder.Components.AddMessageHandler<RequestHandler>();            
 
@@ -193,7 +177,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMethodEndpoints_Throws_IfMessageKindIsSetToUnknownValue()
+        public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsSetToUnknownValue()
         {
             ProcessorBuilder.Components.AddMessageHandler<UnknownMessageKindHandler>();            
 
@@ -201,7 +185,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsEventHandler_IfMessageKindIsEvent()
+        public void CreateMicroServiceBusEndpoints_ReturnsEventHandler_IfMessageKindIsEvent()
         {
             ProcessorBuilder.Components.AddMessageHandler<ExplicitEventHandler>();            
 
@@ -211,7 +195,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsEventHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeDoesNotEndWithCommand()
+        public void CreateMicroServiceBusEndpoints_ReturnsEventHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeDoesNotEndWithCommand()
         {
             ProcessorBuilder.Components.AddMessageHandler<ImplicitEventHandler>();            
 
@@ -221,7 +205,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsCommandHandler_IfMessageKindIsCommand()
+        public void CreateMicroServiceBusEndpoints_ReturnsCommandHandler_IfMessageKindIsCommand()
         {
             ProcessorBuilder.Components.AddMessageHandler<ExplicitCommandHandler>();            
 
@@ -231,7 +215,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMethodEndpoints_ReturnsCommandHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeEndsWithCommand()
+        public void CreateMicroServiceBusEndpoints_ReturnsCommandHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeEndsWithCommand()
         {
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
@@ -241,7 +225,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]        
-        public void CreateMethodEndpoints_Returns_IfCustomMessageKindResolverReturnsUnspecified_And_NameOfMessageTypeEndsWithCommand()
+        public void CreateMicroServiceBusEndpoints_Returns_IfCustomMessageKindResolverReturnsUnspecified_And_NameOfMessageTypeEndsWithCommand()
         {
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.Unspecified);
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
@@ -253,7 +237,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMethodEndpoints_Throws_IfCustomMessageKindResolver_ReturnsRequest()
+        public void CreateMicroServiceBusEndpoints_Throws_IfCustomMessageKindResolver_ReturnsRequest()
         {
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.QueryRequest);
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
@@ -263,7 +247,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMethodEndpoints_Throws_IfCustomMessageKindResolver_ReturnsUnknownMessageKind()
+        public void CreateMicroServiceBusEndpoints_Throws_IfCustomMessageKindResolver_ReturnsUnknownMessageKind()
         {
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver((MessageKind) (-1));
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            

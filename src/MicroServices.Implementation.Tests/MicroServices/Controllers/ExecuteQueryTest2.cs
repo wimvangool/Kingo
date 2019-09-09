@@ -84,7 +84,7 @@ namespace Kingo.MicroServices.Controllers
             private void AssertOperation(object message, IAsyncMethodOperation operation)
             {
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, operation.Type);
-                Assert.AreEqual(MicroProcessorOperationKinds.RootOperation, operation.Kind);
+                Assert.AreEqual(MicroProcessorOperationKind.RootOperation, operation.Kind);
 
                 Assert.IsNotNull(operation.Message);
                 Assert.AreSame(message, operation.Message.Content);

@@ -61,7 +61,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 Assert.AreEqual(2, context.StackTrace.Count);
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
-                Assert.AreEqual(MicroProcessorOperationKinds.BranchOperation, context.StackTrace.CurrentOperation.Kind);
+                Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
                 return Task.FromResult(10);
             }
         }
@@ -81,7 +81,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 Assert.AreEqual(2, context.StackTrace.Count);
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
-                Assert.AreEqual(MicroProcessorOperationKinds.BranchOperation, context.StackTrace.CurrentOperation.Kind);
+                Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
                 return Task.FromResult(2 * message);
             }                
         }

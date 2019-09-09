@@ -199,15 +199,15 @@ namespace Kingo.MicroServices.Controllers
 
             if (count == 1)
             {
-                AssertOperation(stackTrace.CurrentOperation, MicroProcessorOperationKinds.RootOperation, message, messageKind);
+                AssertOperation(stackTrace.CurrentOperation, MicroProcessorOperationKind.RootOperation, message, messageKind);
             }
             else
             {
-                AssertOperation(stackTrace.CurrentOperation, MicroProcessorOperationKinds.BranchOperation, message, messageKind);
+                AssertOperation(stackTrace.CurrentOperation, MicroProcessorOperationKind.BranchOperation, message, messageKind);
             }
         }
 
-        private static void AssertOperation(IMicroProcessorOperation operation, MicroProcessorOperationKinds operationKind, object message, MessageKind messageKind)
+        private static void AssertOperation(IMicroProcessorOperation operation, MicroProcessorOperationKind operationKind, object message, MessageKind messageKind)
         {
             Assert.IsNotNull(operation);
             Assert.AreEqual(MicroProcessorOperationType.MessageHandlerOperation, operation.Type);
@@ -541,9 +541,10 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== Invocation of Registered EventHandlers ======]
 
-        [MessageHandler(HandlesExternalMessages = true, HandlesInternalMessages = true)]
         private abstract class MessageHandlerBase : IMessageHandler<int>, IMessageHandler<object>
         {
+            [InternalEventBusEndpoint]
+            [MicroServiceBusEndpoint]
             public Task HandleAsync(int message, MessageHandlerOperationContext context)
             {
                 try
@@ -556,6 +557,8 @@ namespace Kingo.MicroServices.Controllers
                 }
             }
 
+            [InternalEventBusEndpoint]
+            [MicroServiceBusEndpoint]
             public Task HandleAsync(object message, MessageHandlerOperationContext context)
             {
                 try

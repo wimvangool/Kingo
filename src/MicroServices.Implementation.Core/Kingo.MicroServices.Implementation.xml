@@ -421,24 +421,6 @@
             <paramref name="services"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="T:Kingo.MicroServices.EndpointAttribute">
-            <summary>
-            When applied to the <see cref="M:Kingo.MicroServices.IMessageHandler`1.HandleAsync(`0,Kingo.MicroServices.MessageHandlerOperationContext)"/> method implementation
-            of a message handler, indicates that that method serves as an endpoint and will be returned as such
-            by the microprocessor's <see cref="M:Kingo.MicroServices.IMicroServiceBusProcessor.CreateServiceBusEndpoints"/> method.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.EndpointAttribute.#ctor(Kingo.MicroServices.MessageKind)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.MicroServices.EndpointAttribute" /> class.
-            </summary>
-            <param name="messageKind">Specifies the message kind of the message that is handled by this endpoint.</param>
-        </member>
-        <member name="P:Kingo.MicroServices.EndpointAttribute.MessageKind">
-            <summary>
-            Specifies the message kind of the message that is handled by this endpoint
-            </summary>
-        </member>
         <member name="T:Kingo.MicroServices.ExecuteAsyncMethod">
             <summary>
             When implemented, represents the <see cref="M:Kingo.MicroServices.IQuery`1.ExecuteAsync(Kingo.MicroServices.QueryOperationContext)"/> or
@@ -643,23 +625,6 @@
             the violation of a business rule.
             </exception> 
         </member>
-        <member name="T:Kingo.MicroServices.IMessageHandlerConfiguration">
-            <summary>
-            When implemented by a class, contains all configuration settings for a <see cref="T:Kingo.MicroServices.IMessageHandler`1" />.
-            </summary>
-        </member>
-        <member name="P:Kingo.MicroServices.IMessageHandlerConfiguration.HandlesExternalMessages">
-            <summary>
-            Indicates whether or not the message handler handles commands and events that are
-            provided to the <see cref="T:Kingo.MicroServices.MicroProcessor" /> from external sources.
-            </summary>
-        </member>
-        <member name="P:Kingo.MicroServices.IMessageHandlerConfiguration.HandlesInternalMessages">
-            <summary>
-            Indicates whether or not the message handler handles events in the same (logical)
-            transaction as they were published in (i.e. as part of the same logical operation).
-            </summary>
-        </member>
         <member name="T:Kingo.MicroServices.IMessageKindResolver">
             <summary>
             When implemented by a class, represents a convention for resolving the message kind based on
@@ -692,6 +657,11 @@
         <member name="T:Kingo.MicroServices.IMicroProcessor">
             <summary>
             When implemented by a class, represents a processor that can process commands, events and queries.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroProcessor.ServiceProvider">
+            <summary>
+            Returns the service provider the processor uses to resolve its dependencies.
             </summary>
         </member>
         <member name="M:Kingo.MicroServices.IMicroProcessor.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,System.Nullable{System.Threading.CancellationToken})">
@@ -813,6 +783,26 @@
         <member name="P:Kingo.MicroServices.IMicroProcessorOptions.Endpoints">
             <summary>
             Gets the options for the endpoints.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMicroProcessorServiceProvider">
+            <summary>
+            When implemented by a class, represents a <see cref="T:System.IServiceProvider"/> that manages
+            the dependencies of a processor;
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessorServiceProvider.CreateScope">
+            <summary>
+            Creates and returns a new <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScope"/> that manages the lifetime
+            of scoped dependencies.
+            </summary>
+            <returns>A new <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScope"/>.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.InternalEventBusEndpointAttribute">
+            <summary>
+            When applied to an implementation of the <see cref="M:Kingo.MicroServices.IMessageHandler`1.HandleAsync(`0,Kingo.MicroServices.MessageHandlerOperationContext)"/>
+            method, indicates that the message-handler will receive events from the internal processor
+            bus, thereby handling them in the same (logical) transaction as these events were published in.
             </summary>
         </member>
         <member name="T:Kingo.MicroServices.InternalServerErrorException">
@@ -966,6 +956,37 @@
         <member name="M:Kingo.MicroServices.MessageBus.ToString">
             <inheritdoc />
         </member>
+        <member name="T:Kingo.MicroServices.MessageBusExtensions">
+            <summary>
+            Contains extension-methods for instances of type <see cref="T:Kingo.MicroServices.IMessageBus" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageBusExtensions.Send(Kingo.MicroServices.IMessageBus,System.Object,System.TimeSpan)">
+            <summary>
+            Schedules a command for a specific time relative to the current date and time.
+            </summary>
+            <param name="bus">A message bus.</param>
+            <param name="command">The command to send.</param>
+            <param name="delta">
+            The period that determines when the command should be delivered relative to the current date and time.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="command"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageBusExtensions.Publish(Kingo.MicroServices.IMessageBus,System.Object,System.TimeSpan)">
+            <summary>
+            Schedules an event for a specific time relative to the current date and time.
+            </summary>
+            <param name="bus">A message bus.</param>
+            <param name="event">The event to publish.</param>
+            <param name="delta">
+            The period that determines when the event should be delivered relative to the current date and time.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="event"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="T:Kingo.MicroServices.MessageHandler">
             <summary>
             Represent a component that implements one or more variations of the <see cref="T:Kingo.MicroServices.IMessageHandler`1"/> interface.
@@ -979,32 +1000,7 @@
         <member name="M:Kingo.MicroServices.MessageHandler.ToString">
             <inheritdoc />
         </member>
-        <member name="P:Kingo.MicroServices.MessageHandler.HandlesExternalMessages">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.MessageHandler.HandlesInternalMessages">
-            <inheritdoc />
-        </member>
         <member name="M:Kingo.MicroServices.MessageHandler.GetEnumerator">
-            <inheritdoc />
-        </member>
-        <member name="T:Kingo.MicroServices.MessageHandlerAttribute">
-            <summary>
-            This attribute can be declared on a message handler to configure its run-time behavior.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerAttribute.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MessageHandlerAttribute" /> class.
-            </summary>
-        </member>
-        <member name="P:Kingo.MicroServices.MessageHandlerAttribute.HandlesExternalMessages">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.MessageHandlerAttribute.HandlesInternalMessages">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.MicroServices.MessageHandlerAttribute.ToString">
             <inheritdoc />
         </member>
         <member name="T:Kingo.MicroServices.MessageHandlerDecorator`1">
@@ -1208,7 +1204,7 @@
         <member name="P:Kingo.MicroServices.MicroProcessor.ServiceProvider">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.MicroProcessor.CreateServiceBusEndpoints">
+        <member name="M:Kingo.MicroServices.MicroProcessor.CreateMicroServiceBusEndpoints">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessor.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,System.Nullable{System.Threading.CancellationToken})">
@@ -1313,7 +1309,7 @@
             The result of the operation, which includes all published events and the number of message handlers that were invoked.
             </returns> 
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>        
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.IMicroProcessor,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0,System.Nullable{System.Threading.CancellationToken})">
@@ -1329,7 +1325,7 @@
             The result of the operation, which includes all published events and the number of message handlers that were invoked.
             </returns> 
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>         
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.IMicroProcessor,System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0,System.Nullable{System.Threading.CancellationToken})">
@@ -1345,7 +1341,7 @@
             The result of the operation, which includes all published events and the number of message handlers that were invoked.
             </returns> 
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>        
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.IMicroProcessor,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0,System.Nullable{System.Threading.CancellationToken})">
@@ -1361,7 +1357,7 @@
             The result of the operation, which includes all published events and the number of message handlers that were invoked.
             </returns> 
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>         
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.ExecuteQueryAsync``1(Kingo.MicroServices.IMicroProcessor,System.Func{Kingo.MicroServices.QueryOperationContext,``0},System.Nullable{System.Threading.CancellationToken})">
@@ -1374,7 +1370,7 @@
             <param name="token">Optional token that can be used to cancel the operation.</param>          
             <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="query"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="query"/> is <c>null</c>.
             </exception>        
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.ExecuteQueryAsync``1(Kingo.MicroServices.IMicroProcessor,System.Func{Kingo.MicroServices.QueryOperationContext,System.Threading.Tasks.Task{``0}},System.Nullable{System.Threading.CancellationToken})">
@@ -1387,7 +1383,7 @@
             <param name="token">Optional token that can be used to cancel the operation.</param>          
             <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="query"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="query"/> is <c>null</c>.
             </exception>        
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.ExecuteQueryAsync``2(Kingo.MicroServices.IMicroProcessor,System.Func{``0,Kingo.MicroServices.QueryOperationContext,``1},``0,System.Nullable{System.Threading.CancellationToken})">
@@ -1402,7 +1398,7 @@
             <param name="token">Optional token that can be used to cancel the operation.</param>
             <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
             </exception>          
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorExtensions.ExecuteQueryAsync``2(Kingo.MicroServices.IMicroProcessor,System.Func{``0,Kingo.MicroServices.QueryOperationContext,System.Threading.Tasks.Task{``1}},``0,System.Nullable{System.Threading.CancellationToken})">
@@ -1417,7 +1413,7 @@
             <param name="token">Optional token that can be used to cancel the operation.</param>
             <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+            <paramref name="processor"/>, <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
             </exception>        
         </member>
         <member name="T:Kingo.MicroServices.MicroProcessorOperation">
@@ -1504,45 +1500,21 @@
             run-time type of the exception.
             </summary>
         </member>
-        <member name="T:Kingo.MicroServices.MicroProcessorOperationKinds">
+        <member name="T:Kingo.MicroServices.MicroProcessorOperationKind">
             <summary>
             Represents the kinds of operations a processor can execute (i.e. internal or external).
             </summary>
         </member>
-        <member name="F:Kingo.MicroServices.MicroProcessorOperationKinds.None">
-            <summary>
-            Represents no specific kind.
-            </summary>
-        </member>
-        <member name="F:Kingo.MicroServices.MicroProcessorOperationKinds.RootOperation">
+        <member name="F:Kingo.MicroServices.MicroProcessorOperationKind.RootOperation">
             <summary>
             Represents an operation that was triggered by an external message or request. Root operations always
             represent the first operation on the <see cref="T:Kingo.MicroServices.IAsyncMethodOperationStackTrace" />.
             </summary>
         </member>
-        <member name="F:Kingo.MicroServices.MicroProcessorOperationKinds.BranchOperation">
+        <member name="F:Kingo.MicroServices.MicroProcessorOperationKind.BranchOperation">
             <summary>
             Represents an operation that was triggered by another operation.
             </summary>
-        </member>
-        <member name="F:Kingo.MicroServices.MicroProcessorOperationKinds.Any">
-            <summary>
-            Represents any kind of operation.
-            </summary>
-        </member>
-        <member name="T:Kingo.MicroServices.MicroProcessorOperationKindsExtensions">
-            <summary>
-            Contains extension methods for <see cref="T:Kingo.MicroServices.MicroProcessorOperationKinds" />.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.MicroProcessorOperationKindsExtensions.IsSupportedBy(Kingo.MicroServices.MicroProcessorOperationKinds,Kingo.MicroServices.MicroProcessorOperationKinds)">
-            <summary>
-            Determines whether or not the specified <paramref name="operationKind"/> is supported based on the specified
-            <paramref name="supportedOperationKinds"/>.
-            </summary>
-            <param name="operationKind">The operation type to check.</param>
-            <param name="supportedOperationKinds">The supported operation types.</param>
-            <returns><c>true</c> if <paramref name="operationKind"/> is supported; otherwise <c>false</c>.</returns>
         </member>
         <member name="T:Kingo.MicroServices.MicroProcessorOperationType">
             <summary>
@@ -1559,6 +1531,28 @@
             <summary>
             Represents an operation in which a query is invoked to return a response.
             This operation type is also known as a read operation.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.MicroServiceBusEndpointAttribute">
+            <summary>
+            When applied to an implementation of the <see cref="M:Kingo.MicroServices.IMessageHandler`1.HandleAsync(`0,Kingo.MicroServices.MessageHandlerOperationContext)"/>
+            method, indicates that the message-handler will receive commands or events from the service bus.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroServiceBusEndpointAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MicroServiceBusEndpointAttribute" /> class.
+            </summary>
+            <param name="name">Name of this endpoint. </param>
+        </member>
+        <member name="P:Kingo.MicroServices.MicroServiceBusEndpointAttribute.Name">
+            <summary>
+            Name of this endpoint.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MicroServiceBusEndpointAttribute.MessageKind">
+            <summary>
+            Gets or sets the message kind of the message that is handled by this endpoint.
             </summary>
         </member>
         <member name="T:Kingo.MicroServices.NotFoundException">

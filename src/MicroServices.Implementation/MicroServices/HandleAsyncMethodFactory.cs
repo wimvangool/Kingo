@@ -21,9 +21,9 @@ namespace Kingo.MicroServices
             from method in factory.CreateMicroServiceBusEndpoints(processor)
             select method;
 
-        public IEnumerable<HandleAsyncMethod<TMessage>> CreateMethodsFor<TMessage>(MicroProcessorOperationKinds operationKind, IServiceProvider serviceProvider) =>
+        public IEnumerable<HandleAsyncMethod<TMessage>> CreateInternalEventBusEndpointsFor<TMessage>(IServiceProvider serviceProvider) =>
             from factory in _methodFactories
-            from method in factory.CreateMethodsFor<TMessage>(operationKind, serviceProvider)
+            from method in factory.CreateInternalEventBusEndpointsFor<TMessage>(serviceProvider)
             select method;
     }
 }

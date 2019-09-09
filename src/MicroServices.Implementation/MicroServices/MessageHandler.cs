@@ -12,10 +12,9 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represent a component that implements one or more variations of the <see cref="IMessageHandler{TMessage}"/> interface.
     /// </summary>
-    public abstract class MessageHandler : MicroProcessorComponent, IMessageHandlerConfiguration, IHandleAsyncMethodFactory, IReadOnlyCollection<HandleAsyncMethod>
+    public abstract class MessageHandler : MicroProcessorComponent, IHandleAsyncMethodFactory, IReadOnlyCollection<HandleAsyncMethod>
     {
         private readonly MessageHandlerInterface[] _interfaces;
-        private readonly Lazy<IMessageHandlerConfiguration> _configuration;
 
         internal MessageHandler(MessageHandler component) :
             this(component, component._interfaces) { }
@@ -24,7 +23,6 @@ namespace Kingo.MicroServices
             base(component, interfaces.Select(@interface => @interface.Type))
         {
             _interfaces = interfaces;
-            _configuration = new Lazy<IMessageHandlerConfiguration>(GetConfiguration);
         }        
 
         /// <summary>
@@ -35,50 +33,11 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Type.FriendlyName()} ({MessageHandlerOrQueryInterface.ToString(_interfaces)}";        
+            $"{Type.FriendlyName()} ({MessageHandlerOrQueryInterface.ToString(_interfaces)}";
 
-        #region [====== IMessageHandlerConfiguration ======]
+        #region [====== IHandleAsyncMethodFactory.CreateMicroServiceBusEndpoints(MicroProcessor) ======]
 
-        /// <inheritdoc />
-        public virtual bool HandlesExternalMessages =>
-            _configuration.Value.HandlesExternalMessages;
-
-        /// <inheritdoc />
-        public virtual bool HandlesInternalMessages =>
-            _configuration.Value.HandlesInternalMessages;
-
-        private IMessageHandlerConfiguration GetConfiguration()
-        {
-            if (Type.TryGetAttributeOfType(out MessageHandlerAttribute attribute))
-            {
-                return attribute;
-            }
-            return new MessageHandlerAttribute();
-        }
-
-        internal MicroProcessorOperationKinds GetSupportedOperations()
-        {
-            var supportedOperationKinds = MicroProcessorOperationKinds.None;
-
-            if (HandlesExternalMessages)
-            {
-                supportedOperationKinds |= MicroProcessorOperationKinds.RootOperation;
-            }
-            if (HandlesInternalMessages)
-            {
-                supportedOperationKinds |= MicroProcessorOperationKinds.BranchOperation;
-            }
-            return supportedOperationKinds;
-        }
-
-        #endregion
-
-        #region [====== IHandleAsyncMethodFactory.CreateMethodEndpoints(MicroProcessor) ======]
-
-        IEnumerable<MicroServiceBusEndpoint> IHandleAsyncMethodFactory.CreateMicroServiceBusEndpoints(MicroProcessor processor) =>
-            HandlesExternalMessages ? CreateMethodEndpoints(processor) : Enumerable.Empty<MicroServiceBusEndpoint>();
-
-        private IEnumerable<MicroServiceBusEndpoint> CreateMethodEndpoints(MicroProcessor processor)
+        IEnumerable<MicroServiceBusEndpoint> IHandleAsyncMethodFactory.CreateMicroServiceBusEndpoints(MicroProcessor processor)
         {
             foreach (var method in Methods())
             {
@@ -109,25 +68,27 @@ namespace Kingo.MicroServices
         private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, object>> _MessageHandlerFactories =
             new ConcurrentDictionary<MessageHandlerInterface, Func<object, object>>();        
 
-        IEnumerable<HandleAsyncMethod<TMessage>> IHandleAsyncMethodFactory.CreateMethodsFor<TMessage>(MicroProcessorOperationKinds operationKind, IServiceProvider serviceProvider)
+        IEnumerable<HandleAsyncMethod<TMessage>> IHandleAsyncMethodFactory.CreateInternalEventBusEndpointsFor<TMessage>(IServiceProvider serviceProvider)
         {
-            if (operationKind.IsSupportedBy(GetSupportedOperations()))
+            // This LINQ construct first selects all message handler interface definitions that are compatible with
+            // the specified message. Then it will dynamically create the correct message handler type for each match
+            // and return it.
+            //
+            // Example:
+            //   When the class implements both IMessageHandler<object> and IMessageHandler<SomeMessage>, then if
+            //   message is of type SomeMessage, two message-handler instances are returned, one for each
+            //   implementation.
+            foreach (var @interface in Interfaces.Where(@interface => @interface.MessageType.IsAssignableFrom(typeof(TMessage))))
             {
-                // This LINQ construct first selects all message handler interface definitions that are compatible with
-                // the specified message. Then it will dynamically create the correct message handler type for each match
-                // and return it.
-                //
-                // Example:
-                //   When the class implements both IMessageHandler<object> and IMessageHandler<SomeMessage>, then if
-                //   message is of type SomeMessage, two message-handler instances are returned, one for each
-                //   implementation.
-                return
-                    from messageHandlerInterface in Interfaces
-                    where messageHandlerInterface.MessageType.IsAssignableFrom(typeof(TMessage))
-                    select CreateHandleAsyncMethod<TMessage>(messageHandlerInterface, serviceProvider);
+                if (IsInternalEventBusEndpoint(@interface, out _))
+                {
+                    yield return CreateHandleAsyncMethod<TMessage>(@interface, serviceProvider);
+                }
             }
-            return Enumerable.Empty<HandleAsyncMethod<TMessage>>();
         }
+
+        internal virtual bool IsInternalEventBusEndpoint(MessageHandlerInterface @interface, out InternalEventBusEndpointAttribute attribute) =>
+            @interface.CreateMethod(this).Info.TryGetAttributeOfType(out attribute);
 
         private HandleAsyncMethod<TMessage> CreateHandleAsyncMethod<TMessage>(MessageHandlerInterface @interface, IServiceProvider serviceProvider) =>
             new HandleAsyncMethod<TMessage>(CreateMessageHandler<TMessage>(@interface, serviceProvider), this, @interface);

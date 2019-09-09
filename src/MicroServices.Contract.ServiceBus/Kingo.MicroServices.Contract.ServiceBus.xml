@@ -171,12 +171,12 @@
             <param name="endpoint">The endpoint to connect.</param>
             <returns>The connection that has been made.</returns>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Pack(System.Object)">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Pack(Kingo.MicroServices.IMessageToDispatch)">
             <summary>
-            Packs the specified <paramref name="message"/> into a message(-envelope) that can be sent to the service-bus.
+            Packs the specified <paramref name="message"/> into a message that can be sent to the service-bus.
             </summary>
             <param name="message">The message to pack.</param>
-            <returns>A message containing the specified <paramref name="message"/> as content.</returns>
+            <returns>A message that is ready to be dispatched by the service-bus.</returns>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Unpack(`0)">
             <summary>
@@ -385,19 +385,6 @@
             Returns all service types for which this component is registered.
             </summary>
         </member>
-        <member name="T:Kingo.MicroServices.IMicroProcessorServiceProvider">
-            <summary>
-            When implemented by a class, represents a <see cref="T:System.IServiceProvider"/> that manages
-            the dependencies of a processor;
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.IMicroProcessorServiceProvider.CreateScope">
-            <summary>
-            Creates and returns a new <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScope"/> that manages the lifetime
-            of scoped dependencies.
-            </summary>
-            <returns>A new <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScope"/>.</returns>
-        </member>
         <member name="T:Kingo.MicroServices.IMicroServiceBusEndpoint">
             <summary>
             When implemented by a class, represents an endpoint that handles a specific command or event.
@@ -466,7 +453,7 @@
             <paramref name="user"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.IMicroServiceBusProcessor.CreateServiceBusEndpoints">
+        <member name="M:Kingo.MicroServices.IMicroServiceBusProcessor.CreateMicroServiceBusEndpoints">
             <summary>
             Creates and returns all endpoints that are configured to handle commands or events from a service bus.
             </summary>
