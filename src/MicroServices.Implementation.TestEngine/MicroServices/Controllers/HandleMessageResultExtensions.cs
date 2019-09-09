@@ -11,11 +11,14 @@ namespace Kingo.MicroServices.Controllers
         /// Verifies that a test produces an empty message-stream.
         /// </summary>
         /// <param name="result">The result to verify.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="result"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="TestFailedException">
         /// The result is either not an message-stream, or the message-stream contains one or more events.
         /// </exception>
         public static void IsEmptyStream(this IHandleMessageResult result) =>
-            result.IsMessageStream(IsEmpty);
+            NotNull(result).IsMessageStream(IsEmpty);
 
         private static void IsEmpty(MessageStream stream)
         {
@@ -25,6 +28,9 @@ namespace Kingo.MicroServices.Controllers
             }
             throw NewStreamNotEmptyException(stream);
         }
+
+        private static IHandleMessageResult NotNull(IHandleMessageResult result) =>
+            result ?? throw new ArgumentNullException(nameof(result));
 
         private static Exception NewStreamNotEmptyException(MessageStream stream)
         {

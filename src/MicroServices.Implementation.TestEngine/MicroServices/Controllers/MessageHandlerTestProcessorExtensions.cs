@@ -17,10 +17,10 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="context">The context in which the test is running.</param>
         /// <param name="handler">Optional handler to handle the message with inside the processor.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
+        /// <paramref name="processor"/>, <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
         /// </exception>
         public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Action<TMessage, MessageHandlerOperationContext> handler) =>
-            processor.ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
+            NotNull(processor).ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
 
         /// <summary>
         /// Handles the specified message.
@@ -31,9 +31,12 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="context">The context in which the test is running.</param>
         /// <param name="handler">Optional handler to handle the message with inside the processor.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
+        /// <paramref name="processor"/>, <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
         /// </exception>
         public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Func<TMessage, MessageHandlerOperationContext, Task> handler) =>
-            processor.ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
+            NotNull(processor).ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
+
+        private static IHandleMessageOperationTestProcessor NotNull(IHandleMessageOperationTestProcessor processor) =>
+            processor ?? throw new ArgumentNullException(nameof(processor));
     }
 }

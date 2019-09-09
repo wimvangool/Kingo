@@ -12,47 +12,47 @@ namespace Kingo.Threading
         #region [====== Run ======]
 
         /// <summary>
-        /// Executes the specified asynchronous <paramref name="asyncFunc"/> synchronously and
+        /// Executes the specified asynchronous <paramref name="delegate"/> synchronously and
         /// returns a completed <see cref="Task" /> while encapsulating any exceptions
         /// that might be thrown.
         /// </summary>        
-        /// <param name="asyncFunc">The delegate to invoke.</param>
+        /// <param name="delegate">The delegate to invoke.</param>
         /// <param name="token">
-        /// If specified, this token is checked before and after <paramref name="asyncFunc"/> is executed,
+        /// If specified, this token is checked before and after <paramref name="delegate"/> is executed,
         /// and a cancelled task is returned if cancellation has been requested.
         /// </param>
         /// <returns>A completed <see cref="Task" />.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="asyncFunc"/> is <c>null</c>.
+        /// <paramref name="delegate"/> is <c>null</c>.
         /// </exception>
-        public static Task Run(Func<Task> asyncFunc, CancellationToken? token = null)
+        public static Task Run(Func<Task> @delegate, CancellationToken? token = null)
         {
-            if (asyncFunc == null)
+            if (@delegate == null)
             {
-                throw new ArgumentNullException(nameof(asyncFunc));
+                throw new ArgumentNullException(nameof(@delegate));
             }
-            return Run(() => asyncFunc.Invoke().Await(), token);
+            return Run(() => @delegate.Invoke().Await(), token);
         }
 
         /// <summary>
-        /// Executes the specified <paramref name="action"/> synchronously and
+        /// Executes the specified <paramref name="@delegate"/> synchronously and
         /// returns a completed <see cref="Task" /> while encapsulating any exceptions
         /// that might be thrown.
         /// </summary>
-        /// <param name="action">The delegate to invoke.</param>
+        /// <param name="delegate">The delegate to invoke.</param>
         /// <param name="token">
-        /// If specified, this token is checked before and after <paramref name="action"/> is executed,
+        /// If specified, this token is checked before and after <paramref name="delegate"/> is executed,
         /// and a cancelled task is returned if cancellation has been requested.
         /// </param>
         /// <returns>A completed <see cref="Task" />.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="action"/> is <c>null</c>.
+        /// <paramref name="delegate"/> is <c>null</c>.
         /// </exception>
-        public static Task Run(Action action, CancellationToken? token = null)
+        public static Task Run(Action @delegate, CancellationToken? token = null)
         {
-            if (action == null)
+            if (@delegate == null)
             {
-                throw new ArgumentNullException(nameof(action));
+                throw new ArgumentNullException(nameof(@delegate));
             }            
             if (TryGetCanceledTask(token, out var canceledTask))
             {
@@ -60,7 +60,7 @@ namespace Kingo.Threading
             }
             try
             {
-                action.Invoke();                
+                @delegate.Invoke();                
             }
             catch (OperationCanceledException exception)
             {
@@ -78,25 +78,25 @@ namespace Kingo.Threading
         }        
 
         /// <summary>
-        /// Executes the specified <paramref name="func"/> synchronously and
+        /// Executes the specified <paramref name="delegate"/> synchronously and
         /// returns a completed <see cref="Task{T}" /> while encapsulation any exceptions
         /// that might be thrown.
         /// </summary>
         /// <typeparam name="TResult">Type of the result of the delegate.</typeparam>
-        /// <param name="func">The delegate to invoke.</param>
+        /// <param name="delegate">The delegate to invoke.</param>
         /// <param name="token">
-        /// If specified, this token is checked before and after <paramref name="func"/> is executed,
+        /// If specified, this token is checked before and after <paramref name="delegate"/> is executed,
         /// and a cancelled task is returned if cancellation has been requested.
         /// </param>
         /// <returns>A completed <see cref="Task{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="func"/> is <c>null</c>.
+        /// <paramref name="delegate"/> is <c>null</c>.
         /// </exception>
-        public static Task<TResult> Run<TResult>(Func<TResult> func, CancellationToken? token = null)
+        public static Task<TResult> Run<TResult>(Func<TResult> @delegate, CancellationToken? token = null)
         {
-            if (func == null)
+            if (@delegate == null)
             {
-                throw new ArgumentNullException(nameof(func));
+                throw new ArgumentNullException(nameof(@delegate));
             }
             if (TryGetCanceledTask(token, out Task<TResult> canceledTask))
             {
@@ -104,7 +104,7 @@ namespace Kingo.Threading
             }
             try
             {
-                return Task.FromResult(func.Invoke());
+                return Task.FromResult(@delegate.Invoke());
             }
             catch (OperationCanceledException exception)
             {

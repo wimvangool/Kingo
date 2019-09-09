@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.Controllers
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<QueryOperationContext, TResponse> query) =>
-            processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
+            NotNull(processor).ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
 
         /// <summary>
         /// Executes the specified <paramref name="query"/>.
@@ -31,7 +31,7 @@ namespace Kingo.MicroServices.Controllers
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<QueryOperationContext, Task<TResponse>> query) =>
-            processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
+            NotNull(processor).ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace Kingo.MicroServices.Controllers
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, QueryOperationContext, TResponse> query, TRequest request) =>
-            processor.ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
+            NotNull(processor).ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/>.
@@ -59,8 +59,11 @@ namespace Kingo.MicroServices.Controllers
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, QueryOperationContext, Task<TResponse>> query, TRequest request) =>
-            processor.ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
+            NotNull(processor).ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         #endregion
+
+        private static TProcessor NotNull<TProcessor>(TProcessor processor) where TProcessor : class =>
+            processor ?? throw new ArgumentNullException(nameof(processor));
     }
 }

@@ -14,7 +14,5 @@
         /// <returns><c>true</c> if <paramref name="operationKind"/> is supported; otherwise <c>false</c>.</returns>
         public static bool IsSupportedBy(this MicroProcessorOperationKinds operationKind, MicroProcessorOperationKinds supportedOperationKinds) =>
             supportedOperationKinds.HasFlag(operationKind);
-
-
     }
 }

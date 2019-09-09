@@ -12,16 +12,6 @@ namespace Kingo.Collections.Generic
         #region [====== Enumerable ======]
 
         /// <summary>
-        /// Ensures the return-value is always a non-null collection of items. If <paramref name="collection"/>
-        /// is <c>null</c>, an empty collection is returned.
-        /// </summary>
-        /// <typeparam name="T">Type of the items in the collection.</typeparam>
-        /// <param name="collection">A collection of items.</param>
-        /// <returns>A non-null collection.</returns>
-        public static IEnumerable<T> EnsureNotNull<T>(this IEnumerable<T> collection) =>
-            collection ?? Enumerable.Empty<T>();
-
-        /// <summary>
         /// Returns a collection where all <c>null</c> values have been removed.
         /// </summary>
         /// <typeparam name="T">Type of the items in the collection.</typeparam>
@@ -74,7 +64,7 @@ namespace Kingo.Collections.Generic
                     }
                 }
             }
-            element = default(TValue);
+            element = default;
             return false;
         }
 
@@ -104,7 +94,7 @@ namespace Kingo.Collections.Generic
                     element = enumerator.Current;
                     return true;
                 }
-                element = default(TValue);
+                element = default;
                 return false;
             }
         }
@@ -143,7 +133,7 @@ namespace Kingo.Collections.Generic
                         return true;
                     }                    
                 }
-                element = default(TValue);
+                element = default;
                 return false;
             }
         }

@@ -58,14 +58,11 @@ namespace Kingo.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IEnumerable<TAttribute> GetAttributesOfType<TAttribute>(this MemberInfo member, bool inherit = false) where TAttribute : class
-        {
-            if (member == null)
-            {
-                throw new ArgumentNullException(nameof(member));
-            }
-            return member.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>();
-        }
+        public static IEnumerable<TAttribute> GetAttributesOfType<TAttribute>(this MemberInfo member, bool inherit = false) where TAttribute : class =>
+            NotNull(member).GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>();
+
+        private static MemberInfo NotNull(MemberInfo member) =>
+            member ?? throw new ArgumentNullException(nameof(member));
 
         #endregion
 
@@ -117,14 +114,11 @@ namespace Kingo.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="parameter"/> is <c>null</c>.
         /// </exception>
-        public static IEnumerable<TAttribute> GetAttributesOfType<TAttribute>(this ParameterInfo parameter, bool inherit = false) where TAttribute : class
-        {
-            if (parameter == null)
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
-            return parameter.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>();
-        }
+        public static IEnumerable<TAttribute> GetAttributesOfType<TAttribute>(this ParameterInfo parameter, bool inherit = false) where TAttribute : class =>
+            NotNull(parameter).GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>();
+
+        private static ParameterInfo NotNull(ParameterInfo parameter) =>
+            parameter ?? throw new ArgumentNullException(nameof(parameter));
 
         #endregion
 

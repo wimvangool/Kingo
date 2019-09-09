@@ -601,18 +601,9 @@ namespace Kingo.Reflection
             return false;
         }
 
-        private static bool IsClosedType(Type type)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            return !type.IsGenericType || !type.ContainsGenericParameters;
-        }
-
         private static IEnumerable<MethodInfo> GetOperatorsOfType(Type type, string name, Type returnType)
         {
-            if (IsClosedType(type))
+            if (IsClosedType(NotNull(type)))
             {
                 return
                     from method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
@@ -621,6 +612,9 @@ namespace Kingo.Reflection
             }
             return Enumerable.Empty<MethodInfo>();
         }
+
+        private static bool IsClosedType(Type type) =>
+            !type.IsGenericType || !type.ContainsGenericParameters;
 
         private static bool IsOperatorOfType(MethodInfo method, string name, Type returnType) =>
              method.IsSpecialName && method.Name == name && method.ReturnType == returnType;
@@ -661,14 +655,8 @@ namespace Kingo.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static string FriendlyName(this Type type, bool useFullNames = false, bool includeGenericParameters = true)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            return new StringBuilder().AppendFriendlyNameOf(type, useFullNames, includeGenericParameters).ToString();
-        }
+        public static string FriendlyName(this Type type, bool useFullNames = false, bool includeGenericParameters = true) =>
+            new StringBuilder().AppendFriendlyNameOf(NotNull(type), useFullNames, includeGenericParameters).ToString();
 
         private static StringBuilder AppendFriendlyNameOf(this StringBuilder builder, Type type, bool useFullNames, bool includeGenericParameters)
         {
@@ -837,5 +825,8 @@ namespace Kingo.Reflection
         }
 
         #endregion
+
+        private static Type NotNull(Type type) =>
+            type ?? throw new ArgumentNullException(nameof(type));
     }
 }

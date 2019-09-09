@@ -52,11 +52,7 @@ namespace Kingo.MicroServices.Controllers
         /// </exception>
         public static bool AddMicroServiceBusController(this MicroProcessorComponentCollection collection, Type type, bool isMainController = false)
         {
-            if (collection == null)
-            {
-                throw new ArgumentNullException(nameof(collection));
-            }
-            if (collection.AddComponent(type, MicroServiceBusControllerType.FromComponent))
+            if (NotNull(collection).AddComponent(type, MicroServiceBusControllerType.FromComponent))
             {
                 if (isMainController)
                 {
@@ -66,8 +62,10 @@ namespace Kingo.MicroServices.Controllers
             }
             return false;
         }
-            
 
         #endregion
+
+        private static MicroProcessorComponentCollection NotNull(MicroProcessorComponentCollection collection) =>
+            collection ?? throw new ArgumentNullException(nameof(collection));
     }
 }
