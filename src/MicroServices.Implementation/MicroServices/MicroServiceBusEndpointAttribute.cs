@@ -12,18 +12,16 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroServiceBusEndpointAttribute" /> class.
         /// </summary>
-        /// <param name="name">Name of this endpoint. </param>
-        public MicroServiceBusEndpointAttribute(string name = null)
-        {
-            Name = name;
-        }
+        public MicroServiceBusEndpointAttribute() :
+            this(MessageKind.Unspecified) { }
 
         /// <summary>
-        /// Name of this endpoint.
+        /// Initializes a new instance of the <see cref="MicroServiceBusEndpointAttribute" /> class.
         /// </summary>
-        public string Name
+        /// <param name="messageKind">If specified, indicates what kind of message is handled by this endpoint.</param>
+        public MicroServiceBusEndpointAttribute(MessageKind messageKind)
         {
-            get;
+            MessageKind = messageKind;
         }
 
         /// <summary>
@@ -32,27 +30,23 @@ namespace Kingo.MicroServices
         public MessageKind MessageKind
         {
             get;
-            set;
         }
 
-        internal bool IsCommandEndpoint(IMessageKindResolver resolver, Type messageType) =>
-            IsCommandEndpoint(resolver, messageType, MessageKind);
-
-        private static bool IsCommandEndpoint(IMessageKindResolver resolver, Type messageType, MessageKind messageKind)
+        internal MessageKind DetermineMessageKind(IMessageKindResolver resolver, Type messageType)
         {
-            switch (messageKind)
+            switch (MessageKind)
             {
                 case MessageKind.Unspecified:
-                    return IsCommandEndpoint(new MessageKindResolver(), messageType, resolver.ResolveMessageKind(messageType));
+                    return resolver.ResolveMessageKind(messageType);
                 case MessageKind.Command:
-                    return true;
+                    return MessageKind.Command;
                 case MessageKind.Event:
-                    return false;
+                    return MessageKind.Event;
             }
-            throw NewInvalidMessageKindSpecifiedException(messageKind);
+            throw NewInvalidMessageKindSpecifiedException(MessageKind);
         }
 
-        private static Exception NewInvalidMessageKindSpecifiedException(MessageKind messageKind)
+        internal static Exception NewInvalidMessageKindSpecifiedException(MessageKind messageKind)
         {
             var messageFormat = ExceptionMessages.EndpointAttribute_InvalidMessageKindSpecified;
             var message = string.Format(messageFormat, messageKind);

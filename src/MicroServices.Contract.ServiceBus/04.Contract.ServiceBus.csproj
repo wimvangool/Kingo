@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MicroServices.Contract.Api\03.Contract.Api.csproj" />
     <ProjectReference Include="..\MicroServices\02.SharedKernel.csproj" />
   </ItemGroup>
 

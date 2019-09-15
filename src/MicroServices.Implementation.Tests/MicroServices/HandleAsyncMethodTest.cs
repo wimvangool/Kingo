@@ -80,7 +80,7 @@ namespace Kingo.MicroServices
             Assert.AreSame(typeof(TParameter), method.MessageParameterInfo.ParameterType);
             AssertValue(method.MessageParameterInfo, messageValue);
             AssertValue(method.ContextParameterInfo, contextValue);
-            AssertValue(method.Info, (messageValue + contextValue) * 2);
+            AssertValue(method.MethodInfo, (messageValue + contextValue) * 2);
         }        
     }
 }

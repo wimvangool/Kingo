@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
@@ -11,7 +12,7 @@ namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// When implemented, represents a controller that can send and receive messages to and from a
-    /// service-bus and dispatches any received messages to a <see cref="IMicroServiceBusEndpoint" />
+    /// service-bus and routes any received message to a <see cref="IMicroServiceBusEndpoint" />
     /// for further processing.
     /// </summary>
     [MicroProcessorComponent(ServiceLifetime.Singleton)]
@@ -164,7 +165,7 @@ namespace Kingo.MicroServices.Controllers
             }
 
             public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
-                throw new NotImplementedException();
+                _client.SendAsync(commands);
 
             public override Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
                 _client.PublishAsync(events);
@@ -227,8 +228,8 @@ namespace Kingo.MicroServices.Controllers
             public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
                 throw _controller.NewCannotPublishEventsException();
 
-            public Task<bool> ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint) =>
-                Task.FromResult(false);
+            public Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint) =>
+                Task.CompletedTask;
         }
 
         #endregion
@@ -256,16 +257,21 @@ namespace Kingo.MicroServices.Controllers
         public override string ToString() =>
             $"{GetType().FriendlyName()} ({_state})";
 
+        #region [====== IHostedService ======]
+
         /// <summary>
         /// The start method creates a new <see cref="IMicroServiceBusClient"/> and attempts to connect
         /// every <see cref="IMicroServiceBusEndpoint"/> that is provided by the <see cref="IMicroServiceBusProcessor"/>
         /// to the service-bus through this client. If <paramref name="cancellationToken"/> is signaled before the
         /// client is fully created and connected, the operation is aborted and the controller remains in the
-        /// unconnected state.
+        /// stopped/disconnected state.
         /// </summary>
         /// <param name="cancellationToken">Token that can be used to abort the operation.</param>
         /// <exception cref="ObjectDisposedException">
         /// The controller has already been disposed.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The controller has already been started.
         /// </exception>
         public virtual Task StartAsync(CancellationToken cancellationToken) =>
             _state.StartAsync(cancellationToken);
@@ -282,6 +288,50 @@ namespace Kingo.MicroServices.Controllers
         public virtual Task StopAsync(CancellationToken cancellationToken) =>
             _state.StopAsync(cancellationToken);
 
+        #endregion
+
+        #region [====== IMicroServiceBus ======]
+
+        /// <inheritdoc />
+        public virtual Task SendAsync(IEnumerable<IMessageToDispatch> commands)
+        {
+            // Each command is paired with the controller that is capable of sending that command
+            // (i.e. the service contract of that controller contains that command). Then, every
+            // command is sent by those controller(s) in parallel fashion. For example:
+            // - ControllerX: [CommandA, CommandB]
+            // - ControllerY: [CommandA, CommandC]
+            // - ControllerZ: []
+            var sendOperations =
+                from commandsPerController in MatchCommandsWithControllers(commands.ToArray())
+                let controller = commandsPerController.Key
+                let commandsToSend = commandsPerController.Value
+                where commandsToSend.Length > 0
+                select controller._state.SendAsync(commandsToSend);
+
+            return Task.WhenAll(sendOperations);
+        }
+
+        private IDictionary<MicroServiceBusController, IMessageToDispatch[]> MatchCommandsWithControllers(IReadOnlyCollection<IMessageToDispatch> commands)
+        {
+            var commandsPerController = new Dictionary<MicroServiceBusController, IMessageToDispatch[]>();
+            if (commands.Count > 0)
+            {
+                foreach (var controller in _processor.ServiceProvider.GetServices<MicroServiceBusController>())
+                {
+                    commandsPerController.Add(controller, controller.PickCommandsToSend(commands).ToArray());
+                }
+            }
+            return commandsPerController;
+        }
+
+        /// <inheritdoc />
+        public virtual Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+            _state.PublishAsync(events);
+
+        #endregion
+
+        #region [====== ConnectToServiceBus ======]
+
         private async Task<IMicroServiceBusClient> ConnectToServiceBusAsync(CancellationToken token)
         {
             if (IsDisposed)
@@ -296,7 +346,7 @@ namespace Kingo.MicroServices.Controllers
             }
             foreach (var endpoint in _processor.CreateMicroServiceBusEndpoints())
             {
-                await client.ConnectToEndpointAsync(endpoint).OrAbort(token).ConfigureAwait(false);
+                await ConnectToEndpointAsync(client, endpoint).OrAbort(token).ConfigureAwait(false);
 
                 if (IsCancellationRequested(token, ref client))
                 {
@@ -319,24 +369,26 @@ namespace Kingo.MicroServices.Controllers
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IMicroServiceBusClient"/> that can be used to publish messages
-        /// to a service-bus and to subscribe to specific events.
+        /// Creates and returns a new <see cref="IMicroServiceBusClient"/> that can be used send and receive
+        /// messages to and from a service-bus.
         /// </summary>
         /// <param name="bus">
-        /// The bus to which all events that are created when processing command or events should be published.
+        /// The bus that will dispatch all command and events that are produced as output.
         /// </param>
         /// <returns>A new client.</returns>
         protected abstract Task<IMicroServiceBusClient> CreateClientAsync(IMicroServiceBus bus);
 
-        #region [====== IMicroServiceBus ======]
+        private Task ConnectToEndpointAsync(IMicroServiceBusClient client, IMicroServiceBusEndpoint endpoint)
+        {
+            //switch (endpoint.MessageKind)
+            //{
+            //    case MessageKind.Command:
 
-        /// <inheritdoc />
-        public virtual Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+            //}
             throw new NotImplementedException();
+        }
 
-        /// <inheritdoc />
-        public virtual Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
-            _state.PublishAsync(events);
+        //protected virtual string DetermineCommandEndpointName(IMicroServiceBusEndpoint endpoint)
 
         #endregion
 
@@ -345,6 +397,15 @@ namespace Kingo.MicroServices.Controllers
         /// <inheritdoc />
         public override void Dispose() =>
             _state.Dispose();
+
+        #endregion
+
+        #region [====== ServiceContract ======]
+
+        private IEnumerable<IMessageToDispatch> PickCommandsToSend(IEnumerable<IMessageToDispatch> commands)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

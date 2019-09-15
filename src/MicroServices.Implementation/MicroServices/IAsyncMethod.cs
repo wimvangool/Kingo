@@ -17,9 +17,9 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Returns the <see cref="MethodInfo"/> of the method.
+        /// Returns the <see cref="System.Reflection.MethodInfo"/> of the method.
         /// </summary>
-        MethodInfo Info
+        MethodInfo MethodInfo
         {
             get;
         }

@@ -14,7 +14,7 @@ namespace Kingo.MicroServices
         internal HandleAsyncMethod(HandleAsyncMethod method)
         {
             MessageHandler = method.MessageHandler;
-            Info = method.Info;
+            MethodInfo = method.MethodInfo;
             MessageParameterInfo = method.MessageParameterInfo;
             ContextParameterInfo = method.ContextParameterInfo;
         }
@@ -28,14 +28,14 @@ namespace Kingo.MicroServices
         private HandleAsyncMethod(MessageHandler messageHandler, MethodInfo info, ParameterInfo[] parameters)
         {
             MessageHandler = messageHandler;
-            Info = info;
+            MethodInfo = info;
             MessageParameterInfo = parameters[0];
             ContextParameterInfo = parameters[1];
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{MessageHandler.Type.FriendlyName()}.{Info.Name}({MessageParameterInfo.ParameterType.FriendlyName()}, ...)";
+            $"{MessageHandler.Type.FriendlyName()}.{MethodInfo.Name}({MessageParameterInfo.ParameterType.FriendlyName()}, ...)";
 
         #region [====== IAsyncMethod ======]
 
@@ -51,7 +51,7 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public MethodInfo Info
+        public MethodInfo MethodInfo
         {
             get;
         }
@@ -77,7 +77,7 @@ namespace Kingo.MicroServices
 
         internal bool TryCreateMicroServiceBusEndpoint(MicroProcessor processor, out MicroServiceBusEndpoint endpoint)
         {
-            if (Info.TryGetAttributeOfType(out MicroServiceBusEndpointAttribute attribute))
+            if (MethodInfo.TryGetAttributeOfType(out MicroServiceBusEndpointAttribute attribute))
             {
                 endpoint = CreateEndpoint(processor, attribute);
                 return true;

@@ -61,6 +61,33 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name &apos;{0}&apos; contains illegal character &apos;{1}&apos; encountered at index &apos;{2}&apos;..
+        /// </summary>
+        internal static string EndpointNameFormat_IllegalCharacter {
+            get {
+                return ResourceManager.GetString("EndpointNameFormat_IllegalCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name &apos;{0}&apos; is missing the closing bracket for placeholder started at index &apos;{1}&apos;..
+        /// </summary>
+        internal static string EndpointNameFormat_MissingClosingBracket {
+            get {
+                return ResourceManager.GetString("EndpointNameFormat_MissingClosingBracket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown placeholder specified: &apos;{0}&apos;..
+        /// </summary>
+        internal static string EndpointNameFormat_UnknownPlaceholderName {
+            get {
+                return ResourceManager.GetString("EndpointNameFormat_UnknownPlaceholderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; to the service-bus because the specified message-kind ({1}) is not supported..
         /// </summary>
         internal static string MicroServiceBusClient_MessageKindNotSupported {

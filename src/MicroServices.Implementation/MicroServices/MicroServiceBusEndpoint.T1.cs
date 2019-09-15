@@ -30,17 +30,20 @@ namespace Kingo.MicroServices
         #endregion        
 
         private readonly MicroProcessor _processor;
-        private readonly bool _isCommandEndpoint;
+        private readonly MessageKind _messageKind;
 
         public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, MicroServiceBusEndpointAttribute attribute) :
             base(method)
         {            
             _processor = processor;
-            _isCommandEndpoint = attribute.IsCommandEndpoint(processor.Options.Endpoints.MessageKindResolver, typeof(TMessage));
-        }        
+            _messageKind = attribute.DetermineMessageKind(processor.Options.Endpoints.MessageKindResolver, typeof(TMessage));
+        }
+
+        public override string ServiceName =>
+            _processor.Options.Endpoints.ServiceName;
 
         public override MessageKind MessageKind =>
-            _isCommandEndpoint ? MessageKind.Command : MessageKind.Event;
+            _messageKind;
 
         public override Task<IMessageHandlerOperationResult> InvokeAsync(object message, CancellationToken? token = null)
         {
@@ -70,11 +73,14 @@ namespace Kingo.MicroServices
 
         private MessageHandlerOperation<TMessage> CreateOperation(TMessage message, CancellationToken? token, HandleAsyncMethod<TMessage> method)
         {
-            if (_isCommandEndpoint)
+            switch (MessageKind)
             {
-                return new CommandHandlerOperation<TMessage>(_processor, method, message, token);
+                case MessageKind.Command:
+                    return new CommandHandlerOperation<TMessage>(_processor, method, message, token);
+                case MessageKind.Event:
+                    return new EventHandlerOperation<TMessage>(_processor, method, message, token);
             }
-            return new EventHandlerOperation<TMessage>(_processor, method, message, token);            
+            throw MicroServiceBusEndpointAttribute.NewInvalidMessageKindSpecifiedException(MessageKind);
         }        
 
         private HandleAsyncMethod<TMessage> CreateMethod() =>

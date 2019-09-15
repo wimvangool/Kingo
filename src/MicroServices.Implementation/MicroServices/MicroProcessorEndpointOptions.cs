@@ -9,16 +9,36 @@ namespace Kingo.MicroServices
     {        
         internal MicroProcessorEndpointOptions()
         {
+            ServiceName = "DefaultService";
             MessageKindResolver = new MessageKindResolver();
         }
 
         private MicroProcessorEndpointOptions(MicroProcessorEndpointOptions options)
         {
+            ServiceName = options.ServiceName;
             MessageKindResolver = options.MessageKindResolver;
         }
 
         internal MicroProcessorEndpointOptions Copy() =>
             new MicroProcessorEndpointOptions(this);
+
+        #region [====== ServiceName ======]
+
+        private string _serviceName;
+
+        /// <summary>
+        /// Gets or sets the name of the (micro)service.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="value"/> is <c>null</c>.
+        /// </exception>
+        public string ServiceName
+        {
+            get => _serviceName;
+            set => _serviceName = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        #endregion
 
         #region [====== MessageKindResolver ======]        
 

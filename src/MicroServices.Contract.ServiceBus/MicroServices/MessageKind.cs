@@ -21,8 +21,13 @@
         Event,
 
         /// <summary>
-        /// Represents a request, carrying parameters for a query.
+        /// Represents the request-message of a query.
         /// </summary>
-        QueryRequest
+        QueryRequest,
+
+        /// <summary>
+        /// Represents the response-message of a query.
+        /// </summary>
+        QueryResponse
     }
 }

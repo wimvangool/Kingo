@@ -17,6 +17,6 @@ namespace Kingo.MicroServices
             _query.ExecuteAsync(context);
 
         public override string ToString() =>
-            $"{Query.Type.FriendlyName()}.{Info.Name}(...)";
+            $"{Query.Type.FriendlyName()}.{MethodInfo.Name}(...)";
     }
 }

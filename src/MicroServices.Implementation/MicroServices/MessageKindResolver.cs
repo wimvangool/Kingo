@@ -8,13 +8,28 @@ namespace Kingo.MicroServices
         public override string ToString() =>
             GetType().FriendlyName();
 
-        public MessageKind ResolveMessageKind(Type messageType)
+        public MessageKind ResolveMessageKind(Type messageType) =>
+            ResolveMessageKind(NameOf(messageType));
+
+        private static MessageKind ResolveMessageKind(string messageTypeName)
         {
-            if (NameOf(messageType).EndsWith("Command"))
+            if (messageTypeName.EndsWith("Command"))
             {
                 return MessageKind.Command;
             }
-            return MessageKind.Event;
+            if (messageTypeName.EndsWith("Event"))
+            {
+                return MessageKind.Event;
+            }
+            if (messageTypeName.EndsWith("Request"))
+            {
+                return MessageKind.QueryRequest;
+            }
+            if (messageTypeName.EndsWith("Response"))
+            {
+                return MessageKind.QueryResponse;
+            }
+            return MessageKind.Unspecified;
         }
 
         private static string NameOf(Type messageType) =>

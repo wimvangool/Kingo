@@ -111,21 +111,21 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class RequestHandler : IMessageHandler<object>
         {
-            [MicroServiceBusEndpoint(MessageKind = MessageKind.QueryRequest)]
+            [MicroServiceBusEndpoint(MessageKind.QueryRequest)]
             public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class UnknownMessageKindHandler : IMessageHandler<object>
         {
-            [MicroServiceBusEndpoint(MessageKind = (MessageKind) (-1))]
+            [MicroServiceBusEndpoint((MessageKind) (-1))]
             public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class ExplicitEventHandler : IMessageHandler<object>
         {
-            [MicroServiceBusEndpoint(MessageKind = MessageKind.Event)]
+            [MicroServiceBusEndpoint(MessageKind.Event)]
             public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
@@ -139,7 +139,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class ExplicitCommandHandler : IMessageHandler<object>
         {
-            [MicroServiceBusEndpoint(MessageKind = MessageKind.Command)]
+            [MicroServiceBusEndpoint(MessageKind.Command)]
             public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
@@ -261,7 +261,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class SomeCommandHandler : IMessageHandler<int>
         {            
-            [MicroServiceBusEndpoint(MessageKind = MessageKind.Command)]
+            [MicroServiceBusEndpoint(MessageKind.Command)]
             public Task HandleAsync(int message, MessageHandlerOperationContext context)
             {
                 context.MessageBus.Publish(string.Empty);
@@ -271,7 +271,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class SomeEventHandler : IMessageHandler<int>
         {
-            [MicroServiceBusEndpoint(MessageKind = MessageKind.Event)]
+            [MicroServiceBusEndpoint(MessageKind.Event)]
             public Task HandleAsync(int message, MessageHandlerOperationContext context)
             {
                 context.MessageBus.Publish(string.Empty);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kingo.MicroServices.Controllers
@@ -11,6 +12,7 @@ namespace Kingo.MicroServices.Controllers
     /// <typeparam name="TMessage">Type of the messages that are sent to or received from the service-bus.</typeparam>
     public abstract class MicroServiceBusClient<TMessage> : MicroServiceBusConnection, IMicroServiceBusClient
     {
+        private readonly SemaphoreSlim _lock;
         private readonly List<IMicroServiceBusConnection> _connections;
 
         /// <summary>
@@ -18,6 +20,7 @@ namespace Kingo.MicroServices.Controllers
         /// </summary>
         protected MicroServiceBusClient()
         {
+            _lock = new SemaphoreSlim(1);
             _connections = new List<IMicroServiceBusConnection>();
         }
 
@@ -32,7 +35,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== SendAsync ======]
 
         /// <inheritdoc />
-        public Task SendAsync(IEnumerable<IMessageToDispatch> commands)
+        public async Task SendAsync(IEnumerable<IMessageToDispatch> commands)
         {
             if (IsDisposed)
             {
@@ -42,7 +45,16 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw new ArgumentNullException(nameof(commands));
             }
-            return SendAsync(commands.Select(Pack));
+            await _lock.WaitAsync();
+
+            try
+            {
+                await SendAsync(commands.Select(Pack));
+            }
+            finally
+            {
+                _lock.Release();
+            }
         }
 
         /// <summary>
@@ -70,7 +82,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== PublishAsync ======]
 
         /// <inheritdoc />
-        public Task PublishAsync(IEnumerable<IMessageToDispatch> events)
+        public async Task PublishAsync(IEnumerable<IMessageToDispatch> events)
         {
             if (IsDisposed)
             {
@@ -80,7 +92,16 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw new ArgumentNullException(nameof(events));
             }
-            return PublishAsync(events.Select(Pack));
+            await _lock.WaitAsync();
+
+            try
+            {
+                await PublishAsync(events.Select(Pack));
+            }
+            finally
+            {
+                _lock.Release();
+            }
         }
 
         /// <summary>
@@ -108,7 +129,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== ConnectToEndpointAsync ======]
 
         /// <inheritdoc />
-        public async Task<bool> ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint)
+        public async Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint)
         {
             if (IsDisposed)
             {
@@ -118,26 +139,17 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw new ArgumentNullException(nameof(endpoint));
             }
-            if (IsSupportedEndpoint(endpoint))
-            {
-                _connections.Add(await ConnectToQueueAsync(endpoint).ConfigureAwait(false));
-                return true;
-            }
-            return false;
-        }
+            await _lock.WaitAsync();
 
-        /// <summary>
-        /// Determines if the specified <paramref name="endpoint"/> is supported by this service-bus client. By default,
-        /// this method compares the name of the service which this client is part of with the name of the service that
-        /// the message is part of. If these are equal, it is assumed the endpoint is supported.
-        /// </summary>
-        /// <param name="endpoint">The endpoint to check.</param>
-        /// <returns>
-        /// <c>true</c> if the specified <paramref name="endpoint"/> is supported and a connection to it and the service-bus
-        /// must be created; otherwise <c>false</c>.
-        /// </returns>
-        protected virtual bool IsSupportedEndpoint(IMicroServiceBusEndpoint endpoint) =>
-            true; // TODO
+            try
+            {
+                _connections.Add(await ConnectToQueueAsync(endpoint));
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
 
         private Task<IMicroServiceBusConnection> ConnectToQueueAsync(IMicroServiceBusEndpoint endpoint)
         {
@@ -147,6 +159,10 @@ namespace Kingo.MicroServices.Controllers
                     return ConnectToCommandQueueAsync(endpoint);
                 case MessageKind.Event:
                     return ConnectToEventQueueAsync(endpoint);
+                case MessageKind.QueryRequest:
+                    return ConnectToQueryRequestQueueAsync(endpoint);
+                case MessageKind.QueryResponse:
+                    return ConnectToQueryResponseQueueAsync(endpoint);
                 default:
                     throw NewMessageKindNotSupportedException(endpoint);
             }
@@ -166,6 +182,22 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="endpoint">The endpoint to connect.</param>
         /// <returns>The connection that has been made.</returns>
         protected virtual Task<IMicroServiceBusConnection> ConnectToEventQueueAsync(IMicroServiceBusEndpoint endpoint) =>
+            throw NewMessageKindNotSupportedException(endpoint);
+
+        /// <summary>
+        /// Connects the specified <paramref name="endpoint"/> to the associated query request-queue of the service-bus.
+        /// </summary>
+        /// <param name="endpoint">The endpoint to connect.</param>
+        /// <returns>The connection that has been made.</returns>
+        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryRequestQueueAsync(IMicroServiceBusEndpoint endpoint) =>
+            throw NewMessageKindNotSupportedException(endpoint);
+
+        /// <summary>
+        /// Connects the specified <paramref name="endpoint"/> to the associated query response-queue of the service-bus.
+        /// </summary>
+        /// <param name="endpoint">The endpoint to connect.</param>
+        /// <returns>The connection that has been made.</returns>
+        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryResponseQueueAsync(IMicroServiceBusEndpoint endpoint) =>
             throw NewMessageKindNotSupportedException(endpoint);
 
         private static Exception NewMessageKindNotSupportedException(IMicroServiceBusEndpoint endpoint)
@@ -231,6 +263,7 @@ namespace Kingo.MicroServices.Controllers
                     connection.Dispose();
                 }
                 _connections.Clear();
+                _lock.Dispose();
             }
             base.Dispose(disposing);
         }

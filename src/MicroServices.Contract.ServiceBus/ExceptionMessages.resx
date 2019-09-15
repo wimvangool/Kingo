@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EndpointNameFormat_IllegalCharacter" xml:space="preserve">
+    <value>Name '{0}' contains illegal character '{1}' encountered at index '{2}'.</value>
+  </data>
+  <data name="EndpointNameFormat_MissingClosingBracket" xml:space="preserve">
+    <value>Name '{0}' is missing the closing bracket for placeholder started at index '{1}'.</value>
+  </data>
+  <data name="EndpointNameFormat_UnknownPlaceholderName" xml:space="preserve">
+    <value>Unknown placeholder specified: '{0}'.</value>
+  </data>
   <data name="MicroServiceBusClient_MessageKindNotSupported" xml:space="preserve">
     <value>Cannot connect endpoint '{0}' to the service-bus because the specified message-kind ({1}) is not supported.</value>
   </data>

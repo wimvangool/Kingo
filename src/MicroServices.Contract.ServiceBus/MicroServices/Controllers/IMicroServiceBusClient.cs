@@ -9,14 +9,13 @@ namespace Kingo.MicroServices.Controllers
     public interface IMicroServiceBusClient : IMicroServiceBus, IMicroServiceBusConnection
     {
         /// <summary>
-        /// Connects the specified <paramref name="endpoint"/> to the service-bus if it is an
-        /// endpoint that is supported by this client.
+        /// Connects the specified <paramref name="endpoint"/> to the service-bus.
         /// </summary>
         /// <param name="endpoint">The endpoint to connect.</param>
         /// <returns><c>true</c> if the endpoint was connected; otherwise <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="endpoint"/> is <c>null</c>.
         /// </exception>
-        Task<bool> ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint);
+        Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint);
     }
 }

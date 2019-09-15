@@ -11,6 +11,14 @@ namespace Kingo.MicroServices
     public interface IMicroServiceBusEndpoint
     {
         /// <summary>
+        /// Returns the name of the service this endpoint is part of.
+        /// </summary>
+        string ServiceName
+        {
+            get;
+        }
+
+        /// <summary>
         /// Returns the type of the message handler this endpoint is implemented on.
         /// </summary>
         Type MessageHandlerType
@@ -19,9 +27,9 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Returns the <see cref="MethodInfo"/> of the method.
+        /// Returns the <see cref="System.Reflection.MethodInfo"/> of the method.
         /// </summary>
-        MethodInfo Info
+        MethodInfo MethodInfo
         {
             get;
         }

@@ -88,7 +88,7 @@ namespace Kingo.MicroServices
         }
 
         internal virtual bool IsInternalEventBusEndpoint(MessageHandlerInterface @interface, out InternalEventBusEndpointAttribute attribute) =>
-            @interface.CreateMethod(this).Info.TryGetAttributeOfType(out attribute);
+            @interface.CreateMethod(this).MethodInfo.TryGetAttributeOfType(out attribute);
 
         private HandleAsyncMethod<TMessage> CreateHandleAsyncMethod<TMessage>(MessageHandlerInterface @interface, IServiceProvider serviceProvider) =>
             new HandleAsyncMethod<TMessage>(CreateMessageHandler<TMessage>(@interface, serviceProvider), this, @interface);

@@ -77,11 +77,11 @@ namespace Kingo.MicroServices
 
         private static void AssertMethodProperties<TRequest, TResponse>(IAsyncMethod method, int messageValue, int contextValue)
         {
-            Assert.AreSame(typeof(Task<TResponse>), method.Info.ReturnType);
+            Assert.AreSame(typeof(Task<TResponse>), method.MethodInfo.ReturnType);
             Assert.AreSame(typeof(TRequest), method.MessageParameterInfo.ParameterType);
             AssertValue(method.MessageParameterInfo, messageValue);
             AssertValue(method.ContextParameterInfo, contextValue);
-            AssertValue(method.Info, (messageValue + contextValue) * 2);
+            AssertValue(method.MethodInfo, (messageValue + contextValue) * 2);
         }            
     }
 }

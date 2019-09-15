@@ -12,7 +12,7 @@ namespace Kingo.MicroServices.Controllers
         {
             if (typeof(MicroServiceBusController).IsAssignableFrom(component.Type))
             {
-                return new MicroServiceBusControllerType(component, typeof(IHostedService));                
+                return new MicroServiceBusControllerType(component, typeof(MicroServiceBusController), typeof(IHostedService));                
             }
             return null;
         }       

@@ -17,7 +17,7 @@ namespace Kingo.MicroServices
         private ExecuteAsyncMethod(Query query, MethodInfo info, ParameterInfo[] parameters)
         {
             Query = query;
-            Info = info;
+            MethodInfo = info;
 
             if (parameters.Length == 1)
             {
@@ -45,7 +45,7 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public MethodInfo Info
+        public MethodInfo MethodInfo
         {
             get;
         }
