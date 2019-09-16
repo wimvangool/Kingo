@@ -14,6 +14,7 @@ namespace Kingo.MicroServices.Controllers
     {
         private readonly SemaphoreSlim _lock;
         private readonly List<IMicroServiceBusConnection> _connections;
+        private readonly Lazy<Dictionary<MessageKind, EndpointNameResolver>> _nameResolverMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroServiceBusClient{T}" /> class.
@@ -22,6 +23,7 @@ namespace Kingo.MicroServices.Controllers
         {
             _lock = new SemaphoreSlim(1);
             _connections = new List<IMicroServiceBusConnection>();
+            _nameResolverMap = new Lazy<Dictionary<MessageKind, EndpointNameResolver>>(CreateNameResolverMap);
         }
 
         /// <summary>
@@ -31,6 +33,174 @@ namespace Kingo.MicroServices.Controllers
         {
             get;
         }
+
+        #region [====== NameResolvers ======]
+
+        /// <summary>
+        /// Returns the map that contains one endpoint name-resolver per message type.
+        /// </summary>
+        protected IReadOnlyDictionary<MessageKind, EndpointNameResolver> NameResolverMap =>
+            _nameResolverMap.Value;
+
+        private Dictionary<MessageKind, EndpointNameResolver> CreateNameResolverMap() =>
+            new Dictionary<MessageKind, EndpointNameResolver>()
+            {
+                { MessageKind.Command, CreateCommandEndpointNameResolver() },
+                { MessageKind.Event, CreateEventEndpointNameResolver() },
+                { MessageKind.QueryRequest, CreateQueryRequestEndpointNameResolver() },
+                { MessageKind.QueryResponse, CreateQueryResponseEndpointNameResolver() }
+            };
+
+        /// <summary>
+        /// Creates and returns a new <see cref="EndpointNameResolver" /> that will be used to resolve
+        /// the name of each endpoint that handles <see cref="MessageKind.Command">commands</see>.
+        /// </summary>
+        /// <returns>A new <see cref="EndpointNameResolver" />.</returns>
+        protected virtual EndpointNameResolver CreateCommandEndpointNameResolver() =>
+            new EndpointNameResolver("[service].Commands");
+
+        /// <summary>
+        /// Creates and returns a new <see cref="EndpointNameResolver" /> that will be used to resolve
+        /// the name of each endpoint that handles <see cref="MessageKind.Event">events</see>.
+        /// </summary>
+        /// <returns>A new <see cref="EndpointNameResolver" />.</returns>
+        protected virtual EndpointNameResolver CreateEventEndpointNameResolver() =>
+            new EndpointNameResolver("[service].[handler].[message]");
+
+        /// <summary>
+        /// Creates and returns a new <see cref="EndpointNameResolver" /> that will be used to resolve
+        /// the name of each endpoint that handles <see cref="MessageKind.QueryRequest">(query) requests</see>.
+        /// </summary>
+        /// <returns>A new <see cref="EndpointNameResolver" />.</returns>
+        protected virtual EndpointNameResolver CreateQueryRequestEndpointNameResolver() =>
+            new EndpointNameResolver("[service].QueryRequests");
+
+        /// <summary>
+        /// Creates and returns a new <see cref="EndpointNameResolver" /> that will be used to resolve
+        /// the name of each endpoint that handles <see cref="MessageKind.QueryResponse">(query) responses</see>.
+        /// </summary>
+        /// <returns>A new <see cref="EndpointNameResolver" />.</returns>
+        protected virtual EndpointNameResolver CreateQueryResponseEndpointNameResolver() =>
+            new EndpointNameResolver("[service].QueryResponses");
+
+        #endregion
+
+        #region [====== ConnectToEndpointAsync ======]
+
+        /// <inheritdoc />
+        public async Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint)
+        {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }
+            if (endpoint == null)
+            {
+                throw new ArgumentNullException(nameof(endpoint));
+            }
+            await _lock.WaitAsync();
+
+            try
+            {
+                _connections.Add(await ConnectToQueueAsync(endpoint));
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
+
+        private Task<IMicroServiceBusConnection> ConnectToQueueAsync(IMicroServiceBusEndpoint endpoint)
+        {
+            switch (endpoint.MessageKind)
+            {
+                case MessageKind.Command:
+                    return ConnectToCommandQueueAsync(endpoint, NameResolverMap[MessageKind.Command].ResolveName(endpoint));
+                case MessageKind.Event:
+                    return ConnectToEventQueueAsync(endpoint, NameResolverMap[MessageKind.Event].ResolveName(endpoint));
+                case MessageKind.QueryRequest:
+                    return ConnectToQueryRequestQueueAsync(endpoint, NameResolverMap[MessageKind.QueryRequest].ResolveName(endpoint));
+                case MessageKind.QueryResponse:
+                    return ConnectToQueryResponseQueueAsync(endpoint, NameResolverMap[MessageKind.QueryResponse].ResolveName(endpoint));
+                default:
+                    throw NewEndpointNotSupportedException(endpoint, string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Connects the specified <paramref name="endpoint"/> to the associated command-queue of the service-bus.
+        /// </summary>
+        /// <param name="endpoint">The endpoint to connect.</param>
+        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <returns>The connection that has been made.</returns>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="endpoint"/> is not supported by this client.
+        /// </exception>
+        protected virtual Task<IMicroServiceBusConnection> ConnectToCommandQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
+            throw NewEndpointNotSupportedException(endpoint, name);
+
+        /// <summary>
+        /// Connects the specified <paramref name="endpoint"/> to the associated event-queue of the service-bus.
+        /// </summary>
+        /// <param name="endpoint">The endpoint to connect.</param>
+        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <returns>The connection that has been made.</returns>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="endpoint"/> is not supported by this client.
+        /// </exception>
+        protected virtual Task<IMicroServiceBusConnection> ConnectToEventQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
+            throw NewEndpointNotSupportedException(endpoint, name);
+
+        /// <summary>
+        /// Connects the specified <paramref name="endpoint"/> to the associated query request-queue of the service-bus.
+        /// </summary>
+        /// <param name="endpoint">The endpoint to connect.</param>
+        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <returns>The connection that has been made.</returns>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="endpoint"/> is not supported by this client.
+        /// </exception>
+        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryRequestQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
+            throw NewEndpointNotSupportedException(endpoint, name);
+
+        /// <summary>
+        /// Connects the specified <paramref name="endpoint"/> to the associated query response-queue of the service-bus.
+        /// </summary>
+        /// <param name="endpoint">The endpoint to connect.</param>
+        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <returns>The connection that has been made.</returns>
+        /// <exception cref="ArgumentException">
+        /// The specified <paramref name="endpoint"/> is not supported by this client.
+        /// </exception>
+        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryResponseQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
+            throw NewEndpointNotSupportedException(endpoint, name);
+
+        /// <summary>
+        /// Creates and returns an exception that can be thrown when an attempt is made to connect to the specified
+        /// <paramref name="endpoint"/> while this endpoint is not supported (e.g. the message kind is not supported).
+        /// </summary>
+        /// <param name="endpoint">The endpoint that is not supported by this client.</param>
+        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <returns>A new exception that indicates that the specified <paramref name="endpoint"/> is not supported.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="endpoint"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        protected static Exception NewEndpointNotSupportedException(IMicroServiceBusEndpoint endpoint, string name)
+        {
+            if (endpoint == null)
+            {
+                throw new ArgumentNullException(nameof(endpoint));
+            }
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+            var messageFormat = ExceptionMessages.MicroServiceBusClient_EndpointNotSupported;
+            var message = string.Format(messageFormat, endpoint, name);
+            return new ArgumentException(message, nameof(endpoint));
+        }
+
+        #endregion
 
         #region [====== SendAsync ======]
 
@@ -123,89 +293,6 @@ namespace Kingo.MicroServices.Controllers
         /// </summary>
         /// <param name="event">The event to publish.</param>
         protected abstract Task PublishAsync(TMessage @event);
-
-        #endregion
-
-        #region [====== ConnectToEndpointAsync ======]
-
-        /// <inheritdoc />
-        public async Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint)
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
-            if (endpoint == null)
-            {
-                throw new ArgumentNullException(nameof(endpoint));
-            }
-            await _lock.WaitAsync();
-
-            try
-            {
-                _connections.Add(await ConnectToQueueAsync(endpoint));
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }
-
-        private Task<IMicroServiceBusConnection> ConnectToQueueAsync(IMicroServiceBusEndpoint endpoint)
-        {
-            switch (endpoint.MessageKind)
-            {
-                case MessageKind.Command:
-                    return ConnectToCommandQueueAsync(endpoint);
-                case MessageKind.Event:
-                    return ConnectToEventQueueAsync(endpoint);
-                case MessageKind.QueryRequest:
-                    return ConnectToQueryRequestQueueAsync(endpoint);
-                case MessageKind.QueryResponse:
-                    return ConnectToQueryResponseQueueAsync(endpoint);
-                default:
-                    throw NewMessageKindNotSupportedException(endpoint);
-            }
-        }
-
-        /// <summary>
-        /// Connects the specified <paramref name="endpoint"/> to the associated command-queue of the service-bus.
-        /// </summary>
-        /// <param name="endpoint">The endpoint to connect.</param>
-        /// <returns>The connection that has been made.</returns>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToCommandQueueAsync(IMicroServiceBusEndpoint endpoint) =>
-            throw NewMessageKindNotSupportedException(endpoint);
-
-        /// <summary>
-        /// Connects the specified <paramref name="endpoint"/> to the associated event-queue of the service-bus.
-        /// </summary>
-        /// <param name="endpoint">The endpoint to connect.</param>
-        /// <returns>The connection that has been made.</returns>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToEventQueueAsync(IMicroServiceBusEndpoint endpoint) =>
-            throw NewMessageKindNotSupportedException(endpoint);
-
-        /// <summary>
-        /// Connects the specified <paramref name="endpoint"/> to the associated query request-queue of the service-bus.
-        /// </summary>
-        /// <param name="endpoint">The endpoint to connect.</param>
-        /// <returns>The connection that has been made.</returns>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryRequestQueueAsync(IMicroServiceBusEndpoint endpoint) =>
-            throw NewMessageKindNotSupportedException(endpoint);
-
-        /// <summary>
-        /// Connects the specified <paramref name="endpoint"/> to the associated query response-queue of the service-bus.
-        /// </summary>
-        /// <param name="endpoint">The endpoint to connect.</param>
-        /// <returns>The connection that has been made.</returns>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryResponseQueueAsync(IMicroServiceBusEndpoint endpoint) =>
-            throw NewMessageKindNotSupportedException(endpoint);
-
-        private static Exception NewMessageKindNotSupportedException(IMicroServiceBusEndpoint endpoint)
-        {
-            var messageFormat = ExceptionMessages.MicroServiceBusClient_MessageKindNotSupported;
-            var message = string.Format(messageFormat, endpoint, endpoint.MessageKind);
-            return new ArgumentException(message, nameof(endpoint));
-        }
 
         #endregion
 

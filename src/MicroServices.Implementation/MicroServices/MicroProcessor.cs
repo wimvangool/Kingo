@@ -86,6 +86,9 @@ namespace Kingo.MicroServices
 
         #region [====== Options ======]
 
+        string IMicroServiceBusProcessor.ServiceName =>
+            Options.Endpoints.ServiceName;
+
         internal IMicroProcessorOptions Options =>
             _options.Value;
 
@@ -159,40 +162,40 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
-            ExecuteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token));
+            ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token));
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
-            ExecuteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token));
+            ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token));
 
         /// <inheritdoc />
         public Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
-            ExecuteOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token));
+            ExecuteReadOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token));
 
         /// <inheritdoc />
         public Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
-            ExecuteOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token));
+            ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token));
 
         #endregion
 
         #region [====== ExecuteAsync (Operations) ======]
 
         /// <summary>
-        /// Executes the specified <paramref name="operation"/> and returns its result.
+        /// Executes the specified (write) <paramref name="operation"/> and returns its result.
         /// </summary>        
         /// <param name="operation">The operation to execute.</param>
         /// <returns>The result of the operation.</returns>
-        protected internal virtual Task<MessageHandlerOperationResult> ExecuteOperationAsync(MessageHandlerOperation operation) =>
-            ExecuteOperationAsync<MessageHandlerOperationResult>(operation);
+        protected internal virtual Task<MessageHandlerOperationResult> ExecuteWriteOperationAsync(MessageHandlerOperation operation) =>
+            ExecuteOperationAsync(operation);
 
         /// <summary>
-        /// Executes the specified <paramref name="operation"/> and returns its result.
+        /// Executes the specified (read) <paramref name="operation"/> and returns its result.
         /// </summary>
         /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
         /// <param name="operation">The operation to execute.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<QueryOperationResult<TResponse>> ExecuteOperationAsync<TResponse>(QueryOperation<TResponse> operation) =>
-            ExecuteOperationAsync<QueryOperationResult<TResponse>>(operation);
+        protected virtual Task<QueryOperationResult<TResponse>> ExecuteReadOperationAsync<TResponse>(QueryOperation<TResponse> operation) =>
+            ExecuteOperationAsync(operation);
 
         /// <summary>
         /// Executes the specified <paramref name="operation"/> and returns its result.

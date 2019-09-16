@@ -126,8 +126,8 @@
   <data name="EndpointNameFormat_UnknownPlaceholderName" xml:space="preserve">
     <value>Unknown placeholder specified: '{0}'.</value>
   </data>
-  <data name="MicroServiceBusClient_MessageKindNotSupported" xml:space="preserve">
-    <value>Cannot connect endpoint '{0}' to the service-bus because the specified message-kind ({1}) is not supported.</value>
+  <data name="MicroServiceBusClient_EndpointNotSupported" xml:space="preserve">
+    <value>Cannot connect endpoint '{0}' (Name = {1}) to the service-bus because it is not supported by this client.</value>
   </data>
   <data name="MicroServiceBusController_AlreadyStarted" xml:space="preserve">
     <value>Controller of type '{0}' cannot be started because it has already been started.</value>

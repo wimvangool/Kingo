@@ -195,13 +195,13 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMicroServiceBusEndpoints_ReturnsEventHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeDoesNotEndWithCommand()
+        public void CreateMicroServiceBusEndpoints_ReturnsUnspecifiedHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeDoesNotEndWithCommand()
         {
             ProcessorBuilder.Components.AddMessageHandler<ImplicitEventHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
-            Assert.AreEqual(MessageKind.Event, endpoint.MessageKind);
+            Assert.AreEqual(MessageKind.Unspecified, endpoint.MessageKind);
         }
 
         [TestMethod]
@@ -224,35 +224,17 @@ namespace Kingo.MicroServices.Controllers
             Assert.AreEqual(MessageKind.Command, endpoint.MessageKind);
         }
 
-        [TestMethod]        
-        public void CreateMicroServiceBusEndpoints_Returns_IfCustomMessageKindResolverReturnsUnspecified_And_NameOfMessageTypeEndsWithCommand()
+        [TestMethod]
+        public void CreateMicroServiceBusEndpoints_ReturnsCustomMessageKind_IfCustomMessageKindResolver_ReturnsUnknownMessageKind()
         {
-            ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.Unspecified);
+            var messageKind = (MessageKind) (-1);
+
+            ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(messageKind);
             ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
-            Assert.AreEqual(MessageKind.Command, endpoint.MessageKind);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMicroServiceBusEndpoints_Throws_IfCustomMessageKindResolver_ReturnsRequest()
-        {
-            ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(MessageKind.QueryRequest);
-            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
-
-            CreateProcessor().CreateMicroServiceBusEndpoints().Single().IgnoreValue();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMicroServiceBusEndpoints_Throws_IfCustomMessageKindResolver_ReturnsUnknownMessageKind()
-        {
-            ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver((MessageKind) (-1));
-            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
-
-            CreateProcessor().CreateMicroServiceBusEndpoints().Single().IgnoreValue();
+            Assert.AreEqual(messageKind, endpoint.MessageKind);
         }
 
         #endregion

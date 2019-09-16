@@ -64,7 +64,7 @@ namespace Kingo.MicroServices
             // the infrastructure does not create a scope upon receiving a new message (like in ASP.NET).
             using (_processor.ServiceProvider.CreateScope())
             {
-                return await _processor.ExecuteOperationAsync(CreateOperation(message, token));
+                return await _processor.ExecuteWriteOperationAsync(CreateOperation(message, token));
             }
         }
 

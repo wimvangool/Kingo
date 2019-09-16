@@ -32,6 +32,10 @@ namespace Kingo.MicroServices.Controllers
             _nameFormatMapping = new Dictionary<Type, EndpointNameFormat>();
         }
 
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"{nameof(DefaultNameFormat)} = {DefaultNameFormat}, {_nameFormatMapping.Count} specific format(s) specified.";
+
         /// <summary>
         /// Returns the default name-format of an endpoint; this format is applied when
         /// a specific name-format for a certain message is not specified.

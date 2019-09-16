@@ -88,11 +88,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; to the service-bus because the specified message-kind ({1}) is not supported..
+        ///   Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; (Name = {1}) to the service-bus because it is not supported by this client..
         /// </summary>
-        internal static string MicroServiceBusClient_MessageKindNotSupported {
+        internal static string MicroServiceBusClient_EndpointNotSupported {
             get {
-                return ResourceManager.GetString("MicroServiceBusClient_MessageKindNotSupported", resourceCulture);
+                return ResourceManager.GetString("MicroServiceBusClient_EndpointNotSupported", resourceCulture);
             }
         }
         

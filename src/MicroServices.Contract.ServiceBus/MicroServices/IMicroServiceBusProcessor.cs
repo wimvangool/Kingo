@@ -11,6 +11,14 @@ namespace Kingo.MicroServices
     public interface IMicroServiceBusProcessor
     {
         /// <summary>
+        /// Returns the name of the service.
+        /// </summary>
+        string ServiceName
+        {
+            get;
+        }
+
+        /// <summary>
         /// Returns the service provider the processor uses to resolve its dependencies.
         /// </summary>
         IServiceProvider ServiceProvider
