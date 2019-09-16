@@ -235,21 +235,18 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         private readonly IMicroServiceBusProcessor _processor;
-        private readonly IMicroServiceBus _bus;
         private State _state;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroServiceBusController" /> class.
         /// </summary>
         /// <param name="processor">The processor that will be processing all commands and/or events.</param>
-        /// <param name="bus">The bus that will be used to publish all new events.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="processor"/> or <paramref name="bus"/> is <c>null</c>.
+        /// <paramref name="processor"/> is <c>null</c>.
         /// </exception>
-        protected MicroServiceBusController(IMicroServiceBusProcessor processor, IMicroServiceBus bus)
+        protected MicroServiceBusController(IMicroServiceBusProcessor processor)
         {
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
-            _bus = bus ?? throw new ArgumentNullException(nameof(bus));
             _state = new StoppedState(this);
         }
 
@@ -338,7 +335,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw NewObjectDisposedException();
             }
-            var client = await CreateClientAsync(_bus).ConfigureAwait(false);
+            var client = await CreateClientAsync().ConfigureAwait(false);
 
             if (IsCancellationRequested(token, ref client))
             {
@@ -346,7 +343,7 @@ namespace Kingo.MicroServices.Controllers
             }
             foreach (var endpoint in _processor.CreateMicroServiceBusEndpoints())
             {
-                await ConnectToEndpointAsync(client, endpoint).OrAbort(token).ConfigureAwait(false);
+                await client.ConnectToEndpointAsync(endpoint).OrAbort(token).ConfigureAwait(false);
 
                 if (IsCancellationRequested(token, ref client))
                 {
@@ -372,23 +369,8 @@ namespace Kingo.MicroServices.Controllers
         /// Creates and returns a new <see cref="IMicroServiceBusClient"/> that can be used send and receive
         /// messages to and from a service-bus.
         /// </summary>
-        /// <param name="bus">
-        /// The bus that will dispatch all command and events that are produced as output.
-        /// </param>
         /// <returns>A new client.</returns>
-        protected abstract Task<IMicroServiceBusClient> CreateClientAsync(IMicroServiceBus bus);
-
-        private Task ConnectToEndpointAsync(IMicroServiceBusClient client, IMicroServiceBusEndpoint endpoint)
-        {
-            //switch (endpoint.MessageKind)
-            //{
-            //    case MessageKind.Command:
-
-            //}
-            throw new NotImplementedException();
-        }
-
-        //protected virtual string DetermineCommandEndpointName(IMicroServiceBusEndpoint endpoint)
+        protected abstract Task<IMicroServiceBusClient> CreateClientAsync();
 
         #endregion
 

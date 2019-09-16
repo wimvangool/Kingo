@@ -17,8 +17,8 @@ namespace Kingo.MicroServices.Controllers
         {
             private readonly IInstanceCollector _instances;
 
-            protected AbstractController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
-                base(processor, bus)
+            protected AbstractController(IMicroProcessor processor, IInstanceCollector instances) :
+                base(processor)
             {
                 _instances = instances;
             }
@@ -35,34 +35,34 @@ namespace Kingo.MicroServices.Controllers
                 return Task.CompletedTask;
             }
 
-            protected override Task<IMicroServiceBusClient> CreateClientAsync(IMicroServiceBus bus) =>
+            protected override Task<IMicroServiceBusClient> CreateClientAsync() =>
                 throw new NotSupportedException();
         }
 
         private sealed class GenericController<T> : AbstractController
         {
-            public GenericController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
-                base(processor, bus, instances) { }
+            public GenericController(IMicroProcessor processor, IInstanceCollector instances) :
+                base(processor, instances) { }
         }
 
         [MicroProcessorComponent(ServiceLifetime.Transient)]
         private sealed class TransientController : AbstractController
         {
-            public TransientController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
-                base(processor, bus, instances) { }
+            public TransientController(IMicroProcessor processor, IInstanceCollector instances) :
+                base(processor, instances) { }
         }
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ScopedController : AbstractController
         {
-            public ScopedController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
-                base(processor, bus, instances) { }
+            public ScopedController(IMicroProcessor processor, IInstanceCollector instances) :
+                base(processor, instances) { }
         }
         
         private sealed class SingletonController : AbstractController
         {
-            public SingletonController(IMicroProcessor processor, IMicroServiceBus bus, IInstanceCollector instances) :
-                base(processor, bus, instances) { }
+            public SingletonController(IMicroProcessor processor, IInstanceCollector instances) :
+                base(processor, instances) { }
         }
 
         #endregion

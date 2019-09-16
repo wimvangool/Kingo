@@ -26,14 +26,6 @@ namespace Kingo.MicroServices.Controllers
             _nameResolverMap = new Lazy<Dictionary<MessageKind, EndpointNameResolver>>(CreateNameResolverMap);
         }
 
-        /// <summary>
-        /// The bus to which all events that are created when processing command or events should be published.
-        /// </summary>
-        protected abstract IMicroServiceBus Bus
-        {
-            get;
-        }
-
         #region [====== NameResolvers ======]
 
         /// <summary>
@@ -112,91 +104,95 @@ namespace Kingo.MicroServices.Controllers
 
         private Task<IMicroServiceBusConnection> ConnectToQueueAsync(IMicroServiceBusEndpoint endpoint)
         {
-            switch (endpoint.MessageKind)
+            if (NameResolverMap.TryGetValue(endpoint.MessageKind, out var nameResolver))
             {
-                case MessageKind.Command:
-                    return ConnectToCommandQueueAsync(endpoint, NameResolverMap[MessageKind.Command].ResolveName(endpoint));
-                case MessageKind.Event:
-                    return ConnectToEventQueueAsync(endpoint, NameResolverMap[MessageKind.Event].ResolveName(endpoint));
-                case MessageKind.QueryRequest:
-                    return ConnectToQueryRequestQueueAsync(endpoint, NameResolverMap[MessageKind.QueryRequest].ResolveName(endpoint));
-                case MessageKind.QueryResponse:
-                    return ConnectToQueryResponseQueueAsync(endpoint, NameResolverMap[MessageKind.QueryResponse].ResolveName(endpoint));
-                default:
-                    throw NewEndpointNotSupportedException(endpoint, string.Empty);
+                var endpointName = nameResolver.ResolveName(endpoint);
+
+                switch (endpoint.MessageKind)
+                {
+                    case MessageKind.Command:
+                        return ConnectToCommandQueueAsync(endpoint, endpointName);
+                    case MessageKind.Event:
+                        return ConnectToEventQueueAsync(endpoint, endpointName);
+                    case MessageKind.QueryRequest:
+                        return ConnectToQueryRequestQueueAsync(endpoint, endpointName);
+                    case MessageKind.QueryResponse:
+                        return ConnectToQueryResponseQueueAsync(endpoint, endpointName);
+                }
             }
+            throw NewEndpointNotSupportedException(endpoint, string.Empty);
         }
 
         /// <summary>
         /// Connects the specified <paramref name="endpoint"/> to the associated command-queue of the service-bus.
         /// </summary>
         /// <param name="endpoint">The endpoint to connect.</param>
-        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <param name="endpointName">Name of the endpoint/queue to connect to.</param>
         /// <returns>The connection that has been made.</returns>
         /// <exception cref="ArgumentException">
         /// The specified <paramref name="endpoint"/> is not supported by this client.
         /// </exception>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToCommandQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
-            throw NewEndpointNotSupportedException(endpoint, name);
+        protected virtual Task<IMicroServiceBusConnection> ConnectToCommandQueueAsync(IMicroServiceBusEndpoint endpoint, string endpointName) =>
+            throw NewEndpointNotSupportedException(endpoint, endpointName);
 
         /// <summary>
         /// Connects the specified <paramref name="endpoint"/> to the associated event-queue of the service-bus.
         /// </summary>
         /// <param name="endpoint">The endpoint to connect.</param>
-        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <param name="endpointName">Name of the endpoint/queue to connect to.</param>
         /// <returns>The connection that has been made.</returns>
         /// <exception cref="ArgumentException">
         /// The specified <paramref name="endpoint"/> is not supported by this client.
         /// </exception>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToEventQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
-            throw NewEndpointNotSupportedException(endpoint, name);
+        protected virtual Task<IMicroServiceBusConnection> ConnectToEventQueueAsync(IMicroServiceBusEndpoint endpoint, string endpointName) =>
+            throw NewEndpointNotSupportedException(endpoint, endpointName);
 
         /// <summary>
         /// Connects the specified <paramref name="endpoint"/> to the associated query request-queue of the service-bus.
         /// </summary>
         /// <param name="endpoint">The endpoint to connect.</param>
-        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <param name="endpointName">Name of the endpoint/queue to connect to.</param>
         /// <returns>The connection that has been made.</returns>
         /// <exception cref="ArgumentException">
         /// The specified <paramref name="endpoint"/> is not supported by this client.
         /// </exception>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryRequestQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
-            throw NewEndpointNotSupportedException(endpoint, name);
+        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryRequestQueueAsync(IMicroServiceBusEndpoint endpoint, string endpointName) =>
+            throw NewEndpointNotSupportedException(endpoint, endpointName);
 
         /// <summary>
         /// Connects the specified <paramref name="endpoint"/> to the associated query response-queue of the service-bus.
         /// </summary>
         /// <param name="endpoint">The endpoint to connect.</param>
-        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <param name="endpointName">Name of the endpoint/queue to connect to.</param>
         /// <returns>The connection that has been made.</returns>
         /// <exception cref="ArgumentException">
         /// The specified <paramref name="endpoint"/> is not supported by this client.
         /// </exception>
-        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryResponseQueueAsync(IMicroServiceBusEndpoint endpoint, string name) =>
-            throw NewEndpointNotSupportedException(endpoint, name);
+        protected virtual Task<IMicroServiceBusConnection> ConnectToQueryResponseQueueAsync(IMicroServiceBusEndpoint endpoint, string endpointName) =>
+            throw NewEndpointNotSupportedException(endpoint, endpointName);
 
         /// <summary>
         /// Creates and returns an exception that can be thrown when an attempt is made to connect to the specified
         /// <paramref name="endpoint"/> while this endpoint is not supported (e.g. the message kind is not supported).
         /// </summary>
         /// <param name="endpoint">The endpoint that is not supported by this client.</param>
-        /// <param name="name">Name of the endpoint/queue to connect to.</param>
+        /// <param name="endpointName">Name of the endpoint/queue to connect to.</param>
         /// <returns>A new exception that indicates that the specified <paramref name="endpoint"/> is not supported.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="endpoint"/> or <paramref name="name"/> is <c>null</c>.
+        /// <paramref name="endpoint"/> or <paramref name="endpointName"/> is <c>null</c>.
         /// </exception>
-        protected static Exception NewEndpointNotSupportedException(IMicroServiceBusEndpoint endpoint, string name)
+        protected static Exception NewEndpointNotSupportedException(IMicroServiceBusEndpoint endpoint, string endpointName)
         {
             if (endpoint == null)
             {
                 throw new ArgumentNullException(nameof(endpoint));
             }
-            if (name == null)
+            if (endpointName == null)
             {
-                throw new ArgumentNullException(nameof(name));
+                throw new ArgumentNullException(nameof(endpointName));
             }
             var messageFormat = ExceptionMessages.MicroServiceBusClient_EndpointNotSupported;
-            var message = string.Format(messageFormat, endpoint, name);
+            var message = string.Format(messageFormat, endpoint, endpointName);
             return new ArgumentException(message, nameof(endpoint));
         }
 

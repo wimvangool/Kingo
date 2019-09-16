@@ -19,16 +19,16 @@ namespace Kingo.MicroServices.Controllers
             private int _disposeCount;
 
             public MicroServiceBusControllerStub(IMicroServiceBusProcessor processor, MicroServiceBusControllerTest test, CancellationTokenSource tokenSource = null) :
-                base(processor, test.Bus)
+                base(processor)
             {
                 _test = test;
                 _tokenSource = tokenSource;
             }
 
-            protected override Task<IMicroServiceBusClient> CreateClientAsync(IMicroServiceBus bus)
+            protected override Task<IMicroServiceBusClient> CreateClientAsync()
             {
                 _tokenSource?.Cancel();
-                return Task.FromResult(_test.CreateClient(bus));
+                return Task.FromResult(_test.CreateClient());
             }
 
             protected override void Dispose(bool disposing)
@@ -62,16 +62,6 @@ namespace Kingo.MicroServices.Controllers
             private int _sendCount;
             private int _publishCount;
             private int _disposeCount;
-
-            public MicroServiceBusClientStub(IMicroServiceBus bus)
-            {
-                Bus = bus;
-            }
-
-            protected override IMicroServiceBus Bus
-            {
-                get;
-            }
 
             protected override Task SendAsync(int command)
             {
@@ -107,25 +97,20 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         private readonly Mock<IMicroServiceBusProcessor> _processorMock;
-        private readonly Mock<IMicroServiceBus> _busMock;
         private readonly List<MicroServiceBusClientStub> _clientStubs;
 
         public MicroServiceBusControllerTest()
         {
             _processorMock = new Mock<IMicroServiceBusProcessor>();
-            _busMock = new Mock<IMicroServiceBus>();
             _clientStubs = new List<MicroServiceBusClientStub>();
         }
 
         private IMicroServiceBusProcessor Processor =>
             _processorMock.Object;
 
-        private IMicroServiceBus Bus =>
-            _busMock.Object;
-
-        private IMicroServiceBusClient CreateClient(IMicroServiceBus bus)
+        private IMicroServiceBusClient CreateClient()
         {
-            var client = new MicroServiceBusClientStub(bus);
+            var client = new MicroServiceBusClientStub();
             _clientStubs.Add(client);
             return client;
         }

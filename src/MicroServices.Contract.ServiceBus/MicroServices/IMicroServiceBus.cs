@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents a service bus that can publish messages.
