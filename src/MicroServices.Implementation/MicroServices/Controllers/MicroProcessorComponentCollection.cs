@@ -6,6 +6,7 @@ using System.Security;
 using System.Threading.Tasks;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Kingo.MicroServices.Controllers
 {
@@ -324,6 +325,58 @@ namespace Kingo.MicroServices.Controllers
         /// </exception>
         public bool AddQuery(Type type) =>
             AddComponent(type, QueryType.FromComponent);
+
+        #endregion
+
+        #region [====== AddMicroServiceBusController ======]
+
+        /// <summary>
+        /// Adds <typeparamref name="TController"/> as a <see cref="IHostedService" />.
+        /// If <paramref name="isMainController"/> is <c>true</c>, the controller is also registered as
+        /// a <see cref="IMicroServiceBus" />.
+        /// </summary>
+        /// <typeparam name="TController">The type to register as a controller.</typeparam>
+        /// <param name="isMainController">
+        /// Indicates whether or not the specified controller is owned by the current service.
+        /// If <c>true</c>, the specified controller <typeparamref name="TController"/> will be registered
+        /// as the <see cref="IMicroServiceBus"/> of this service.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if <typeparamref name="TController"/> was added as a controller; otherwise <c>false</c>.
+        /// </returns>
+        public bool AddMicroServiceBusController<TController>(bool isMainController = false) where TController : MicroServiceBusController =>
+            AddMicroServiceBusController(typeof(TController), isMainController);
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a <see cref="IHostedService" /> if and only if
+        /// <paramref name="type"/> is a <see cref="MicroServiceBusController" />.
+        /// If <paramref name="isMainController"/> is <c>true</c>, the controller is also registered as
+        /// a <see cref="IMicroServiceBus" />.
+        /// </summary>
+        /// <param name="type">The type to register as a controller.</param>
+        /// <param name="isMainController">
+        /// Indicates whether or not the specified controller is owned by the current service.
+        /// If <c>true</c>, the specified controller <paramref name="type"/> will be registered as the <see cref="IMicroServiceBus"/>
+        /// of this service.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="type"/> was added as a controller; otherwise <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public bool AddMicroServiceBusController(Type type, bool isMainController = false)
+        {
+            if (AddComponent(type, MicroServiceBusControllerType.FromComponent))
+            {
+                if (isMainController)
+                {
+                    AddMicroServiceBus(type);
+                }
+                return true;
+            }
+            return false;
+        }
 
         #endregion
 
