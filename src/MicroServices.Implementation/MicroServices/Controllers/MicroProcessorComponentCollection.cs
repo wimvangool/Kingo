@@ -80,44 +80,6 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== AddComponentsTo ======]
 
-        private sealed class MicroServiceBusRelay : IMicroServiceBus
-        {
-            private readonly Lazy<IMicroServiceBus> _bus;
-
-            public MicroServiceBusRelay(IServiceProvider serviceProvider, IEnumerable<Type> serviceBusTypes)
-            {
-                _bus = new Lazy<IMicroServiceBus>(() => CreateServiceBus(serviceProvider, serviceBusTypes), true);
-            }
-
-            private IMicroServiceBus Bus
-            {
-                get
-                {
-                    try
-                    {
-                        return _bus.Value;
-                    }
-                    catch (InvalidOperationException exception)
-                    {
-                        throw NewCircularReferenceDetectedException(exception);
-                    }
-                }
-            }
-
-            public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
-                Bus.SendAsync(commands);
-
-            public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
-                Bus.PublishAsync(events);
-
-            private static Exception NewCircularReferenceDetectedException(Exception innerException)
-            {
-                var messageFormat = ExceptionMessages.MicroServiceBusRelay_CircularReferenceDetected;
-                var message = string.Format(messageFormat, typeof(IMicroServiceBus).FriendlyName());
-                return new InvalidOperationException(message, innerException);
-            }
-        }
-
         // Before registering components, we first sanitize the components that were added to the collection.
         // First, we merge all components of the same type, so that each type is only registered once.
         // Then, we check which components are IMicroServiceBus-components and replace their IMicroServiceBus-mapping
@@ -144,23 +106,7 @@ namespace Kingo.MicroServices.Controllers
             }
             return services
                 .AddComponents(componentsToAdd)
-                .AddSingleton<IMicroServiceBus>(provider => new MicroServiceBusRelay(provider, serviceBusTypes));
-        }
-
-        private static IMicroServiceBus CreateServiceBus(IServiceProvider serviceProvider, IEnumerable<Type> serviceBusTypes) =>
-            CreateServiceBus(serviceBusTypes.Select(serviceProvider.GetRequiredService).OfType<IMicroServiceBus>().ToArray());
-
-        private static IMicroServiceBus CreateServiceBus(IMicroServiceBus[] serviceBusCollection)
-        {
-            if (serviceBusCollection.Length == 0)
-            {
-                return new MicroServiceBusStub();
-            }
-            if (serviceBusCollection.Length == 1)
-            {
-                return serviceBusCollection[0];
-            }
-            return new MicroServiceBusComposite(serviceBusCollection);
+                .AddSingleton<IMicroServiceBus>(provider => new MicroServiceBus(provider, serviceBusTypes));
         }
 
         // When adding/registering all components to a service collection, we first need to merge all the collections,

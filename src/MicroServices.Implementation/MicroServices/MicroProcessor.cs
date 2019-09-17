@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents a basic implementation of the <see cref="IMicroProcessor" /> interface.
+    /// Represents a basic implementation of a <see cref="IMicroProcessor" />.
     /// </summary>
     public class MicroProcessor : IMicroProcessor
     {
@@ -66,6 +66,7 @@ namespace Kingo.MicroServices
         private readonly Context<IMicroProcessorServiceProvider> _serviceProviderContext;
         private readonly Context<IPrincipal> _principalContext;
         private readonly Lazy<IMicroProcessorOptions> _options;
+        private readonly Lazy<IMicroServiceBus> _serviceBus;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
@@ -78,6 +79,7 @@ namespace Kingo.MicroServices
             _serviceProviderContext = new Context<IMicroProcessorServiceProvider>(CreateServiceProvider(serviceProvider));
             _principalContext = new Context<IPrincipal>();
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
+            _serviceBus = new Lazy<IMicroServiceBus>(ResolveMicroServiceBus, true);
         }
 
         /// <inheritdoc />
@@ -143,7 +145,14 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== MethodEndpoints ======]        
+        #region [====== MicroServiceBus ======]        
+
+        /// <summary>
+        /// Resolves the <see cref="IMicroServiceBus"/> that is used to publish all produced commands and events.
+        /// </summary>
+        /// <returns>A resolved <see cref="IMicroServiceBus"/>.</returns>
+        protected virtual IMicroServiceBus ResolveMicroServiceBus() =>
+            MicroServiceBus.ResolveMicroServiceBus(this);
 
         /// <inheritdoc />
         public virtual IEnumerable<IMicroServiceBusEndpoint> CreateMicroServiceBusEndpoints()
@@ -181,12 +190,20 @@ namespace Kingo.MicroServices
         #region [====== ExecuteAsync (Operations) ======]
 
         /// <summary>
-        /// Executes the specified (write) <paramref name="operation"/> and returns its result.
+        /// Executes the specified (write) <paramref name="operation"/> and returns its result. If the operation
+        /// produces any commands or events, all messages are sent or published on the resolved <see cref="IMicroServiceBus" />.
         /// </summary>        
         /// <param name="operation">The operation to execute.</param>
         /// <returns>The result of the operation.</returns>
-        protected internal virtual Task<MessageHandlerOperationResult> ExecuteWriteOperationAsync(MessageHandlerOperation operation) =>
-            ExecuteOperationAsync(operation);
+        protected internal virtual async Task<MessageHandlerOperationResult> ExecuteWriteOperationAsync(MessageHandlerOperation operation)
+        {
+            var result = await ExecuteOperationAsync(operation);
+            if (result.Messages.Count > 0)
+            {
+                await ResolveMicroServiceBus().DispatchAsync(result.Messages);
+            }
+            return result;
+        }
 
         /// <summary>
         /// Executes the specified (read) <paramref name="operation"/> and returns its result.

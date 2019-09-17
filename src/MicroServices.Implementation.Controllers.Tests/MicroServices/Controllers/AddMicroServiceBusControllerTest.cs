@@ -217,28 +217,6 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public async Task AddMicroServiceBus_DoesNotRegisterControllerAsMicroServiceBus_IfIsMainControllerIsFalse()
-        {
-            ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
-            ProcessorBuilder.Components.AddMicroServiceBusController<ScopedController>();
-            ProcessorBuilder.Components.AddMicroServiceBusController<SingletonController>();
-
-            var processor = CreateProcessor();
-            var bus = processor.ServiceProvider.GetRequiredService<IMicroServiceBus>();
-
-            try
-            {
-                await bus.PublishAsync(new object());
-            }
-            catch (InvalidOperationException exception)
-            {
-                Assert.AreEqual("Cannot publish specified event(s) because no instance or type implementing the 'IMicroServiceBus'-interface has been registered.", exception.Message);
-                throw;
-            }
-        }
-
-        [TestMethod]
         public async Task AddMicroServiceBus_RegistersControllerAsMicroServiceBus_IfIsMainControllerIsTrueForOneController()
         {
             ProcessorBuilder.Components.AddMicroServiceBusController<TransientController>();
@@ -269,8 +247,6 @@ namespace Kingo.MicroServices.Controllers
 
             instances.AssertInstanceCountIs(5);
         }
-
-
 
         private static async Task StartAllControllers(IMicroProcessor processor, int expectedServiceCount = 1)
         {
