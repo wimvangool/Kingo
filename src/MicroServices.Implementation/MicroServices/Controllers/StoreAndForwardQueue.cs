@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +19,26 @@ namespace Kingo.MicroServices.Controllers
     [MicroProcessorComponent(ServiceLifetime.Singleton)]
     public abstract class StoreAndForwardQueue : Disposable, IMicroServiceBus, IHostedService
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StoreAndForwardQueue" /> class.
+        /// </summary>
+        /// <param name="microServiceBus">The <see cref="IMicroServiceBus"/> to which all messages are to be forwarded.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="microServiceBus"/> is <c>null</c>.
+        /// </exception>
+        protected StoreAndForwardQueue(IMicroServiceBus microServiceBus)
+        {
+            MicroServiceBus = microServiceBus ?? throw new ArgumentNullException(nameof(microServiceBus));
+        }
+
+        /// <summary>
+        /// Returns the <see cref="IMicroServiceBus"/> to which all messages are to be forwarded.
+        /// </summary>
+        protected IMicroServiceBus MicroServiceBus
+        {
+            get;
+        }
+
         /// <summary>
         /// Starts the message pump of this queue.
         /// </summary>

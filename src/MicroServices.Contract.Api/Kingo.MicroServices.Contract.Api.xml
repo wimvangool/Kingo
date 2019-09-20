@@ -85,6 +85,27 @@
             This property should be used in combination with the <see cref="P:Kingo.MicroServices.ChildMemberAttribute.ErrorMessageResourceType"/>-property.
             </summary>
         </member>
+        <member name="T:Kingo.MicroServices.MicroServiceBusEndpointNameAttribute">
+            <summary>
+            When applied to a message or message handler, defines the name of this message type
+            or message handler type that is to be used in the name of the service bus endpoint,
+            if the name-format includes the name of a message or message handler.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroServiceBusEndpointNameAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MicroServiceBusEndpointNameAttribute" /> class.
+            </summary>
+            <param name="name">The name of the message or message handler.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="name"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:Kingo.MicroServices.MicroServiceBusEndpointNameAttribute.Name">
+            <summary>
+            The name of the message or message handler.
+            </summary>
+        </member>
         <member name="T:Kingo.MicroServices.ObjectExtensions">
             <summary>
             Contains extension-methods for every object.

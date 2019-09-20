@@ -137,7 +137,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== AddMessageHandlers (Lifetime) ======]
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void BuildServiceProvider_Throws_IfMessageHandlerHasInvalidLifetime()
         {
             ProcessorBuilder.Components.AddToSearchSet(typeof(InvalidLifetimeMessageHandler));

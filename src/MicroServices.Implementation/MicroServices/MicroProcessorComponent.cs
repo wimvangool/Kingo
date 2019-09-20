@@ -48,11 +48,11 @@ namespace Kingo.MicroServices
             _type;
 
         internal MicroProcessorComponent MergeWith(MicroProcessorComponent component) =>
-            new MicroProcessorComponent(this, _serviceTypes.Concat(component._serviceTypes));
+            Copy(_serviceTypes.Concat(component._serviceTypes));
 
         internal bool TryRemoveServiceType(Type serviceType, out MicroProcessorComponent component)
         {
-            var componentWithoutServiceType = new MicroProcessorComponent(this, _serviceTypes.Where(type => type != serviceType));
+            var componentWithoutServiceType = Copy(_serviceTypes.Where(type => type != serviceType));
             if (componentWithoutServiceType._serviceTypes.Length < _serviceTypes.Length)
             {
                 component = componentWithoutServiceType;
@@ -61,6 +61,14 @@ namespace Kingo.MicroServices
             component = null;
             return false;
         }
+
+        /// <summary>
+        /// Copies the current component while assigning the <paramref name="serviceTypes"/> to it.
+        /// </summary>
+        /// <param name="serviceTypes">A collection of service types to assign to the copied component.</param>
+        /// <returns>The copied component.</returns>
+        protected virtual MicroProcessorComponent Copy(IEnumerable<Type> serviceTypes) =>
+            new MicroProcessorComponent(this, serviceTypes);
 
         #region [====== IMicroProcessorComponentConfiguration ======]
 
@@ -79,6 +87,105 @@ namespace Kingo.MicroServices
                 return attribute;
             }
             return new MicroProcessorComponentAttribute();
+        }
+
+        #endregion
+
+        #region [====== AddTo ======]
+
+        /// <summary>
+        /// Adds this component to the specified <paramref name="services"/> with a mapping from all <see cref="ServiceTypes"/>.
+        /// </summary>
+        /// <param name="services">A collection of services this component will be added to.</param>
+        /// <param name="instance">
+        /// If specified, a direct mapping to this instance is made; otherwise a type
+        /// mapping with the appropriate <see cref="ServiceLifetime"/> is made.
+        /// </param>
+        /// <returns>The updated service collection.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="services"/> is <c>null</c>.
+        /// </exception>
+        public IServiceCollection AddTo(IServiceCollection services, object instance = null)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+            // First, we add mappings from the serviceTypes - which are presumably interfaces or abstract classes -
+            // to the component type by factory, so that at run-time they will all resolve the same instance if requested.
+            // This will ensure that no matter through which (service) type the component is resolved, it will always
+            // be resolved correctly (that is, with the appropriate lifetime).
+            foreach (var serviceType in ServiceTypes)
+            {
+                services = services.AddTransient(serviceType, provider => provider.GetRequiredService(Type));
+            }
+
+            // Secondly, we add the component by its own type.
+            // If no instance is provided, the component is registered with the specified lifetime.
+            if (instance == null)
+            {
+                switch (Lifetime)
+                {
+                    case ServiceLifetime.Transient:
+                        return AddTransientTypeMappingTo(services);
+                    case ServiceLifetime.Scoped:
+                        return AddScopedTypeMappingTo(services);
+                    case ServiceLifetime.Singleton:
+                        return AddSingletonTypeMappingTo(services);
+                    default:
+                        throw NewLifetimeNotSupportedException();
+                }
+            }
+            // If an instance is provided, the lifetime is always implicitly set to singleton (because by definition, you always
+            // resolve the same instance). However, the mapping itself uses Transient because that will trigger the provided factory
+            // for each invocation.
+            return services.AddTransient(Type, provider => instance);
+        }
+
+        /// <summary>
+        /// Adds a type-mapping to the specified <paramref name="services"/> for this component based on a transient lifetime.
+        /// </summary>
+        /// <param name="services">A collection of services this component will be added to.</param>
+        /// <returns>The updated service collection.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// This component does not support the <see cref="ServiceLifetime.Transient"/> lifetime.
+        /// </exception>
+        protected virtual IServiceCollection AddTransientTypeMappingTo(IServiceCollection services) =>
+            services.AddTransient(Type);
+
+        /// <summary>
+        /// Adds a type-mapping to the specified <paramref name="services"/> for this component based on a scoped lifetime.
+        /// </summary>
+        /// <param name="services">A collection of services this component will be added to.</param>
+        /// <returns>The updated service collection.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// This component does not support the <see cref="ServiceLifetime.Scoped"/> lifetime.
+        /// </exception>
+        protected virtual IServiceCollection AddScopedTypeMappingTo(IServiceCollection services) =>
+            services.AddScoped(Type);
+
+        /// <summary>
+        /// Adds a type-mapping to the specified <paramref name="services"/> for this component based on a singleton lifetime.
+        /// </summary>
+        /// <param name="services">A collection of services this component will be added to.</param>
+        /// <returns>The updated service collection.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// This component does not support the <see cref="ServiceLifetime.Singleton"/> lifetime.
+        /// </exception>
+        protected virtual IServiceCollection AddSingletonTypeMappingTo(IServiceCollection services) =>
+            services.AddSingleton(Type);
+
+        /// <summary>
+        /// Creates and returns an exception that indicates that this component
+        /// could not be added to a <see cref="IServiceCollection"/> because the <see cref="Lifetime"/> configured for
+        /// this component is not supported for this type.
+        /// </summary>
+        /// <returns>A new exception to throw.</returns>
+        protected Exception NewLifetimeNotSupportedException()
+        {
+            var messageFormat = ExceptionMessages.MicroProcessorComponent_InvalidComponentLifetime;
+            var message = string.Format(messageFormat, Type.FriendlyName(), Lifetime);
+            return new InvalidOperationException(message);
         }
 
         #endregion

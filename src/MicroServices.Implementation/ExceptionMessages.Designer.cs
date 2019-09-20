@@ -106,6 +106,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not add component of type &apos;{0}&apos; to the service collection because it is configured with an unsupported lifetime ({1}) for this type..
+        /// </summary>
+        internal static string MicroProcessorComponent_InvalidComponentLifetime {
+            get {
+                return ResourceManager.GetString("MicroProcessorComponent_InvalidComponentLifetime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot use instance of type &apos;{0}&apos; as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported..
         /// </summary>
         internal static string MicroProcessorComponent_TypeNotSupported {
@@ -117,18 +126,27 @@ namespace Kingo {
         /// <summary>
         ///   Looks up a localized string similar to Cannot publish the specified event(s) inside the constructor of a type that is registered as a &apos;{0}&apos;-type, because this causes a circular reference..
         /// </summary>
-        internal static string MicroServiceBus_CircularReferenceDetected {
+        internal static string MicroServiceBus_CircularDependencyDetected {
             get {
-                return ResourceManager.GetString("MicroServiceBus_CircularReferenceDetected", resourceCulture);
+                return ResourceManager.GetString("MicroServiceBus_CircularDependencyDetected", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Component of type &apos;{0}&apos; could not be added because it is configured with an invalid lifetime ({1})..
+        ///   Looks up a localized string similar to Cannot resolve queue of type &apos;{0}&apos; because the resolver cannot find the appropriate constructor. Please make sure this type declares exactly one public constructor..
         /// </summary>
-        internal static string ServiceCollectionExtensions_InvalidComponentLifetime {
+        internal static string StoreAndForwardQueueResolver_CannotFindConstructor {
             get {
-                return ResourceManager.GetString("ServiceCollectionExtensions_InvalidComponentLifetime", resourceCulture);
+                return ResourceManager.GetString("StoreAndForwardQueueResolver_CannotFindConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot resolve queue of type &apos;{0}&apos; because a circular dependency was detected in the pipeline..
+        /// </summary>
+        internal static string StoreAndForwardQueueResolver_CircularDependencyDetected {
+            get {
+                return ResourceManager.GetString("StoreAndForwardQueueResolver_CircularDependencyDetected", resourceCulture);
             }
         }
         

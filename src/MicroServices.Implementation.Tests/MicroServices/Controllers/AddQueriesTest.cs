@@ -155,7 +155,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== AddQueries (Lifetime) ======]
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void BuildServiceProvider_Throws_IfQueryHasInvalidLifetime()
         {
             ProcessorBuilder.Components.AddToSearchSet(typeof(InvalidLifetimeQuery));

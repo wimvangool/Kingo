@@ -29,14 +29,16 @@ namespace Kingo.MicroServices
                 }
                 catch (InvalidOperationException exception)
                 {
-                    throw NewCircularReferenceDetectedException(exception);
+                    throw NewCircularDependencyDetectedException(exception);
                 }
             }
         }
 
+        /// <inheritdoc />
         public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
             Bus.SendAsync(commands);
 
+        /// <inheritdoc />
         public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
             Bus.PublishAsync(events);
 
@@ -59,9 +61,9 @@ namespace Kingo.MicroServices
             return new MicroServiceBusComposite(serviceBusCollection);
         }
 
-        private static Exception NewCircularReferenceDetectedException(Exception innerException)
+        private static Exception NewCircularDependencyDetectedException(Exception innerException)
         {
-            var messageFormat = ExceptionMessages.MicroServiceBus_CircularReferenceDetected;
+            var messageFormat = ExceptionMessages.MicroServiceBus_CircularDependencyDetected;
             var message = string.Format(messageFormat, typeof(IMicroServiceBus).FriendlyName());
             return new InvalidOperationException(message, innerException);
         }

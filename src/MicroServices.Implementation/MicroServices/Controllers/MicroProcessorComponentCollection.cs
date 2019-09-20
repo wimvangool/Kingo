@@ -21,6 +21,7 @@ namespace Kingo.MicroServices.Controllers
         private readonly IServiceCollection _messageHandlerInstanceCollection;
 
         private readonly HashSet<MessageHandler> _messageHandlerTypes;
+        private readonly Stack<StoreAndForwardQueueType> _storeAndForwardQueueTypes;
         private readonly List<MicroProcessorComponent> _otherComponents;
         
         internal MicroProcessorComponentCollection()
@@ -30,6 +31,7 @@ namespace Kingo.MicroServices.Controllers
             _messageHandlerInstanceCollection = new ServiceCollection();
 
             _messageHandlerTypes = new HashSet<MessageHandler>();
+            _storeAndForwardQueueTypes = new Stack<StoreAndForwardQueueType>();
             _otherComponents = new List<MicroProcessorComponent>();
         }
 
@@ -81,15 +83,12 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== AddComponentsTo ======]
 
-        // Before registering components, we first sanitize the components that were added to the collection.
-        // First, we merge all components of the same type, so that each type is only registered once.
-        // Then, we check which components are IMicroServiceBus-components and replace their IMicroServiceBus-mapping
-        // with a single mapping to a MicroServiceBusRelay-instance. This mechanism allows any component to be injected
-        // with a single IMicroServiceBus-instance, even if there are multiple components that implement this interface.
-        // In addition, this mechanism allows IMicroServiceBus-components such as the MicroServiceBusControllers to
-        // be injected with an IMicroServiceBus-instance, where this would normally result in a circular dependency error.
         private IServiceCollection AddComponentsTo(IServiceCollection services)
         {
+            // When adding all (custom) components to the service collection, we first extract all types
+            // that have been added as an implementation of the IMicroServiceBus-interface. We then strip that
+            // mapping from the type, so that we can replace that mapping with a single MicroServiceBus-type
+            // that will delegate all work to the actual MicroServiceBus-implementations.
             var componentsToAdd = new List<MicroProcessorComponent>();
             var serviceBusTypes = new List<Type>();
 
@@ -105,9 +104,37 @@ namespace Kingo.MicroServices.Controllers
                     componentsToAdd.Add(component);
                 }
             }
+            // Secondly, we'll place the added StoreAndForwardQueue-types on top of the MicroServiceBus-implementation.
+            // We do this in reverse order compared to the order in which they were added to the collection, so that
+            // the following configuration...
+            // 
+            // Components.AddStoreAndForwardQueue<QueueOne>();
+            // Components.AddStoreAndForwardQueue<QueueTwo>();
+            // 
+            // ...will translate the following pipeline:
+            //
+            // QueueOne --> QueueTwo --> MicroServiceBus.
+            //
+            // Note that finally, the IMicroServiceBus-mapping will be configured such that it will resolve to the
+            // first item of the pipeline, which will be the first queue or just the MicroServiceBus-type if no queues
+            // were added.
+            IMicroServiceBusResolver microServiceBusResolver = new MicroServiceBusResolver(serviceBusTypes);
+
+            foreach (var queueType in StoreAndForwardQueues())
+            {
+                componentsToAdd.Add(queueType.AssignQueueTypeFactory(microServiceBusResolver = new StoreAndForwardQueueResolver(microServiceBusResolver, queueType.Type)));
+            }
             return services
                 .AddComponents(componentsToAdd)
-                .AddSingleton<IMicroServiceBus>(provider => new MicroServiceBus(provider, serviceBusTypes));
+                .AddSingleton(microServiceBusResolver.ResolveMicroServiceBus);
+        }
+
+        private IEnumerable<StoreAndForwardQueueType> StoreAndForwardQueues()
+        {
+            while (_storeAndForwardQueueTypes.Count > 0)
+            {
+                yield return _storeAndForwardQueueTypes.Pop();
+            }
         }
 
         // When adding/registering all components to a service collection, we first need to merge all the collections,
@@ -328,6 +355,42 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
+        #region [====== AddStoreAndForwardQueue ======]
+
+        /// <summary>
+        /// Adds <typeparamref name="TQueue"/> as a <see cref="StoreAndForwardQueue"/> that will be placed on top
+        /// of the <see cref="IMicroServiceBus"/> pipeline.
+        /// </summary>
+        /// <typeparam name="TQueue">The type to register as a controller.</typeparam>
+        /// <returns>
+        /// <c>true</c> if <typeparamref name="TQueue"/> was added as a controller; otherwise <c>false</c>.
+        /// </returns>
+        public bool AddStoreAndForwardQueue<TQueue>() where TQueue : StoreAndForwardQueue =>
+            AddStoreAndForwardQueue(typeof(TQueue));
+
+        /// <summary>
+        /// Adds the specified <paramref name="type"/> as a <see cref="StoreAndForwardQueue"/> that will be placed on top
+        /// of the <see cref="IMicroServiceBus"/> pipeline, if and only if <paramref name="type"/> is a <see cref="StoreAndForwardQueue"/>.
+        /// </summary>
+        /// <param name="type">The type to register as a queue.</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="type"/> was added as a queue; otherwise <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public bool AddStoreAndForwardQueue(Type type)
+        {
+            if (StoreAndForwardQueueType.IsStoreAndForwardQueue(type, out var queueType))
+            {
+                _storeAndForwardQueueTypes.Push(queueType);
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
         #region [====== AddMicroServiceBusController ======]
 
         /// <summary>
@@ -365,18 +428,8 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public bool AddMicroServiceBusController(Type type, bool isMainController = false)
-        {
-            if (AddComponent(type, MicroServiceBusControllerType.FromComponent))
-            {
-                if (isMainController)
-                {
-                    AddMicroServiceBus(type);
-                }
-                return true;
-            }
-            return false;
-        }
+        public bool AddMicroServiceBusController(Type type, bool isMainController = false) =>
+            AddComponent(type, component => MicroServiceBusControllerType.FromComponent(component, isMainController));
 
         #endregion
 

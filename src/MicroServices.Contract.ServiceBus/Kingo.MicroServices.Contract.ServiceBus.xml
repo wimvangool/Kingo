@@ -20,9 +20,24 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:Kingo.ExceptionMessages.MicroServiceBusClient_MessageKindNotSupported">
+        <member name="P:Kingo.ExceptionMessages.EndpointNameFormat_IllegalCharacter">
             <summary>
-              Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; to the service-bus because the specified message-kind ({1}) is not supported..
+              Looks up a localized string similar to Name &apos;{0}&apos; contains illegal character &apos;{1}&apos; encountered at index &apos;{2}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.EndpointNameFormat_MissingClosingBracket">
+            <summary>
+              Looks up a localized string similar to Name &apos;{0}&apos; is missing the closing bracket for placeholder started at index &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.EndpointNameFormat_UnknownPlaceholderName">
+            <summary>
+              Looks up a localized string similar to Unknown placeholder specified: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.MicroServiceBusClient_EndpointNotSupported">
+            <summary>
+              Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; (Name = {1}) to the service-bus because it is not supported by this client..
             </summary>
         </member>
         <member name="P:Kingo.ExceptionMessages.MicroServiceBusController_AlreadyStarted">
@@ -40,28 +55,124 @@
               Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot send the specified command(s) because it has not been (fully) started yet..
             </summary>
         </member>
-        <member name="T:Kingo.MicroServices.Controllers.IMicroServiceBus">
+        <member name="T:Kingo.MicroServices.Controllers.EndpointNameFormat">
             <summary>
-            When implemented by a class, represents a service bus that can publish messages.
+            Represents a specific format for the name of an endpoint.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameFormat.ResolveName(Kingo.MicroServices.IMicroServiceBusEndpoint)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameFormat.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameFormat.Parse(System.String)">
             <summary>
-            Sends all specified <paramref name="commands" /> to the appropriate service(s).
+            Parses the specified <paramref name="format"/> and returns a new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameFormat"/> that
+            can be used to resolve the name of a <see cref="T:Kingo.MicroServices.IMicroServiceBusEndpoint" />. The format can
+            contain the placeholders [service], [handler] and [message], which will be used to insert the name of
+            the service, message handler or message respectively.
             </summary>
-            <param name="commands">A collection of commands.</param>
+            <param name="format">The format to parse.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameFormat"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="commands"/> is <c>null</c>.
+            <paramref name="format"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.FormatException">
+            <paramref name="format"/> is not a valid name-format.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBus.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="T:Kingo.MicroServices.Controllers.EndpointNameResolver">
             <summary>
-            Publishes all specified <paramref name="events" />.
+            Serves as a name-resolver for endpoints for a specific set of message types.
             </summary>
-            <param name="events">A collection of events.</param>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameResolver.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" /> class.
+            </summary>
+            <param name="defaultNameFormat">
+            Indicates what the name-format of an endpoint is for messages of which the format
+            is not explicitly configured.
+            </param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="events"/> is <c>null</c>.
+            <paramref name="defaultNameFormat"/> is <c>null</c>.
             </exception>
+            <exception cref="T:System.FormatException">
+            <paramref name="defaultNameFormat"/> is not valid name-format.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameResolver.ToString">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.Controllers.EndpointNameResolver.DefaultNameFormat">
+            <summary>
+            Returns the default name-format of an endpoint; this format is applied when
+            a specific name-format for a certain message is not specified.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameResolver.AddNameFormat``1(System.String)">
+            <summary>
+            Adds a specific name-format for messages of type <typeparamref name="TMessage"/>.
+            </summary>
+            <typeparam name="TMessage">Type of a message.</typeparam>
+            <param name="format">The name-format to use for endpoints handling messages of type <typeparamref name="TMessage"/>.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="format"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.FormatException">
+            <paramref name="format"/> is not a valid name-format.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameResolver.AddNameFormat(System.String,System.Type[])">
+            <summary>
+            Adds a specific name-format for messages which type is specified in <paramref name="messageTypes"/>.
+            </summary>
+            <param name="format">
+            The name-format to use for endpoints handling messages which type is specified in <paramref name="messageTypes"/>.
+            </param>
+            <param name="messageTypes">
+            A collection of message-type to match when resolving the correct name-format to use.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="format"/> or <paramref name="messageTypes"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.FormatException">
+            <paramref name="format"/> is not a valid name-format.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameResolver.AddNameFormat(System.String,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Adds a specific name-format for messages which type is specified in <paramref name="messageTypes"/>.
+            </summary>
+            <param name="format">
+            The name-format to use for endpoints handling messages which type is specified in <paramref name="messageTypes"/>.
+            </param>
+            <param name="messageTypes">
+            A collection of message-type to match when resolving the correct name-format to use.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="format"/> or <paramref name="messageTypes"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.FormatException">
+            <paramref name="format"/> is not a valid name-format.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.EndpointNameResolver.ResolveName(Kingo.MicroServices.IMicroServiceBusEndpoint)">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.Controllers.IEndpointNameResolver">
+            <summary>
+            When implemented by a class, represents a component that can resolve the name of an endpoint.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.IEndpointNameResolver.ResolveName(Kingo.MicroServices.IMicroServiceBusEndpoint)">
+            <summary>
+            Resolves the name of the specified <paramref name="endpoint"/>. This name will be used
+            to name/identify the name of the queue from which the messages are pulled for this endpoint.
+            </summary>
+            <param name="endpoint">An endpoint for which the name must be resolved.</param>
+            <returns></returns>
         </member>
         <member name="T:Kingo.MicroServices.Controllers.IMicroServiceBusClient">
             <summary>
@@ -70,8 +181,7 @@
         </member>
         <member name="M:Kingo.MicroServices.Controllers.IMicroServiceBusClient.ConnectToEndpointAsync(Kingo.MicroServices.IMicroServiceBusEndpoint)">
             <summary>
-            Connects the specified <paramref name="endpoint"/> to the service-bus if it is an
-            endpoint that is supported by this client.
+            Connects the specified <paramref name="endpoint"/> to the service-bus.
             </summary>
             <param name="endpoint">The endpoint to connect.</param>
             <returns><c>true</c> if the endpoint was connected; otherwise <c>false</c>.</returns>
@@ -103,10 +213,97 @@
             Initializes a new instance of the <see cref="T:Kingo.MicroServices.Controllers.MicroServiceBusClient`1" /> class.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Bus">
+        <member name="P:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.NameResolverMap">
             <summary>
-            The bus to which all events that are created when processing command or events should be published.
+            Returns the map that contains one endpoint name-resolver per message type.
             </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.CreateCommandEndpointNameResolver">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" /> that will be used to resolve
+            the name of each endpoint that handles <see cref="F:Kingo.MicroServices.MessageKind.Command">commands</see>.
+            </summary>
+            <returns>A new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" />.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.CreateEventEndpointNameResolver">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" /> that will be used to resolve
+            the name of each endpoint that handles <see cref="F:Kingo.MicroServices.MessageKind.Event">events</see>.
+            </summary>
+            <returns>A new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" />.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.CreateQueryRequestEndpointNameResolver">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" /> that will be used to resolve
+            the name of each endpoint that handles <see cref="F:Kingo.MicroServices.MessageKind.QueryRequest">(query) requests</see>.
+            </summary>
+            <returns>A new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" />.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.CreateQueryResponseEndpointNameResolver">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" /> that will be used to resolve
+            the name of each endpoint that handles <see cref="F:Kingo.MicroServices.MessageKind.QueryResponse">(query) responses</see>.
+            </summary>
+            <returns>A new <see cref="T:Kingo.MicroServices.Controllers.EndpointNameResolver" />.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToEndpointAsync(Kingo.MicroServices.IMicroServiceBusEndpoint)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToCommandQueueAsync(Kingo.MicroServices.IMicroServiceBusEndpoint,System.String)">
+            <summary>
+            Connects the specified <paramref name="endpoint"/> to the associated command-queue of the service-bus.
+            </summary>
+            <param name="endpoint">The endpoint to connect.</param>
+            <param name="endpointName">Name of the endpoint/queue to connect to.</param>
+            <returns>The connection that has been made.</returns>
+            <exception cref="T:System.ArgumentException">
+            The specified <paramref name="endpoint"/> is not supported by this client.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToEventQueueAsync(Kingo.MicroServices.IMicroServiceBusEndpoint,System.String)">
+            <summary>
+            Connects the specified <paramref name="endpoint"/> to the associated event-queue of the service-bus.
+            </summary>
+            <param name="endpoint">The endpoint to connect.</param>
+            <param name="endpointName">Name of the endpoint/queue to connect to.</param>
+            <returns>The connection that has been made.</returns>
+            <exception cref="T:System.ArgumentException">
+            The specified <paramref name="endpoint"/> is not supported by this client.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToQueryRequestQueueAsync(Kingo.MicroServices.IMicroServiceBusEndpoint,System.String)">
+            <summary>
+            Connects the specified <paramref name="endpoint"/> to the associated query request-queue of the service-bus.
+            </summary>
+            <param name="endpoint">The endpoint to connect.</param>
+            <param name="endpointName">Name of the endpoint/queue to connect to.</param>
+            <returns>The connection that has been made.</returns>
+            <exception cref="T:System.ArgumentException">
+            The specified <paramref name="endpoint"/> is not supported by this client.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToQueryResponseQueueAsync(Kingo.MicroServices.IMicroServiceBusEndpoint,System.String)">
+            <summary>
+            Connects the specified <paramref name="endpoint"/> to the associated query response-queue of the service-bus.
+            </summary>
+            <param name="endpoint">The endpoint to connect.</param>
+            <param name="endpointName">Name of the endpoint/queue to connect to.</param>
+            <returns>The connection that has been made.</returns>
+            <exception cref="T:System.ArgumentException">
+            The specified <paramref name="endpoint"/> is not supported by this client.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.NewEndpointNotSupportedException(Kingo.MicroServices.IMicroServiceBusEndpoint,System.String)">
+            <summary>
+            Creates and returns an exception that can be thrown when an attempt is made to connect to the specified
+            <paramref name="endpoint"/> while this endpoint is not supported (e.g. the message kind is not supported).
+            </summary>
+            <param name="endpoint">The endpoint that is not supported by this client.</param>
+            <param name="endpointName">Name of the endpoint/queue to connect to.</param>
+            <returns>A new exception that indicates that the specified <paramref name="endpoint"/> is not supported.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="endpoint"/> or <paramref name="endpointName"/> is <c>null</c>.
+            </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
@@ -141,35 +338,6 @@
             Publishes the specified <paramref name="event"/>.
             </summary>
             <param name="event">The event to publish.</param>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToEndpointAsync(Kingo.MicroServices.IMicroServiceBusEndpoint)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.IsSupportedEndpoint(Kingo.MicroServices.IMicroServiceBusEndpoint)">
-            <summary>
-            Determines if the specified <paramref name="endpoint"/> is supported by this service-bus client. By default,
-            this method compares the name of the service which this client is part of with the name of the service that
-            the message is part of. If these are equal, it is assumed the endpoint is supported.
-            </summary>
-            <param name="endpoint">The endpoint to check.</param>
-            <returns>
-            <c>true</c> if the specified <paramref name="endpoint"/> is supported and a connection to it and the service-bus
-            must be created; otherwise <c>false</c>.
-            </returns>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToCommandQueueAsync(Kingo.MicroServices.IMicroServiceBusEndpoint)">
-            <summary>
-            Connects the specified <paramref name="endpoint"/> to the associated command-queue of the service-bus.
-            </summary>
-            <param name="endpoint">The endpoint to connect.</param>
-            <returns>The connection that has been made.</returns>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.ConnectToEventQueueAsync(Kingo.MicroServices.IMicroServiceBusEndpoint)">
-            <summary>
-            Connects the specified <paramref name="endpoint"/> to the associated event-queue of the service-bus.
-            </summary>
-            <param name="endpoint">The endpoint to connect.</param>
-            <returns>The connection that has been made.</returns>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Pack(Kingo.MicroServices.IMessageToDispatch)">
             <summary>
@@ -220,18 +388,17 @@
         <member name="T:Kingo.MicroServices.Controllers.MicroServiceBusController">
             <summary>
             When implemented, represents a controller that can send and receive messages to and from a
-            service-bus and dispatches any received messages to a <see cref="T:Kingo.MicroServices.IMicroServiceBusEndpoint" />
+            service-bus and routes any received message to a <see cref="T:Kingo.MicroServices.IMicroServiceBusEndpoint" />
             for further processing.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.#ctor(Kingo.MicroServices.IMicroServiceBusProcessor,Kingo.MicroServices.Controllers.IMicroServiceBus)">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.#ctor(Kingo.MicroServices.IMicroServiceBusProcessor)">
             <summary>
             Initializes a new instance of the <see cref="T:Kingo.MicroServices.Controllers.MicroServiceBusController" /> class.
             </summary>
             <param name="processor">The processor that will be processing all commands and/or events.</param>
-            <param name="bus">The bus that will be used to publish all new events.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="processor"/> or <paramref name="bus"/> is <c>null</c>.
+            <paramref name="processor"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.ToString">
@@ -243,11 +410,14 @@
             every <see cref="T:Kingo.MicroServices.IMicroServiceBusEndpoint"/> that is provided by the <see cref="T:Kingo.MicroServices.IMicroServiceBusProcessor"/>
             to the service-bus through this client. If <paramref name="cancellationToken"/> is signaled before the
             client is fully created and connected, the operation is aborted and the controller remains in the
-            unconnected state.
+            stopped/disconnected state.
             </summary>
             <param name="cancellationToken">Token that can be used to abort the operation.</param>
             <exception cref="T:System.ObjectDisposedException">
             The controller has already been disposed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The controller has already been started.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.StopAsync(System.Threading.CancellationToken)">
@@ -261,69 +431,21 @@
             The controller has already been disposed.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.CreateClientAsync(Kingo.MicroServices.Controllers.IMicroServiceBus)">
-            <summary>
-            Creates and returns a new <see cref="T:Kingo.MicroServices.Controllers.IMicroServiceBusClient"/> that can be used to publish messages
-            to a service-bus and to subscribe to specific events.
-            </summary>
-            <param name="bus">
-            The bus to which all events that are created when processing command or events should be published.
-            </param>
-            <returns>A new client.</returns>
-        </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.CreateClientAsync">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.Controllers.IMicroServiceBusClient"/> that can be used send and receive
+            messages to and from a service-bus.
+            </summary>
+            <returns>A new client.</returns>
+        </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.Dispose">
             <inheritdoc />
-        </member>
-        <member name="T:Kingo.MicroServices.Controllers.MicroServiceBusExtensions">
-            <summary>
-            Contains extension method for instance of type <see cref="T:Kingo.MicroServices.Controllers.IMicroServiceBus" />.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Object[])">
-            <summary>
-            Sends all specified commands to the appropriate service(s).
-            </summary>
-            <param name="bus">The bus that will send the commands.</param>
-            <param name="commands">A collection of commands to send.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Sends all specified commands to the appropriate service(s).
-            </summary>
-            <param name="bus">The bus that will send the commands.</param>
-            <param name="commands">A collection of commands to send.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Object[])">
-            <summary>
-            Publishes all specified events.
-            </summary>
-            <param name="bus">The bus that will publish the events.</param>
-            <param name="events">A collection of events to publish.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.Controllers.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Publishes all specified events.
-            </summary>
-            <param name="bus">The bus that will publish the events.</param>
-            <param name="events">A collection of events to publish.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
-            </exception>
         </member>
         <member name="T:Kingo.MicroServices.IMessageEnvelope">
             <summary>
@@ -385,9 +507,37 @@
             Returns all service types for which this component is registered.
             </summary>
         </member>
+        <member name="T:Kingo.MicroServices.IMicroServiceBus">
+            <summary>
+            When implemented by a class, represents a service bus that can publish messages.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroServiceBus.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+            <summary>
+            Sends all specified <paramref name="commands" /> to the appropriate service(s).
+            </summary>
+            <param name="commands">A collection of commands.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="commands"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroServiceBus.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+            <summary>
+            Publishes all specified <paramref name="events" />.
+            </summary>
+            <param name="events">A collection of events.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="events"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="T:Kingo.MicroServices.IMicroServiceBusEndpoint">
             <summary>
             When implemented by a class, represents an endpoint that handles a specific command or event.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.ServiceName">
+            <summary>
+            Returns the name of the service this endpoint is part of.
             </summary>
         </member>
         <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.MessageHandlerType">
@@ -395,7 +545,7 @@
             Returns the type of the message handler this endpoint is implemented on.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.Info">
+        <member name="P:Kingo.MicroServices.IMicroServiceBusEndpoint.MethodInfo">
             <summary>
             Returns the <see cref="T:System.Reflection.MethodInfo"/> of the method.
             </summary>
@@ -435,6 +585,11 @@
             <summary>
             When implemented by a class, represents a processor that can be connected to a service bus to
             process incoming commands and events.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMicroServiceBusProcessor.ServiceName">
+            <summary>
+            Returns the name of the service.
             </summary>
         </member>
         <member name="P:Kingo.MicroServices.IMicroServiceBusProcessor.ServiceProvider">
@@ -481,7 +636,12 @@
         </member>
         <member name="F:Kingo.MicroServices.MessageKind.QueryRequest">
             <summary>
-            Represents a request, carrying parameters for a query.
+            Represents the request-message of a query.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.QueryResponse">
+            <summary>
+            Represents the response-message of a query.
             </summary>
         </member>
         <member name="T:Kingo.MicroServices.MessageToDispatch">
@@ -549,6 +709,62 @@
         </member>
         <member name="M:Kingo.MicroServices.MicroProcessorComponentAttribute.ToString">
             <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.MicroServiceBusExtensions">
+            <summary>
+            Contains extension method for instance of type <see cref="T:Kingo.MicroServices.IMicroServiceBus" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.DispatchAsync(Kingo.MicroServices.IMicroServiceBus,System.Collections.Generic.IEnumerable{Kingo.MicroServices.MessageToDispatch})">
+            <summary>
+            Sends all commands and publishes all events that are part of the specified
+            <paramref name="messages"/> collection.
+            </summary>
+            <param name="bus">The bus that will dispatch the messages.</param>
+            <param name="messages">A collection of commands and events to send and publish.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="messages"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.IMicroServiceBus,System.Object[])">
+            <summary>
+            Sends all specified commands to the appropriate service(s).
+            </summary>
+            <param name="bus">The bus that will send the commands.</param>
+            <param name="commands">A collection of commands to send.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Sends all specified commands to the appropriate service(s).
+            </summary>
+            <param name="bus">The bus that will send the commands.</param>
+            <param name="commands">A collection of commands to send.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.IMicroServiceBus,System.Object[])">
+            <summary>
+            Publishes all specified events.
+            </summary>
+            <param name="bus">The bus that will publish the events.</param>
+            <param name="events">A collection of events to publish.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Publishes all specified events.
+            </summary>
+            <param name="bus">The bus that will publish the events.</param>
+            <param name="events">A collection of events to publish.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
+            </exception>
         </member>
     </members>
 </doc>

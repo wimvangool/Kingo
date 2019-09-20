@@ -132,14 +132,20 @@
   <data name="MicroProcessorBuilder_InvalidProcessorType" xml:space="preserve">
     <value>Type '{0}' cannot be used as a MicroProcessor. Please provider a non-abstract, non-generic MicroProcessor-type.</value>
   </data>
+  <data name="MicroProcessorComponent_InvalidComponentLifetime" xml:space="preserve">
+    <value>Could not add component of type '{0}' to the service collection because it is configured with an unsupported lifetime ({1}) for this type.</value>
+  </data>
   <data name="MicroProcessorComponent_TypeNotSupported" xml:space="preserve">
     <value>Cannot use instance of type '{0}' as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported.</value>
   </data>
-  <data name="MicroServiceBus_CircularReferenceDetected" xml:space="preserve">
+  <data name="MicroServiceBus_CircularDependencyDetected" xml:space="preserve">
     <value>Cannot publish the specified event(s) inside the constructor of a type that is registered as a '{0}'-type, because this causes a circular reference.</value>
   </data>
-  <data name="ServiceCollectionExtensions_InvalidComponentLifetime" xml:space="preserve">
-    <value>Component of type '{0}' could not be added because it is configured with an invalid lifetime ({1}).</value>
+  <data name="StoreAndForwardQueueResolver_CannotFindConstructor" xml:space="preserve">
+    <value>Cannot resolve queue of type '{0}' because the resolver cannot find the appropriate constructor. Please make sure this type declares exactly one public constructor.</value>
+  </data>
+  <data name="StoreAndForwardQueueResolver_CircularDependencyDetected" xml:space="preserve">
+    <value>Cannot resolve queue of type '{0}' because a circular dependency was detected in the pipeline.</value>
   </data>
   <data name="UnitOfWork_EnlistmentTimeout" xml:space="preserve">
     <value>The operation to enlist to the current unit of work (as a result of modification of aggregate of type '{0}'), was aborted because execution time exceeded the specified timeout ({1}).</value>
