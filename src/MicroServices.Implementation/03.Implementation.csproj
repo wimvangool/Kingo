@@ -44,8 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Contract.Api\03.Contract.Api.csproj" />
-    <ProjectReference Include="..\MicroServices.Contract.ServiceBus\04.Contract.ServiceBus.csproj" />
+    <ProjectReference Include="..\MicroServices\03.SharedKernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

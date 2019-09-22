@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Kingo.MicroServices.Contract.TestEngine</name>
+    </assembly>
+    <members>
+        <member name="T:Kingo.ExceptionMessages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_ErrorMessageNotFound">
+            <summary>
+              Looks up a localized string similar to Member &apos;{0}&apos; does not have expected validation-error &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_InstanceNotValid">
+            <summary>
+              Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be valid, but {1} validation error(s) occurred..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_InstanceValid">
+            <summary>
+              Looks up a localized string similar to Instance of type &apos;{0}&apos; was expected to be invalid, but no validation errors occurred..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_InvalidNumberOfExpectedErrorsSpecified">
+            <summary>
+              Looks up a localized string similar to The number of expected validation errors ({0}) must be equal to or greater than 1..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_MemberErrorsNotFound">
+            <summary>
+              Looks up a localized string similar to Member &apos;{0}&apos; does not have any validation-errors..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_NoSuchErrorMessage">
+            <summary>
+              Looks up a localized string similar to Member &apos;{0}&apos; does not contain any validation-error that satisfies the specified predicate..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Request_UnexpectedNumberOfErrorsOccurred">
+            <summary>
+              Looks up a localized string similar to The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1})..
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IIsNotValidResult">
+            <summary>
+            When implemented by a class, represents the result of verifying whether or not a request is not valid.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IIsNotValidResult.And(System.Action{Kingo.MicroServices.IValidationErrorCollection})">
+            <summary>
+            Verifies all validation-errors using the specified <paramref name="errorValidator" />.
+            </summary>
+            <param name="errorValidator">
+            The validator that will be used to validate all validation errors.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="errorValidator"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IMemberErrorCollection">
+            <summary>
+            When implemented by a class, represents a collection of validation-errors of a single member.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMemberErrorCollection.MemberName">
+            <summary>
+            Returns the name of the member.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMemberErrorCollection.HasError(System.Func{System.String,System.Boolean},System.String,System.Object[])">
+            <summary>
+            Asserts that any error message on the associated member satisfies the specified
+            <paramref name="errorMessagePredicate"/>.
+            </summary>
+            <param name="errorMessagePredicate">
+            Predicate that is invoked for every error-message of the associated member until
+            the predicate is satisfied.
+            </param>
+            <param name="message">Optional error-message to show when the assertion fails.</param>
+            <param name="args">Optional arguments for the specified <paramref name="message"/>.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="errorMessagePredicate"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IRequest">
+            <summary>
+            When implemented by a class, represents a request-message wrapper that can assert whether
+            a request message is valid or not.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IRequest.IsValid">
+            <summary>
+            Asserts that the message is valid.
+            </summary>
+            <exception cref="T:Kingo.TestFailedException">
+            The message is not valid.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IRequest.IsNotValid(System.Int32)">
+            <summary>
+            Asserts that the message is not valid and has the specified number of validation errors.
+            </summary>
+            <param name="expectedNumberOfErrors">
+            The exact number of expected validation errors.
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="expectedNumberOfErrors"/> is less than <c>1</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IValidationErrorCollection">
+            <summary>
+            When implemented by a class, represents a collection of validation-errors organized per member.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IValidationErrorCollection.Item(System.String)">
+            <summary>
+            Returns the error-collection of the specified member.
+            </summary>
+            <param name="memberName">Name of the member.</param>
+            <returns>All validation-errors of the specified member.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="memberName"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:Kingo.TestFailedException">
+            The specified member has no errors.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.MemberCollectionExtensions">
+            <summary>
+            Contains extension methods for objects that implement the <see cref="T:Kingo.MicroServices.IMemberErrorCollection"/> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MemberCollectionExtensions.HasError(Kingo.MicroServices.IMemberErrorCollection,System.String,System.StringComparison)">
+            <summary>
+            Asserts that the associated <paramref name="member"/> has the specified <paramref name="expectedErrorMessage"/>.
+            </summary>
+            <param name="member">A member with some validation-errors.</param>
+            <param name="expectedErrorMessage">The expected error message.</param>
+            <param name="comparison">Indicates how the expected and actual error messages should be compared.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="member"/> or <paramref name="expectedErrorMessage"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="comparison"/> is not a valid value.
+            </exception>
+            <exception cref="T:Kingo.TestFailedException">
+            The specified <paramref name="expectedErrorMessage"/> was not found in the collection of error messages.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.RequestTest`1">
+            <summary>
+            When implemented by a class, represents a test-class for a specific <see cref="T:Kingo.MicroServices.Request" />.
+            </summary>    
+        </member>
+        <member name="M:Kingo.MicroServices.RequestTest`1.AssertThat(System.Action{`0})">
+            <summary>
+            Creates and returns a wrapper for a request that is configured using the specified
+            <paramref name="requestConfigurator" />.
+            </summary>
+            <param name="requestConfigurator">
+            A delegate that is used to configure the properties of a request before its expected state is verified.
+            </param>
+            <returns>A new <see cref="T:Kingo.MicroServices.IRequest"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="requestConfigurator"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.RequestTest`1.AssertThat(`0)">
+            <summary>
+            Creates and returns a wrapper for the specified <paramref name="request" /> that can be used
+            to assert whether or not the request is valid.
+            </summary>
+            <param name="request">The request to test.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.IRequest"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="request"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.RequestTest`1.CreateRequest">
+            <summary>
+            Creates and returns a new request.
+            </summary>
+            <returns>A new request message.</returns>
+        </member>
+        <member name="T:Kingo.ObjectExtensions">
+            <summary>
+            Contains extension methods for any object.
+            </summary>
+        </member>
+        <member name="M:Kingo.ObjectExtensions.IgnoreValue(System.Object)">
+            <summary>
+            Represents a dummy method that does nothing but consume the specified instance.
+            </summary>
+            <param name="instance">Any object.</param>
+        </member>
+        <member name="T:Kingo.TestFailedException">
+            <summary>
+            This exception is thrown by the test-engine when a test has failed.
+            </summary>
+        </member>
+        <member name="M:Kingo.TestFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.TestFailedException" /> class.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="innerException">The cause of the exception.</param>
+        </member>
+    </members>
+</doc>
