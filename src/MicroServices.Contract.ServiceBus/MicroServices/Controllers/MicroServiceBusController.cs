@@ -39,6 +39,8 @@ namespace Kingo.MicroServices.Controllers
 
             public abstract Task StopAsync(CancellationToken cancellationToken);
 
+            public abstract Task RouteAsync(IEnumerable<IMessageToDispatch> commands);
+
             public abstract Task SendAsync(IEnumerable<IMessageToDispatch> commands);
 
             public abstract Task PublishAsync(IEnumerable<IMessageToDispatch> events);
@@ -96,6 +98,9 @@ namespace Kingo.MicroServices.Controllers
 
             public override Task StopAsync(CancellationToken cancellationToken) =>
                 Task.CompletedTask;
+
+            public override Task RouteAsync(IEnumerable<IMessageToDispatch> commands) =>
+                throw Controller.NewCannotSendCommandsException();
 
             public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw Controller.NewCannotSendCommandsException();
@@ -164,6 +169,40 @@ namespace Kingo.MicroServices.Controllers
                 return Controller._state.StopAsync(cancellationToken);
             }
 
+            public override Task RouteAsync(IEnumerable<IMessageToDispatch> commands)
+            {
+                // Each command is paired with the controller that is capable of sending that command
+                // (i.e. the service contract of that controller contains that command). Then, every
+                // command is sent by that/those controller(s) in parallel fashion. For example:
+                // - ControllerX: [CommandA, CommandB]
+                // - ControllerY: [CommandA, CommandC]
+                // - ControllerZ: []
+                var sendOperations =
+                    from commandsPerController in MatchCommandsWithControllers(commands.ToArray())
+                    let controller = commandsPerController.Key
+                    let commandsToSend = commandsPerController.Value
+                    where commandsToSend.Length > 0
+                    select controller._state.SendAsync(commandsToSend);
+
+                return Task.WhenAll(sendOperations);
+            }
+
+            private IDictionary<MicroServiceBusController, IMessageToDispatch[]> MatchCommandsWithControllers(IReadOnlyCollection<IMessageToDispatch> commands)
+            {
+                var commandsPerController = new Dictionary<MicroServiceBusController, IMessageToDispatch[]>();
+                if (commands.Count > 0)
+                {
+                    foreach (var controller in ResolveControllers())
+                    {
+                        commandsPerController.Add(controller, controller.FilterMessagesOfServiceContract(commands).ToArray());
+                    }
+                }
+                return commandsPerController;
+            }
+
+            private IEnumerable<MicroServiceBusController> ResolveControllers() =>
+                Controller._processor.ServiceProvider.GetServices<MicroServiceBusController>();
+
             public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
                 _client.SendAsync(commands);
 
@@ -197,6 +236,9 @@ namespace Kingo.MicroServices.Controllers
                 throw Controller.NewObjectDisposedException();
 
             public override Task StopAsync(CancellationToken cancellationToken) =>
+                throw Controller.NewObjectDisposedException();
+
+            public override Task RouteAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw Controller.NewObjectDisposedException();
 
             public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
@@ -235,6 +277,7 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         private readonly IMicroServiceBusProcessor _processor;
+        private readonly Lazy<ServiceContract> _serviceContract;
         private State _state;
 
         /// <summary>
@@ -247,6 +290,7 @@ namespace Kingo.MicroServices.Controllers
         protected MicroServiceBusController(IMicroServiceBusProcessor processor)
         {
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
+            _serviceContract = new Lazy<ServiceContract>(DefineServiceContract, true);
             _state = new StoppedState(this);
         }
 
@@ -290,40 +334,12 @@ namespace Kingo.MicroServices.Controllers
         #region [====== IMicroServiceBus ======]
 
         /// <inheritdoc />
-        public virtual Task SendAsync(IEnumerable<IMessageToDispatch> commands)
-        {
-            // Each command is paired with the controller that is capable of sending that command
-            // (i.e. the service contract of that controller contains that command). Then, every
-            // command is sent by those controller(s) in parallel fashion. For example:
-            // - ControllerX: [CommandA, CommandB]
-            // - ControllerY: [CommandA, CommandC]
-            // - ControllerZ: []
-            var sendOperations =
-                from commandsPerController in MatchCommandsWithControllers(commands.ToArray())
-                let controller = commandsPerController.Key
-                let commandsToSend = commandsPerController.Value
-                where commandsToSend.Length > 0
-                select controller._state.SendAsync(commandsToSend);
-
-            return Task.WhenAll(sendOperations);
-        }
-
-        private IDictionary<MicroServiceBusController, IMessageToDispatch[]> MatchCommandsWithControllers(IReadOnlyCollection<IMessageToDispatch> commands)
-        {
-            var commandsPerController = new Dictionary<MicroServiceBusController, IMessageToDispatch[]>();
-            if (commands.Count > 0)
-            {
-                foreach (var controller in _processor.ServiceProvider.GetServices<MicroServiceBusController>())
-                {
-                    commandsPerController.Add(controller, controller.PickCommandsToSend(commands).ToArray());
-                }
-            }
-            return commandsPerController;
-        }
+        public virtual Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+            _state.RouteAsync(commands);
 
         /// <inheritdoc />
         public virtual Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
-            _state.PublishAsync(events);
+            _state.PublishAsync(FilterMessagesOfServiceContract(events));
 
         #endregion
 
@@ -384,10 +400,21 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== ServiceContract ======]
 
-        private IEnumerable<IMessageToDispatch> PickCommandsToSend(IEnumerable<IMessageToDispatch> commands)
-        {
-            throw new NotImplementedException();
-        }
+        private ServiceContract ServiceContract =>
+            _serviceContract.Value;
+
+        private ServiceContract DefineServiceContract() =>
+            ServiceContract.FromTypeSet(DefineServiceContract(TypeSet.Empty));
+
+        /// <summary>
+        /// Creates and returns a <see cref="TypeSet"/> that defines which types are part of this service's service contract.
+        /// </summary>
+        /// <param name="serviceContract">The default service contract.</param>
+        /// <returns>A <see cref="TypeSet"/> that contains all messages that are part of this service's service contract.</returns>
+        protected abstract TypeSet DefineServiceContract(TypeSet serviceContract);
+
+        private IEnumerable<IMessageToDispatch> FilterMessagesOfServiceContract(IEnumerable<IMessageToDispatch> messages) =>
+            messages.Where(command => ServiceContract.Contains(command.Content.GetType()));
 
         #endregion
 

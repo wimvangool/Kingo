@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -12,7 +13,7 @@ namespace Kingo.MicroServices.Controllers
     {
         #region [====== MicroServiceBusControllerStub ======]
 
-        private sealed class MicroServiceBusControllerStub : MicroServiceBusController
+        private sealed class MicroServiceBusControllerStub<TMessage> : MicroServiceBusController where TMessage : class
         {
             private readonly MicroServiceBusControllerTest _test;
             private readonly CancellationTokenSource _tokenSource;
@@ -28,8 +29,11 @@ namespace Kingo.MicroServices.Controllers
             protected override Task<IMicroServiceBusClient> CreateClientAsync()
             {
                 _tokenSource?.Cancel();
-                return Task.FromResult(_test.CreateClient());
+                return Task.FromResult(_test.CreateClient<TMessage>());
             }
+
+            protected override TypeSet DefineServiceContract(TypeSet serviceContract) =>
+                serviceContract.Add<TMessage>();
 
             protected override void Dispose(bool disposing)
             {
@@ -50,38 +54,41 @@ namespace Kingo.MicroServices.Controllers
                 AssertState("Disposed");
 
             private void AssertState(string state) =>
-                Assert.AreEqual($"{nameof(MicroServiceBusControllerStub)} ({state})", ToString());
+                Assert.AreEqual($"{nameof(MicroServiceBusControllerStub<TMessage>)}<{typeof(TMessage).FriendlyName()}> ({state})", ToString());
         }
 
         #endregion
 
         #region [====== MicroServiceBusClientStub ======]
 
-        private sealed class MicroServiceBusClientStub : MicroServiceBusClient<int>
+        private sealed class MicroServiceBusClientStub<TMessage> : MicroServiceBusClient<TMessage>, IMicroServiceBusClientStub where TMessage : class
         {
             private int _sendCount;
             private int _publishCount;
             private int _disposeCount;
 
-            protected override Task SendAsync(int command)
+            protected override Task SendAsync(TMessage command)
             {
                 Interlocked.Increment(ref _sendCount);
                 return Task.CompletedTask;
             }
 
-            protected override Task PublishAsync(int @event)
+            protected override Task PublishAsync(TMessage @event)
             {
                 Interlocked.Increment(ref _publishCount);
                 return Task.CompletedTask;
             }
 
+            public void AssertSendCountIs(int count) =>
+                Assert.AreEqual(count, _sendCount);
+
             public void AssertPublishCountIs(int count) =>
                 Assert.AreEqual(count, _publishCount);
 
-            protected override int Pack(IMessageToDispatch message) =>
-                (int) message.Content;
+            protected override TMessage Pack(IMessageToDispatch message) =>
+                (TMessage) message.Content;
 
-            protected override object Unpack(int message) =>
+            protected override object Unpack(TMessage message) =>
                 message;
 
             protected override void Dispose(bool disposing)
@@ -94,23 +101,35 @@ namespace Kingo.MicroServices.Controllers
                 Assert.AreEqual(count, _disposeCount);
         }
 
+        private interface IMicroServiceBusClientStub : IMicroServiceBusClient
+        {
+            void AssertSendCountIs(int count);
+
+            void AssertPublishCountIs(int count);
+
+            void AssertDisposeCountIs(int count);
+        }
+
         #endregion
 
+        private readonly Mock<IServiceProvider> _serviceProviderMock;
         private readonly Mock<IMicroServiceBusProcessor> _processorMock;
-        private readonly List<MicroServiceBusClientStub> _clientStubs;
+        private readonly List<IMicroServiceBusClientStub> _clientStubs;
 
         public MicroServiceBusControllerTest()
         {
+            _serviceProviderMock = new Mock<IServiceProvider>();
             _processorMock = new Mock<IMicroServiceBusProcessor>();
-            _clientStubs = new List<MicroServiceBusClientStub>();
+            _processorMock.Setup(processor => processor.ServiceProvider).Returns(_serviceProviderMock.Object);
+            _clientStubs = new List<IMicroServiceBusClientStub>();
         }
 
         private IMicroServiceBusProcessor Processor =>
             _processorMock.Object;
 
-        private IMicroServiceBusClient CreateClient()
+        private IMicroServiceBusClient CreateClient<TMessage>() where TMessage : class
         {
-            var client = new MicroServiceBusClientStub();
+            var client = new MicroServiceBusClientStub<TMessage>();
             _clientStubs.Add(client);
             return client;
         }
@@ -346,6 +365,132 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
+        #region [====== SendAsync ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task SendAsync_Throws_IfControllerHasNotBeenStartedYet()
+        {
+            var controller = CreateController();
+
+            try
+            {
+                await controller.SendAsync(0);
+            }
+            catch (InvalidOperationException)
+            {
+                Assert.AreEqual(0, _clientStubs.Count);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task SendAsync_Throws_IfStartOfControllerWasCancelledBeforeFullyConnected()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var controller = CreateController(tokenSource);
+
+                await controller.StartAsync(tokenSource.Token);
+
+                try
+                {
+                    await controller.SendAsync(0);
+                }
+                catch (InvalidOperationException)
+                {
+                    Assert.AreEqual(1, _clientStubs.Count);
+
+                    var client = _clientStubs[0];
+                    client.AssertSendCountIs(0);
+                    client.AssertDisposeCountIs(1);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task SendAsync_DoesNotSendTheSpecifiedCommand_IfControllerHasBeenStarted_But_CommandIsNotPartOfServiceContract()
+        {
+            var controller = CreateController();
+
+            await controller.StartAsync(CancellationToken.None);
+            await controller.SendAsync(0);
+
+            Assert.AreEqual(1, _clientStubs.Count);
+
+            var client = _clientStubs[0];
+            client.AssertSendCountIs(0);
+            client.AssertDisposeCountIs(0);
+        }
+
+        [TestMethod]
+        public async Task SendAsync_SendsTheSpecifiedCommand_IfControllerHasBeenStarted_And_CommandIsPartOfServiceContract()
+        {
+            var controller = CreateController();
+
+            await controller.StartAsync(CancellationToken.None);
+            await controller.SendAsync(new object());
+
+            Assert.AreEqual(1, _clientStubs.Count);
+
+            var client = _clientStubs[0];
+            client.AssertSendCountIs(1);
+            client.AssertDisposeCountIs(0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task SendAsync_Throws_IfControllerHasNotBeenStoppedAgain()
+        {
+            var controller = CreateController();
+
+            await controller.StartAsync(CancellationToken.None);
+            await controller.StopAsync(CancellationToken.None);
+
+            try
+            {
+                await controller.SendAsync(0);
+            }
+            catch (InvalidOperationException)
+            {
+                Assert.AreEqual(1, _clientStubs.Count);
+
+                var client = _clientStubs[0];
+                client.AssertSendCountIs(0);
+                client.AssertDisposeCountIs(1);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task SendAsync_Throws_IfControllerHasBeenDisposed()
+        {
+            var controller = CreateController();
+
+            await controller.StartAsync(CancellationToken.None);
+
+            controller.Dispose();
+
+            try
+            {
+                await controller.SendAsync(0);
+            }
+            catch (ObjectDisposedException)
+            {
+                Assert.AreEqual(1, _clientStubs.Count);
+
+                var client = _clientStubs[0];
+                client.AssertSendCountIs(0);
+                client.AssertDisposeCountIs(1);
+                throw;
+            }
+        }
+
+        #endregion
+
         #region [====== PublishAsync ======]
 
         [TestMethod]
@@ -392,12 +537,27 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task PublishAsync_PublishesTheSpecifiedEvent_IfControllerHasBeenStarted()
+        public async Task PublishAsync_DoesNotPublishEvent_IfControllerHasBeenStarted_But_EventIsNotPartOfTheServiceContract()
         {
             var controller = CreateController();
 
             await controller.StartAsync(CancellationToken.None);
             await controller.PublishAsync(0);
+
+            Assert.AreEqual(1, _clientStubs.Count);
+
+            var client = _clientStubs[0];
+            client.AssertPublishCountIs(0);
+            client.AssertDisposeCountIs(0);
+        }
+
+        [TestMethod]
+        public async Task PublishAsync_PublishesTheSpecifiedEvent_IfControllerHasBeenStarted_And_EventIsPartOfTheServiceContract()
+        {
+            var controller = CreateController();
+
+            await controller.StartAsync(CancellationToken.None);
+            await controller.PublishAsync(new object());
 
             Assert.AreEqual(1, _clientStubs.Count);
 
@@ -457,7 +617,19 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        private MicroServiceBusControllerStub CreateController(CancellationTokenSource tokenSource = null) =>
-            new MicroServiceBusControllerStub(Processor, this, tokenSource);
+        private MicroServiceBusControllerStub<object> CreateController(CancellationTokenSource tokenSource = null) =>
+            CreateController<object>(tokenSource);
+
+        private MicroServiceBusControllerStub<TMessage> CreateController<TMessage>(CancellationTokenSource tokenSource = null) where TMessage : class
+        {
+            var controller = new MicroServiceBusControllerStub<TMessage>(Processor, this, tokenSource);
+
+            _serviceProviderMock.Setup(provider => provider.GetService(typeof(IEnumerable<MicroServiceBusController>))).Returns(new MicroServiceBusController[]
+            {
+                controller
+            });
+
+            return controller;
+        }
     }
 }

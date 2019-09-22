@@ -10,7 +10,7 @@ namespace Kingo.MicroServices.Controllers
     /// Serves as a base-class implementation of the <see cref="IMicroServiceBusClient"/> interface.
     /// </summary>
     /// <typeparam name="TMessage">Type of the messages that are sent to or received from the service-bus.</typeparam>
-    public abstract class MicroServiceBusClient<TMessage> : MicroServiceBusConnection, IMicroServiceBusClient
+    public abstract class MicroServiceBusClient<TMessage> : MicroServiceBusConnection, IMicroServiceBusClient where TMessage : class
     {
         private readonly SemaphoreSlim _lock;
         private readonly List<IMicroServiceBusConnection> _connections;

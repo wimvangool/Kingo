@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,6 +38,9 @@ namespace Kingo.MicroServices.Controllers
 
             protected override Task<IMicroServiceBusClient> CreateClientAsync() =>
                 throw new NotSupportedException();
+
+            protected override TypeSet DefineServiceContract(TypeSet serviceContract) =>
+                serviceContract;
         }
 
         private sealed class GenericController<T> : AbstractController

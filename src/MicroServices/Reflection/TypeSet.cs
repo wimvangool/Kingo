@@ -118,7 +118,7 @@ namespace Kingo.Reflection
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{this.Count()} types";
+            $"{this.Count()} type(s)";
 
         #region [====== IEnumerable<Type> ======]        
 
@@ -349,8 +349,7 @@ namespace Kingo.Reflection
         #region [====== Current Directory ======]
 
         /// <summary>
-        /// Returns the directory that has been configured as the default or current directory. If not overridden,
-        /// this property returns the directory of the main assembly or executable.
+        /// Returns the directory that has been configured as the default or current directory.
         /// </summary>
         public static string CurrentDirectory =>
             AppDomain.CurrentDomain.BaseDirectory;
