@@ -9,7 +9,7 @@ namespace Kingo.MicroServices.DataAnnotations
     /// Represents a data contract that can be validated.
     /// </summary>
     [Serializable]    
-    public abstract class ValidatableObject : DataContract, IValidatableObject
+    public abstract class ValidatableObject : IValidatableObject
     {        
         #region [====== Validate ======]
 

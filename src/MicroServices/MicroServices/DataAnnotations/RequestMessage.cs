@@ -1,18 +1,18 @@
 ﻿using System;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.DataAnnotations
 {
     /// <summary>
-    /// Provides a base-implementation of the <see cref="IDataContract"/> interface.
-    /// </summary>    
-    [Serializable]    
-    public abstract class DataContract : IDataContract
-    {        
+    /// Serves as a base-class for all request-messages such as commands or query-requests.
+    /// </summary>
+    [Serializable]
+    public abstract class RequestMessage : ValidatableObject, IDataContract
+    {
         bool IDataContract.TryUpdateToNextVersion(out IDataContract nextVersion) =>
             TryUpdateToNextVersion(out nextVersion);
 
         /// <summary>
-        /// Attempts to update this data contract to the next version. By default, this
+        /// Attempts to update this message to the next version. By default, this
         /// method returns <c>false</c>.
         /// </summary>
         /// <param name="nextVersion">

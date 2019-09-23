@@ -8,6 +8,15 @@ namespace Kingo.MicroServices
     {
         #region [====== DataContracts ======]
 
+        private abstract class DataContract : IDataContract
+        {
+            public virtual bool TryUpdateToNextVersion(out IDataContract nextVersion)
+            {
+                nextVersion = null;
+                return false;
+            }
+        }
+
         private sealed class DataContractVersionOne : DataContract
         {
             private readonly bool _introduceCircularUpdate;
@@ -17,7 +26,7 @@ namespace Kingo.MicroServices
                 _introduceCircularUpdate = introduceCircularUpdate;
             }
 
-            protected override bool TryUpdateToNextVersion(out IDataContract nextVersion)
+            public override bool TryUpdateToNextVersion(out IDataContract nextVersion)
             {
                 nextVersion = new DataContractVersionTwo(_introduceCircularUpdate);
                 return true;
@@ -33,7 +42,7 @@ namespace Kingo.MicroServices
                 _introduceCircularUpdate = introduceCircularUpdate;
             }
 
-            protected override bool TryUpdateToNextVersion(out IDataContract nextVersion)
+            public override bool TryUpdateToNextVersion(out IDataContract nextVersion)
             {
                 if (_introduceCircularUpdate)
                 {
