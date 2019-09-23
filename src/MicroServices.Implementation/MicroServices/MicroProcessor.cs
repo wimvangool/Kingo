@@ -66,7 +66,6 @@ namespace Kingo.MicroServices
         private readonly Context<IMicroProcessorServiceProvider> _serviceProviderContext;
         private readonly Context<IPrincipal> _principalContext;
         private readonly Lazy<IMicroProcessorOptions> _options;
-        private readonly Lazy<IMicroServiceBus> _serviceBus;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
@@ -79,7 +78,6 @@ namespace Kingo.MicroServices
             _serviceProviderContext = new Context<IMicroProcessorServiceProvider>(CreateServiceProvider(serviceProvider));
             _principalContext = new Context<IPrincipal>();
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
-            _serviceBus = new Lazy<IMicroServiceBus>(ResolveMicroServiceBus, true);
         }
 
         /// <inheritdoc />
@@ -170,20 +168,20 @@ namespace Kingo.MicroServices
         #region [====== ExecuteAsync (Commands & Queries) ======]                  
 
         /// <inheritdoc />
-        public Task<MessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
-            ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token));
+        public async Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
+            await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token)).ConfigureAwait(false);
 
         /// <inheritdoc />
-        public Task<MessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
-            ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token));
+        public async Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
+            await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token)).ConfigureAwait(false);
 
         /// <inheritdoc />
-        public Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
-            ExecuteReadOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token));
+        public async Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
+            await ExecuteReadOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token)).ConfigureAwait(false);
 
         /// <inheritdoc />
-        public Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
-            ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token));
+        public async Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
+            await ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token)).ConfigureAwait(false);
 
         #endregion
 
@@ -197,10 +195,10 @@ namespace Kingo.MicroServices
         /// <returns>The result of the operation.</returns>
         protected internal virtual async Task<MessageHandlerOperationResult> ExecuteWriteOperationAsync(MessageHandlerOperation operation)
         {
-            var result = await ExecuteOperationAsync(operation);
+            var result = await ExecuteOperationAsync(operation).ConfigureAwait(false);
             if (result.Messages.Count > 0)
             {
-                await ResolveMicroServiceBus().DispatchAsync(result.Messages);
+                await ResolveMicroServiceBus().DispatchAsync(result.Messages).ConfigureAwait(false);
             }
             return result;
         }

@@ -20,7 +20,7 @@ namespace Kingo.MicroServices
                 _messageHandler = messageHandler;
             }
 
-            public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(TMessage message, IMessageHandlerOperationContext context) =>
                 ResolveMessageHandler().HandleAsync(message, context);
 
             private IMessageHandler<TMessage> ResolveMessageHandler() =>

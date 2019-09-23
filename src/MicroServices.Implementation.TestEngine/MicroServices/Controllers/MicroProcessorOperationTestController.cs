@@ -143,7 +143,7 @@ namespace Kingo.MicroServices.Controllers
 
             public async Task<HandleMessageResult<TMessageStream>> ExecuteAsync(IMicroProcessorOperationTest test, MicroProcessorOperationTestContext context)
             {
-                MessageHandlerOperationResult result;
+                IMessageHandlerOperationResult result;
 
                 try
                 {
@@ -159,7 +159,7 @@ namespace Kingo.MicroServices.Controllers
                 });
             }
 
-            protected abstract Task<MessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor);
+            protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor);
         }
 
         private sealed class ExecuteCommandOperation<TMessage, TMessageStream> : HandleMessageOperation<TMessage, TMessageStream>
@@ -177,7 +177,7 @@ namespace Kingo.MicroServices.Controllers
             public override TMessage Message =>
                 _message;
 
-            protected override Task<MessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor) =>
+            protected override Task<IMessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor) =>
                 processor.ExecuteCommandAsync(_messageHandler, _message);
         }
 
@@ -196,7 +196,7 @@ namespace Kingo.MicroServices.Controllers
             public override TMessage Message =>
                 _message;
 
-            protected override Task<MessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor) =>
+            protected override Task<IMessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor) =>
                 processor.HandleEventAsync(_messageHandler, _message);
         }
 
@@ -254,7 +254,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 try
                 {
-                    return new ExecuteQueryResult<TResponse>(await processor.ExecuteQueryAsync<TResponse>(query).ConfigureAwait(false));
+                    return new ExecuteQueryResult<TResponse>(await processor.ExecuteQueryAsync(query).ConfigureAwait(false));
                 }
                 catch (Exception exception)
                 {

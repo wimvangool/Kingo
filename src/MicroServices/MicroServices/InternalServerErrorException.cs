@@ -34,7 +34,18 @@ namespace Kingo.MicroServices
         public override int ErrorCode =>
             500;
 
-        internal static InternalServerErrorException FromInnerException(Exception innerException) =>
-            new InternalServerErrorException(innerException.Message, innerException);
+        /// <summary>
+        /// Creates and returns a new <see cref="InternalServerErrorException" /> wrapping the specified <paramref name="innerException"/>.
+        /// </summary>
+        /// <param name="innerException">The exception to wrap.</param>
+        /// <returns>A new <see cref="InternalServerErrorException" />.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="innerException"/> is <c>null</c>.
+        /// </exception>
+        public static InternalServerErrorException FromInnerException(Exception innerException) =>
+            new InternalServerErrorException(NotNull(innerException).Message, innerException);
+
+        private static Exception NotNull(Exception innerException) =>
+            innerException ?? throw new ArgumentNullException(nameof(innerException));
     }
 }

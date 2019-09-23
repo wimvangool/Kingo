@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/>, <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Action<TMessage, MessageHandlerOperationContext> handler) =>
+        public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Action<TMessage, IMessageHandlerOperationContext> handler) =>
             NotNull(processor).ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/>, <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Func<TMessage, MessageHandlerOperationContext, Task> handler) =>
+        public static Task HandleAsync<TMessage>(this IHandleMessageOperationTestProcessor processor, TMessage message, MicroProcessorOperationTestContext context, Func<TMessage, IMessageHandlerOperationContext, Task> handler) =>
             NotNull(processor).ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(handler), message, context);
 
         private static IHandleMessageOperationTestProcessor NotNull(IHandleMessageOperationTestProcessor processor) =>

@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<QueryOperationContext, TResponse> query) =>
+        public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<IQueryOperationContext, TResponse> query) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<QueryOperationContext, Task<TResponse>> query) =>
+        public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<IQueryOperationContext, Task<TResponse>> query) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
 
         #endregion
@@ -46,7 +46,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, QueryOperationContext, TResponse> query, TRequest request) =>
+        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, IQueryOperationContext, TResponse> query, TRequest request) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, QueryOperationContext, Task<TResponse>> query, TRequest request) =>
+        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest request) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         #endregion

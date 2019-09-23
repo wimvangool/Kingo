@@ -8,18 +8,17 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a decorator of queries.
     /// </summary>
-    /// <typeparam name="TRequest">Type of the request of the query.</typeparam>
     /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
-    public class QueryDecorator<TRequest, TResponse> : IQuery<TRequest, TResponse>
+    public class QueryDecorator<TResponse> : IQuery<TResponse>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="QueryDecorator{TRequest, TResponse}" /> class.
+        /// Initializes a new instance of the <see cref="QueryDecorator{TResponse}" /> class.
         /// </summary>
         /// <param name="query">The query to decorate.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public QueryDecorator(IQuery<TRequest, TResponse> query)
+        public QueryDecorator(IQuery<TResponse> query)
         {
             Query = query ?? throw new ArgumentNullException(nameof(query));
         }
@@ -27,14 +26,14 @@ namespace Kingo.MicroServices
         /// <summary>
         /// The query to decorate.
         /// </summary>
-        protected IQuery<TRequest, TResponse> Query
+        protected IQuery<TResponse> Query
         {
             get;
         }
 
         /// <inheritdoc />
-        public virtual Task<TResponse> ExecuteAsync(TRequest message, QueryOperationContext context) =>
-            Query.ExecuteAsync(message, context);
+        public virtual Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
+            Query.ExecuteAsync(context);
 
         /// <inheritdoc />
         public override string ToString() =>
@@ -42,11 +41,11 @@ namespace Kingo.MicroServices
 
         #region [====== Decorate (TResponse) ======]
 
-        private sealed class QueryFunc : IQuery<TRequest, TResponse>
+        private sealed class QueryFunc : IQuery<TResponse>
         {
-            private readonly Func<TRequest, QueryOperationContext, TResponse> _query;
+            private readonly Func<IQueryOperationContext, TResponse> _query;
 
-            public QueryFunc(Func<TRequest, QueryOperationContext, TResponse> query)
+            public QueryFunc(Func<IQueryOperationContext, TResponse> query)
             {
                 _query = query ?? throw new ArgumentNullException(nameof(query));
             }
@@ -54,32 +53,32 @@ namespace Kingo.MicroServices
             public override string ToString() =>
                 _query.GetType().FriendlyName();
 
-            public Task<TResponse> ExecuteAsync(TRequest message, QueryOperationContext context) =>
-                AsyncMethod.Run(() => _query.Invoke(message, context));
+            public Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
+                AsyncMethod.Run(() => _query.Invoke(context));
         }
 
         /// <summary>
-        /// Wraps the specified delegate into a <see cref="IQuery{T, S}" /> instance.
+        /// Wraps the specified delegate into a <see cref="IQuery{T}" /> instance.
         /// </summary>
         /// <param name="query">The delegate to wrap.</param>
         /// <returns>
-        /// A <see cref="IQuery{T, S}"/> that wraps the specified <paramref name="query"/>.
+        /// A <see cref="IQuery{T}"/> that wraps the specified <paramref name="query"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static IQuery<TRequest, TResponse> Decorate(Func<TRequest, QueryOperationContext, TResponse> query) =>
+        public static IQuery<TResponse> Decorate(Func<IQueryOperationContext, TResponse> query) =>
             new QueryFunc(query);
 
         #endregion
 
-        #region [====== Decorate (Task<TRequest, TResponse>) ======]
+        #region [====== Decorate (Task<TResponse>) ======]
 
-        private sealed class QueryFuncAsync : IQuery<TRequest, TResponse>
+        private sealed class QueryFuncAsync : IQuery<TResponse>
         {
-            private readonly Func<TRequest, QueryOperationContext, Task<TResponse>> _query;
+            private readonly Func<IQueryOperationContext, Task<TResponse>> _query;
 
-            public QueryFuncAsync(Func<TRequest, QueryOperationContext, Task<TResponse>> query)
+            public QueryFuncAsync(Func<IQueryOperationContext, Task<TResponse>> query)
             {
                 _query = query ?? throw new ArgumentNullException(nameof(query));
             }
@@ -87,21 +86,21 @@ namespace Kingo.MicroServices
             public override string ToString() =>
                 _query.GetType().FriendlyName();
 
-            public Task<TResponse> ExecuteAsync(TRequest message, QueryOperationContext context) =>
-                _query.Invoke(message, context);
+            public Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
+                _query.Invoke(context);
         }
 
         /// <summary>
-        /// Wraps the specified delegate into a <see cref="IQuery{T, S}" /> instance.
+        /// Wraps the specified delegate into a <see cref="IQuery{T}" /> instance.
         /// </summary>
         /// <param name="query">The delegate to wrap.</param>
         /// <returns>
-        /// A <see cref="IQuery{T, S}"/> that wraps the specified <paramref name="query"/>.
+        /// A <see cref="IQuery{T}"/> that wraps the specified <paramref name="query"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static IQuery<TRequest, TResponse> Decorate(Func<TRequest, QueryOperationContext, Task<TResponse>> query) =>
+        public static IQuery<TResponse> Decorate(Func<IQueryOperationContext, Task<TResponse>> query) =>
             new QueryFuncAsync(query);
 
         #endregion

@@ -24,14 +24,14 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task HandleMessageAsync_Throws_IfMessageHandlerActionIsNull()
         {
-            await HandleMessageAsync(null as Action<object, MessageHandlerOperationContext>, new object());
+            await HandleMessageAsync(null as Action<object, IMessageHandlerOperationContext>, new object());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task HandleMessageAsync_Throws_IfMessageHandlerFuncIsNull()
         {
-            await HandleMessageAsync(null as Func<object, MessageHandlerOperationContext, Task>, new object());
+            await HandleMessageAsync(null as Func<object, IMessageHandlerOperationContext, Task>, new object());
         }
 
         [TestMethod]
@@ -545,7 +545,7 @@ namespace Kingo.MicroServices.Controllers
         {
             [InternalEventBusEndpoint]
             [MicroServiceBusEndpoint]
-            public Task HandleAsync(int message, MessageHandlerOperationContext context)
+            public Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
                 try
                 {
@@ -559,7 +559,7 @@ namespace Kingo.MicroServices.Controllers
 
             [InternalEventBusEndpoint]
             [MicroServiceBusEndpoint]
-            public Task HandleAsync(object message, MessageHandlerOperationContext context)
+            public Task HandleAsync(object message, IMessageHandlerOperationContext context)
             {
                 try
                 {
@@ -571,42 +571,36 @@ namespace Kingo.MicroServices.Controllers
                 }
             }
 
-            private Task HandleMessageAsync<TMessage>(TMessage message, MessageHandlerOperationContext context)
+            private Task HandleMessageAsync<TMessage>(TMessage message, IMessageHandlerOperationContext context)
             {
                 AssertContext(message, context);
                 Instances(context).Add(this);
                 return Task.CompletedTask;
             }
 
-            private void AssertContext<TMessage>(TMessage message, MessageHandlerOperationContext context) =>
+            private void AssertContext<TMessage>(TMessage message, IMessageHandlerOperationContext context) =>
                 AssertOperation(message, context.StackTrace.CurrentOperation);
 
             private void AssertOperation<TMessage>(TMessage message, IAsyncMethodOperation operation)
             {
                 Assert.AreEqual(message, operation.Message.Content);
                 AssertMethod(typeof(TMessage), operation.Method);
-                AssertMessageHandler(GetType(), operation.Method.Component as MessageHandler);
+                AssertMessageHandlerType(GetType(), operation.Method.ComponentType);
             }
 
             private static void AssertMethod(Type messageType, IAsyncMethod method)
             {
                 Assert.AreSame(messageType, method.MessageParameterInfo.ParameterType);
-                Assert.AreSame(typeof(MessageHandlerOperationContext), method.ContextParameterInfo.ParameterType);
+                Assert.AreSame(typeof(IMessageHandlerOperationContext), method.ContextParameterInfo.ParameterType);
             }
 
-            private static void AssertMessageHandler(Type messageHandlerType, MessageHandler messageHandler)
+            private static void AssertMessageHandlerType(Type expectedType, Type actualType)
             {
-                Assert.IsNotNull(messageHandler);
-                Assert.AreSame(messageHandlerType, messageHandler.Type);
-                Assert.AreEqual(2, messageHandler.Interfaces.Count);
-                AssertImplements<IMessageHandler<int>>(messageHandler);
-                AssertImplements<IMessageHandler<object>>(messageHandler);
+                Assert.IsNotNull(actualType);
+                Assert.AreSame(expectedType, actualType);
             }
 
-            private static void AssertImplements<TInterface>(MessageHandler messageHandler) =>
-                Assert.IsTrue(messageHandler.Interfaces.Any(@interface => @interface.Type == typeof(TInterface)));
-
-            private static IInstanceCollector Instances(MicroProcessorOperationContext context) =>
+            private static IInstanceCollector Instances(IMicroProcessorOperationContext context) =>
                 context.ServiceProvider.GetRequiredService<IInstanceCollector>();
         }
 
@@ -743,7 +737,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_InvokesActionOnce_IfDelegateIsRegisteredTwice_And_ConfigurationIsEqual()
         {
-            Action<int, MessageHandlerOperationContext> messageHandler = (message, context) =>
+            Action<int, IMessageHandlerOperationContext> messageHandler = (message, context) =>
             {
                 context.MessageBus.Publish(string.Empty);
             };
@@ -763,7 +757,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_InvokesFuncOnce_IfDelegateIsRegisteredTwice_And_ConfigurationIsEqual()
         {
-            Func<int, MessageHandlerOperationContext, Task> messageHandler = (message, context) =>
+            Func<int, IMessageHandlerOperationContext, Task> messageHandler = (message, context) =>
             {
                 context.MessageBus.Publish(string.Empty);
                 return Task.CompletedTask;
@@ -785,9 +779,9 @@ namespace Kingo.MicroServices.Controllers
             HandleMessageAsync(processor, processor.ServiceProvider.GetRequiredService<TMessageHandler>());
 
         private async Task HandleMessageAsync(IMicroProcessor processor, IMessageHandler<int> messageHandler) =>
-            AssertMessageHandlerResult(await HandleMessageAsync<int>(processor, messageHandler, DateTimeOffset.UtcNow.Second));
+            AssertMessageHandlerResult(await HandleMessageAsync(processor, messageHandler, DateTimeOffset.UtcNow.Second));
 
-        private static void AssertMessageHandlerResult(MessageHandlerOperationResult result)
+        private static void AssertMessageHandlerResult(IMessageHandlerOperationResult result)
         {
             Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(1, result.Messages.Count);
@@ -805,20 +799,20 @@ namespace Kingo.MicroServices.Controllers
             get;
         }
 
-        protected Task<MessageHandlerOperationResult> HandleMessageAsync<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected Task<MessageHandlerOperationResult> HandleMessageAsync<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected Task<MessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected abstract Task<MessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null);
 
-        protected abstract Task<MessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null);
 
-        protected abstract Task<MessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null);
 
         #endregion
     }

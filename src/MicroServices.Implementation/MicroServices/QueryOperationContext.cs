@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the context in which a <see cref="MicroProcessor"/> executes a query.
     /// </summary>
-    public sealed class QueryOperationContext : MicroProcessorOperationContext
+    public sealed class QueryOperationContext : MicroProcessorOperationContext, IQueryOperationContext
     {
         internal QueryOperationContext(MicroProcessor processor, AsyncMethodOperationStackTrace stackTrace = null) :
             base(processor, stackTrace) { }

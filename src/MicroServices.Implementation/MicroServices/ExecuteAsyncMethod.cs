@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -33,8 +34,8 @@ namespace Kingo.MicroServices
 
         #region [====== IAsyncMethod ======]
 
-        MicroProcessorComponent IAsyncMethod.Component =>
-            Query;        
+        Type IAsyncMethod.ComponentType =>
+            Query.Type;        
 
         /// <summary>
         /// The query that implements this method.

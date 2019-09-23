@@ -20,6 +20,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        Task<TResponse> ExecuteAsync(TRequest message, QueryOperationContext context);
+        Task<TResponse> ExecuteAsync(TRequest message, IQueryOperationContext context);
     }
 }

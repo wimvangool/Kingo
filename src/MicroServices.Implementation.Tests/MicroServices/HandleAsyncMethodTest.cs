@@ -13,7 +13,7 @@ namespace Kingo.MicroServices
         private sealed class MessageHandler1 : IMessageHandler<object>
         {
             [Value(2)]
-            public Task HandleAsync([Value(0)] object message, [Value(1)] MessageHandlerOperationContext context) =>
+            public Task HandleAsync([Value(0)] object message, [Value(1)] IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
@@ -21,11 +21,11 @@ namespace Kingo.MicroServices
         private sealed class MessageHandler2 : IMessageHandler<object>, IMessageHandler<string>
         {
             [Value(10)]
-            Task IMessageHandler<string>.HandleAsync([Value(2)] string message, [Value(3)] MessageHandlerOperationContext context) =>
+            Task IMessageHandler<string>.HandleAsync([Value(2)] string message, [Value(3)] IMessageHandlerOperationContext context) =>
                 HandleAsync(message, context);
 
             [Value(18)]
-            public Task HandleAsync([Value(4)] object message, [Value(5)] MessageHandlerOperationContext context) =>
+            public Task HandleAsync([Value(4)] object message, [Value(5)] IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;            
         }
 

@@ -9,8 +9,8 @@ namespace Kingo.MicroServices
     {
         protected static void AssertComponentProperties<TComponent>(IAsyncMethod method, int value)
         {
-            Assert.AreSame(typeof(TComponent), method.Component.Type);
-            AssertValue(method.Component.Type, value);
+            Assert.AreSame(typeof(TComponent), method.ComponentType);
+            AssertValue(method.ComponentType, value);
         }
 
         protected static void AssertValue(MemberInfo member, int value)

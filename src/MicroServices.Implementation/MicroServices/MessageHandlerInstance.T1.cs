@@ -7,10 +7,10 @@ namespace Kingo.MicroServices
     {        
         private readonly IMessageHandler<TMessage> _messageHandler;        
 
-        public MessageHandlerInstance(Action<TMessage, MessageHandlerOperationContext> messageHandler) :
+        public MessageHandlerInstance(Action<TMessage, IMessageHandlerOperationContext> messageHandler) :
             this(MessageHandlerDecorator<TMessage>.Decorate(messageHandler)) { }
 
-        public MessageHandlerInstance(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler) :
+        public MessageHandlerInstance(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler) :
             this(MessageHandlerDecorator<TMessage>.Decorate(messageHandler)) { }
 
         private MessageHandlerInstance(IMessageHandler<TMessage> messageHandler) :
@@ -19,7 +19,7 @@ namespace Kingo.MicroServices
             _messageHandler = messageHandler;            
         }
 
-        public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
+        public Task HandleAsync(TMessage message, IMessageHandlerOperationContext context) =>
             _messageHandler.HandleAsync(message, context);
 
         internal override object ResolveMessageHandler(IServiceProvider serviceProvider) =>

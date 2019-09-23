@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteCommandAsync<TMessage>(this IMessageProcessor<TMessage> processor, Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message) =>
+        public static Task ExecuteCommandAsync<TMessage>(this IMessageProcessor<TMessage> processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message) =>
             NotNull(processor).ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteCommandAsync<TMessage>(this IMessageProcessor<TMessage> processor, Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
+        public static Task ExecuteCommandAsync<TMessage>(this IMessageProcessor<TMessage> processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
             NotNull(processor).ExecuteCommandAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
 
         #endregion
@@ -47,7 +47,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleEventAsync<TMessage>(this IMessageProcessor<TMessage> processor, Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message) =>
+        public static Task HandleEventAsync<TMessage>(this IMessageProcessor<TMessage> processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message) =>
             NotNull(processor).HandleEventAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleEventAsync<TMessage>(this IMessageProcessor<TMessage> processor, Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
+        public static Task HandleEventAsync<TMessage>(this IMessageProcessor<TMessage> processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
             NotNull(processor).HandleEventAsync(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
 
         #endregion

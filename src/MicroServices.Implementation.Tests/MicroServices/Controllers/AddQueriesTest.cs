@@ -14,54 +14,54 @@ namespace Kingo.MicroServices.Controllers
 
         private abstract class AbstractQuery : IQuery<object>
         {
-            public abstract Task<object> ExecuteAsync(QueryOperationContext context);
+            public abstract Task<object> ExecuteAsync(IQueryOperationContext context);
         }
 
         private sealed class GenericQuery<TResponse> : IQuery<TResponse>
         {
-            public Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
+            public Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
                 Task.FromResult<TResponse>(default);
         }
 
         private sealed class Query1 : IQuery<object>
         {
-            public Task<object> ExecuteAsync(QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(IQueryOperationContext context) =>
                 Task.FromResult(new object());
         }
 
         private sealed class Query2 : IQuery<object, object>
         {
-            public Task<object> ExecuteAsync(object message, QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(object message, IQueryOperationContext context) =>
                 Task.FromResult(message);
         }
 
         private sealed class Query3 : IQuery<object>, IQuery<object, object>
         {
-            public Task<object> ExecuteAsync(QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(IQueryOperationContext context) =>
                 Task.FromResult(new object());
 
-            public Task<object> ExecuteAsync(object message, QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(object message, IQueryOperationContext context) =>
                 Task.FromResult(message);
         }
 
         [MicroProcessorComponent((ServiceLifetime) (-1))]
         private sealed class InvalidLifetimeQuery : IQuery<object>
         {
-            public Task<object> ExecuteAsync(QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(IQueryOperationContext context) =>
                 Task.FromResult(new object());
         }
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ScopedQuery : IQuery<object>
         {
-            public Task<object> ExecuteAsync(QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(IQueryOperationContext context) =>
                 Task.FromResult(new object());
         }
 
         [MicroProcessorComponent(ServiceLifetime.Singleton)]
         private sealed class SingletonQuery : IQuery<object>
         {
-            public Task<object> ExecuteAsync(QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(IQueryOperationContext context) =>
                 Task.FromResult(new object());
         }
 

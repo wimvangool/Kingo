@@ -14,48 +14,48 @@ namespace Kingo.MicroServices.Controllers
 
         private abstract class AbstractMessageHandler : IMessageHandler<object>
         {
-            public abstract Task HandleAsync(object message, MessageHandlerOperationContext context);
+            public abstract Task HandleAsync(object message, IMessageHandlerOperationContext context);
         }
 
         private sealed class GenericMessageHandler<TMessage> : IMessageHandler<TMessage>
         {
-            public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(TMessage message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class MessageHandler1 : IMessageHandler<object>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class MessageHandler2 : IMessageHandler<object>, IMessageHandler<int>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
 
-            public Task HandleAsync(int message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(int message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         [MicroProcessorComponent((ServiceLifetime) (-1))]
         private sealed class InvalidLifetimeMessageHandler : IMessageHandler<object>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ScopedMessageHandler : IMessageHandler<object>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         [MicroProcessorComponent(ServiceLifetime.Singleton)]
         private sealed class SingletonMessageHandler : IMessageHandler<object>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 

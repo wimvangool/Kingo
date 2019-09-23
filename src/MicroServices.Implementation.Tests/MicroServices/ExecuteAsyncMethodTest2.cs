@@ -13,7 +13,7 @@ namespace Kingo.MicroServices
         private sealed class Query1 : IQuery<object, int>
         {
             [Value(10)]
-            public Task<int> ExecuteAsync([Value(2)] object message, [Value(3)] QueryOperationContext context) =>
+            public Task<int> ExecuteAsync([Value(2)] object message, [Value(3)] IQueryOperationContext context) =>
                 Task.FromResult(0);
         }
 
@@ -21,11 +21,11 @@ namespace Kingo.MicroServices
         private sealed class Query2 : IQuery<object, int>, IQuery<string, int>
         {
             [Value(18)]
-            async Task<int> IQuery<string, int>.ExecuteAsync([Value(4)] string message, [Value(5)] QueryOperationContext context) =>
+            async Task<int> IQuery<string, int>.ExecuteAsync([Value(4)] string message, [Value(5)] IQueryOperationContext context) =>
                 await ExecuteAsync(message, context);
 
             [Value(26)]
-            public Task<int> ExecuteAsync([Value(6)] object message, [Value(7)] QueryOperationContext context) =>
+            public Task<int> ExecuteAsync([Value(6)] object message, [Value(7)] IQueryOperationContext context) =>
                 Task.FromResult(0);
         }
 

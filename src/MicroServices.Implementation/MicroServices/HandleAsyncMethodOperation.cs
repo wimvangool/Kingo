@@ -20,7 +20,7 @@
             get;
         }               
 
-        MicroProcessorOperationContext IAsyncMethodOperation.Context =>
+        IMicroProcessorOperationContext IAsyncMethodOperation.Context =>
             Context;
 
         /// <summary>

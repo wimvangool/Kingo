@@ -22,14 +22,14 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryFuncIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync(null as Func<QueryOperationContext, object>);
+            await CreateProcessor().ExecuteQueryAsync(null as Func<IQueryOperationContext, object>);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryFuncAsyncIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync(null as Func<QueryOperationContext, Task<object>>);
+            await CreateProcessor().ExecuteQueryAsync(null as Func<IQueryOperationContext, Task<object>>);
         }
 
         #endregion
@@ -53,7 +53,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class QueryStub : IQuery<object>
         {
-            public Task<object> ExecuteAsync(QueryOperationContext context)
+            public Task<object> ExecuteAsync(IQueryOperationContext context)
             {
                 Assert.AreEqual(1, context.StackTrace.Count);
                 AssertOperation(context.StackTrace.CurrentOperation);
@@ -67,17 +67,15 @@ namespace Kingo.MicroServices.Controllers
 
                 Assert.IsNull(operation.Message);
                 Assert.IsNull(operation.Method.MessageParameterInfo);
-                Assert.AreSame(typeof(QueryOperationContext), operation.Method.ContextParameterInfo.ParameterType);
+                Assert.AreSame(typeof(IQueryOperationContext), operation.Method.ContextParameterInfo.ParameterType);
 
-                AssertComponent(operation.Method.Component as Query);
+                AssertComponentType(operation.Method.ComponentType);
             }
 
-            private void AssertComponent(Query query)
+            private void AssertComponentType(Type queryType)
             {
-                Assert.IsNotNull(query);
-                Assert.AreSame(GetType(), query.Type);
-                Assert.AreEqual(1, query.Interfaces.Count);
-                Assert.AreSame(typeof(IQuery<object>), query.Interfaces.First().Type);
+                Assert.IsNotNull(queryType);
+                Assert.AreSame(GetType(), queryType);
             }
         }
 

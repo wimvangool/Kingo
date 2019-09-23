@@ -24,10 +24,10 @@ namespace Kingo.MicroServices.Controllers
         [MicroProcessorComponent(ServiceLifetime.Scoped)]
         private sealed class ReadModel : IMessageHandler<object>, IQuery<object>
         {
-            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
 
-            public Task<object> ExecuteAsync(QueryOperationContext context) =>
+            public Task<object> ExecuteAsync(IQueryOperationContext context) =>
                 Task.FromResult(new object());
         }
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the context in which a <see cref="MicroProcessor"/> invokes a <see cref="IMessageHandler{TMessage}"/>.
     /// </summary>
-    public sealed class MessageHandlerOperationContext : MicroProcessorOperationContext
+    public sealed class MessageHandlerOperationContext : MicroProcessorOperationContext, IMessageHandlerOperationContext
     {                
         private readonly IUnitOfWork _unitOfWork;
         private readonly MessageBus _messageBus;
@@ -20,18 +20,13 @@
         {                        
             _unitOfWork = context._unitOfWork;
             _messageBus = new MessageBus();
-        }       
+        }
 
-        /// <summary>
-        /// Represents the unit of work that is associated to the current operation.
-        /// </summary>
+        /// <inheritdoc />
         public IUnitOfWork UnitOfWork =>
             _unitOfWork;
 
-        /// <summary>
-        /// Represents the message bus that can be used to schedule commands to be sent or events to be published
-        /// after the operation has completed.
-        /// </summary>
+        /// <inheritdoc />
         public IMessageBus MessageBus =>
             _messageBus;  
         

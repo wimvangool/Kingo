@@ -13,7 +13,7 @@ namespace Kingo.MicroServices
             _query = query;
         }                
 
-        public Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
+        public Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
             _query.ExecuteAsync(context);
 
         public override string ToString() =>

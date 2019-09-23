@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.Controllers
                 _multiplier = multiplier;
             }
 
-            public async Task HandleAsync(int message, MessageHandlerOperationContext context)
+            public async Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
                 context.MessageBus.Publish(await _constantProvider.GetConstantAsync(context));
                 context.MessageBus.Publish(await _multiplier.MultiplyByTwoAsync(message, context));
@@ -38,7 +38,7 @@ namespace Kingo.MicroServices.Controllers
                 _multiplier = multiplier;
             }
 
-            public async Task<int> ExecuteAsync(int message, QueryOperationContext context)
+            public async Task<int> ExecuteAsync(int message, IQueryOperationContext context)
             {
                 var a = await _constantProvider.GetConstantAsync(context);
                 var b = await _multiplier.MultiplyByTwoAsync(a, context);
@@ -48,16 +48,16 @@ namespace Kingo.MicroServices.Controllers
 
         private interface IConstantProvider
         {
-            Task<int> GetConstantAsync(MicroProcessorOperationContext context);
+            Task<int> GetConstantAsync(IMicroProcessorOperationContext context);
         }
 
         [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IConstantProvider))]
         private sealed class ConstantProviderQuery : IConstantProvider, IQuery<int>
         {
-            Task<int> IConstantProvider.GetConstantAsync(MicroProcessorOperationContext context) =>
+            Task<int> IConstantProvider.GetConstantAsync(IMicroProcessorOperationContext context) =>
                 context.QueryProcessor.ExecuteQueryAsync(this);
 
-            public Task<int> ExecuteAsync(QueryOperationContext context)
+            public Task<int> ExecuteAsync(IQueryOperationContext context)
             {
                 Assert.AreEqual(2, context.StackTrace.Count);
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
@@ -68,16 +68,16 @@ namespace Kingo.MicroServices.Controllers
 
         private interface IMultiplier
         {
-            Task<int> MultiplyByTwoAsync(int value, MicroProcessorOperationContext context);
+            Task<int> MultiplyByTwoAsync(int value, IMicroProcessorOperationContext context);
         }
 
         [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IMultiplier))]
         private sealed class MultiplierQuery : IMultiplier, IQuery<int, int>
         {
-            Task<int> IMultiplier.MultiplyByTwoAsync(int value, MicroProcessorOperationContext context) =>
+            Task<int> IMultiplier.MultiplyByTwoAsync(int value, IMicroProcessorOperationContext context) =>
                 context.QueryProcessor.ExecuteQueryAsync(this, value);
 
-            public Task<int> ExecuteAsync(int message, QueryOperationContext context)
+            public Task<int> ExecuteAsync(int message, IQueryOperationContext context)
             {
                 Assert.AreEqual(2, context.StackTrace.Count);
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);

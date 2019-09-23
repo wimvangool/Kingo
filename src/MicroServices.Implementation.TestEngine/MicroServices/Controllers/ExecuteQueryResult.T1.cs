@@ -64,7 +64,7 @@ namespace Kingo.MicroServices.Controllers
             _result = new ExceptionResult(exception);
         }
 
-        public ExecuteQueryResult(QueryOperationResult<TResponse> result)
+        public ExecuteQueryResult(IQueryOperationResult<TResponse> result)
         {
             _result = new ResponseResult(result.Response);
         }

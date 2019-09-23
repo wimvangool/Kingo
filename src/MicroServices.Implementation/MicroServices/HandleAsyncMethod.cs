@@ -39,8 +39,8 @@ namespace Kingo.MicroServices
 
         #region [====== IAsyncMethod ======]
 
-        MicroProcessorComponent IAsyncMethod.Component =>
-            MessageHandler;        
+        Type IAsyncMethod.ComponentType =>
+            MessageHandler.Type;        
 
         /// <summary>
         /// The message handler that implements this method.

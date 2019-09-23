@@ -7,7 +7,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents the context in which a <see cref="MicroProcessor"/> operates.
     /// </summary>    
-    public abstract class MicroProcessorOperationContext
+    public abstract class MicroProcessorOperationContext : IMicroProcessorOperationContext
     {        
         private readonly MicroProcessor _processor;
         private readonly ClaimsPrincipal _user;
@@ -31,29 +31,21 @@ namespace Kingo.MicroServices
         }
 
         internal MicroProcessor Processor =>
-            _processor;        
+            _processor;
 
-        /// <summary>
-        /// Gets the user that is executing the current operation.
-        /// </summary>
+        /// <inheritdoc />
         public ClaimsPrincipal User =>
             _user;
 
-        /// <summary>
-        /// Returns a stack trace of all operations that are currently being executed.
-        /// </summary>
+        /// <inheritdoc />
         public IAsyncMethodOperationStackTrace StackTrace =>
             _stackTrace;
 
-        /// <summary>
-        /// Returns the <see cref="IServiceProvider" /> of this context.
-        /// </summary>
+        /// <inheritdoc />
         public IServiceProvider ServiceProvider =>
             _processor.ServiceProvider;
 
-        /// <summary>
-        /// Returns the processor that can be used to execute (sub)queries during an operation.
-        /// </summary>
+        /// <inheritdoc />
         public IQueryProcessor QueryProcessor =>
             _queryProcessor;
 

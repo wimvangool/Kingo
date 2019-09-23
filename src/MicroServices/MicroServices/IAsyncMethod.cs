@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -11,7 +12,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Returns the message handler or query type this method has been implemented on.
         /// </summary>
-        MicroProcessorComponent Component
+        Type ComponentType
         {
             get;
         }
