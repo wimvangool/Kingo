@@ -86,7 +86,7 @@ namespace Kingo.MicroServices
 
         #region [====== Options ======]
 
-        string IMicroServiceBusProcessor.ServiceName =>
+        string IMicroProcessor.ServiceName =>
             Options.Endpoints.ServiceName;
 
         internal IMicroProcessorOptions Options =>
@@ -127,9 +127,6 @@ namespace Kingo.MicroServices
         #endregion
 
         #region [====== ServiceProvider ======]    
-
-        IServiceProvider IMicroServiceBusProcessor.ServiceProvider =>
-            ServiceProvider;
 
         /// <inheritdoc />
         public virtual IMicroProcessorServiceProvider ServiceProvider =>

@@ -55,12 +55,12 @@ namespace Kingo.MicroServices.Controllers
         // in the service collection. This number can be used to verify whether or not
         // the appropriate services from a test were registered or not.
         // The default services are:
-        // - IMicroProcessor + IMicroServiceBusProcessor + TProcessor
+        // - IMicroProcessor + TProcessor
         // - MicroProcessorOptions
         // - IHandleAsyncMethodFactory
         // - IMicroServiceBus
         // - IInstanceCollector
         protected virtual int DefaultServiceCount =>
-            7;              
+            6;              
     }
 }

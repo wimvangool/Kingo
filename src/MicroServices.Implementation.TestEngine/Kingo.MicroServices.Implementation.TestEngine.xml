@@ -457,7 +457,7 @@
             Contains extensions methods for instances that implement the <see cref="T:Kingo.MicroServices.Controllers.IHandleMessageOperationTestProcessor" /> interface.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.Controllers.IHandleMessageOperationTestProcessor,``0,Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext,System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext})">
+        <member name="M:Kingo.MicroServices.Controllers.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.Controllers.IHandleMessageOperationTestProcessor,``0,Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext,System.Action{``0,Kingo.MicroServices.IMessageHandlerOperationContext})">
             <summary>
             Handles the specified message.
             </summary>
@@ -470,7 +470,7 @@
             <paramref name="processor"/>, <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.Controllers.IHandleMessageOperationTestProcessor,``0,Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext,System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task})">
+        <member name="M:Kingo.MicroServices.Controllers.MessageHandlerTestProcessorExtensions.HandleAsync``1(Kingo.MicroServices.Controllers.IHandleMessageOperationTestProcessor,``0,Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext,System.Func{``0,Kingo.MicroServices.IMessageHandlerOperationContext,System.Threading.Tasks.Task})">
             <summary>
             Handles the specified message.
             </summary>
@@ -488,7 +488,7 @@
             Contains extension-methods  for instances that implement the <see cref="T:Kingo.MicroServices.Controllers.IMessageProcessor`1"/> interface.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0)">
+        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.IMessageHandlerOperationContext},``0)">
             <summary>
             Executes a command with a specified <paramref name="messageHandler"/>.
             </summary>
@@ -499,7 +499,7 @@
             <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
+        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.ExecuteCommandAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.IMessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
             <summary>
             Processes the specified <paramref name="message" />.
             </summary>
@@ -510,7 +510,7 @@
             <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.MessageHandlerOperationContext},``0)">
+        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Action{``0,Kingo.MicroServices.IMessageHandlerOperationContext},``0)">
             <summary>
             Processes the specified <paramref name="message"/> with the specified <paramref name="messageHandler"/>.
             </summary>
@@ -521,7 +521,7 @@
             <paramref name="processor"/>, <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.MessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
+        <member name="M:Kingo.MicroServices.Controllers.MessageProcessorExtensions.HandleEventAsync``1(Kingo.MicroServices.Controllers.IMessageProcessor{``0},System.Func{``0,Kingo.MicroServices.IMessageHandlerOperationContext,System.Threading.Tasks.Task},``0)">
             <summary>
             Processes the specified <paramref name="message"/> with the specified <paramref name="messageHandler"/>.
             </summary>
@@ -619,7 +619,7 @@
             <see cref="T:Kingo.MicroServices.Controllers.IQueryProcessor`2"/> interface.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``1(Kingo.MicroServices.Controllers.IQueryProcessor{``0},System.Func{Kingo.MicroServices.QueryOperationContext,``0})">
+        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``1(Kingo.MicroServices.Controllers.IQueryProcessor{``0},System.Func{Kingo.MicroServices.IQueryOperationContext,``0})">
             <summary>
             Executes the specified <paramref name="query"/>.
             </summary>
@@ -629,7 +629,7 @@
             <paramref name="query"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``1(Kingo.MicroServices.Controllers.IQueryProcessor{``0},System.Func{Kingo.MicroServices.QueryOperationContext,System.Threading.Tasks.Task{``0}})">
+        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``1(Kingo.MicroServices.Controllers.IQueryProcessor{``0},System.Func{Kingo.MicroServices.IQueryOperationContext,System.Threading.Tasks.Task{``0}})">
             <summary>
             Executes the specified <paramref name="query"/>.
             </summary>
@@ -639,7 +639,7 @@
             <paramref name="query"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.Controllers.IQueryProcessor{``0,``1},System.Func{``0,Kingo.MicroServices.QueryOperationContext,``1},``0)">
+        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.Controllers.IQueryProcessor{``0,``1},System.Func{``0,Kingo.MicroServices.IQueryOperationContext,``1},``0)">
             <summary>
             Executes the specified <paramref name="query"/>.
             </summary>
@@ -650,7 +650,7 @@
             <paramref name="query"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.Controllers.IQueryProcessor{``0,``1},System.Func{``0,Kingo.MicroServices.QueryOperationContext,System.Threading.Tasks.Task{``1}},``0)">
+        <member name="M:Kingo.MicroServices.Controllers.QueryProcessorExtensions.ExecuteAsync``2(Kingo.MicroServices.Controllers.IQueryProcessor{``0,``1},System.Func{``0,Kingo.MicroServices.IQueryOperationContext,System.Threading.Tasks.Task{``1}},``0)">
             <summary>
             Executes the specified <paramref name="query"/>.
             </summary>

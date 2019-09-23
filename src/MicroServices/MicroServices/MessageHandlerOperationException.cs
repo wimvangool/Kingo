@@ -6,7 +6,7 @@ namespace Kingo.MicroServices
 {
     /// <summary>
     /// An exception of this type is to be thrown by application code when something predictable went wrong while handling a message.
-    /// The <see cref="MicroProcessor" /> will catch exceptions of this type and convert it to a <see cref="BadRequestException" />
+    /// The <see cref="IMicroProcessor" /> will catch exceptions of this type and convert it to a <see cref="BadRequestException" />
     /// or <see cref="InternalServerErrorException" /> based on whether or was executing a command or handling an event.   
     /// </summary>
     [Serializable]

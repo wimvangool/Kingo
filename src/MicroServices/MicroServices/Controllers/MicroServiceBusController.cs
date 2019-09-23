@@ -276,7 +276,7 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        private readonly IMicroServiceBusProcessor _processor;
+        private readonly IMicroProcessor _processor;
         private readonly Lazy<ServiceContract> _serviceContract;
         private State _state;
 
@@ -287,7 +287,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/> is <c>null</c>.
         /// </exception>
-        protected MicroServiceBusController(IMicroServiceBusProcessor processor)
+        protected MicroServiceBusController(IMicroProcessor processor)
         {
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
             _serviceContract = new Lazy<ServiceContract>(DefineServiceContract, true);
@@ -302,7 +302,7 @@ namespace Kingo.MicroServices.Controllers
 
         /// <summary>
         /// The start method creates a new <see cref="IMicroServiceBusClient"/> and attempts to connect
-        /// every <see cref="IMicroServiceBusEndpoint"/> that is provided by the <see cref="IMicroServiceBusProcessor"/>
+        /// every <see cref="IMicroServiceBusEndpoint"/> that is provided by the <see cref="IMicroProcessor"/>
         /// to the service-bus through this client. If <paramref name="cancellationToken"/> is signaled before the
         /// client is fully created and connected, the operation is aborted and the controller remains in the
         /// stopped/disconnected state.

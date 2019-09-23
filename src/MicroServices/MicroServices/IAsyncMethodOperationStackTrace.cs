@@ -4,7 +4,7 @@ namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents a stack trace of operations that are currently being executed
-    /// by a <see cref="MicroProcessor" />.
+    /// by a <see cref="IMicroProcessor" />.
     /// </summary>
     public interface IAsyncMethodOperationStackTrace : IReadOnlyList<IAsyncMethodOperation>
     {

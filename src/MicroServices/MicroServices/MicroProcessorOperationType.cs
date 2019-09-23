@@ -1,7 +1,7 @@
 ﻿namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents a specific operation type performed by a <see cref="MicroProcessor" />.
+    /// Represents a specific operation type performed by a <see cref="IMicroProcessor" />.
     /// </summary>    
     public enum MicroProcessorOperationType
     {

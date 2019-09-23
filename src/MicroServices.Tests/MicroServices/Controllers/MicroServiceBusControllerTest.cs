@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.Controllers
             private readonly CancellationTokenSource _tokenSource;
             private int _disposeCount;
 
-            public MicroServiceBusControllerStub(IMicroServiceBusProcessor processor, MicroServiceBusControllerTest test, CancellationTokenSource tokenSource = null) :
+            public MicroServiceBusControllerStub(IMicroProcessor processor, MicroServiceBusControllerTest test, CancellationTokenSource tokenSource = null) :
                 base(processor)
             {
                 _test = test;
@@ -112,19 +112,19 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        private readonly Mock<IServiceProvider> _serviceProviderMock;
-        private readonly Mock<IMicroServiceBusProcessor> _processorMock;
+        private readonly Mock<IMicroProcessorServiceProvider> _serviceProviderMock;
+        private readonly Mock<IMicroProcessor> _processorMock;
         private readonly List<IMicroServiceBusClientStub> _clientStubs;
 
         public MicroServiceBusControllerTest()
         {
-            _serviceProviderMock = new Mock<IServiceProvider>();
-            _processorMock = new Mock<IMicroServiceBusProcessor>();
+            _serviceProviderMock = new Mock<IMicroProcessorServiceProvider>();
+            _processorMock = new Mock<IMicroProcessor>();
             _processorMock.Setup(processor => processor.ServiceProvider).Returns(_serviceProviderMock.Object);
             _clientStubs = new List<IMicroServiceBusClientStub>();
         }
 
-        private IMicroServiceBusProcessor Processor =>
+        private IMicroProcessor Processor =>
             _processorMock.Object;
 
         private IMicroServiceBusClient CreateClient<TMessage>() where TMessage : class
