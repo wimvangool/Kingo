@@ -96,37 +96,37 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddStoreAndForwardQueue_Throws_IfTypeIsNull()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(null);
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(null);
         }
 
         [TestMethod]
         public void AddStoreAndForwardQueue_ReturnsFalse_IfTypeIsNoStoreAndForwardQueueType()
         {
-            Assert.IsFalse(ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(object)));
+            Assert.IsFalse(ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(object)));
         }
 
         [TestMethod]
         public void AddStoreAndForwardQueue1_ReturnsFalse_IfTypeIsAbstractStoreAndForwardQueueType()
         {
-            Assert.IsFalse(ProcessorBuilder.Components.AddStoreAndForwardQueue<AbstractQueue>());
+            Assert.IsFalse(ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue<AbstractQueue>());
         }
 
         [TestMethod]
         public void AddStoreAndForwardQueue2_ReturnsFalse_IfTypeIsAbstractStoreAndForwardQueueType()
         {
-            Assert.IsFalse(ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(AbstractQueue)));
+            Assert.IsFalse(ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(AbstractQueue)));
         }
 
         [TestMethod]
         public void AddStoreAndForwardQueue1_ReturnsTrue_IfTypeIsConcreteStoreAndForwardQueueType()
         {
-            Assert.IsTrue(ProcessorBuilder.Components.AddStoreAndForwardQueue<ConcreteQueueOne>());
+            Assert.IsTrue(ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue<ConcreteQueueOne>());
         }
 
         [TestMethod]
         public void AddStoreAndForwardQueue2_ReturnsTrue_IfTypeIsConcreteStoreAndForwardQueueType()
         {
-            Assert.IsTrue(ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(ConcreteQueueOne)));
+            Assert.IsTrue(ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(ConcreteQueueOne)));
         }
 
         #endregion
@@ -137,7 +137,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void BuildServiceProvider_Throws_IfLifetimeOfQueueIsTransient()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(QueueWithTransientLifetime));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(QueueWithTransientLifetime));
 
             BuildServiceProvider();
         }
@@ -146,7 +146,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void BuildServiceProvider_Throws_IfLifetimeOfQueueIsScoped()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(QueueWithScopedLifetime));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(QueueWithScopedLifetime));
 
             BuildServiceProvider();
         }
@@ -154,7 +154,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void BuildServiceProvider_ReturnsExpectedServiceProvider_IfLifetimeOfQueueIsSingeton()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(QueueWithSingletonLifetime));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(QueueWithSingletonLifetime));
 
             Assert.IsNotNull(BuildServiceProvider());
         }
@@ -167,7 +167,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void ResolveMicroServiceBus_Throws_IfAddedQueueHasNoPublicConstructor()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(ConcreteQueueWithoutPublicConstructor));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(ConcreteQueueWithoutPublicConstructor));
 
             BuildServiceProvider().GetRequiredService<IMicroServiceBus>();
         }
@@ -176,7 +176,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void ResolveMicroServiceBus_Throws_IfAddedQueueHasMultiplePublicConstructors()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(ConcreteQueueWithMultiplePublicConstructors));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(ConcreteQueueWithMultiplePublicConstructors));
 
             BuildServiceProvider().GetRequiredService<IMicroServiceBus>();
         }
@@ -185,7 +185,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void ResolveMicroServiceBus_Throws_IfAddedQueueHasCircularDependency()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(ConcreteQueueWithCircularDependency));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(ConcreteQueueWithCircularDependency));
 
             BuildServiceProvider().GetRequiredService<IMicroServiceBus>();
         }
@@ -197,7 +197,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void ResolveMicroServiceBus_ResolvesExpectedPipeline_IfOneQueueIsAdded()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(ConcreteQueueOne));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(ConcreteQueueOne));
 
             var serviceProvider = BuildServiceProvider();
             var bus = serviceProvider.GetRequiredService<IMicroServiceBus>();
@@ -209,8 +209,8 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void ResolveMicroServiceBus_ResolvesExpectedPipeline_IfMultipleQueuesAreAdded()
         {
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(ConcreteQueueOne));
-            ProcessorBuilder.Components.AddStoreAndForwardQueue(typeof(ConcreteQueueTwo));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(ConcreteQueueOne));
+            ProcessorBuilder.MicroServiceBusControllers.AddStoreAndForwardQueue(typeof(ConcreteQueueTwo));
 
             var serviceProvider = BuildServiceProvider();
             var bus = serviceProvider.GetRequiredService<IMicroServiceBus>();

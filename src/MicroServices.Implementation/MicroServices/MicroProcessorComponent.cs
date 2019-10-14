@@ -50,18 +50,6 @@ namespace Kingo.MicroServices
         internal MicroProcessorComponent MergeWith(MicroProcessorComponent component) =>
             Copy(_serviceTypes.Concat(component._serviceTypes));
 
-        internal bool TryRemoveServiceType(Type serviceType, out MicroProcessorComponent component)
-        {
-            var componentWithoutServiceType = Copy(_serviceTypes.Where(type => type != serviceType));
-            if (componentWithoutServiceType._serviceTypes.Length < _serviceTypes.Length)
-            {
-                component = componentWithoutServiceType;
-                return true;
-            }
-            component = null;
-            return false;
-        }
-
         /// <summary>
         /// Copies the current component while assigning the <paramref name="serviceTypes"/> to it.
         /// </summary>

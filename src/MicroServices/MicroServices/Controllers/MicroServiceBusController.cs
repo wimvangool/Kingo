@@ -41,9 +41,9 @@ namespace Kingo.MicroServices.Controllers
 
             public abstract Task RouteAsync(IEnumerable<IMessageToDispatch> commands);
 
-            public abstract Task SendAsync(IEnumerable<IMessageToDispatch> commands);
+            public abstract Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands);
 
-            public abstract Task PublishAsync(IEnumerable<IMessageToDispatch> events);
+            public abstract Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events);
 
             public override void Dispose()
             {
@@ -102,10 +102,10 @@ namespace Kingo.MicroServices.Controllers
             public override Task RouteAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw Controller.NewCannotSendCommandsException();
 
-            public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+            public override Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw Controller.NewCannotSendCommandsException();
 
-            public override Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+            public override Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
                 throw Controller.NewCannotPublishEventsException();
         }
 
@@ -182,7 +182,7 @@ namespace Kingo.MicroServices.Controllers
                     let controller = commandsPerController.Key
                     let commandsToSend = commandsPerController.Value
                     where commandsToSend.Length > 0
-                    select controller._state.SendAsync(commandsToSend);
+                    select controller._state.SendCommandsAsync(commandsToSend);
 
                 return Task.WhenAll(sendOperations);
             }
@@ -203,11 +203,11 @@ namespace Kingo.MicroServices.Controllers
             private IEnumerable<MicroServiceBusController> ResolveControllers() =>
                 Controller._processor.ServiceProvider.GetServices<MicroServiceBusController>();
 
-            public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
-                _client.SendAsync(commands);
+            public override Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
+                _client.SendCommandsAsync(commands);
 
-            public override Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
-                _client.PublishAsync(events);
+            public override Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
+                _client.PublishEventsAsync(events);
 
             protected override void Dispose(bool disposing)
             {
@@ -241,10 +241,10 @@ namespace Kingo.MicroServices.Controllers
             public override Task RouteAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw Controller.NewObjectDisposedException();
 
-            public override Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+            public override Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw Controller.NewObjectDisposedException();
 
-            public override Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+            public override Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
                 throw Controller.NewObjectDisposedException();
 
             // When dispose is called while we're already in the DisposedState, we don't have to do anything...
@@ -264,10 +264,10 @@ namespace Kingo.MicroServices.Controllers
                 _controller = controller;
             }
 
-            public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+            public Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
                 throw _controller.NewCannotSendCommandsException();
 
-            public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+            public Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
                 throw _controller.NewCannotPublishEventsException();
 
             public Task ConnectToEndpointAsync(IMicroServiceBusEndpoint endpoint) =>
@@ -334,12 +334,12 @@ namespace Kingo.MicroServices.Controllers
         #region [====== IMicroServiceBus ======]
 
         /// <inheritdoc />
-        public virtual Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+        public virtual Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
             _state.RouteAsync(commands);
 
         /// <inheritdoc />
-        public virtual Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
-            _state.PublishAsync(FilterMessagesOfServiceContract(events));
+        public virtual Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
+            _state.PublishEventsAsync(FilterMessagesOfServiceContract(events));
 
         #endregion
 

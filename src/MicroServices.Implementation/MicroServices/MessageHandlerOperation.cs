@@ -1,4 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
@@ -21,5 +25,34 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public override MicroProcessorOperationType Type =>
             MicroProcessorOperationType.MessageHandlerOperation;
+
+        #region [====== HandleAsync ======]
+
+        private abstract class HandleAsyncMethod
+        {
+            public abstract Task<MessageHandlerOperationResult> InvokeAsync(MessageHandlerOperation operation, MessageToDispatch message, MessageHandlerOperationContext context);
+        }
+
+        private sealed class HandleAsyncMethod<TMessage> : HandleAsyncMethod
+        {
+            public override Task<MessageHandlerOperationResult> InvokeAsync(MessageHandlerOperation operation, MessageToDispatch message, MessageHandlerOperationContext context) =>
+                operation.HandleAsync(message.ToProcess<TMessage>(), context);
+        }
+
+        private static readonly ConcurrentDictionary<Type, HandleAsyncMethod> _HandleAsyncMethods = new ConcurrentDictionary<Type, HandleAsyncMethod>();
+
+        internal Task<MessageHandlerOperationResult> HandleAsync(MessageToDispatch message, MessageHandlerOperationContext context) =>
+            _HandleAsyncMethods.GetOrAdd(message.Content.GetType(), CreateHandleAsyncMethod).InvokeAsync(this, message, context);
+
+        private static HandleAsyncMethod CreateHandleAsyncMethod(Type messageType)
+        {
+            var handleAsyncMethodDefinition = typeof(HandleAsyncMethod<>);
+            var handleAsyncMethod = handleAsyncMethodDefinition.MakeGenericType(messageType);
+            return (HandleAsyncMethod)Activator.CreateInstance(handleAsyncMethod);
+        }
+
+        internal abstract Task<MessageHandlerOperationResult> HandleAsync<TMessage>(MessageToProcess<TMessage> message, MessageHandlerOperationContext context);
+
+        #endregion
     }
 }

@@ -35,12 +35,12 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
-            Bus.SendAsync(commands);
+        public Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
+            Bus.SendCommandsAsync(commands);
 
         /// <inheritdoc />
-        public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
-            Bus.PublishAsync(events);
+        public Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
+            Bus.PublishEventsAsync(events);
 
         internal static IMicroServiceBus ResolveMicroServiceBus(MicroProcessor processor) =>
             CreateServiceBus(processor.ServiceProvider.GetServices<IMicroServiceBus>().ToArray());

@@ -10,10 +10,10 @@ namespace Kingo.MicroServices
         private readonly HandleAsyncMethod<TMessage> _method;
         private readonly IUnitOfWork _unitOfWork;
 
-        protected MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, IMessageToProcess<TMessage> message, CancellationToken? token) :
+        protected MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, MessageToProcess<TMessage> message, CancellationToken? token) :
             this(processor, method, message, token, UnitOfWork.InMode(processor.Options.UnitOfWorkMode)) { }
             
-        private MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, IMessageToProcess<TMessage> message, CancellationToken? token, IUnitOfWork unitOfWork) :
+        private MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, MessageToProcess<TMessage> message, CancellationToken? token, IUnitOfWork unitOfWork) :
             base(new MessageHandlerOperationContext(processor, unitOfWork), message, token)
         {
             _method = method;
@@ -40,14 +40,14 @@ namespace Kingo.MicroServices
             }            
             catch (MicroProcessorOperationException)
             {
-                // MicroProcessorOperations are left through by default, because these exceptions
+                // MicroProcessorOperations are let through by default, because these exceptions
                 // contain the error information that the client of the processor will want to use
                 // to properly handle the exception.
                 throw;
             }
             catch (OperationCanceledException exception)
             {
-                // OperationCanceledExceptions are left through if and only if they were thrown because
+                // OperationCanceledExceptions are let through if and only if they were thrown because
                 // cancellation of the processor operation was requested. In any other case they are regarded
                 // as regular unhandled exceptions that represent an error.
                 if (exception.CancellationToken == Token)

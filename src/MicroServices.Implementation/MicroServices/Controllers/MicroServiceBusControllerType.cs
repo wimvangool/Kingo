@@ -5,38 +5,52 @@ using Microsoft.Extensions.Hosting;
 
 namespace Kingo.MicroServices.Controllers
 {
-    internal sealed class MicroServiceBusControllerType : MicroProcessorComponent
+    /// <summary>
+    /// Represents a <see cref="MicroServiceBusController"/> type.
+    /// </summary>
+    public sealed class MicroServiceBusControllerType : MicroProcessorComponent
     {
+        private MicroServiceBusControllerType(MicroProcessorComponent component, params Type[] serviceTypes) :
+            base(component, serviceTypes) { }
+
         private MicroServiceBusControllerType(MicroProcessorComponent component, IEnumerable<Type> serviceTypes) :
             base(component, serviceTypes) { }
 
+        /// <inheritdoc />
         protected override MicroProcessorComponent Copy(IEnumerable<Type> serviceTypes) =>
             new MicroServiceBusControllerType(this, serviceTypes);
 
+        /// <inheritdoc />
         protected override IServiceCollection AddTransientTypeMappingTo(IServiceCollection services) =>
             throw NewLifetimeNotSupportedException();
 
+        /// <inheritdoc />
         protected override IServiceCollection AddScopedTypeMappingTo(IServiceCollection services) =>
             throw NewLifetimeNotSupportedException();
 
-        internal static MicroServiceBusControllerType FromComponent(MicroProcessorComponent component, bool isMainController)
+        #region [====== Factory Methods ======]
+
+        internal static bool IsController(Type type, out MicroServiceBusControllerType controller)
+        {
+            if (IsMicroProcessorComponent(type, out var component))
+            {
+                return IsController(component, out controller);
+            }
+            controller = null;
+            return false;
+        }
+
+        internal static bool IsController(MicroProcessorComponent component, out MicroServiceBusControllerType controller)
         {
             if (typeof(MicroServiceBusController).IsAssignableFrom(component.Type))
             {
-                return new MicroServiceBusControllerType(component, DetermineServiceTypes(isMainController));
+                controller = new MicroServiceBusControllerType(component, typeof(MicroServiceBusController), typeof(IHostedService));
+                return true;
             }
-            return null;
-        }       
-
-        private static IEnumerable<Type> DetermineServiceTypes(bool isMainController)
-        {
-            yield return typeof(MicroServiceBusController);
-            yield return typeof(IHostedService);
-
-            if (isMainController)
-            {
-                yield return typeof(IMicroServiceBus);
-            }
+            controller = null;
+            return false;
         }
+
+        #endregion
     }
 }

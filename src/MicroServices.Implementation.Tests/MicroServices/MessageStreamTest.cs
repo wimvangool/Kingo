@@ -192,9 +192,9 @@ namespace Kingo.MicroServices
             new MessageStreamStub(CreateEventStream(events));
 
         private static MessageStream CreateCommandStream(params object[] commands) =>
-            new MessageStream(commands.Select(command => MessageToDispatch.CreateCommand(command)));
+            new MessageStream(commands.Select(command => command.ToCommand()));
 
         private static MessageStream CreateEventStream(params object[] events) =>
-            new MessageStream(events.Select(@event => MessageToDispatch.CreateEvent(@event)));
+            new MessageStream(events.Select(@event => @event.ToEvent()));
     }
 }

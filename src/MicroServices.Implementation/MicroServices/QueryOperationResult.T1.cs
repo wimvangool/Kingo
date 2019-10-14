@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the result of executing a query by a <see cref="IMicroProcessor" />.
     /// </summary>
-    /// <typeparam name="TResponse"></typeparam>
+    /// <typeparam name="TResponse">Type of the returned response message.</typeparam>
     public sealed class QueryOperationResult<TResponse> : IMicroProcessorOperationResult<TResponse>, IQueryOperationResult<TResponse>
     {        
         internal QueryOperationResult(TResponse response)

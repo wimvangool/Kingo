@@ -9,6 +9,6 @@ namespace Kingo.MicroServices
     public abstract class MicroProcessorOperation<TResult> : MicroProcessorOperation, IMicroProcessorOperation<TResult>
     {
         /// <inheritdoc />
-        public abstract Task<TResult> ExecuteAsync();        
+        public abstract Task<TResult> ExecuteAsync();
     }
 }

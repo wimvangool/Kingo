@@ -109,7 +109,11 @@ namespace Kingo.MicroServices
                 }
                 throw NewMessageNotFoundException(typeof(TMessage), index, Count, exception);
             }
-            if (MessageToDispatch<TMessage>.IsOfExpectedType(message, kind, out var messageOfExpectedType))
+            if (message.Kind != kind)
+            {
+                throw NewMessageNotOfExpectedKindException(kind, message.Kind, index);
+            }
+            if (message.IsOfType<TMessage>(out var messageOfExpectedType))
             {
                 assertion?.Invoke(messageOfExpectedType);                
             }
@@ -124,6 +128,13 @@ namespace Kingo.MicroServices
             var messageFormat = ExceptionMessages.MessageStream_MessageNotFound;
             var message = string.Format(messageFormat, expectedType.FriendlyName(), index, messageCount);
             return new TestFailedException(message, innerException);
+        }
+
+        private static Exception NewMessageNotOfExpectedKindException(MessageKind expectedKind, MessageKind actualKind, int index)
+        {
+            var messageFormat = ExceptionMessages.MessageStream_MessageNotOfExpectedKind;
+            var message = string.Format(messageFormat, index, expectedKind, actualKind);
+            return new TestFailedException(message);
         }
 
         private static Exception NewMessageNotOfExpectedTypeException(Type expectedType, int index, Type actualType)

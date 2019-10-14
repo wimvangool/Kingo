@@ -126,6 +126,9 @@
   <data name="MessageStream_MessageNotFound" xml:space="preserve">
     <value>Message of type '{0}' not found at index '{1}': the MessageStream contains only {2} message(s).</value>
   </data>
+  <data name="MessageStream_MessageNotOfExpectedKind" xml:space="preserve">
+    <value>Message at index '{0}' was expected to be of kind '{1}' but was '{2}'.</value>
+  </data>
   <data name="MessageStream_MessageNotOfExpectedType" xml:space="preserve">
     <value>Expected message of type '{0}' at index '{1}', but found message of type '{2}'.</value>
   </data>

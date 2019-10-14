@@ -43,7 +43,7 @@ namespace Kingo.MicroServices
             {
                 throw new ArgumentNullException(nameof(messageHandler));
             }
-            if (MessageHandlerType.IsMessageHandlerComponent(messageHandler.GetType(), out var component))
+            if (MessageHandlerType.IsMessageHandler(messageHandler.GetType(), out var component))
             {
                 instance = new MessageHandlerInstance(component, messageHandler);
                 return true;

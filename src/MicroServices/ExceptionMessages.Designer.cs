@@ -160,6 +160,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified MessageKind ({0}) is not valid..
+        /// </summary>
+        internal static string MessageKindExtensions_MessageKindNotSupported {
+            get {
+                return ResourceManager.GetString("MessageKindExtensions_MessageKindNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; (Name = {1}) to the service-bus because it is not supported by this client..
         /// </summary>
         internal static string MicroServiceBusClient_EndpointNotSupported {

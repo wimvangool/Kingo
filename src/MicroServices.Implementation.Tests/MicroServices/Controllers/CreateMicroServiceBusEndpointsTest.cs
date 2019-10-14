@@ -47,7 +47,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsEmptyCollection_IfMethodHasNoEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler1>();            
+            ProcessorBuilder.MessageHandlers.Add<MessageHandler1>();            
 
             Assert.AreEqual(0, CreateProcessor().CreateMicroServiceBusEndpoints().Count());
         }
@@ -55,7 +55,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsOneEndpoint_IfMethodHasEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler2>();            
+            ProcessorBuilder.MessageHandlers.Add<MessageHandler2>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -66,7 +66,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMethodsHaveEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();            
+            ProcessorBuilder.MessageHandlers.Add<MessageHandler3>();            
 
             var endpoints = CreateProcessor().CreateMicroServiceBusEndpoints().ToArray();
 
@@ -80,8 +80,8 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMessageHandlersHaveEndpointAttribute()
         {
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler2>();
-            ProcessorBuilder.Components.AddMessageHandler<MessageHandler3>();            
+            ProcessorBuilder.MessageHandlers.Add<MessageHandler2>();
+            ProcessorBuilder.MessageHandlers.Add<MessageHandler3>();            
 
             var endpoints = CreateProcessor().CreateMicroServiceBusEndpoints().ToArray();
 
@@ -94,8 +94,8 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsExpectedEndpoints_IfMessageHandlerWasAddedAsSingleton()
         {
-            ProcessorBuilder.Components.AddMessageHandler(new MessageHandler2());
-            ProcessorBuilder.Components.AddMessageHandler(new MessageHandler3());          
+            ProcessorBuilder.MessageHandlers.AddInstance(new MessageHandler2());
+            ProcessorBuilder.MessageHandlers.AddInstance(new MessageHandler3());          
 
             var endpoints = CreateProcessor().CreateMicroServiceBusEndpoints().ToArray();
 
@@ -170,7 +170,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsSetToRequest()
         {
-            ProcessorBuilder.Components.AddMessageHandler<RequestHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<RequestHandler>();            
 
             CreateProcessor().CreateMicroServiceBusEndpoints().Single().IgnoreValue();
         }
@@ -179,7 +179,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsSetToUnknownValue()
         {
-            ProcessorBuilder.Components.AddMessageHandler<UnknownMessageKindHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<UnknownMessageKindHandler>();            
 
             CreateProcessor().CreateMicroServiceBusEndpoints().Single().IgnoreValue();
         }
@@ -187,7 +187,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsEventHandler_IfMessageKindIsEvent()
         {
-            ProcessorBuilder.Components.AddMessageHandler<ExplicitEventHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<ExplicitEventHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -197,7 +197,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsUnspecifiedHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeDoesNotEndWithCommand()
         {
-            ProcessorBuilder.Components.AddMessageHandler<ImplicitEventHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<ImplicitEventHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -207,7 +207,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsCommandHandler_IfMessageKindIsCommand()
         {
-            ProcessorBuilder.Components.AddMessageHandler<ExplicitCommandHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<ExplicitCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -217,7 +217,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsCommandHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeEndsWithCommand()
         {
-            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<ImplicitCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -230,7 +230,7 @@ namespace Kingo.MicroServices.Controllers
             var messageKind = (MessageKind) (-1);
 
             ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(messageKind);
-            ProcessorBuilder.Components.AddMessageHandler<ImplicitCommandHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<ImplicitCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -246,7 +246,7 @@ namespace Kingo.MicroServices.Controllers
             [MicroServiceBusEndpoint(MessageKind.Command)]
             public Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
-                context.MessageBus.Publish(string.Empty);
+                context.MessageBus.PublishEvent(string.Empty);
                 return Task.CompletedTask;
             }
         }
@@ -256,7 +256,7 @@ namespace Kingo.MicroServices.Controllers
             [MicroServiceBusEndpoint(MessageKind.Event)]
             public Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
-                context.MessageBus.Publish(string.Empty);
+                context.MessageBus.PublishEvent(string.Empty);
                 return Task.CompletedTask;
             }
         }
@@ -265,7 +265,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task InvokeAsync_Throws_IfMessageIsNull()
         {
-            ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -275,7 +275,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]        
         public async Task InvokeAsync_ReturnsEmptyResult_IfMessageIsNotSupported()
         {
-            ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
             var result = await endpoint.InvokeAsync(new object());
@@ -287,10 +287,10 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task InvokeAsync_ReturnsExpectedResult_IfMessageHandlerIsCommandHandler()
         {
-            ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.Publish(new object());
+                context.MessageBus.PublishEvent(new object());
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
@@ -306,8 +306,8 @@ namespace Kingo.MicroServices.Controllers
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
-                ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+                ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
+                ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
                 {
                     tokenSource.Cancel();
                 });
@@ -332,8 +332,8 @@ namespace Kingo.MicroServices.Controllers
         {
             var exceptionToThrow = new BusinessRuleException();
 
-            ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
                 throw exceptionToThrow;
             });
@@ -357,8 +357,8 @@ namespace Kingo.MicroServices.Controllers
         {
             var exceptionToThrow = new BadRequestException();
 
-            ProcessorBuilder.Components.AddMessageHandler(new SomeCommandHandler());
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
                 throw exceptionToThrow;
             });
@@ -379,10 +379,10 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task InvokeAsync_ReturnsExpectedResult_IfMessageHandlerIsEventHandler()
         {
-            ProcessorBuilder.Components.AddMessageHandler(new SomeEventHandler());
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeEventHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.Publish(new object());
+                context.MessageBus.PublishEvent(new object());
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
@@ -398,8 +398,8 @@ namespace Kingo.MicroServices.Controllers
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                ProcessorBuilder.Components.AddMessageHandler(new SomeEventHandler());
-                ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+                ProcessorBuilder.MessageHandlers.AddInstance(new SomeEventHandler());
+                ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
                 {
                     tokenSource.Cancel();
                 });
@@ -424,8 +424,8 @@ namespace Kingo.MicroServices.Controllers
         {
             var exceptionToThrow = new BusinessRuleException();
 
-            ProcessorBuilder.Components.AddMessageHandler(new SomeEventHandler());
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeEventHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
                 throw exceptionToThrow;
             });
@@ -449,8 +449,8 @@ namespace Kingo.MicroServices.Controllers
         {
             var exceptionToThrow = new BadRequestException();
 
-            ProcessorBuilder.Components.AddMessageHandler(new SomeEventHandler());
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance(new SomeEventHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
                 throw exceptionToThrow;
             });

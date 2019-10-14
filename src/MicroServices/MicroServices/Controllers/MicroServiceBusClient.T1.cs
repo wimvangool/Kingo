@@ -201,7 +201,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== SendAsync ======]
 
         /// <inheritdoc />
-        public async Task SendAsync(IEnumerable<IMessageToDispatch> commands)
+        public async Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands)
         {
             if (IsDisposed)
             {
@@ -248,7 +248,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== PublishAsync ======]
 
         /// <inheritdoc />
-        public async Task PublishAsync(IEnumerable<IMessageToDispatch> events)
+        public async Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events)
         {
             if (IsDisposed)
             {
@@ -302,11 +302,12 @@ namespace Kingo.MicroServices.Controllers
         protected abstract TMessage Pack(IMessageToDispatch message);
 
         /// <summary>
-        /// Unpacks the specified <paramref name="message"/> and returns its (deserialized) contents.
+        /// Unpacks the specified <paramref name="message"/> and returns the message to process by an endpoint.
         /// </summary>
         /// <param name="message">The message to unpack.</param>
+        /// <param name="messageBuilder">A builder that can be used to build the message to return.</param>
         /// <returns>The contents of the specified <paramref name="message"/>.</returns>
-        protected abstract object Unpack(TMessage message);
+        protected abstract IMessage Unpack(TMessage message, IMessageBuilder messageBuilder);
 
         #endregion
 

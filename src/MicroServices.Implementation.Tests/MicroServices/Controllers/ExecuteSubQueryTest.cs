@@ -22,8 +22,8 @@ namespace Kingo.MicroServices.Controllers
 
             public async Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
-                context.MessageBus.Publish(await _constantProvider.GetConstantAsync(context));
-                context.MessageBus.Publish(await _multiplier.MultiplyByTwoAsync(message, context));
+                context.MessageBus.PublishEvent(await _constantProvider.GetConstantAsync(context));
+                context.MessageBus.PublishEvent(await _multiplier.MultiplyByTwoAsync(message, context));
             }                
         }
 
@@ -91,9 +91,9 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task ExecuteCommandAsync_ExecutesSubQueryAsExpected()
         {
-            ProcessorBuilder.Components.AddMessageHandler<CommandHandler>();
-            ProcessorBuilder.Components.AddQuery<ConstantProviderQuery>();
-            ProcessorBuilder.Components.AddQuery<MultiplierQuery>();
+            ProcessorBuilder.MessageHandlers.Add<CommandHandler>();
+            ProcessorBuilder.Queries.Add<ConstantProviderQuery>();
+            ProcessorBuilder.Queries.Add<MultiplierQuery>();
 
             var processor = CreateProcessor();
             var messageHandler = processor.ServiceProvider.GetRequiredService<CommandHandler>();
@@ -108,9 +108,9 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task ExecuteQueryAsync_ExecutesSubQueryAsExpected()
         {
-            ProcessorBuilder.Components.AddQuery<QueryWithSubQueries>();
-            ProcessorBuilder.Components.AddQuery<ConstantProviderQuery>();
-            ProcessorBuilder.Components.AddQuery<MultiplierQuery>();
+            ProcessorBuilder.Queries.Add<QueryWithSubQueries>();
+            ProcessorBuilder.Queries.Add<ConstantProviderQuery>();
+            ProcessorBuilder.Queries.Add<MultiplierQuery>();
 
             var processor = CreateProcessor();
             var query = processor.ServiceProvider.GetRequiredService<QueryWithSubQueries>();

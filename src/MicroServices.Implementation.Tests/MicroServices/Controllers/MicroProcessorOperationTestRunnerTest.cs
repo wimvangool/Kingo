@@ -78,7 +78,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Send(command);
+                        context.MessageBus.SendCommand(command);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -99,7 +99,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Publish(@event);
+                        context.MessageBus.PublishEvent(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -139,7 +139,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Send(command);
+                        context.MessageBus.SendCommand(command);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -165,7 +165,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Publish(new object());
+                        context.MessageBus.PublishEvent(new object());
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -188,7 +188,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Publish(@event);
+                        context.MessageBus.PublishEvent(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -214,7 +214,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Send(new object());
+                        context.MessageBus.SendCommand(new object());
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -238,7 +238,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Publish(@event);
+                        context.MessageBus.PublishEvent(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -557,7 +557,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.Publish(@event);
+                        context.MessageBus.PublishEvent(@event);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
@@ -666,7 +666,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await messageProcessor.ExecuteCommandAsync((message, context) =>
                     {
-                        context.MessageBus.Publish(DateTimeOffset.UtcNow.Millisecond);
+                        context.MessageBus.PublishEvent(DateTimeOffset.UtcNow.Millisecond);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>

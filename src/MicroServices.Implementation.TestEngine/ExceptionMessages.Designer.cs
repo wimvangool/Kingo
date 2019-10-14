@@ -88,6 +88,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message at index &apos;{0}&apos; was expected to be of kind &apos;{1}&apos; but was &apos;{2}&apos;..
+        /// </summary>
+        internal static string MessageStream_MessageNotOfExpectedKind {
+            get {
+                return ResourceManager.GetString("MessageStream_MessageNotOfExpectedKind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected message of type &apos;{0}&apos; at index &apos;{1}&apos;, but found message of type &apos;{2}&apos;..
         /// </summary>
         internal static string MessageStream_MessageNotOfExpectedType {

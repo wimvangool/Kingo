@@ -88,8 +88,8 @@ namespace Kingo.MicroServices.Controllers
             protected override TMessage Pack(IMessageToDispatch message) =>
                 (TMessage) message.Content;
 
-            protected override object Unpack(TMessage message) =>
-                message;
+            protected override IMessage Unpack(TMessage message, IMessageBuilder messageBuilder) =>
+                messageBuilder.CreateMessage(message);
 
             protected override void Dispose(bool disposing)
             {
@@ -375,7 +375,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await controller.SendAsync(0);
+                await controller.SendCommandsAsync(0);
             }
             catch (InvalidOperationException)
             {
@@ -396,7 +396,7 @@ namespace Kingo.MicroServices.Controllers
 
                 try
                 {
-                    await controller.SendAsync(0);
+                    await controller.SendCommandsAsync(0);
                 }
                 catch (InvalidOperationException)
                 {
@@ -416,7 +416,7 @@ namespace Kingo.MicroServices.Controllers
             var controller = CreateController();
 
             await controller.StartAsync(CancellationToken.None);
-            await controller.SendAsync(0);
+            await controller.SendCommandsAsync(0);
 
             Assert.AreEqual(1, _clientStubs.Count);
 
@@ -431,7 +431,7 @@ namespace Kingo.MicroServices.Controllers
             var controller = CreateController();
 
             await controller.StartAsync(CancellationToken.None);
-            await controller.SendAsync(new object());
+            await controller.SendCommandsAsync(new object());
 
             Assert.AreEqual(1, _clientStubs.Count);
 
@@ -451,7 +451,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await controller.SendAsync(0);
+                await controller.SendCommandsAsync(0);
             }
             catch (InvalidOperationException)
             {
@@ -476,7 +476,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await controller.SendAsync(0);
+                await controller.SendCommandsAsync(0);
             }
             catch (ObjectDisposedException)
             {
@@ -501,7 +501,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await controller.PublishAsync(0);
+                await controller.PublishEventsAsync(0);
             }
             catch (InvalidOperationException)
             {
@@ -522,7 +522,7 @@ namespace Kingo.MicroServices.Controllers
 
                 try
                 {
-                    await controller.PublishAsync(0);
+                    await controller.PublishEventsAsync(0);
                 }
                 catch (InvalidOperationException)
                 {
@@ -542,7 +542,7 @@ namespace Kingo.MicroServices.Controllers
             var controller = CreateController();
 
             await controller.StartAsync(CancellationToken.None);
-            await controller.PublishAsync(0);
+            await controller.PublishEventsAsync(0);
 
             Assert.AreEqual(1, _clientStubs.Count);
 
@@ -557,7 +557,7 @@ namespace Kingo.MicroServices.Controllers
             var controller = CreateController();
 
             await controller.StartAsync(CancellationToken.None);
-            await controller.PublishAsync(new object());
+            await controller.PublishEventsAsync(new object());
 
             Assert.AreEqual(1, _clientStubs.Count);
 
@@ -577,7 +577,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await controller.PublishAsync(0);
+                await controller.PublishEventsAsync(0);
             }
             catch (InvalidOperationException)
             {
@@ -602,7 +602,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await controller.PublishAsync(0);
+                await controller.PublishEventsAsync(0);
             }
             catch (ObjectDisposedException)
             {

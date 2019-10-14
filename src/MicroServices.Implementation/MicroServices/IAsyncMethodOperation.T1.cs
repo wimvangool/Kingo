@@ -7,7 +7,7 @@
     public interface IAsyncMethodOperation<TResult> : IAsyncMethodOperation, IMicroProcessorOperation<TResult>
     {
         /// <summary>
-        /// Coverts this operation to a generic <see cref="AsyncMethodOperation{TResult}"/>.
+        /// Converts this operation to a generic <see cref="AsyncMethodOperation{TResult}"/>.
         /// </summary>
         /// <returns>The base operation of this operation.</returns>
         AsyncMethodOperation<TResult> ToAsyncMethodOperation();

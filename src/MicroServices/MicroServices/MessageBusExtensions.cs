@@ -19,8 +19,8 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bus"/> or <paramref name="command"/> is <c>null</c>.
         /// </exception>
-        public static void Send(this IMessageBus bus, object command, TimeSpan delta) =>
-            NotNull(bus).Send(command, CalculateDeliveryTimeUtc(delta));
+        public static void SendCommand(this IMessageBus bus, object command, TimeSpan delta) =>
+            NotNull(bus).SendCommand(command, CalculateDeliveryTimeUtc(delta));
 
         /// <summary>
         /// Schedules an event for a specific time relative to the current date and time.
@@ -33,8 +33,8 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bus"/> or <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        public static void Publish(this IMessageBus bus, object @event, TimeSpan delta) =>
-            NotNull(bus).Publish(@event, CalculateDeliveryTimeUtc(delta));
+        public static void PublishEvent(this IMessageBus bus, object @event, TimeSpan delta) =>
+            NotNull(bus).PublishEvent(@event, CalculateDeliveryTimeUtc(delta));
 
         private static IMessageBus NotNull(IMessageBus bus) =>
             bus ?? throw new ArgumentNullException(nameof(bus));

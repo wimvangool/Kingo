@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {    
-    internal class MessageHandlerOperation<TMessage> : MessageHandlerOperation, IMessageProcessor
+    internal class MessageHandlerOperation<TMessage> : MessageHandlerOperation
     {
         #region [====== MethodOperation ======]
 
@@ -47,12 +48,12 @@ namespace Kingo.MicroServices
         #endregion
 
         private readonly MessageHandlerOperationContext _context;
-        private readonly IMessageToProcess<TMessage> _message;                
+        private readonly MessageToProcess<TMessage> _message;                
 
-        private MessageHandlerOperation(MessageHandlerOperationContext context, IMessageToProcess<TMessage> message) :
+        private MessageHandlerOperation(MessageHandlerOperationContext context, MessageToProcess<TMessage> message) :
             this(context, message, context.StackTrace.CurrentOperation.Token) { }
 
-        protected MessageHandlerOperation(MessageHandlerOperationContext context, IMessageToProcess<TMessage> message, CancellationToken? token) :
+        protected MessageHandlerOperation(MessageHandlerOperationContext context, MessageToProcess<TMessage> message, CancellationToken? token) :
             base(token)
         {
             _context = context;
@@ -62,8 +63,8 @@ namespace Kingo.MicroServices
         internal MicroProcessor Processor =>
             _context.Processor;
 
-        Task<MessageHandlerOperationResult> IMessageProcessor.HandleAsync<TEvent>(IMessageToProcess<TEvent> @event, MessageHandlerOperationContext context) =>
-            new MessageHandlerOperation<TEvent>(context, @event).ExecuteAsync();
+        internal override Task<MessageHandlerOperationResult> HandleAsync<TEvent>(MessageToProcess<TEvent> message, MessageHandlerOperationContext context) =>
+            new MessageHandlerOperation<TEvent>(context, message).ExecuteAsync();
 
         public override IMessageToProcess Message =>
             _message;
@@ -73,7 +74,7 @@ namespace Kingo.MicroServices
 
         public override async Task<MessageHandlerOperationResult> ExecuteAsync()
         {
-            var result = MessageBufferResult.Empty;
+            var result = MessageHandlerOperationResult.Empty;
 
             foreach (var operation in CreateMethodOperationPipelines(_context))
             {
@@ -88,13 +89,16 @@ namespace Kingo.MicroServices
 
             try
             {
-                // Every operation potentially yields a new stream of events, which is immediately handled by the processor
-                // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
-                // sub-tree of events are handled before the next event in the stream.
-                var result = await operation.ExecuteAsync().ConfigureAwait(false);
+                // After the operation has been executed, its result is committed, which means no more messages
+                // can be added/produced by the operation and all messages are automatically correlated to the
+                // current message.
+                var result = Commit(await operation.ExecuteAsync().ConfigureAwait(false), operation);
                 if (result.Messages.Count > 0)
                 {
-                    return await HandleEventsAsync(result.ToMessageBufferResult(), operation.Context).ConfigureAwait(false);
+                    // Every operation potentially yields a new stream of messages, which is immediately handled by the processor
+                    // inside the current context. The processor uses a depth-first approach, which means that each message and its resulting
+                    // sub-tree of events are handled before the next event in the stream.
+                    return result.Append(await HandleAsync(result.Messages, operation.Context).ConfigureAwait(false));
                 }
                 return result;
             }
@@ -104,8 +108,19 @@ namespace Kingo.MicroServices
             }            
         }
 
-        private async Task<MessageHandlerOperationResult> HandleEventsAsync(MessageBufferResult result, MessageHandlerOperationContext context) =>
-            result.Append(await result.MessageBuffer.HandleEventsWith(this, context).ConfigureAwait(false));
+        private static MessageHandlerOperationResult Commit(MessageHandlerOperationResult result, IMicroProcessorOperation operation) =>
+            result.Commit(operation.Message);
+
+        private async Task<MessageHandlerOperationResult> HandleAsync(IEnumerable<MessageToDispatch> messages, MessageHandlerOperationContext context)
+        {
+            var result = MessageHandlerOperationResult.Empty;
+
+            foreach (var message in messages)
+            {
+                result = result.Append(await HandleAsync(message, context).ConfigureAwait(false));
+            }
+            return result;
+        }
 
         private IEnumerable<HandleAsyncMethodOperation> CreateMethodOperationPipelines(MessageHandlerOperationContext context)
         {

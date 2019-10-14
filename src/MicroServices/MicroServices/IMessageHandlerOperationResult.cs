@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
     public interface IMessageHandlerOperationResult
     {
         /// <summary>
-        /// The set of commands and events that were produced as output of the operation.
+        /// Returns all messages in the order they were (scheduled to be) sent or published.
         /// </summary>
         IReadOnlyList<MessageToDispatch> Messages
         {

@@ -16,7 +16,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="commands"/> is <c>null</c>.
         /// </exception>
-        Task SendAsync(IEnumerable<IMessageToDispatch> commands);
+        Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands);
 
         /// <summary>
         /// Publishes all specified <paramref name="events" />.
@@ -25,6 +25,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        Task PublishAsync(IEnumerable<IMessageToDispatch> events);
+        Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events);
     }
 }

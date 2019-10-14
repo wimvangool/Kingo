@@ -18,7 +18,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="command"/> is <c>null</c>.
         /// </exception>
-        void Send(object command, DateTimeOffset? deliveryTime = null);
+        void SendCommand(object command, DateTimeOffset? deliveryTime = null);
 
         /// <summary>
         /// Schedules the specified <paramref name="event"/> to be published on the service-bus.
@@ -30,6 +30,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        void Publish(object @event, DateTimeOffset? deliveryTime = null);        
+        void PublishEvent(object @event, DateTimeOffset? deliveryTime = null);        
     }
 }

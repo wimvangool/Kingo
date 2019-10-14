@@ -16,8 +16,5 @@ namespace Kingo.MicroServices
 
         public override int MessageHandlerCount =>
             1;
-
-        internal override MessageBufferResult ToMessageBufferResult() =>
-            new MessageBufferResult(new MessageBuffer(Messages), MessageHandlerCount);
     }
 }

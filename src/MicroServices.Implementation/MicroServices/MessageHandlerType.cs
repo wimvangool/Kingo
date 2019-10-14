@@ -5,7 +5,10 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {        
-    internal sealed class MessageHandlerType : MessageHandler
+    /// <summary>
+    /// Represents a type that implements one or more variations of the <see cref="IMessageHandler{TMessage}"/> interface.
+    /// </summary>
+    public sealed class MessageHandlerType : MessageHandler
     {        
         private MessageHandlerType(MicroProcessorComponent component, MessageHandlerInterface[] interfaces) :
             base(component, interfaces) { }        
@@ -27,41 +30,26 @@ namespace Kingo.MicroServices
             return new InvalidOperationException(message);
         }
 
-        #region [====== FromInstance ======]
+        #region [====== Factory Methods ======]
 
-        public new static MessageHandlerType FromInstance(object messageHandler)
+        internal new static MessageHandlerType FromInstance(object messageHandler)
         {            
             var component = MicroProcessorComponent.FromInstance(messageHandler);
             var interfaces = MessageHandlerInterface.FromComponent(component).ToArray();
             return new MessageHandlerType(component, interfaces);
         }
 
-        #endregion
-
-        #region [====== FromComponents ======]               
-
-        public static IEnumerable<MessageHandlerType> FromComponents(IEnumerable<MicroProcessorComponent> components)
-        {                  
-            foreach (var component in components)
-            {
-                if (IsMessageHandlerComponent(component, out var messageHandler))
-                {
-                    yield return messageHandler;
-                }
-            }            
-        }
-
-        internal static bool IsMessageHandlerComponent(Type type, out MessageHandlerType messageHandler)
-        {            
+        internal static bool IsMessageHandler(Type type, out MessageHandlerType messageHandler)
+        {
             if (IsMicroProcessorComponent(type, out var component))
             {
-                return IsMessageHandlerComponent(component, out messageHandler);
+                return IsMessageHandler(component, out messageHandler);
             }
             messageHandler = null;
             return false;
         }
 
-        private static bool IsMessageHandlerComponent(MicroProcessorComponent component, out MessageHandlerType messageHandler)
+        internal static bool IsMessageHandler(MicroProcessorComponent component, out MessageHandlerType messageHandler)
         {
             var interfaces = MessageHandlerInterface.FromComponent(component).ToArray();
             if (interfaces.Length == 0)

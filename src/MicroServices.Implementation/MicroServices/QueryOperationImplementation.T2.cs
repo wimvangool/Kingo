@@ -48,18 +48,18 @@ namespace Kingo.MicroServices
         private readonly IQuery<TRequest, TResponse> _query;
         private readonly MessageToProcess<TRequest> _message;
 
-        public QueryOperationImplementation(MicroProcessor processor, IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token) :
+        public QueryOperationImplementation(MicroProcessor processor, IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token) :
             base(processor, token)
         {                                  
             _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = new MessageToProcess<TRequest>(message, MessageKind.QueryRequest);
+            _message = message?.ToProcess(MessageKind.QueryRequest) ?? throw new ArgumentNullException(nameof(message));
         }
 
-        public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token) :
+        public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token) :
             base(context, token)
         {
             _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = new MessageToProcess<TRequest>(message, MessageKind.QueryRequest);
+            _message = message.ToProcess(MessageKind.QueryRequest);
         }
 
         public override IMessageToProcess Message =>

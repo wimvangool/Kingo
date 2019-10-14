@@ -60,7 +60,8 @@ namespace Kingo.MicroServices.Controllers
         // - IHandleAsyncMethodFactory
         // - IMicroServiceBus
         // - IInstanceCollector
+        // - IMessageIdFactory
         protected virtual int DefaultServiceCount =>
-            6;              
+            7;              
     }
 }

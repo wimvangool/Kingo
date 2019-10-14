@@ -72,7 +72,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="commands"/> is <c>null</c>.
         /// </exception>
-        public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+        public Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
             throw new NotImplementedException();
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+        public Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
             throw new NotImplementedException();
     }
 }

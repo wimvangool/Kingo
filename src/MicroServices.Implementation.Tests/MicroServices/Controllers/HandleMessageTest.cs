@@ -60,7 +60,7 @@ namespace Kingo.MicroServices.Controllers
             var command = new object();
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.Publish(message);
+                context.MessageBus.PublishEvent(message);
             }, command);
 
             Assert.IsNotNull(result);
@@ -77,14 +77,14 @@ namespace Kingo.MicroServices.Controllers
             var eventB = new object();
 
             // Handles Event A.
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.Publish(eventB);
+                context.MessageBus.PublishEvent(eventB);
             });
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.Publish(eventA);
+                context.MessageBus.PublishEvent(eventA);
             }, command);
 
             Assert.IsNotNull(result);
@@ -104,26 +104,26 @@ namespace Kingo.MicroServices.Controllers
             var eventD = new object();
 
             // Handles Event A.
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.Publish(eventB);
+                context.MessageBus.PublishEvent(eventB);
             });
 
             // Handles Event B.
-            ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
             {
-                context.MessageBus.Publish(eventC);
+                context.MessageBus.PublishEvent(eventC);
             });
 
             // Handles Event B.
-            ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
             {
-                context.MessageBus.Publish(eventD);
+                context.MessageBus.PublishEvent(eventD);
             });
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.Publish(eventA);
+                context.MessageBus.PublishEvent(eventA);
             }, command);
 
             Assert.IsNotNull(result);
@@ -149,34 +149,34 @@ namespace Kingo.MicroServices.Controllers
             var eventD = new object();
 
             // Handles Event A.
-            ProcessorBuilder.Components.AddMessageHandler<string>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 2, message, MessageKind.Event);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.Publish(eventB);
+                context.MessageBus.PublishEvent(eventB);
 
                 AssertEventBus(context.MessageBus, 1);
             });
 
             // Handles Event B.
-            ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.Publish(eventC);
+                context.MessageBus.PublishEvent(eventC);
 
                 AssertEventBus(context.MessageBus, 1);
             });
 
             // Handles Event B.
-            ProcessorBuilder.Components.AddMessageHandler<int>((message, context) =>
+            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
             {
                 AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.Publish(eventD);
+                context.MessageBus.PublishEvent(eventD);
 
                 AssertEventBus(context.MessageBus, 1);
             });
@@ -186,7 +186,7 @@ namespace Kingo.MicroServices.Controllers
                 AssertStackTrace(context.StackTrace, 1, message, MessageKind);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.Publish(eventA);
+                context.MessageBus.PublishEvent(eventA);
 
                 AssertEventBus(context.MessageBus, 1);
             }, command);
@@ -552,7 +552,7 @@ namespace Kingo.MicroServices.Controllers
                 }
                 finally
                 {
-                    context.MessageBus.Publish(string.Empty);
+                    context.MessageBus.PublishEvent(string.Empty);
                 }
             }
 
@@ -614,7 +614,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_CreatesNewInstanceForEveryInvocation_IfMessageHandlerHasTransientLifetime()
         {
-            ProcessorBuilder.Components.AddMessageHandler<TransientMessageHandler>();
+            ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
 
             var processor = CreateProcessor();
 
@@ -634,7 +634,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_CreatesNewInstancePerScope_IfMessageHandlerHasScopedLifetime()
         {
-            ProcessorBuilder.Components.AddMessageHandler<ScopedMessageHandler>();
+            ProcessorBuilder.MessageHandlers.Add<ScopedMessageHandler>();
 
             var processor = CreateProcessor();
 
@@ -654,7 +654,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_CreatesOnlyOneInstanceEver_IfMessageHandlerHasSingletonLifetime()
         {
-            ProcessorBuilder.Components.AddMessageHandler<SingletonMessageHandler>();
+            ProcessorBuilder.MessageHandlers.Add<SingletonMessageHandler>();
 
             var processor = CreateProcessor();
 
@@ -674,7 +674,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_UsesOnlyOneInstanceEver_IfMessageHandlerWasRegisteredAsInstance()
         {
-            ProcessorBuilder.Components.AddMessageHandler(new TransientMessageHandler());
+            ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
 
             var processor = CreateProcessor();
 
@@ -694,8 +694,8 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredBeforeType()
         {
-            ProcessorBuilder.Components.AddMessageHandler<TransientMessageHandler>();
-            ProcessorBuilder.Components.AddMessageHandler(new TransientMessageHandler());
+            ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
+            ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
 
             var processor = CreateProcessor();
 
@@ -715,8 +715,8 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task HandleMessageAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredAfterType()
         {
-            ProcessorBuilder.Components.AddMessageHandler<TransientMessageHandler>();
-            ProcessorBuilder.Components.AddMessageHandler(new TransientMessageHandler());
+            ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
+            ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
 
             var processor = CreateProcessor();
 
@@ -738,15 +738,15 @@ namespace Kingo.MicroServices.Controllers
         {
             Action<int, IMessageHandlerOperationContext> messageHandler = (message, context) =>
             {
-                context.MessageBus.Publish(string.Empty);
+                context.MessageBus.PublishEvent(string.Empty);
             };
 
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
+            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
+            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.Publish(DateTimeOffset.UtcNow.Second);
+                context.MessageBus.PublishEvent(DateTimeOffset.UtcNow.Second);
             }, new object());
 
             Assert.AreEqual(2, result.MessageHandlerCount);
@@ -758,16 +758,16 @@ namespace Kingo.MicroServices.Controllers
         {
             Func<int, IMessageHandlerOperationContext, Task> messageHandler = (message, context) =>
             {
-                context.MessageBus.Publish(string.Empty);
+                context.MessageBus.PublishEvent(string.Empty);
                 return Task.CompletedTask;
             };
 
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
-            ProcessorBuilder.Components.AddMessageHandler(messageHandler);
+            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
+            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.Publish(DateTimeOffset.UtcNow.Second);
+                context.MessageBus.PublishEvent(DateTimeOffset.UtcNow.Second);
             }, new object());
 
             Assert.AreEqual(2, result.MessageHandlerCount);

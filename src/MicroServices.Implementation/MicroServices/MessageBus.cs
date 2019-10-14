@@ -2,17 +2,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {   
     internal sealed class MessageBus : IMessageBus
     {
+        private readonly MessageFactory _messageFactory;
         private readonly List<MessageToDispatch> _messages;
       
-        public MessageBus()
+        public MessageBus(MessageFactory messageFactory)
         {
+            _messageFactory = messageFactory;
             _messages = new List<MessageToDispatch>(); 
         }
+
+        /// <inheritdoc />
+        public void SendCommand(object command, DateTimeOffset? deliveryTime = null) =>
+            _messages.Add(_messageFactory.CreateMessage(command).ToDispatch(MessageKind.Command, deliveryTime));
+
+        /// <inheritdoc />
+        public void PublishEvent(object @event, DateTimeOffset? deliveryTime = null) =>
+            _messages.Add(_messageFactory.CreateMessage(@event).ToDispatch(MessageKind.Event, deliveryTime));
 
         #region [====== IReadOnlyList<MessageToDispatch> ======]
 
@@ -28,22 +39,9 @@ namespace Kingo.MicroServices
         public IEnumerator<MessageToDispatch> GetEnumerator() =>
             _messages.GetEnumerator();
 
-        #endregion
-
-        /// <inheritdoc />
-        public void Send(object command, DateTimeOffset? deliveryTime = null) =>
-            _messages.Add(MessageToDispatch.CreateCommand(command, deliveryTime));
-
-        /// <inheritdoc />
-        public void Publish(object @event, DateTimeOffset? deliveryTime) =>
-            _messages.Add(MessageToDispatch.CreateEvent(@event, deliveryTime));
-
         /// <inheritdoc />
         public override string ToString() =>
-            ToString(this);
-
-        internal static string ToString(IReadOnlyList<MessageToDispatch> messages) =>
-            ToString(messages.Count(IsCommand), messages.Count(IsEvent));
+            ToString(_messages.Count(IsCommand), _messages.Count(IsEvent));
 
         private static string ToString(int commandCount, int eventCount) =>
             $"{commandCount} command(s), {eventCount} event(s)";
@@ -53,5 +51,7 @@ namespace Kingo.MicroServices
 
         private static bool IsEvent(MessageToDispatch message) =>
             message.Kind == MessageKind.Event;
+
+        #endregion
     }
 }

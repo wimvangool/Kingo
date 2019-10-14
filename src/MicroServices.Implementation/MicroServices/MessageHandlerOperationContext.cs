@@ -12,14 +12,14 @@
             base(processor)
         {                        
             _unitOfWork = unitOfWork;
-            _messageBus = new MessageBus();
+            _messageBus = new MessageBus(processor.CreateMessageFactory());
         }
 
         private MessageHandlerOperationContext(MessageHandlerOperationContext context, IAsyncMethodOperation operation) :
             base(context, operation)
         {                        
             _unitOfWork = context._unitOfWork;
-            _messageBus = new MessageBus();
+            _messageBus = new MessageBus(context.Processor.CreateMessageFactory());
         }
 
         /// <inheritdoc />
@@ -28,8 +28,8 @@
 
         /// <inheritdoc />
         public IMessageBus MessageBus =>
-            _messageBus;  
-        
+            _messageBus;
+
         internal MessageHandlerOperationContext PushOperation(HandleAsyncMethodOperation operation) =>
             new MessageHandlerOperationContext(this, operation);        
     }

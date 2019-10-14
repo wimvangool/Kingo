@@ -6,10 +6,10 @@ namespace Kingo.MicroServices
 {
     internal sealed class MicroServiceBusStub : IMicroServiceBus
     {
-        public Task SendAsync(IEnumerable<IMessageToDispatch> commands) =>
+        public Task SendCommandsAsync(IEnumerable<IMessageToDispatch> commands) =>
             Task.CompletedTask;
 
-        public Task PublishAsync(IEnumerable<IMessageToDispatch> events) =>
+        public Task PublishEventsAsync(IEnumerable<IMessageToDispatch> events) =>
             Task.CompletedTask;
 
         public override string ToString() =>
