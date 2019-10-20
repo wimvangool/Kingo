@@ -2,25 +2,27 @@
 
 namespace Kingo.MicroServices
 {
-    /// <summary>
-    /// Represents a component that implements one or more variations of the <see cref="IQuery{TResponse}"/>
-    /// or <see cref="IQuery{TRequest, TResponse}"/> interfaces.
-    /// </summary>
-    public sealed class QueryType : Query
+    internal sealed class QueryType : QueryComponent
     {
         private QueryType(MicroProcessorComponent component, QueryInterface[] interfaces) :
             base(component, interfaces) { }
 
         #region [====== Factory Methods ======]
 
-        internal new static QueryType FromInstance(object query)
+        public static QueryType FromInstance<TResponse>(IQuery<TResponse> query)
         {            
             var component = MicroProcessorComponent.FromInstance(query);
-            var interfaces = QueryInterface.FromComponent(component).ToArray();
+            var interfaces = new [] { QueryInterface.FromType<TResponse>() };
+            return new QueryType(component, interfaces);
+        }
+        public static QueryType FromInstance<TRequest, TResponse>(IQuery<TRequest, TResponse> query)
+        {
+            var component = MicroProcessorComponent.FromInstance(query);
+            var interfaces = new [] { QueryInterface.FromType<TRequest, TResponse>() };
             return new QueryType(component, interfaces);
         }
 
-        internal static bool IsQuery(MicroProcessorComponent component, out QueryType query)
+        public static bool IsQuery(MicroProcessorComponent component, out QueryType query)
         {
             var interfaces = QueryInterface.FromComponent(component).ToArray();
             if (interfaces.Length == 0)

@@ -1,8 +1,9 @@
 ﻿using System;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class MessageHandlerInstance : MessageHandler, IEquatable<MessageHandlerInstance>
+    internal sealed class MessageHandlerInstance : MessageHandlerComponent
     {
         private readonly object _messageHandler;
 
@@ -21,21 +22,10 @@ namespace Kingo.MicroServices
             return true;
         }
 
-        public override bool Equals(MicroProcessorComponent other) =>
-            Equals(other as MessageHandlerInstance);
+        public override string ToString() =>
+            _messageHandler.GetType().FriendlyName();
 
-        public bool Equals(MessageHandlerInstance other)
-        {
-            if (ReferenceEquals(other, null))
-            {
-                return false;
-            }
-            if (ReferenceEquals(other, this))
-            {
-                return true;
-            }
-            return ReferenceEquals(_messageHandler, other._messageHandler);
-        }        
+        #region [====== Factory Methods ======]
 
         public static bool IsMessageHandlerInstance(object messageHandler, out MessageHandlerInstance instance)
         {
@@ -51,5 +41,7 @@ namespace Kingo.MicroServices
             instance = null;
             return false;
         }
+
+        #endregion
     }
 }

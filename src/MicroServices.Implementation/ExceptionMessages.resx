@@ -126,11 +126,14 @@
   <data name="MessageHandlerClass_CouldNotResolveMessageHandler" xml:space="preserve">
     <value>Could not resolve message handler of type '{0}'.</value>
   </data>
-  <data name="MessageHandlerOrQueryInterface_InterfaceMethodNotFound" xml:space="preserve">
-    <value>Could not find implementation of method '{0}.{1}(...)' on type '{3}'.</value>
+  <data name="MessageIdFactory_MultipleFactoriesAddedForSameMessageType" xml:space="preserve">
+    <value>Cannot generate message-id for message of type '{0}' because multiple factories were configured for this message-type: {1}.</value>
   </data>
   <data name="MicroProcessorBuilder_InvalidProcessorType" xml:space="preserve">
     <value>Type '{0}' cannot be used as a MicroProcessor. Please provider a non-abstract, non-generic MicroProcessor-type.</value>
+  </data>
+  <data name="MicroProcessorComponentInterface_InterfaceMethodNotFound" xml:space="preserve">
+    <value>Could not find implementation of method '{0}.{1}(...)' on type '{3}'.</value>
   </data>
   <data name="MicroProcessorComponent_InvalidComponentLifetime" xml:space="preserve">
     <value>Could not add component of type '{0}' to the service collection because it is configured with an unsupported lifetime ({1}) for this type.</value>

@@ -12,14 +12,14 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represent a component that implements one or more variations of the <see cref="IMessageHandler{TMessage}"/> interface.
     /// </summary>
-    public abstract class MessageHandler : MicroProcessorComponent, IHandleAsyncMethodFactory, IReadOnlyCollection<HandleAsyncMethod>
+    public abstract class MessageHandlerComponent : MicroProcessorComponent, IHandleAsyncMethodFactory, IReadOnlyCollection<HandleAsyncMethod>
     {
         private readonly MessageHandlerInterface[] _interfaces;
 
-        internal MessageHandler(MessageHandler component) :
+        internal MessageHandlerComponent(MessageHandlerComponent component) :
             this(component, component._interfaces) { }
 
-        internal MessageHandler(MicroProcessorComponent component, params MessageHandlerInterface[] interfaces) :
+        internal MessageHandlerComponent(MicroProcessorComponent component, params MessageHandlerInterface[] interfaces) :
             base(component, interfaces.Select(@interface => @interface.Type))
         {
             _interfaces = interfaces;
@@ -33,7 +33,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Type.FriendlyName()} ({MessageHandlerOrQueryInterface.ToString(_interfaces)}";
+            $"{Type.FriendlyName()} ({MicroProcessorComponentInterface.ToString(_interfaces)}";
 
         #region [====== IHandleAsyncMethodFactory.CreateMicroServiceBusEndpoints(MicroProcessor) ======]
 

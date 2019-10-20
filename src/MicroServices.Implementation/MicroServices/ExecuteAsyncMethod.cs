@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Kingo.MicroServices
@@ -9,13 +10,16 @@ namespace Kingo.MicroServices
     /// </summary>
     public class ExecuteAsyncMethod : IAsyncMethod
     {
-        internal ExecuteAsyncMethod(Query query, QueryInterface @interface) :
+        internal ExecuteAsyncMethod(QueryComponent query) :
+            this(query, query.Interfaces.Single()) { }
+
+        internal ExecuteAsyncMethod(QueryComponent query, QueryInterface @interface) :
             this(query, @interface.ResolveMethodInfo(query)) { }
 
-        private ExecuteAsyncMethod(Query query, MethodInfo info) :
+        private ExecuteAsyncMethod(QueryComponent query, MethodInfo info) :
             this(query, info, info.GetParameters()) { }
 
-        private ExecuteAsyncMethod(Query query, MethodInfo info, ParameterInfo[] parameters)
+        private ExecuteAsyncMethod(QueryComponent query, MethodInfo info, ParameterInfo[] parameters)
         {
             Query = query;
             MethodInfo = info;
@@ -40,7 +44,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// The query that implements this method.
         /// </summary>
-        public Query Query
+        public QueryComponent Query
         {
             get;
         }

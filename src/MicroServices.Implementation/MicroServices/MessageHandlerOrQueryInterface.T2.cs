@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TComponent">Type of the associated component.</typeparam>
     /// <typeparam name="TMethod">Type of the associated method.</typeparam>
-    public abstract class MessageHandlerOrQueryInterface<TComponent, TMethod> : MessageHandlerOrQueryInterface
+    public abstract class MessageHandlerOrQueryInterface<TComponent, TMethod> : MicroProcessorComponentInterface
         where TComponent : MicroProcessorComponent
         where TMethod : IAsyncMethod
     {        

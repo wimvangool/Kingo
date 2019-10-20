@@ -7,12 +7,19 @@ namespace Kingo.MicroServices.Controllers
     /// <summary>
     /// Represents a collection of query-types.
     /// </summary>
-    public sealed class QueryCollection : MicroProcessorComponentCollection<QueryType>
+    public sealed class QueryCollection : MicroProcessorComponentCollection
     {
         #region [====== Add ======]
 
-        protected override bool IsComponentType(MicroProcessorComponent component, out QueryType componentType) =>
-            QueryType.IsQuery(component, out componentType);
+        /// <inheritdoc />
+        protected override bool Add(MicroProcessorComponent component)
+        {
+            if (QueryType.IsQuery(component, out var query))
+            {
+                return base.Add(query);
+            }
+            return false;
+        }
 
         #endregion
     }

@@ -10,7 +10,7 @@ namespace Kingo.MicroServices.Controllers
     /// <summary>
     /// Represents a collection of <see cref="MicroServiceBusController"/> types.
     /// </summary>
-    public sealed class MicroServiceBusControllerCollection : MicroProcessorComponentCollection<MicroServiceBusControllerType>
+    public sealed class MicroServiceBusControllerCollection : MicroProcessorComponentCollection
     {
         private readonly List<StoreAndForwardQueueType> _storeAndForwardQueueTypes;
         private readonly List<Type> _serviceBusTypes;
@@ -109,13 +109,12 @@ namespace Kingo.MicroServices.Controllers
         /// </exception>
         public bool Add(Type type, bool isMainController)
         {
-            if (MicroServiceBusControllerType.IsController(type, out var controllerType))
+            if (Add(type))
             {
                 if (isMainController)
                 {
-                    AddServiceBusType(controllerType.Type);
+                    AddServiceBusType(type);
                 }
-                Add(controllerType);
                 return true;
             }
             return false;
@@ -128,8 +127,14 @@ namespace Kingo.MicroServices.Controllers
         }
 
         /// <inheritdoc />
-        protected override bool IsComponentType(MicroProcessorComponent component, out MicroServiceBusControllerType componentType) =>
-            MicroServiceBusControllerType.IsController(component, out componentType);
+        protected override bool Add(MicroProcessorComponent component)
+        {
+            if (MicroServiceBusControllerType.IsController(component, out var controller))
+            {
+                return base.Add(controller);
+            }
+            return false;
+        }
 
         #endregion
 

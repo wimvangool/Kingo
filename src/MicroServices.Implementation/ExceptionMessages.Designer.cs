@@ -88,11 +88,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find implementation of method &apos;{0}.{1}(...)&apos; on type &apos;{3}&apos;..
+        ///   Looks up a localized string similar to Cannot generate message-id for message of type &apos;{0}&apos; because multiple factories were configured for this message-type: {1}..
         /// </summary>
-        internal static string MessageHandlerOrQueryInterface_InterfaceMethodNotFound {
+        internal static string MessageIdFactory_MultipleFactoriesAddedForSameMessageType {
             get {
-                return ResourceManager.GetString("MessageHandlerOrQueryInterface_InterfaceMethodNotFound", resourceCulture);
+                return ResourceManager.GetString("MessageIdFactory_MultipleFactoriesAddedForSameMessageType", resourceCulture);
             }
         }
         
@@ -120,6 +120,15 @@ namespace Kingo {
         internal static string MicroProcessorComponent_TypeNotSupported {
             get {
                 return ResourceManager.GetString("MicroProcessorComponent_TypeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find implementation of method &apos;{0}.{1}(...)&apos; on type &apos;{3}&apos;..
+        /// </summary>
+        internal static string MicroProcessorComponentInterface_InterfaceMethodNotFound {
+            get {
+                return ResourceManager.GetString("MicroProcessorComponentInterface_InterfaceMethodNotFound", resourceCulture);
             }
         }
         

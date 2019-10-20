@@ -19,13 +19,13 @@ namespace Kingo.MicroServices
             ContextParameterInfo = method.ContextParameterInfo;
         }
 
-        internal HandleAsyncMethod(MessageHandler messageHandler, MessageHandlerInterface @interface) :
+        internal HandleAsyncMethod(MessageHandlerComponent messageHandler, MessageHandlerInterface @interface) :
             this(messageHandler, @interface.ResolveMethodInfo(messageHandler)) { }
 
-        private HandleAsyncMethod(MessageHandler messageHandler, MethodInfo info) :
+        private HandleAsyncMethod(MessageHandlerComponent messageHandler, MethodInfo info) :
             this(messageHandler, info, info.GetParameters()) { }
 
-        private HandleAsyncMethod(MessageHandler messageHandler, MethodInfo info, ParameterInfo[] parameters)
+        private HandleAsyncMethod(MessageHandlerComponent messageHandler, MethodInfo info, ParameterInfo[] parameters)
         {
             MessageHandler = messageHandler;
             MethodInfo = info;
@@ -45,7 +45,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// The message handler that implements this method.
         /// </summary>
-        public MessageHandler MessageHandler
+        public MessageHandlerComponent MessageHandler
         {
             get;
         }

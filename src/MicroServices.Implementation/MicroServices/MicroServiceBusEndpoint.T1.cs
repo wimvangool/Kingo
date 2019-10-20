@@ -12,9 +12,9 @@ namespace Kingo.MicroServices
         private sealed class MessageHandlerResolver : IMessageHandler<TMessage>
         {
             private readonly MicroProcessor _processor;
-            private readonly MessageHandler _messageHandler;
+            private readonly MessageHandlerComponent _messageHandler;
 
-            public MessageHandlerResolver(MicroProcessor processor, MessageHandler messageHandler)
+            public MessageHandlerResolver(MicroProcessor processor, MessageHandlerComponent messageHandler)
             {
                 _processor = processor;
                 _messageHandler = messageHandler;

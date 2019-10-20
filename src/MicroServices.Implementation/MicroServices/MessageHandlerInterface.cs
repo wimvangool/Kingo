@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represent a specific, closed version of the <see cref="IMessageHandler{TMessage}"/> interface.
     /// </summary>
-    public sealed class MessageHandlerInterface : MessageHandlerOrQueryInterface<MessageHandler, HandleAsyncMethod>
+    public sealed class MessageHandlerInterface : MessageHandlerOrQueryInterface<MessageHandlerComponent, HandleAsyncMethod>
     {                
         private MessageHandlerInterface(Type type) :
             base(type)
@@ -27,7 +27,7 @@ namespace Kingo.MicroServices
         internal override string MethodName =>
             nameof(IMessageHandler<object>.HandleAsync);
         
-        internal override HandleAsyncMethod CreateMethod(MessageHandler component) =>
+        internal override HandleAsyncMethod CreateMethod(MessageHandlerComponent component) =>
             new HandleAsyncMethod(component, this);
 
         #region [====== FromComponent & FromType ======]

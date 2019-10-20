@@ -14,7 +14,7 @@ namespace Kingo.MicroServices.Controllers
         private readonly QueryCollection _queries;
         private readonly MicroServiceBusControllerCollection _microServiceBusControllers;
         private readonly MessageIdFactoryCollection _messageIdFactory;
-        private readonly List<IMicroProcessorComponentCollection> _components;
+        private readonly List<MicroProcessorComponentCollection> _components;
 
         public MicroProcessorBuilder()
         {   
@@ -23,7 +23,7 @@ namespace Kingo.MicroServices.Controllers
             _queries = new QueryCollection();
             _microServiceBusControllers = new MicroServiceBusControllerCollection();
             _messageIdFactory = new MessageIdFactoryCollection();
-            _components = new List<IMicroProcessorComponentCollection>();
+            _components = new List<MicroProcessorComponentCollection>();
         }
 
         public UnitOfWorkMode UnitOfWorkMode
@@ -47,7 +47,7 @@ namespace Kingo.MicroServices.Controllers
         public MessageIdFactoryCollection MessageIdFactory =>
             _messageIdFactory;
 
-        public void Add(IMicroProcessorComponentCollection components) =>
+        public void Add(MicroProcessorComponentCollection components) =>
             _components.Add(components ?? throw new ArgumentNullException(nameof(components)));
 
         public IServiceCollection BuildServiceCollection(IServiceCollection services = null) =>
@@ -82,7 +82,7 @@ namespace Kingo.MicroServices.Controllers
             return services;
         }
 
-        private IEnumerable<IMicroProcessorComponentCollection> ComponentsCollections()
+        private IEnumerable<MicroProcessorComponentCollection> ComponentsCollections()
         {
             yield return _messageHandlers;
             yield return _queries;
@@ -95,7 +95,7 @@ namespace Kingo.MicroServices.Controllers
             }
         }
 
-        private static IEnumerable<MicroProcessorComponent> MergeComponents(IEnumerable<IMicroProcessorComponentCollection> componentsToMerge)
+        private static IEnumerable<MicroProcessorComponent> MergeComponents(IEnumerable<MicroProcessorComponentCollection> componentsToMerge)
         {
             var mergedComponents = new Dictionary<Type, MicroProcessorComponent>();
 

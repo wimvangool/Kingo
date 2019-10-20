@@ -692,7 +692,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task HandleMessageAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredBeforeType()
+        public async Task HandleMessageAsync_InvokesInstanceOverType_IfInstanceIsRegisteredBeforeType()
         {
             ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
             ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
@@ -713,7 +713,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task HandleMessageAsync_InvokesInstanceOvertType_IfInstanceIsRegisteredAfterType()
+        public async Task HandleMessageAsync_InvokesInstanceOverType_IfInstanceIsRegisteredAfterType()
         {
             ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
             ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
@@ -731,47 +731,6 @@ namespace Kingo.MicroServices.Controllers
                 await HandleMessageAsync<TransientMessageHandler>(processor);
             }
             AssertInstanceCount(processor, 1);
-        }
-
-        [TestMethod]
-        public async Task HandleMessageAsync_InvokesActionOnce_IfDelegateIsRegisteredTwice_And_ConfigurationIsEqual()
-        {
-            Action<int, IMessageHandlerOperationContext> messageHandler = (message, context) =>
-            {
-                context.MessageBus.PublishEvent(string.Empty);
-            };
-
-            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
-            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
-
-            var result = await HandleMessageAsync((message, context) =>
-            {
-                context.MessageBus.PublishEvent(DateTimeOffset.UtcNow.Second);
-            }, new object());
-
-            Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Messages.Count);
-        }
-
-        [TestMethod]
-        public async Task HandleMessageAsync_InvokesFuncOnce_IfDelegateIsRegisteredTwice_And_ConfigurationIsEqual()
-        {
-            Func<int, IMessageHandlerOperationContext, Task> messageHandler = (message, context) =>
-            {
-                context.MessageBus.PublishEvent(string.Empty);
-                return Task.CompletedTask;
-            };
-
-            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
-            ProcessorBuilder.MessageHandlers.AddInstance(messageHandler);
-
-            var result = await HandleMessageAsync((message, context) =>
-            {
-                context.MessageBus.PublishEvent(DateTimeOffset.UtcNow.Second);
-            }, new object());
-
-            Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Messages.Count);
         }
 
         private Task HandleMessageAsync<TMessageHandler>(IMicroProcessor processor) where TMessageHandler : IMessageHandler<int> =>

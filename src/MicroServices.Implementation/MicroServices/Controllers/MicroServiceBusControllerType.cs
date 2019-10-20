@@ -5,10 +5,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Kingo.MicroServices.Controllers
 {
-    /// <summary>
-    /// Represents a <see cref="MicroServiceBusController"/> type.
-    /// </summary>
-    public sealed class MicroServiceBusControllerType : MicroProcessorComponent
+    internal sealed class MicroServiceBusControllerType : MicroProcessorComponent
     {
         private MicroServiceBusControllerType(MicroProcessorComponent component, params Type[] serviceTypes) :
             base(component, serviceTypes) { }
@@ -30,17 +27,7 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== Factory Methods ======]
 
-        internal static bool IsController(Type type, out MicroServiceBusControllerType controller)
-        {
-            if (IsMicroProcessorComponent(type, out var component))
-            {
-                return IsController(component, out controller);
-            }
-            controller = null;
-            return false;
-        }
-
-        internal static bool IsController(MicroProcessorComponent component, out MicroServiceBusControllerType controller)
+        public static bool IsController(MicroProcessorComponent component, out MicroServiceBusControllerType controller)
         {
             if (typeof(MicroServiceBusController).IsAssignableFrom(component.Type))
             {

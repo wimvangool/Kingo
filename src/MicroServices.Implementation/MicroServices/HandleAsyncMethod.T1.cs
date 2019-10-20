@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
         public HandleAsyncMethod(IMessageHandler<TMessage> messageHandler) :
             this(messageHandler, MessageHandlerType.FromInstance(messageHandler), MessageHandlerInterface.FromType<TMessage>()) { }
 
-        public HandleAsyncMethod(IMessageHandler<TMessage> messageHandler, MessageHandler component, MessageHandlerInterface @interface) :
+        public HandleAsyncMethod(IMessageHandler<TMessage> messageHandler, MessageHandlerComponent component, MessageHandlerInterface @interface) :
             this(messageHandler, @interface.CreateMethod(component)) { }
 
         public HandleAsyncMethod(IMessageHandler<TMessage> messageHandler, HandleAsyncMethod method) :

@@ -10,9 +10,9 @@ namespace Kingo.MicroServices
     /// When implemented, represents a specific variant of the <see cref="IMessageHandler{TMessage}"/>, <see cref="IQuery{TResponse}"/>
     /// or <see cref="IQuery{TRequest, TResponse}"/> interface.
     /// </summary>
-    public abstract class MessageHandlerOrQueryInterface : IEquatable<MessageHandlerOrQueryInterface>
+    public abstract class MicroProcessorComponentInterface : IEquatable<MicroProcessorComponentInterface>
     {        
-        internal MessageHandlerOrQueryInterface(Type type)
+        internal MicroProcessorComponentInterface(Type type)
         {
             Type = type;
         }
@@ -34,10 +34,10 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override bool Equals(object obj) =>
-            Equals(obj as MessageHandlerOrQueryInterface);
+            Equals(obj as MicroProcessorComponentInterface);
 
         /// <inheritdoc />
-        public bool Equals(MessageHandlerOrQueryInterface other)
+        public bool Equals(MicroProcessorComponentInterface other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -58,7 +58,7 @@ namespace Kingo.MicroServices
         public override string ToString() =>
             Type.FriendlyName();
 
-        internal static string ToString(IEnumerable<MessageHandlerOrQueryInterface> interfaces) =>
+        internal static string ToString(IEnumerable<MicroProcessorComponentInterface> interfaces) =>
             string.Join(", ", interfaces.Select(@interface => @interface.ToString()));
 
         #endregion
@@ -97,7 +97,7 @@ namespace Kingo.MicroServices
 
         private static Exception NewInterfaceMethodNotFoundException(Type type, Type interfaceType, string methodName)
         {
-            var messageFormat = ExceptionMessages.MessageHandlerOrQueryInterface_InterfaceMethodNotFound;
+            var messageFormat = ExceptionMessages.MicroProcessorComponentInterface_InterfaceMethodNotFound;
             var message = string.Format(messageFormat, interfaceType.FriendlyName(), methodName, type.FriendlyName());
             return new InvalidOperationException(message);
         }      

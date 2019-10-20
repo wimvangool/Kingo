@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
         private readonly IQuery<TResponse> _query;        
 
         public ExecuteAsyncMethod(IQuery<TResponse> query) :
-            base(QueryType.FromInstance(query), QueryInterface.FromType<TResponse>())
+            base(QueryType.FromInstance(query))
         {
             _query = query;
         }                

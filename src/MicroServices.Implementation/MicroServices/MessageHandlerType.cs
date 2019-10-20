@@ -4,11 +4,8 @@ using System.Linq;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
-{        
-    /// <summary>
-    /// Represents a type that implements one or more variations of the <see cref="IMessageHandler{TMessage}"/> interface.
-    /// </summary>
-    public sealed class MessageHandlerType : MessageHandler
+{
+    internal sealed class MessageHandlerType : MessageHandlerComponent
     {        
         private MessageHandlerType(MicroProcessorComponent component, MessageHandlerInterface[] interfaces) :
             base(component, interfaces) { }        
@@ -32,14 +29,18 @@ namespace Kingo.MicroServices
 
         #region [====== Factory Methods ======]
 
-        internal new static MessageHandlerType FromInstance(object messageHandler)
-        {            
+        public static MessageHandlerType FromInstance<TMessage>(IMessageHandler<TMessage> messageHandler)
+        {
+            if (messageHandler == null)
+            {
+                throw new ArgumentNullException(nameof(messageHandler));
+            }
             var component = MicroProcessorComponent.FromInstance(messageHandler);
-            var interfaces = MessageHandlerInterface.FromComponent(component).ToArray();
+            var interfaces = new[] { MessageHandlerInterface.FromType<TMessage>() };
             return new MessageHandlerType(component, interfaces);
         }
 
-        internal static bool IsMessageHandler(Type type, out MessageHandlerType messageHandler)
+        public static bool IsMessageHandler(Type type, out MessageHandlerType messageHandler)
         {
             if (IsMicroProcessorComponent(type, out var component))
             {
@@ -49,7 +50,7 @@ namespace Kingo.MicroServices
             return false;
         }
 
-        internal static bool IsMessageHandler(MicroProcessorComponent component, out MessageHandlerType messageHandler)
+        public static bool IsMessageHandler(MicroProcessorComponent component, out MessageHandlerType messageHandler)
         {
             var interfaces = MessageHandlerInterface.FromComponent(component).ToArray();
             if (interfaces.Length == 0)

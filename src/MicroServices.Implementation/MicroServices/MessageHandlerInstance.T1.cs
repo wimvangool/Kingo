@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class MessageHandlerInstance<TMessage> : MessageHandler, IMessageHandler<TMessage>
+    internal sealed class MessageHandlerInstance<TMessage> : MessageHandlerComponent, IMessageHandler<TMessage>
     {        
         private readonly IMessageHandler<TMessage> _messageHandler;        
 
@@ -13,8 +14,8 @@ namespace Kingo.MicroServices
         public MessageHandlerInstance(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler) :
             this(MessageHandlerDecorator<TMessage>.Decorate(messageHandler)) { }
 
-        private MessageHandlerInstance(IMessageHandler<TMessage> messageHandler) :
-            base(MessageHandlerType.FromInstance(messageHandler), MessageHandlerInterface.FromType<TMessage>())
+        public MessageHandlerInstance(IMessageHandler<TMessage> messageHandler) :
+            base(MessageHandlerType.FromInstance(messageHandler))
         {
             _messageHandler = messageHandler;            
         }
@@ -31,26 +32,7 @@ namespace Kingo.MicroServices
             return true;
         }
 
-        #region [====== Equals, GetHashCode & ToString ======]
-
-        public override bool Equals(MicroProcessorComponent other) =>
-            Equals(other as MessageHandlerInstance<TMessage>);
-
-        public bool Equals(MessageHandlerInstance<TMessage> other)
-        {
-            if (ReferenceEquals(other, null))
-            {
-                return false;
-            }
-            return _messageHandler.Equals(other._messageHandler);          
-        }
-
-        public override int GetHashCode() =>
-            _messageHandler.GetHashCode();
-
         public override string ToString() =>
-            _messageHandler.ToString();
-
-        #endregion
+            _messageHandler.GetType().FriendlyName();
     }
 }

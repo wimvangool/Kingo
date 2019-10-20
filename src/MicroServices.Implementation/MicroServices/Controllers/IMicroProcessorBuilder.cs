@@ -51,6 +51,6 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="components"/> is <c>null</c>.
         /// </exception>
-        void Add(IMicroProcessorComponentCollection components);
+        void Add(MicroProcessorComponentCollection components);
     }
 }

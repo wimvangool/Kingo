@@ -9,11 +9,11 @@ namespace Kingo.MicroServices
     /// Represent a component that implements one or more variations of the <see cref="IQuery{TResponse}"/> or
     /// <see cref="IQuery{TRequest, TResponse}"/> interfaces.
     /// </summary>
-    public abstract class Query : MicroProcessorComponent, IReadOnlyCollection<ExecuteAsyncMethod>
+    public abstract class QueryComponent : MicroProcessorComponent, IReadOnlyCollection<ExecuteAsyncMethod>
     {
         private readonly QueryInterface[] _interfaces;
 
-        internal Query(MicroProcessorComponent component, params QueryInterface[] interfaces) :
+        internal QueryComponent(MicroProcessorComponent component, params QueryInterface[] interfaces) :
             base(component, interfaces.Select(@interface => @interface.Type))
         {
             _interfaces = interfaces;
@@ -41,6 +41,6 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Type.FriendlyName()} ({MessageHandlerOrQueryInterface.ToString(_interfaces)}";
+            $"{Type.FriendlyName()} ({MicroProcessorComponentInterface.ToString(_interfaces)}";
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents a factory of unique identifiers for a specific type of message.
