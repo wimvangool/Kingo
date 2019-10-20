@@ -23,6 +23,10 @@ namespace Kingo.MicroServices
             var factories = _serviceProvider.GetServices<IMessageIdFactory<TMessage>>().ToArray();
             if (factories.Length == 0)
             {
+                if (message is IMessage factory)
+                {
+                    return factory.GenerateMessageId();
+                }
                 return NewMessageId();
             }
             if (factories.Length == 1)

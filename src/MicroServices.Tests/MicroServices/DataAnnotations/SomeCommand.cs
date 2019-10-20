@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kingo.MicroServices.DataAnnotations
 {    
-    public sealed class SomeCommand : ValidatableObject
+    public sealed class SomeCommand : RequestMessage
     {        
         [Required]        
         public string PropertyA
@@ -59,6 +59,9 @@ namespace Kingo.MicroServices.DataAnnotations
             {
                 yield return NewValidationError("PropertyC must be greater than PropertyB", nameof(PropertyB), nameof(PropertyC));
             }
-        }        
+        }   
+        
+        private static ValidationResult NewValidationError(string errorMessage, params string[] memberNames) =>
+            new ValidationResult(errorMessage, memberNames);
     }
 }

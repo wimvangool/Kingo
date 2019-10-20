@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.Controllers
@@ -9,6 +10,16 @@ namespace Kingo.MicroServices.Controllers
     [TestClass]
     public sealed class AddMessageIdFactoryTest : MicroProcessorTest<MicroProcessor>
     {
+        #region [====== ======]
+
+        private sealed class SomeCommand : Message
+        {
+            protected override string GenerateMessageId() =>
+                GetType().FriendlyName();
+        }
+
+        #endregion
+
         #region [====== CustomMessageIdFactory ======]
 
         private sealed class CustomMessageIdFactory : IMessageIdFactory<int>, IMessageIdFactory<string>
@@ -47,7 +58,7 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         [TestMethod]
-        public async Task ProcessorBuilder_UsesDefaultMessageIdFactory_IfNoFactoriesWereAdded()
+        public async Task ProcessorBuilder_UsesDefaultMessageIdFactory_IfNoFactoriesWereAdded_And_MessageDoesNotImplementIMessageInterface()
         {
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
@@ -68,6 +79,28 @@ namespace Kingo.MicroServices.Controllers
 
                 context.MessageBus.PublishEvent(context.StackTrace.CurrentOperation.Message.MessageId);
             }, new object());
+        }
+
+        [TestMethod]
+        public async Task ProcessorBuilder_UsesMessageSpecificImplementation_IfNoFactoriesWereAdded_And_MessageImplementsIMessageInterface()
+        {
+            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
+            {
+                // The event will have it's own unique MessageId, and its CorrelationId will be set
+                // to that of the Command's MessageId that triggered this event.
+                Assert.IsNotNull(context.StackTrace.CurrentOperation.Message.MessageId);
+                Assert.AreNotEqual(message, context.StackTrace.CurrentOperation.Message.MessageId);
+                Assert.AreEqual(message, context.StackTrace.CurrentOperation.Message.CorrelationId);
+            });
+
+            await CreateProcessor().ExecuteCommandAsync((message, context) =>
+            {
+                // The message will generate its own message-id.
+                Assert.AreEqual("SomeCommand",context.StackTrace.CurrentOperation.Message.MessageId);
+                Assert.IsNull(context.StackTrace.CurrentOperation.Message.CorrelationId);
+
+                context.MessageBus.PublishEvent(context.StackTrace.CurrentOperation.Message.MessageId);
+            }, new SomeCommand());
         }
 
         [TestMethod]
