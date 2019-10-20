@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
-using System.Text;
 using Kingo.Collections.Generic;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;

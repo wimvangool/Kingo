@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kingo.MicroServices.Controllers
+﻿namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// Represents a collection of query-types.
