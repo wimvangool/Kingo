@@ -9,31 +9,31 @@ namespace Kingo.MicroServices
     /// Represents a message with a specific <see cref="MessageId" /> and a payload of type <typeparamref name="TMessage"/>.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message payload.</typeparam>
-    public class Message<TMessage> : IMessage
+    public class MessageEnvelope<TMessage> : IMessageEnvelope
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Message{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="MessageEnvelope{TMessage}" /> class.
         /// </summary>
-        /// <param name="content">Content of this message.</param>
+        /// <param name="message">Content of this message.</param>
         /// <param name="messageId">Unique identifier of this message.</param>
         /// <param name="correlationId">
         /// Identifier of the message this message to related to.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="content"/> or <paramref name="messageId"/> is <c>null</c>.
+        /// <paramref name="message"/> or <paramref name="messageId"/> is <c>null</c>.
         /// </exception>
-        public Message(TMessage content, string messageId, string correlationId = null)
+        public MessageEnvelope(TMessage message, string messageId, string correlationId = null)
         {
-            if (ReferenceEquals(content, null))
+            if (ReferenceEquals(message, null))
             {
-                throw new ArgumentException(nameof(content));
+                throw new ArgumentException(nameof(message));
             }
             MessageId = messageId ?? throw new ArgumentNullException(nameof(messageId));
             CorrelationId = correlationId;
-            Content = content;
+            Content = message;
         }
 
-        internal Message(Message<TMessage> message)
+        internal MessageEnvelope(MessageEnvelope<TMessage> message)
         {
             MessageId = message.MessageId;
             CorrelationId = message.CorrelationId;
@@ -52,7 +52,7 @@ namespace Kingo.MicroServices
             get;
         }
 
-        object IMessage.Content =>
+        object IMessageEnvelope.Content =>
             Content;
 
         /// <summary>

@@ -12,8 +12,8 @@ namespace Kingo.MicroServices
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public string GenerateMessageIdFor(TMessage content) =>
-            _factory.Invoke(content);
+        public string GenerateMessageIdFor(TMessage message) =>
+            _factory.Invoke(message);
 
         public override string ToString() =>
             GetType().FriendlyName();

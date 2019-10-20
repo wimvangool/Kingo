@@ -3,9 +3,9 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {        
-    public sealed class MessageToProcess<TMessage> : Message<TMessage>, IMessageToProcess
+    public sealed class MessageToProcess<TMessage> : MessageEnvelope<TMessage>, IMessageToProcess
     {
-        internal MessageToProcess(Message<TMessage> message, MessageKind kind) :
+        internal MessageToProcess(MessageEnvelope<TMessage> message, MessageKind kind) :
             base(message)
         {
             Kind = kind.Validate();

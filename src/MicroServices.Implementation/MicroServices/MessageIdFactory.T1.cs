@@ -15,10 +15,10 @@ namespace Kingo.MicroServices
             _serviceProvider = serviceProvider;
         }
 
-        public string GenerateMessageIdFor(object content) =>
-            GenerateMessageIdFor((TMessage) content);
+        public string GenerateMessageIdFor(object message) =>
+            GenerateMessageIdFor((TMessage) message);
 
-        public string GenerateMessageIdFor(TMessage content)
+        public string GenerateMessageIdFor(TMessage message)
         {
             var factories = _serviceProvider.GetServices<IMessageIdFactory<TMessage>>().ToArray();
             if (factories.Length == 0)
@@ -27,7 +27,7 @@ namespace Kingo.MicroServices
             }
             if (factories.Length == 1)
             {
-                return factories[0].GenerateMessageIdFor(content);
+                return factories[0].GenerateMessageIdFor(message);
             }
             throw NewMultipleFactoriesAddedForSameMessageTypeException(typeof(TMessage), factories.Select(factory => factory.GetType()));
         }

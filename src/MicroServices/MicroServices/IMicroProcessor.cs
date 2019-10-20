@@ -39,10 +39,10 @@ namespace Kingo.MicroServices
         IDisposable AssignUser(IPrincipal user);
 
         /// <summary>
-        /// Creates and returns a new <see cref="IMessageBuilder" /> that can be used to build new messages to process by this processor.
+        /// Creates and returns a new <see cref="IMessageEnvelopeBuilder" /> that can be used to build new messages to process by this processor.
         /// </summary>
-        /// <returns>A new <see cref="IMessageBuilder" />.</returns>
-        IMessageBuilder CreateMessageBuilder();
+        /// <returns>A new <see cref="IMessageEnvelopeBuilder" />.</returns>
+        IMessageEnvelopeBuilder CreateMessageBuilder();
 
         /// <summary>
         /// Creates and returns all endpoints that are configured to handle commands or events from a service bus.
@@ -80,7 +80,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, Message<TCommand> message, CancellationToken? token = null);
+        Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null);
 
         #endregion
 
@@ -114,7 +114,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, Message<TEvent> message, CancellationToken? token = null);
+        Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, MessageEnvelope<TEvent> message, CancellationToken? token = null);
 
         #endregion
 
@@ -158,7 +158,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token = null);
+        Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token = null);
 
         #endregion
     }

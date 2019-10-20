@@ -9,6 +9,6 @@ namespace Kingo.MicroServices.Controllers
     internal static class MicroServiceBusEndpointExtensions
     {
         public static Task<IMessageHandlerOperationResult> InvokeAsync(this IMicroServiceBusEndpoint endpoint, object message, CancellationToken? token = null) =>
-            endpoint.InvokeAsync(new Message(message, Guid.NewGuid().ToString()), token);
+            endpoint.InvokeAsync(new MessageEnvelope(message, Guid.NewGuid().ToString()), token);
     }
 }

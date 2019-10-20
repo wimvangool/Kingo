@@ -19,11 +19,11 @@ namespace Kingo.MicroServices.Controllers
                 private set;
             }
 
-            public string GenerateMessageIdFor(int content)
+            public string GenerateMessageIdFor(int message)
             {
                 try
                 {
-                    return content.ToString();
+                    return message.ToString();
                 }
                 finally
                 {
@@ -31,11 +31,11 @@ namespace Kingo.MicroServices.Controllers
                 }
             }
 
-            public string GenerateMessageIdFor(string content)
+            public string GenerateMessageIdFor(string message)
             {
                 try
                 {
-                    return content + content;
+                    return message + message;
                 }
                 finally
                 {

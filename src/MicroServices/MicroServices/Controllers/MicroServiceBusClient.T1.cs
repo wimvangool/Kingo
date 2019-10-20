@@ -307,7 +307,7 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="message">The message to unpack.</param>
         /// <param name="messageBuilder">A builder that can be used to build the message to return.</param>
         /// <returns>The contents of the specified <paramref name="message"/>.</returns>
-        protected abstract IMessage Unpack(TMessage message, IMessageBuilder messageBuilder);
+        protected abstract IMessageEnvelope Unpack(TMessage message, IMessageEnvelopeBuilder messageBuilder);
 
         #endregion
 

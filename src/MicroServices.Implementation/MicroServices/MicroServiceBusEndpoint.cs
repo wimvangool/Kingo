@@ -23,7 +23,7 @@ namespace Kingo.MicroServices
             get;
         }
 
-        public abstract Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null);
+        public abstract Task<IMessageHandlerOperationResult> InvokeAsync(IMessageEnvelope message, CancellationToken? token = null);
 
         public override string ToString() =>
             $"{MessageHandler.Type.FriendlyName()}.{MethodInfo.Name}([{MessageKind}] {MessageParameterInfo.ParameterType.FriendlyName()}, ...)";

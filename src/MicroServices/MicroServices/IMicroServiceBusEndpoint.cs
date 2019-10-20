@@ -72,6 +72,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null);
+        Task<IMessageHandlerOperationResult> InvokeAsync(IMessageEnvelope message, CancellationToken? token = null);
     }
 }

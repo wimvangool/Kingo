@@ -45,7 +45,7 @@ namespace Kingo.MicroServices
         public override MessageKind MessageKind =>
             _messageKind;
 
-        public override Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null)
+        public override Task<IMessageHandlerOperationResult> InvokeAsync(IMessageEnvelope message, CancellationToken? token = null)
         {
             if (message.IsOfType<TMessage>(out var typedMessage))
             {
@@ -54,7 +54,7 @@ namespace Kingo.MicroServices
             return Task.FromResult<IMessageHandlerOperationResult>(MessageHandlerOperationResult.Empty);
         }
 
-        private async Task<IMessageHandlerOperationResult> InvokeAsync(Message<TMessage> message, CancellationToken? token)
+        private async Task<IMessageHandlerOperationResult> InvokeAsync(MessageEnvelope<TMessage> message, CancellationToken? token)
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
             // the infrastructure does not create a scope upon receiving a new message (like in ASP.NET).
@@ -64,10 +64,10 @@ namespace Kingo.MicroServices
             }
         }
 
-        private MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token) =>
+        private MessageHandlerOperation<TMessage> CreateOperation(MessageEnvelope<TMessage> message, CancellationToken? token) =>
             CreateOperation(message, token, CreateMethod());
 
-        private MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method)
+        private MessageHandlerOperation<TMessage> CreateOperation(MessageEnvelope<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method)
         {
             switch (MessageKind)
             {

@@ -8,22 +8,20 @@ namespace Kingo.MicroServices
 {   
     internal sealed class MessageBus : IMessageBus
     {
-        private readonly MessageFactory _messageFactory;
+        private readonly MessageEnvelopeFactory _messageFactory;
         private readonly List<MessageToDispatch> _messages;
       
-        public MessageBus(MessageFactory messageFactory)
+        public MessageBus(MessageEnvelopeFactory messageFactory)
         {
             _messageFactory = messageFactory;
             _messages = new List<MessageToDispatch>(); 
         }
 
-        /// <inheritdoc />
         public void SendCommand(object command, DateTimeOffset? deliveryTime = null) =>
-            _messages.Add(_messageFactory.CreateMessage(command).ToDispatch(MessageKind.Command, deliveryTime));
+            _messages.Add(_messageFactory.Wrap(command).ToDispatch(MessageKind.Command, deliveryTime));
 
-        /// <inheritdoc />
         public void PublishEvent(object @event, DateTimeOffset? deliveryTime = null) =>
-            _messages.Add(_messageFactory.CreateMessage(@event).ToDispatch(MessageKind.Event, deliveryTime));
+            _messages.Add(_messageFactory.Wrap(@event).ToDispatch(MessageKind.Event, deliveryTime));
 
         #region [====== IReadOnlyList<MessageToDispatch> ======]
 

@@ -5,9 +5,9 @@ using System.Text;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// When implemented by a class, represents a builder of <see cref="IMessage" /> instances.
+    /// When implemented by a class, represents a builder of <see cref="IMessageEnvelope" /> instances.
     /// </summary>
-    public interface IMessageBuilder : IMessageFactory
+    public interface IMessageEnvelopeBuilder : IMessageEnvelopeFactory
     {
         /// <summary>
         /// Gets or sets the message identifier. If not specified, the builder will generate a new message-id.

@@ -9,13 +9,13 @@ namespace Kingo.MicroServices
     public interface IMessageIdFactory<in TMessage>
     {
         /// <summary>
-        /// Generates a new identifier for the specified <paramref name="content"/>.
+        /// Generates a new identifier for the specified <paramref name="message"/>.
         /// </summary>
-        /// <param name="content">Content of a message.</param>
-        /// <returns>A new identifier based on the specified <paramref name="content"/>.</returns>
+        /// <param name="message">Content of a message.</param>
+        /// <returns>A new identifier based on the specified <paramref name="message"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="content"/> is <c>null</c>.
+        /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        string GenerateMessageIdFor(TMessage content);
+        string GenerateMessageIdFor(TMessage message);
     }
 }

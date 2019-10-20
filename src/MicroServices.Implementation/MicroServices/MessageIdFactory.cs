@@ -14,8 +14,8 @@ namespace Kingo.MicroServices
             _serviceProvider = serviceProvider;
         }
 
-        public string GenerateMessageIdFor(object content) =>
-            _factoriesPerMessageType.GetOrAdd(GetMessageType(content), ResolveMessageIdFactoryFor).GenerateMessageIdFor(content);
+        public string GenerateMessageIdFor(object message) =>
+            _factoriesPerMessageType.GetOrAdd(GetMessageType(message), ResolveMessageIdFactoryFor).GenerateMessageIdFor(message);
 
         private IMessageIdFactory ResolveMessageIdFactoryFor(Type messageType)
         {
@@ -24,7 +24,7 @@ namespace Kingo.MicroServices
             return (IMessageIdFactory) constructor.Invoke(new object[] { _serviceProvider });
         }
 
-        private static Type GetMessageType(object content) =>
-            content?.GetType() ?? throw new ArgumentNullException(nameof(content));
+        private static Type GetMessageType(object message) =>
+            message?.GetType() ?? throw new ArgumentNullException(nameof(message));
     }
 }

@@ -88,8 +88,8 @@ namespace Kingo.MicroServices.Controllers
             protected override TMessage Pack(IMessageToDispatch message) =>
                 (TMessage) message.Content;
 
-            protected override IMessage Unpack(TMessage message, IMessageBuilder messageBuilder) =>
-                messageBuilder.CreateMessage(message);
+            protected override IMessageEnvelope Unpack(TMessage message, IMessageEnvelopeBuilder messageBuilder) =>
+                messageBuilder.Wrap(message);
 
             protected override void Dispose(bool disposing)
             {

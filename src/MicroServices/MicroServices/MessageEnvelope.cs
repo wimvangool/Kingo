@@ -6,26 +6,26 @@ using Kingo.Reflection;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents a message with a specific <see cref="MessageId" /> and <see cref="CorrelationId" />.
+    /// Represents the envelope of a message carrying its payload and metadata.
     /// </summary>
-    public class Message : IMessage
+    public class MessageEnvelope : IMessageEnvelope
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Message{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="MessageEnvelope{TMessage}" /> class.
         /// </summary>
-        /// <param name="content">Content of this message.</param>
+        /// <param name="message">Content of this message.</param>
         /// <param name="messageId">Unique identifier of this message.</param>
         /// <param name="correlationId">
         /// Identifier of the message this message to related to.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="content"/> or <paramref name="messageId"/> is <c>null</c>.
+        /// <paramref name="message"/> or <paramref name="messageId"/> is <c>null</c>.
         /// </exception>
-        public Message(object content, string messageId, string correlationId = null)
+        public MessageEnvelope(object message, string messageId, string correlationId = null)
         {
             MessageId = messageId ?? throw new ArgumentNullException(nameof(messageId));
             CorrelationId = correlationId;
-            Content = content ?? throw new ArgumentNullException(nameof(content));
+            Content = message ?? throw new ArgumentNullException(nameof(message));
         }
 
         /// <inheritdoc />

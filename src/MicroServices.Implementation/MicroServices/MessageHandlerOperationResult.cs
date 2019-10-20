@@ -29,7 +29,7 @@ namespace Kingo.MicroServices
             internal override MessageHandlerOperationResult Append(MessageHandlerOperationResult result) =>
                 result;
 
-            internal override MessageHandlerOperationResult Commit(IMessage correlatedMessage) =>
+            internal override MessageHandlerOperationResult Commit(IMessageEnvelope correlatedMessage) =>
                 this;
         }
 
@@ -63,7 +63,7 @@ namespace Kingo.MicroServices
             return new MessageListResult(messages, messageHandlerCount);
         }
 
-        internal virtual MessageHandlerOperationResult Commit(IMessage correlatedMessage) =>
+        internal virtual MessageHandlerOperationResult Commit(IMessageEnvelope correlatedMessage) =>
             new MessageListResult(Messages.Select(message => message.CorrelateWith(correlatedMessage)), MessageHandlerCount);
     }
 }

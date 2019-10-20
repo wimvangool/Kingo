@@ -1,9 +1,9 @@
 ﻿namespace Kingo.MicroServices
 {
     /// <summary>
-    /// When implemented by a class, represents (the envelope of) a message.
+    /// When implemented by a class, represents (the envelope of) a message, carrying its payload and metadata.
     /// </summary>
-    public interface IMessage
+    public interface IMessageEnvelope
     {
         /// <summary>
         /// Returns the unique identifier of this message.

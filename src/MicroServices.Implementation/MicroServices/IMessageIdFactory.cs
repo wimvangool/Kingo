@@ -6,6 +6,6 @@ namespace Kingo.MicroServices
 {
     internal interface IMessageIdFactory
     {
-        string GenerateMessageIdFor(object content);
+        string GenerateMessageIdFor(object message);
     }
 }

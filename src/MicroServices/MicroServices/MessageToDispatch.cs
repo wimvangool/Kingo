@@ -9,20 +9,20 @@ namespace Kingo.MicroServices
     /// </summary>
     public sealed class MessageToDispatch : IMessageToDispatch, IMessageToProcess
     {
-        private readonly IMessage _message;
+        private readonly IMessageEnvelope _message;
         private readonly MessageKind _kind;
         private readonly DateTimeOffset? _deliveryTimeUtc;
 
-        internal MessageToDispatch(IMessage message, MessageKind kind, DateTimeOffset? deliveryTimeUtc)
+        internal MessageToDispatch(IMessageEnvelope message, MessageKind kind, DateTimeOffset? deliveryTimeUtc)
         {
             _message = message;
             _kind = kind.Validate();
             _deliveryTimeUtc = deliveryTimeUtc?.ToUniversalTime();
         }
 
-        private MessageToDispatch(MessageToDispatch message, IMessage correlatedMessage)
+        private MessageToDispatch(MessageToDispatch message, IMessageEnvelope correlatedMessage)
         {
-            _message = new Message(message.Content, message.MessageId, correlatedMessage.MessageId);
+            _message = new MessageEnvelope(message.Content, message.MessageId, correlatedMessage.MessageId);
             _kind = message._kind;
             _deliveryTimeUtc = message._deliveryTimeUtc;
         }
@@ -76,11 +76,11 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public MessageToDispatch CorrelateWith(IMessage message) =>
+        public MessageToDispatch CorrelateWith(IMessageEnvelope message) =>
             new MessageToDispatch(this, message ?? throw new ArgumentNullException(nameof(message)));
 
         /// <summary>
-        /// Checks if the content of this message is of type <typeparamref name="TMessage"/> and if so,
+        /// Checks if the message of this message is of type <typeparamref name="TMessage"/> and if so,
         /// convert this message into a message of that type.
         /// </summary>
         /// <typeparam name="TMessage">A message type.</typeparam>
@@ -93,7 +93,7 @@ namespace Kingo.MicroServices
         /// </returns>
         public bool IsOfType<TMessage>(out MessageToDispatch<TMessage> messageToDispatch)
         {
-            if (MessageExtensions.IsOfType<TMessage>(this, out var message))
+            if (MessageEnvelopeExtensions.IsOfType<TMessage>(this, out var message))
             {
                 messageToDispatch = new MessageToDispatch<TMessage>(message, Kind, DeliveryTimeUtc);
                 return true;
@@ -105,12 +105,12 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Converts this message to dispatch to a (typed) message to process.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message content.</typeparam>
+        /// <typeparam name="TMessage">Type of the message message.</typeparam>
         /// <returns>A new <see cref="MessageToProcess{TMessage}"/>.</returns>
         /// <exception cref="InvalidCastException">
         /// <see cref="Content"/> is not an instance of type <typeparamref name="TMessage"/>.
         /// </exception>
         public MessageToProcess<TMessage> ToProcess<TMessage>() =>
-            new Message<TMessage>((TMessage) Content, MessageId, CorrelationId).ToProcess(Kind);
+            new MessageEnvelope<TMessage>((TMessage) Content, MessageId, CorrelationId).ToProcess(Kind);
     }
 }
