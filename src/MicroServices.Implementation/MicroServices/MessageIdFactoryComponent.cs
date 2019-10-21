@@ -2,7 +2,9 @@
 
 namespace Kingo.MicroServices
 {
-
+    /// <summary>
+    /// Serves as a base-class for components that implement one or more variations of the <see cref="IMessageIdFactory{TMessage}"/> interface.
+    /// </summary>
     public abstract class MessageIdFactoryComponent : MicroProcessorComponent
     {
         private readonly MessageIdFactoryInterface[] _interfaces;
@@ -15,7 +17,5 @@ namespace Kingo.MicroServices
         {
             _interfaces = interfaces;
         }
-
-        
     }
 }

@@ -183,6 +183,7 @@ namespace Kingo.MicroServices
         public async Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null) =>
             await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token)).ConfigureAwait(false);
 
+        /// <inheritdoc />
         public Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
             HandleEventAsync(messageHandler, CreateMessageFactory().Wrap(message), token);
 
@@ -194,6 +195,7 @@ namespace Kingo.MicroServices
         public async Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
             await ExecuteReadOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token)).ConfigureAwait(false);
 
+        /// <inheritdoc />
         public Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
             ExecuteQueryAsync(query, CreateMessageFactory().Wrap(message), token);
 

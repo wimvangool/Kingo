@@ -34,6 +34,9 @@ namespace Kingo.MicroServices
 
         #endregion
 
+        /// <summary>
+        /// Represents an empty result.
+        /// </summary>
         public static readonly MessageHandlerOperationResult Empty = new EmptyResult();
 
         IReadOnlyList<MessageToDispatch> IMicroProcessorOperationResult<IReadOnlyList<MessageToDispatch>>.Value =>

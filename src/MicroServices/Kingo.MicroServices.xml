@@ -1187,6 +1187,11 @@
               Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.MessageKindExtensions_MessageKindNotSupported">
+            <summary>
+              Looks up a localized string similar to The specified MessageKind ({0}) is not valid..
+            </summary>
+        </member>
         <member name="P:Kingo.ExceptionMessages.MicroServiceBusClient_EndpointNotSupported">
             <summary>
               Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; (Name = {1}) to the service-bus because it is not supported by this client..
@@ -1512,7 +1517,7 @@
             <paramref name="endpoint"/> or <paramref name="endpointName"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.SendCommandsAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.SendAsync(System.Collections.Generic.IEnumerable{`0})">
@@ -1529,7 +1534,7 @@
             </summary>
             <param name="command">The command to send.</param>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.PublishEventsAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.PublishAsync(System.Collections.Generic.IEnumerable{`0})">
@@ -1553,11 +1558,12 @@
             <param name="message">The message to pack.</param>
             <returns>A message that is ready to be dispatched by the service-bus.</returns>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Unpack(`0)">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Unpack(`0,Kingo.MicroServices.IMessageEnvelopeBuilder)">
             <summary>
-            Unpacks the specified <paramref name="message"/> and returns its (deserialized) contents.
+            Unpacks the specified <paramref name="message"/> and returns the message to process by an endpoint.
             </summary>
             <param name="message">The message to unpack.</param>
+            <param name="messageBuilder">A builder that can be used to build the message to return.</param>
             <returns>The contents of the specified <paramref name="message"/>.</returns>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusClient`1.Close">
@@ -1638,10 +1644,10 @@
             The controller has already been disposed.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.SendCommandsAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.PublishEventsAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroServiceBusController.CreateClientAsync">
@@ -1722,7 +1728,31 @@
             Serves as a base-class for all request-messages such as commands or query-requests.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.RequestMessage.TryUpdateToNextVersion(Kingo.MicroServices.IDataContract@)">
+        <member name="M:Kingo.MicroServices.DataAnnotations.RequestMessage.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates all constraints that are not declared as a <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />.
+            </summary>
+            <param name="validationContext">The context of this validation-operation.</param>
+            <returns>A collection of validation-errors.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.DataAnnotations.ValidatableObject">
+            <summary>
+            Represents a piece of data that can be validated.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.ValidatableObject.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates all constraints that are not declared as a <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />.
+            </summary>
+            <param name="validationContext">The context of this validation-operation.</param>
+            <returns>A collection of validation-errors.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.DataContract">
+            <summary>
+            Serves as a base-class for all data-contracts.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContract.TryUpdateToNextVersion(Kingo.MicroServices.IDataContract@)">
             <summary>
             Attempts to update this message to the next version. By default, this
             method returns <c>false</c>.
@@ -1735,33 +1765,6 @@
             <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
             otherwise <c>false</c>.
             </returns>
-        </member>
-        <member name="T:Kingo.MicroServices.DataAnnotations.ValidatableObject">
-            <summary>
-            Represents a data contract that can be validated.
-            </summary>
-        </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.ValidatableObject.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates all constraints that are not declared as a <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />.
-            </summary>
-            <param name="validationContext">The context of this validation-operation.</param>
-            <returns>A collection of validation-errors.</returns>
-        </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.ValidatableObject.ValidateChildMembers(System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates all the constraints of child members. 
-            </summary>
-            <param name="validationContext">The context of this validation-operation.</param>
-            <returns>A collection of validation-errors, if any.</returns>
-        </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.ValidatableObject.NewValidationError(System.String,System.String[])">
-            <summary>
-            Creates and returns a new <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> with a specific error message.
-            </summary>
-            <param name="errorMessage">Error message describing the validation error.</param>
-            <param name="memberNames">Names of the members that are considered invalid.</param>
-            <returns>A new <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult"/> that represents the validation error.</returns>
         </member>
         <member name="T:Kingo.MicroServices.DataContractExtensions">
             <summary>
@@ -1879,12 +1882,23 @@
             otherwise <c>false</c>.
             </returns>
         </member>
+        <member name="T:Kingo.MicroServices.IMessage">
+            <summary>
+            When implemented by a class, represents a message that can be sent, received, processed and persisted.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMessage.GenerateMessageId">
+            <summary>
+            Generates a new message-identifier for this message.
+            </summary>
+            <returns>A new message-identifier for this message.</returns>
+        </member>
         <member name="T:Kingo.MicroServices.IMessageBus">
             <summary>
             When implemented by a class, represent a bus to which events can be published.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.IMessageBus.Send(System.Object,System.Nullable{System.DateTimeOffset})">
+        <member name="M:Kingo.MicroServices.IMessageBus.SendCommand(System.Object,System.Nullable{System.DateTimeOffset})">
             <summary>
             Schedules the specified <paramref name="command"/> to be sent on the service-bus.
             </summary>
@@ -1896,7 +1910,7 @@
             <paramref name="command"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.IMessageBus.Publish(System.Object,System.Nullable{System.DateTimeOffset})">
+        <member name="M:Kingo.MicroServices.IMessageBus.PublishEvent(System.Object,System.Nullable{System.DateTimeOffset})">
             <summary>
             Schedules the specified <paramref name="event"/> to be published on the service-bus.
             </summary>
@@ -1910,13 +1924,65 @@
         </member>
         <member name="T:Kingo.MicroServices.IMessageEnvelope">
             <summary>
-            When implemented by a class, represents an envelope of a message.
+            When implemented by a class, represents (the envelope of) a message, carrying its payload and metadata.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelope.MessageId">
+            <summary>
+            Returns the unique identifier of this message.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelope.CorrelationId">
+            <summary>
+            If specified, returns the message-id of the message this message is correlated with
+            (which is typically the message that triggered this message to be dispatched or processed).
             </summary>
         </member>
         <member name="P:Kingo.MicroServices.IMessageEnvelope.Content">
             <summary>
-            Returns the contents of the message.
+            Returns the contents/payload of the message.
             </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageEnvelopeBuilder">
+            <summary>
+            When implemented by a class, represents a builder of <see cref="T:Kingo.MicroServices.IMessageEnvelope" /> instances.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelopeBuilder.MessageId">
+            <summary>
+            Gets or sets the message identifier. If not specified, the builder will generate a new message-id.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelopeBuilder.CorrelationId">
+            <summary>
+            Gets or sets the identifier of the message that the message is correlated with.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageEnvelopeFactory">
+            <summary>
+            When implemented by a class, represents a factory for <see cref="T:Kingo.MicroServices.IMessageEnvelope"/> objects.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMessageEnvelopeFactory.Wrap(System.Object)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.MessageEnvelope" /> with the specified <paramref name="message" />.
+            </summary>
+            <param name="message">Content of the message.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageEnvelope"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IMessageEnvelopeFactory.Wrap``1(``0)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.MessageEnvelope`1" /> with the specified <paramref name="message" />.
+            </summary>
+            <typeparam name="TMessage">Type of the message of the message.</typeparam>
+            <param name="message">Content of the message.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageEnvelope"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
         </member>
         <member name="T:Kingo.MicroServices.IMessageHandler`1">
             <summary>
@@ -1958,7 +2024,7 @@
         </member>
         <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.Messages">
             <summary>
-            The set of commands and events that were produced as output of the operation.
+            Returns all messages in the order they were (scheduled to be) sent or published.
             </summary>
         </member>
         <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.MessageHandlerCount">
@@ -2012,6 +2078,12 @@
             <paramref name="user"/> is <c>null</c>.
             </exception>
         </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessor.CreateMessageBuilder">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.IMessageEnvelopeBuilder" /> that can be used to build new messages to process by this processor.
+            </summary>
+            <returns>A new <see cref="T:Kingo.MicroServices.IMessageEnvelopeBuilder" />.</returns>
+        </member>
         <member name="M:Kingo.MicroServices.IMicroProcessor.CreateMicroServiceBusEndpoints">
             <summary>
             Creates and returns all endpoints that are configured to handle commands or events from a service bus.
@@ -2019,6 +2091,21 @@
             <returns>A collection of endpoints.</returns>
         </member>
         <member name="M:Kingo.MicroServices.IMicroProcessor.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageHandler{``0},``0,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Executes a command with a specified <paramref name="messageHandler"/>.
+            </summary>
+            <typeparam name="TCommand">Type of the command.</typeparam>
+            <param name="messageHandler">The message handler that will handle the command.</param>
+            <param name="message">The command to handle.</param>
+            <param name="token">Optional token that can be used to cancel the operation.</param>
+            <returns>
+            The result of the operation, which includes all published events and the number of message handlers that were invoked.
+            </returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>       
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessor.ExecuteCommandAsync``1(Kingo.MicroServices.IMessageHandler{``0},Kingo.MicroServices.MessageEnvelope{``0},System.Nullable{System.Threading.CancellationToken})">
             <summary>
             Executes a command with a specified <paramref name="messageHandler"/>.
             </summary>
@@ -2048,6 +2135,21 @@
             <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
             </exception>       
         </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessor.HandleEventAsync``1(Kingo.MicroServices.IMessageHandler{``0},Kingo.MicroServices.MessageEnvelope{``0},System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Handles an event with a specified <paramref name="messageHandler"/>.
+            </summary>
+            <typeparam name="TEvent">Type of the event.</typeparam>
+            <param name="messageHandler">The message handler that will handle the event.</param>
+            <param name="message">The event to handle.</param>
+            <param name="token">Optional token that can be used to cancel the operation.</param>
+            <returns>
+            The result of the operation, which includes all published events and the number of message handlers that were invoked.
+            </returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>       
+        </member>
         <member name="M:Kingo.MicroServices.IMicroProcessor.ExecuteQueryAsync``1(Kingo.MicroServices.IQuery{``0},System.Nullable{System.Threading.CancellationToken})">
             <summary>
             Executes the specified <paramref name="query"/> and returns its result asynchronously.
@@ -2061,6 +2163,20 @@
             </exception>         
         </member>
         <member name="M:Kingo.MicroServices.IMicroProcessor.ExecuteQueryAsync``2(Kingo.MicroServices.IQuery{``0,``1},``0,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+            </summary>
+            <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+            <typeparam name="TResponse">Type of the message returned by the query.</typeparam>
+            <param name="query">The query to execute.</param>
+            <param name="message">Message containing the parameters of this query.</param>
+            <param name="token">Optional token that can be used to cancel the operation.</param>
+            <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>         
+        </member>
+        <member name="M:Kingo.MicroServices.IMicroProcessor.ExecuteQueryAsync``2(Kingo.MicroServices.IQuery{``0,``1},Kingo.MicroServices.MessageEnvelope{``0},System.Nullable{System.Threading.CancellationToken})">
             <summary>
             Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
             </summary>
@@ -2158,7 +2274,7 @@
             When implemented by a class, represents a service bus that can publish messages.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.IMicroServiceBus.SendAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="M:Kingo.MicroServices.IMicroServiceBus.SendCommandsAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <summary>
             Sends all specified <paramref name="commands" /> to the appropriate service(s).
             </summary>
@@ -2167,7 +2283,7 @@
             <paramref name="commands"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.IMicroServiceBus.PublishAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
+        <member name="M:Kingo.MicroServices.IMicroServiceBus.PublishEventsAsync(System.Collections.Generic.IEnumerable{Kingo.MicroServices.IMessageToDispatch})">
             <summary>
             Publishes all specified <paramref name="events" />.
             </summary>
@@ -2211,7 +2327,7 @@
             Indicates whether this endpoint handles a command or an event.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.IMicroServiceBusEndpoint.InvokeAsync(System.Object,System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:Kingo.MicroServices.IMicroServiceBusEndpoint.InvokeAsync(Kingo.MicroServices.IMessageEnvelope,System.Nullable{System.Threading.CancellationToken})">
             <summary>
             Invokes the method of the associated message handler with the specified <paramref name="message" />
             and returns its result.
@@ -2336,7 +2452,20 @@
             <param name="message">Message that carries the parameters of the query.</param>
             <returns>The response of the query.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="query"/> is <c>null</c>.
+            <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IQueryProcessor.ExecuteQueryAsync``2(Kingo.MicroServices.IQuery{``0,``1},Kingo.MicroServices.MessageEnvelope{``0})">
+            <summary>
+            Executes the specified <paramref name="query"/> and returns its result.
+            </summary>
+            <typeparam name="TRequest">Type of the request of the query.</typeparam>
+            <typeparam name="TResponse">Type of the response of the query.</typeparam>
+            <param name="query">The query to execute.</param>
+            <param name="message">Message that carries the parameters of the query.</param>
+            <returns>The response of the query.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.IUnitOfWork">
@@ -2394,12 +2523,29 @@
             A concurrency exception occurred.
             </exception>
         </member>
+        <member name="T:Kingo.MicroServices.Message">
+            <summary>
+            Serves as a base-class for all messages that are able to generate their own identifiers.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Message.GenerateMessageId">
+            <summary>
+            Generates a new message-identifier for this message.
+            </summary>
+            <returns>A new message-identifier for this message.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Message.NewMessageId">
+            <summary>
+            Generates and returns a new, random message-id.
+            </summary>
+            <returns>A new message-id.</returns>
+        </member>
         <member name="T:Kingo.MicroServices.MessageBusExtensions">
             <summary>
             Contains extension-methods for instances of type <see cref="T:Kingo.MicroServices.IMessageBus" />.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.MessageBusExtensions.Send(Kingo.MicroServices.IMessageBus,System.Object,System.TimeSpan)">
+        <member name="M:Kingo.MicroServices.MessageBusExtensions.SendCommand(Kingo.MicroServices.IMessageBus,System.Object,System.TimeSpan)">
             <summary>
             Schedules a command for a specific time relative to the current date and time.
             </summary>
@@ -2412,7 +2558,7 @@
             <paramref name="bus"/> or <paramref name="command"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.MessageBusExtensions.Publish(Kingo.MicroServices.IMessageBus,System.Object,System.TimeSpan)">
+        <member name="M:Kingo.MicroServices.MessageBusExtensions.PublishEvent(Kingo.MicroServices.IMessageBus,System.Object,System.TimeSpan)">
             <summary>
             Schedules an event for a specific time relative to the current date and time.
             </summary>
@@ -2423,6 +2569,121 @@
             </param>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="bus"/> or <paramref name="event"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageEnvelope">
+            <summary>
+            Represents the envelope of a message carrying its payload and metadata.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope.#ctor(System.Object,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MessageEnvelope`1" /> class.
+            </summary>
+            <param name="message">Content of this message.</param>
+            <param name="messageId">Unique identifier of this message.</param>
+            <param name="correlationId">
+            Identifier of the message this message to related to.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> or <paramref name="messageId"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope.MessageId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope.CorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope.Content">
+            <summary>
+            Returns the contents/payload of the message.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.MessageEnvelope`1">
+            <summary>
+            Represents a message with a specific <see cref="P:Kingo.MicroServices.MessageEnvelope`1.MessageId" /> and a payload of type <typeparamref name="TMessage"/>.
+            </summary>
+            <typeparam name="TMessage">Type of the message payload.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope`1.#ctor(`0,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MessageEnvelope`1" /> class.
+            </summary>
+            <param name="message">Content of this message.</param>
+            <param name="messageId">Unique identifier of this message.</param>
+            <param name="correlationId">
+            Identifier of the message this message to related to.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> or <paramref name="messageId"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope`1.MessageId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope`1.CorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope`1.Content">
+            <summary>
+            Returns the contents/payload of the message.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope`1.ToProcess(Kingo.MicroServices.MessageKind)">
+            <summary>
+            Converts this message to a message of a specific <see cref="T:Kingo.MicroServices.MessageKind" /> to process by a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
+            </summary>
+            <param name="kind">The kind of this message.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageToProcess`1"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="kind"/> is not a valid value.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.MessageEnvelopeExtensions">
+            <summary>
+            Contains extension methods for object of type <see cref="T:Kingo.MicroServices.IMessageEnvelope" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelopeExtensions.ToDispatch(Kingo.MicroServices.IMessageEnvelope,Kingo.MicroServices.MessageKind,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Converts the specified <paramref name="message"/> to a message of a specific <paramref name="kind"/> that can be dispatched.
+            </summary>
+            <param name="message">The message to convert.</param>
+            <param name="kind">Indicates what kind of message the message represents.</param>
+            <param name="deliveryTime">
+            If specified, indicates at what time the message should be dispatched on the service-bus.
+            </param>
+            <returns>The message to dispatch.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="kind"/> is not a recognized <see cref="T:Kingo.MicroServices.MessageKind"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelopeExtensions.IsOfType``1(Kingo.MicroServices.IMessageEnvelope,Kingo.MicroServices.MessageEnvelope{``0}@)">
+            <summary>
+            Checks if the content of this envelope is of type <typeparamref name="TMessage"/> and if so,
+            convert this envelope into a strongly typed version.
+            </summary>
+            <typeparam name="TMessage">A message type.</typeparam>
+            <param name="message">The message to convert.</param>
+            <param name="typedMessage">
+            If <see cref="P:Kingo.MicroServices.IMessageEnvelope.Content"/> is of type <typeparamref name="TMessage"/>, this argument will be set to
+            an instance of <see cref="T:Kingo.MicroServices.MessageEnvelope`1"/>; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <see cref="P:Kingo.MicroServices.IMessageEnvelope.Content"/> is of type <typeparamref name="TMessage"/>, otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.MessageHandlerDecorator`1">
@@ -2544,8 +2805,14 @@
         </member>
         <member name="T:Kingo.MicroServices.MessageToDispatch">
             <summary>
-            Represents a command or event that is to be sent or published on a service-bus.
+            Represents a command or event that is scheduled to be sent or published on the service-bus.
             </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.MessageId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.CorrelationId">
+            <inheritdoc />
         </member>
         <member name="P:Kingo.MicroServices.MessageToDispatch.Content">
             <inheritdoc />
@@ -2563,31 +2830,71 @@
         <member name="M:Kingo.MicroServices.MessageToDispatch.ToString">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.MessageToDispatch.CreateCommand(System.Object,System.Nullable{System.DateTimeOffset})">
+        <member name="M:Kingo.MicroServices.MessageToDispatch.CorrelateWith(Kingo.MicroServices.IMessageEnvelope)">
             <summary>
-            Creates and returns a command that is ready to be dispatched.
+            Creates and returns a copy of this message that is correlated with the specified <paramref name="message"/>.
             </summary>
-            <param name="command">The command to dispatch.</param>
-            <param name="deliveryTime">
-            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
-            </param>
-            <returns>The message to dispatch.</returns>
+            <param name="message">The message this message is correlated message.</param>
+            <returns>A copy of this message that is correlated with the specified <paramref name="message"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="command"/> is <c>null</c>.
+            <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.MessageToDispatch.CreateEvent(System.Object,System.Nullable{System.DateTimeOffset})">
+        <member name="M:Kingo.MicroServices.MessageToDispatch.IsOfType``1(Kingo.MicroServices.MessageToDispatch{``0}@)">
             <summary>
-            Creates and returns an event that is ready to be dispatched.
+            Checks if the message of this message is of type <typeparamref name="TMessage"/> and if so,
+            convert this message into a message of that type.
             </summary>
-            <param name="event">The event to dispatch.</param>
-            <param name="deliveryTime">
-            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+            <typeparam name="TMessage">A message type.</typeparam>
+            <param name="messageToDispatch">
+            If <see cref="P:Kingo.MicroServices.MessageToDispatch.Content"/> is of type <typeparamref name="TMessage"/>, this argument will be set to
+            an instance of <see cref="T:Kingo.MicroServices.MessageToDispatch`1"/>; otherwise it will be <c>null</c>.
             </param>
-            <returns>The message to dispatch.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="event"/> is <c>null</c>.
+            <returns>
+            <c>true</c> if <see cref="P:Kingo.MicroServices.MessageToDispatch.Content"/> is of type <typeparamref name="TMessage"/>, otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.OfType``1">
+            <summary>
+            Converts this message to a (strongly typed) message to process.
+            </summary>
+            <typeparam name="TMessage">Type of the message message.</typeparam>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageToProcess`1"/>.</returns>
+            <exception cref="T:System.InvalidCastException">
+            <see cref="P:Kingo.MicroServices.MessageToDispatch.Content"/> is not an instance of type <typeparamref name="TMessage"/>.
             </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageToDispatch`1">
+            <summary>
+            Represents a command or event that is to be sent or published on a service-bus.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch`1.Kind">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch`1.DeliveryTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch`1.ToProcess">
+            <summary>
+            Converts this message to a message to process.
+            </summary>
+            <returns>A new message to process.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageToProcess`1">
+            <summary>
+            Represents a message that is being handled or executed by a processor.
+            </summary>
+            <typeparam name="TMessage">Type of the content of this message.</typeparam>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToProcess`1.Kind">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToProcess`1.ToString">
+            <inheritdoc />
         </member>
         <member name="T:Kingo.MicroServices.MicroProcessorComponentAttribute">
             <summary>
@@ -2828,46 +3135,6 @@
             <param name="messages">A collection of commands and events to send and publish.</param>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="bus"/> or <paramref name="messages"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.IMicroServiceBus,System.Object[])">
-            <summary>
-            Sends all specified commands to the appropriate service(s).
-            </summary>
-            <param name="bus">The bus that will send the commands.</param>
-            <param name="commands">A collection of commands to send.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.SendAsync(Kingo.MicroServices.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Sends all specified commands to the appropriate service(s).
-            </summary>
-            <param name="bus">The bus that will send the commands.</param>
-            <param name="commands">A collection of commands to send.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="commands"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.IMicroServiceBus,System.Object[])">
-            <summary>
-            Publishes all specified events.
-            </summary>
-            <param name="bus">The bus that will publish the events.</param>
-            <param name="events">A collection of events to publish.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.MicroServices.MicroServiceBusExtensions.PublishAsync(Kingo.MicroServices.IMicroServiceBus,System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Publishes all specified events.
-            </summary>
-            <param name="bus">The bus that will publish the events.</param>
-            <param name="events">A collection of events to publish.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="bus"/> or <paramref name="events" /> is <c>null</c>.
             </exception>
         </member>
         <member name="T:Kingo.MicroServices.QueryDecorator`1">

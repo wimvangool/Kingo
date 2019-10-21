@@ -35,6 +35,11 @@
               Looks up a localized string similar to Message of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the MessageStream contains only {2} message(s)..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.MessageStream_MessageNotOfExpectedKind">
+            <summary>
+              Looks up a localized string similar to Message at index &apos;{0}&apos; was expected to be of kind &apos;{1}&apos; but was &apos;{2}&apos;..
+            </summary>
+        </member>
         <member name="P:Kingo.ExceptionMessages.MessageStream_MessageNotOfExpectedType">
             <summary>
               Looks up a localized string similar to Expected message of type &apos;{0}&apos; at index &apos;{1}&apos;, but found message of type &apos;{2}&apos;..
@@ -744,22 +749,6 @@
             <exception cref="T:System.InvalidCastException">
             The message at the specified <paramref name="index"/> is not of type <typeparamref name="TMessage"/>.
             </exception>
-        </member>
-        <member name="T:Kingo.MicroServices.MessageToDispatch`1">
-            <summary>
-            Represents a command or event that is to be sent or published on a service-bus.
-            </summary>
-        </member>
-        <member name="P:Kingo.MicroServices.MessageToDispatch`1.Content">
-            <summary>
-            Returns the contents of the message.
-            </summary>
-        </member>
-        <member name="P:Kingo.MicroServices.MessageToDispatch`1.Kind">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.MicroServices.MessageToDispatch`1.DeliveryTimeUtc">
-            <inheritdoc />
         </member>
     </members>
 </doc>
