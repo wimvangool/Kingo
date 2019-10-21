@@ -26,7 +26,15 @@ namespace Kingo.MicroServices
             get;
         }
 
+        /// <inheritdoc />
         public override string ToString() =>
             MessageToDispatch.ToString(this);
+
+        /// <summary>
+        /// Converts this message to a message to process.
+        /// </summary>
+        /// <returns>A new message to process.</returns>
+        public MessageToProcess<TMessage> ToProcess() =>
+            new MessageToProcess<TMessage>(this, Kind);
     }
 }

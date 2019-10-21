@@ -26,7 +26,7 @@ namespace Kingo.MicroServices
 
         internal override string MethodName =>
             nameof(IMessageHandler<object>.HandleAsync);
-        
+
         internal override HandleAsyncMethod CreateMethod(MessageHandlerComponent component) =>
             new HandleAsyncMethod(component, this);
 

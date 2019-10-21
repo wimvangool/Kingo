@@ -68,7 +68,7 @@ namespace Kingo.MicroServices
         private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, object>> _MessageHandlerFactories =
             new ConcurrentDictionary<MessageHandlerInterface, Func<object, object>>();        
 
-        IEnumerable<HandleAsyncMethod<TMessage>> IHandleAsyncMethodFactory.CreateInternalEventBusEndpointsFor<TMessage>(IServiceProvider serviceProvider)
+        IEnumerable<HandleAsyncMethod<TEvent>> IHandleAsyncMethodFactory.CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider, bool isScheduledEvent)
         {
             // This LINQ construct first selects all message handler interface definitions that are compatible with
             // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -78,11 +78,15 @@ namespace Kingo.MicroServices
             //   When the class implements both IMessageHandler<object> and IMessageHandler<SomeMessage>, then if
             //   message is of type SomeMessage, two message-handler instances are returned, one for each
             //   implementation.
-            foreach (var @interface in Interfaces.Where(@interface => @interface.MessageType.IsAssignableFrom(typeof(TMessage))))
+            foreach (var @interface in Interfaces.Where(@interface => @interface.MessageType.IsAssignableFrom(typeof(TEvent))))
             {
-                if (IsInternalEventBusEndpoint(@interface, out _))
+                if (IsInternalEventBusEndpoint(@interface, out var attribute))
                 {
-                    yield return CreateHandleAsyncMethod<TMessage>(@interface, serviceProvider);
+                    if (isScheduledEvent && !attribute.AcceptScheduledEvents)
+                    {
+                        continue;
+                    }
+                    yield return CreateHandleAsyncMethod<TEvent>(@interface, serviceProvider);
                 }
             }
         }

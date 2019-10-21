@@ -63,7 +63,7 @@ namespace Kingo.MicroServices
 
             if (message.DeliveryTimeUtc.HasValue)
             {
-                messageBuilder.Append($"{nameof(DeliveryTimeUtc)} = {message.DeliveryTimeUtc}");
+                messageBuilder.Append($", {nameof(DeliveryTimeUtc)} = {message.DeliveryTimeUtc}");
             }
             return messageBuilder.Append(")").ToString();
         }
@@ -103,14 +103,14 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Converts this message to dispatch to a (typed) message to process.
+        /// Converts this message to a (strongly typed) message to process.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message message.</typeparam>
         /// <returns>A new <see cref="MessageToProcess{TMessage}"/>.</returns>
         /// <exception cref="InvalidCastException">
         /// <see cref="Content"/> is not an instance of type <typeparamref name="TMessage"/>.
         /// </exception>
-        public MessageToProcess<TMessage> ToProcess<TMessage>() =>
-            new MessageEnvelope<TMessage>((TMessage) Content, MessageId, CorrelationId).ToProcess(Kind);
+        public MessageToDispatch<TMessage> OfType<TMessage>() =>
+            new MessageEnvelope<TMessage>((TMessage) Content, MessageId, CorrelationId).ToDispatch(Kind, DeliveryTimeUtc);
     }
 }

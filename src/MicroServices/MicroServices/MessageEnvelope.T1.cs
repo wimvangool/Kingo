@@ -72,6 +72,9 @@ namespace Kingo.MicroServices
         public MessageToProcess<TMessage> ToProcess(MessageKind kind) =>
             new MessageToProcess<TMessage>(this, kind);
 
+        internal MessageToDispatch<TMessage> ToDispatch(MessageKind kind, DateTimeOffset? deliveryTimeUtc) =>
+            new MessageToDispatch<TMessage>(this, kind, deliveryTimeUtc);
+
         /// <inheritdoc />
         public override string ToString() =>
             $"{Content.GetType().FriendlyName()} ({nameof(MessageId)} = {MessageId})";

@@ -48,24 +48,26 @@ namespace Kingo.MicroServices.Controllers
         /// </summary>
         /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
         /// <param name="messageHandler">The handler to register.</param>
+        /// <param name="acceptScheduledEvents">Indicates whether or not the handler accepts events that were scheduled.</param>
         /// <returns><c>true</c> if the instance was added; otherwise <c>false</c>.</returns>  
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public bool AddInstance<TMessage>(Action<TMessage, IMessageHandlerOperationContext> messageHandler) =>
-            AddInstance(new MessageHandlerInstance<TMessage>(messageHandler));
+        public bool AddInstance<TMessage>(Action<TMessage, IMessageHandlerOperationContext> messageHandler, bool acceptScheduledEvents = false) =>
+            AddInstance(new MessageHandlerInstance<TMessage>(messageHandler, new InternalEventBusEndpointAttribute(acceptScheduledEvents)));
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
         /// <param name="messageHandler">The handler to register.</param>
+        /// <param name="acceptScheduledEvents">Indicates whether or not the handler accepts events that were scheduled.</param>
         /// <returns><c>true</c> if the instance was added; otherwise <c>false</c>.</returns>  
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public bool AddInstance<TMessage>(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler) =>
-            AddInstance(new MessageHandlerInstance<TMessage>(messageHandler));
+        public bool AddInstance<TMessage>(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, bool acceptScheduledEvents = false) =>
+            AddInstance(new MessageHandlerInstance<TMessage>(messageHandler, new InternalEventBusEndpointAttribute(acceptScheduledEvents)));
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.

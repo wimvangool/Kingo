@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,10 +48,14 @@ namespace Kingo.MicroServices
         #endregion
 
         private readonly MessageHandlerOperationContext _context;
-        private readonly MessageToProcess<TMessage> _message;                
+        private readonly MessageToProcess<TMessage> _message;
+        private readonly bool _isScheduledEvent;
 
-        private MessageHandlerOperation(MessageHandlerOperationContext context, MessageToProcess<TMessage> message) :
-            this(context, message, context.StackTrace.CurrentOperation.Token) { }
+        private MessageHandlerOperation(MessageHandlerOperationContext context, MessageToDispatch<TMessage> message) :
+            this(context, message.ToProcess(), context.StackTrace.CurrentOperation.Token)
+        {
+            _isScheduledEvent = message.DeliveryTimeUtc.HasValue;
+        }
 
         protected MessageHandlerOperation(MessageHandlerOperationContext context, MessageToProcess<TMessage> message, CancellationToken? token) :
             base(token)
@@ -62,7 +67,7 @@ namespace Kingo.MicroServices
         internal MicroProcessor Processor =>
             _context.Processor;
 
-        internal override Task<MessageHandlerOperationResult> HandleAsync<TEvent>(MessageToProcess<TEvent> message, MessageHandlerOperationContext context) =>
+        internal override Task<MessageHandlerOperationResult> HandleAsync<TEvent>(MessageToDispatch<TEvent> message, MessageHandlerOperationContext context) =>
             new MessageHandlerOperation<TEvent>(context, message).ExecuteAsync();
 
         public override IMessageToProcess Message =>
@@ -132,7 +137,7 @@ namespace Kingo.MicroServices
             var methodFactory = Processor.ServiceProvider.GetService<IHandleAsyncMethodFactory>();
             if (methodFactory != null)
             {
-                foreach (var method in methodFactory.CreateInternalEventBusEndpointsFor<TMessage>(Processor.ServiceProvider))
+                foreach (var method in methodFactory.CreateInternalEventBusEndpointsFor<TMessage>(Processor.ServiceProvider, _isScheduledEvent))
                 {
                     yield return CreateMethodOperation(method, context);
                 }
