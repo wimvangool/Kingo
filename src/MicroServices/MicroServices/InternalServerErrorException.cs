@@ -5,7 +5,7 @@ using System.Security.Permissions;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// This exception is thrown by a <see cref="IMicroProcessor" /> when a technical failure prevented the processor from
+    /// This exception is thrown by a service when a technical failure prevented the processor from
     /// handling a message or executing a query correctly. This type semantically maps to HTTP response code <c>500</c>.
     /// </summary>
     [Serializable]

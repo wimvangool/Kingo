@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj" />
-    <ProjectReference Include="..\MicroServices.Tests\01.SharedKernel.Tests.csproj" />
+    <ProjectReference Include="..\MicroServices.Tests\01.Core.Tests.csproj" />
   </ItemGroup>
 
 </Project>

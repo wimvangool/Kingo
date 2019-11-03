@@ -62,7 +62,7 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Converts this message to a message of a specific <see cref="MessageKind" /> to process by a <see cref="IMicroProcessor" />.
+        /// Converts this message to a message of a specific <see cref="MessageKind" /> to process by a processor.
         /// </summary>
         /// <param name="kind">The kind of this message.</param>
         /// <returns>A new <see cref="MessageToProcess{TMessage}"/>.</returns>

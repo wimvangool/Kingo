@@ -5,7 +5,7 @@ using System.Security.Permissions;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// This exception is thrown by a <see cref="IMicroProcessor" /> when it failed to handle a message or execute a query.
+    /// This exception is thrown by a service when it failed to handle a message or execute a query.
     /// Any derived type of this class semantically maps to a <c>4xx</c> or <c>5xx</c> HTTP status code.
     /// </summary>
     [Serializable]

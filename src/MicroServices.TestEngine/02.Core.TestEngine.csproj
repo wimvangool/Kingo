@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices\03.SharedKernel.csproj" />
+    <ProjectReference Include="..\MicroServices\03.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

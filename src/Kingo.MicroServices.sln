@@ -18,13 +18,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Implementation.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Implementation.TestEngine", "MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.SharedKernel.TestEngine", "MicroServices.TestEngine\02.SharedKernel.TestEngine.csproj", "{DC112CD6-A54D-4945-9AE7-5C82383C27DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Core.TestEngine", "MicroServices.TestEngine\02.Core.TestEngine.csproj", "{DC112CD6-A54D-4945-9AE7-5C82383C27DB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKernel", "{393F0D54-9375-487A-B30D-8DE9DB36C0EB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{393F0D54-9375-487A-B30D-8DE9DB36C0EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.SharedKernel", "MicroServices\03.SharedKernel.csproj", "{6733306D-266E-41A6-9E92-371AF84E6ECD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Core", "MicroServices\03.Core.csproj", "{6733306D-266E-41A6-9E92-371AF84E6ECD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.SharedKernel.Tests", "MicroServices.Tests\01.SharedKernel.Tests.csproj", "{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Core.Tests", "MicroServices.Tests\01.Core.Tests.csproj", "{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,7 +68,7 @@ Global
 		{6733306D-266E-41A6-9E92-371AF84E6ECD} = {393F0D54-9375-487A-B30D-8DE9DB36C0EB}
 		{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9} = {393F0D54-9375-487A-B30D-8DE9DB36C0EB}
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution		
+	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
-	EndGlobalSection	
+	EndGlobalSection
 EndGlobal

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// This exception is thrown by a <see cref="IMicroProcessor" /> when a command or query failed to execute because it was
+    /// This exception is thrown by a service when a command or query failed to execute because it was
     /// invalid or because the operation was illegal. This type semantically maps to HTTP response code <c>400</c>.
     /// </summary>
     [Serializable]

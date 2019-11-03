@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MicroServices.Implementation\03.Implementation.csproj" />
-    <ProjectReference Include="..\MicroServices.TestEngine\02.SharedKernel.TestEngine.csproj" />
+    <ProjectReference Include="..\MicroServices.TestEngine\02.Core.TestEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

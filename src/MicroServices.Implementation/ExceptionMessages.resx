@@ -123,6 +123,15 @@
   <data name="EndpointAttribute_InvalidMessageKindSpecified" xml:space="preserve">
     <value>Invalid MessageKind ({0}) specified. Endpoints only support commands and events.</value>
   </data>
+  <data name="EndpointNameFormat_IllegalCharacter" xml:space="preserve">
+    <value>Name '{0}' contains illegal character '{1}' encountered at index '{2}'.</value>
+  </data>
+  <data name="EndpointNameFormat_MissingClosingBracket" xml:space="preserve">
+    <value>Name '{0}' is missing the closing bracket for placeholder started at index '{1}'.</value>
+  </data>
+  <data name="EndpointNameFormat_UnknownPlaceholderName" xml:space="preserve">
+    <value>Unknown placeholder specified: '{0}'.</value>
+  </data>
   <data name="MessageHandlerClass_CouldNotResolveMessageHandler" xml:space="preserve">
     <value>Could not resolve message handler of type '{0}'.</value>
   </data>
@@ -140,6 +149,18 @@
   </data>
   <data name="MicroProcessorComponent_TypeNotSupported" xml:space="preserve">
     <value>Cannot use instance of type '{0}' as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported.</value>
+  </data>
+  <data name="MicroServiceBusClient_EndpointNotSupported" xml:space="preserve">
+    <value>Cannot connect endpoint '{0}' (Name = {1}) to the service-bus because it is not supported by this client.</value>
+  </data>
+  <data name="MicroServiceBusController_AlreadyStarted" xml:space="preserve">
+    <value>Controller of type '{0}' cannot be started because it has already been started.</value>
+  </data>
+  <data name="MicroServiceBusController_CannotPublishEvents" xml:space="preserve">
+    <value>Controller of type '{0}' cannot publish the specified event(s) because it has not been (fully) started yet.</value>
+  </data>
+  <data name="MicroServiceBusController_CannotSendCommands" xml:space="preserve">
+    <value>Controller of type '{0}' cannot send the specified command(s) because it has not been (fully) started yet.</value>
   </data>
   <data name="MicroServiceBus_CircularDependencyDetected" xml:space="preserve">
     <value>Cannot publish the specified event(s) inside the constructor of a type that is registered as a '{0}'-type, because this causes a circular reference.</value>

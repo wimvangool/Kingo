@@ -124,33 +124,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name &apos;{0}&apos; contains illegal character &apos;{1}&apos; encountered at index &apos;{2}&apos;..
-        /// </summary>
-        internal static string EndpointNameFormat_IllegalCharacter {
-            get {
-                return ResourceManager.GetString("EndpointNameFormat_IllegalCharacter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name &apos;{0}&apos; is missing the closing bracket for placeholder started at index &apos;{1}&apos;..
-        /// </summary>
-        internal static string EndpointNameFormat_MissingClosingBracket {
-            get {
-                return ResourceManager.GetString("EndpointNameFormat_MissingClosingBracket", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown placeholder specified: &apos;{0}&apos;..
-        /// </summary>
-        internal static string EndpointNameFormat_UnknownPlaceholderName {
-            get {
-                return ResourceManager.GetString("EndpointNameFormat_UnknownPlaceholderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
         /// </summary>
         internal static string MemberInfoExtensions_AmbiguousAttributeMatch {
@@ -165,42 +138,6 @@ namespace Kingo {
         internal static string MessageKindExtensions_MessageKindNotSupported {
             get {
                 return ResourceManager.GetString("MessageKindExtensions_MessageKindNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; (Name = {1}) to the service-bus because it is not supported by this client..
-        /// </summary>
-        internal static string MicroServiceBusClient_EndpointNotSupported {
-            get {
-                return ResourceManager.GetString("MicroServiceBusClient_EndpointNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot be started because it has already been started..
-        /// </summary>
-        internal static string MicroServiceBusController_AlreadyStarted {
-            get {
-                return ResourceManager.GetString("MicroServiceBusController_AlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot publish the specified event(s) because it has not been (fully) started yet..
-        /// </summary>
-        internal static string MicroServiceBusController_CannotPublishEvents {
-            get {
-                return ResourceManager.GetString("MicroServiceBusController_CannotPublishEvents", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot send the specified command(s) because it has not been (fully) started yet..
-        /// </summary>
-        internal static string MicroServiceBusController_CannotSendCommands {
-            get {
-                return ResourceManager.GetString("MicroServiceBusController_CannotSendCommands", resourceCulture);
             }
         }
         
