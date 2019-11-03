@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>Kingo.MasterMind.GameService.Implementation.LogicTests</AssemblyName>
+    <RootNamespace>Kingo.MasterMind.GameService</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Implementation.Logic.Application\B.Logic.Application.csproj" />
+    <ProjectReference Include="..\Implementation.Tests\A.Implementation.Tests.csproj" />
+  </ItemGroup>
+
+</Project>

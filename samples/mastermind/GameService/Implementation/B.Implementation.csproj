@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>Kingo.MasterMind.GameService.Implementation</AssemblyName>
+    <RootNamespace>Kingo.MasterMind.GameService</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Contract\B.Contract.csproj" />
+  </ItemGroup>
+
+</Project>
