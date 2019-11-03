@@ -90,7 +90,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw new ArgumentNullException(nameof(endpoint));
             }
-            await _lock.WaitAsync();
+            await _lock.WaitAsync().ConfigureAwait(false);
 
             try
             {
@@ -106,18 +106,16 @@ namespace Kingo.MicroServices.Controllers
         {
             if (NameResolverMap.TryGetValue(endpoint.MessageKind, out var nameResolver))
             {
-                var endpointName = nameResolver.ResolveName(endpoint);
-
                 switch (endpoint.MessageKind)
                 {
                     case MessageKind.Command:
-                        return ConnectToCommandQueueAsync(endpoint, endpointName);
+                        return ConnectToCommandQueueAsync(endpoint, nameResolver.ResolveName(endpoint));
                     case MessageKind.Event:
-                        return ConnectToEventQueueAsync(endpoint, endpointName);
+                        return ConnectToEventQueueAsync(endpoint, nameResolver.ResolveName(endpoint));
                     case MessageKind.QueryRequest:
-                        return ConnectToQueryRequestQueueAsync(endpoint, endpointName);
+                        return ConnectToQueryRequestQueueAsync(endpoint, nameResolver.ResolveName(endpoint));
                     case MessageKind.QueryResponse:
-                        return ConnectToQueryResponseQueueAsync(endpoint, endpointName);
+                        return ConnectToQueryResponseQueueAsync(endpoint, nameResolver.ResolveName(endpoint));
                 }
             }
             throw NewEndpointNotSupportedException(endpoint, string.Empty);
