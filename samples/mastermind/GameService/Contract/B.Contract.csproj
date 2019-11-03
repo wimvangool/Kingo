@@ -10,4 +10,8 @@
     <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Kingo.MicroServices" Version="4.0.19307.6-alpha" />
+  </ItemGroup>
+
 </Project>

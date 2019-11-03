@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Kingo.MicroServices.Implementation" Version="4.0.19307.6-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Contract\B.Contract.csproj" />
   </ItemGroup>
 
