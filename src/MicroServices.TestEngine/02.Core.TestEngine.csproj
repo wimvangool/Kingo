@@ -5,6 +5,7 @@
     <AssemblyName>Kingo.MicroServices.Contract.TestEngine</AssemblyName>
     <Description>Contains components to implement tests for the (validation-logic of) request-messages of a (Micro)Service.</Description>
     <PackageId>Kingo.MicroServices.TestEngine</PackageId>
+    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/test.png?raw=true</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

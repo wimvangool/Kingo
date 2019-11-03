@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Kingo.MicroServices.Implementation.TestEngine</AssemblyName>
     <Description>Contains components to implement tests for the Implementation-component(s) of a (Micro)Service.</Description>
+    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/test.png?raw=true</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

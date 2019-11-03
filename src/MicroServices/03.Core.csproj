@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Kingo.MicroServices</AssemblyName>
     <Description>Contains core-components for implementing (Micro)Services.</Description>
+    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/logic.png?raw=true</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
