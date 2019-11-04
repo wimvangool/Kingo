@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Kingo.MicroServices.Tests</AssemblyName>
+    <AssemblyName>Kingo.MicroServices.Contract.Tests</AssemblyName>
     <RootNamespace>Kingo</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.TestEngine\02.Core.TestEngine.csproj" />
+    <ProjectReference Include="..\MicroServices.Contract.TestEngine\02.Contract.TestEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

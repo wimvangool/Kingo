@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Kingo.snk = Kingo.snk
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Implementation", "Implementation", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Implementation", "Server.Implementation", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Implementation", "MicroServices.Implementation\03.Implementation.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
 EndProject
@@ -18,13 +18,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Implementation.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Implementation.TestEngine", "MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Core.TestEngine", "MicroServices.TestEngine\02.Core.TestEngine.csproj", "{DC112CD6-A54D-4945-9AE7-5C82383C27DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Contract.TestEngine", "MicroServices.Contract.TestEngine\02.Contract.TestEngine.csproj", "{DC112CD6-A54D-4945-9AE7-5C82383C27DB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{393F0D54-9375-487A-B30D-8DE9DB36C0EB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Contract", "Server.Contract", "{393F0D54-9375-487A-B30D-8DE9DB36C0EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Core", "MicroServices\03.Core.csproj", "{6733306D-266E-41A6-9E92-371AF84E6ECD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Contract", "MicroServices.Contract.\03.Contract.csproj", "{6733306D-266E-41A6-9E92-371AF84E6ECD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Core.Tests", "MicroServices.Tests\01.Core.Tests.csproj", "{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Contract.Tests", "MicroServices.Contract.Tests\01.Contract.Tests.csproj", "{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
