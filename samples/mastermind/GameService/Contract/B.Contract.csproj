@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kingo.MicroServices" Version="4.0.19307.6-alpha" />
+    <PackageReference Include="Kingo.MicroServices.Contract" Version="4.0.19308.3-alpha" />
   </ItemGroup>
 
 </Project>
