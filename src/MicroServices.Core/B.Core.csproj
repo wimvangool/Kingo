@@ -6,6 +6,10 @@
     <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/logic.png?raw=true</PackageIconUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Core\Kingo.MicroServices.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
   </ItemGroup>

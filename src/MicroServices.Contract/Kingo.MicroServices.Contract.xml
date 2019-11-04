@@ -1,0 +1,637 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Kingo.MicroServices.Contract</name>
+    </assembly>
+    <members>
+        <member name="T:Kingo.ExceptionMessages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.DataContractExtensions_CircularReference">
+            <summary>
+              Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: version of type &apos;{1}&apos; introduced a circular update by returning an instance of type &apos;{2}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.DataContractExtensions_InvalidCast">
+            <summary>
+              Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: could not convert latest version of type &apos;{1}&apos; to instance of type &apos;{2}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.MessageKindExtensions_MessageKindNotSupported">
+            <summary>
+              Looks up a localized string similar to The specified MessageKind ({0}) is not valid..
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.BadRequestException">
+            <summary>
+            This exception is thrown by a service when a command or query failed to execute because it was
+            invalid or because the operation was illegal. This type semantically maps to HTTP response code <c>400</c>.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.BadRequestException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.BadRequestException" /> class.
+            </summary>        
+            <param name="message">Message of the exception.</param>
+            <param name="innerException">Cause of this exception.</param>        
+        </member>
+        <member name="M:Kingo.MicroServices.BadRequestException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.BadRequestException" /> class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The streaming context.</param>
+        </member>
+        <member name="P:Kingo.MicroServices.BadRequestException.ErrorCode">
+            <summary>
+            Returns a value between <c>400</c> and <c>499</c>.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute">
+            <summary>
+            This attribute can be used to decorate fields or properties of a <see cref="T:Kingo.MicroServices.DataAnnotations.ValidatableObject" />
+            to signal that it represents an item, collection or dictionary that should be validated in
+            and of itself. Any validation-errors of the child-member will be added to the set of validation-errors
+            of the parent.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessage">
+            <summary>
+            If specified, defines the error-message that is added to the collection of validation-results
+            if any child-members are invalid. This property cannot be used in combination with the
+            <see cref="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessageResourceType"/> and <see cref="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessageResourceName"/> properties.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessageResourceType">
+            <summary>
+            If specified, defines the resource-type where the localized error-message can be retrieved
+            that is added to the collection of validation-results if any child-members are invalid.
+            This property should be used in combination with the <see cref="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessageResourceName"/>-property.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessageResourceName">
+            <summary>
+            If specified, defines the resource-name of the localized error-message inside the resource-type
+            that is added to the collection of validation-results if any child-members are invalid.
+            This property should be used in combination with the <see cref="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessageResourceType"/>-property.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.DataAnnotations.ObjectExtensions">
+            <summary>
+            Contains extension-methods for every object.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.ObjectExtensions.IsNotValid(System.Object,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult}@,System.IServiceProvider)">
+            <summary>
+            Determines whether or not the specified <paramref name="instance"/> is valid, and provides all validation errors
+            if it's not.
+            </summary>
+            <param name="instance">The message to validate.</param>
+            <param name="results">
+            If this instance is not valid, this collection will contain all validation-errors; will be <c>null</c> otherwise.
+            </param>
+            <param name="serviceProvider">
+            Optional service provider that can be used to obtain services for validating this instance.
+            </param>        
+            <returns><c>true</c> if the instance is not valid; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="instance"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.DataAnnotations.RequestMessage">
+            <summary>
+            Serves as a base-class for all request-messages such as commands or query-requests.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.RequestMessage.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates all constraints that are not declared as a <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />.
+            </summary>
+            <param name="validationContext">The context of this validation-operation.</param>
+            <returns>A collection of validation-errors.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.DataAnnotations.ValidatableObject">
+            <summary>
+            Represents a piece of data that can be validated.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.ValidatableObject.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            Validates all constraints that are not declared as a <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />.
+            </summary>
+            <param name="validationContext">The context of this validation-operation.</param>
+            <returns>A collection of validation-errors.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.DataContract">
+            <summary>
+            Serves as a base-class for all data-contracts.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContract.TryUpdateToNextVersion(Kingo.MicroServices.IDataContract@)">
+            <summary>
+            Attempts to update this message to the next version. By default, this
+            method returns <c>false</c>.
+            </summary>
+            <param name="nextVersion">
+            If this method returns <c>true</c>, this parameter will refer to the next version;
+            otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
+            otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.DataContractExtensions">
+            <summary>
+            Contains extension methods for objects that implement the <see cref="T:Kingo.MicroServices.IDataContract" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractExtensions.UpdateToLatestVersion``1(Kingo.MicroServices.IDataContract)">
+            <summary>
+            Updates the specified <paramref name="dataContract"/> to the latest available version and casts
+            the result to an instance of <typeparamref name="TDataContract"/>.
+            </summary>
+            <typeparam name="TDataContract">Expected type of the latest version.</typeparam>
+            <param name="dataContract">The contract to update.</param>
+            <returns>The latest available version.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="dataContract"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractExtensions.UpdateToLatestVersion(Kingo.MicroServices.IDataContract)">
+            <summary>
+            Updates the specified <paramref name="dataContract"/> to the latest available version.
+            </summary>
+            <param name="dataContract">The contract to update.</param>
+            <returns>The latest available version.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="dataContract"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.DataContractUpdateFailedException">
+            <summary>
+            This exception is thrown when an attempt to update a <see cref="T:Kingo.MicroServices.IDataContract"/> to its latest
+            version fails for some reason.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractUpdateFailedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.DataContractUpdateFailedException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Kingo.MicroServices.DataContractUpdateFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.DataContractUpdateFailedException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+            <param name="innerException">The cause of this exception.</param>
+        </member>
+        <member name="T:Kingo.MicroServices.IDataContract">
+            <summary>
+            When implemented by a class, represents a data transfer object.
+            </summary>    
+        </member>
+        <member name="M:Kingo.MicroServices.IDataContract.TryUpdateToNextVersion(Kingo.MicroServices.IDataContract@)">
+            <summary>
+            Attempts to update this data contract to the next version.
+            </summary>
+            <param name="nextVersion">
+            If this method returns <c>true</c>, this parameter will refer to the next version;
+            otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if a next version exists and was assigned to <paramref name="nextVersion"/>;
+            otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessage">
+            <summary>
+            When implemented by a class, represents a message that can be sent, received, processed and persisted.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMessage.GenerateMessageId">
+            <summary>
+            Generates a new message-identifier for this message.
+            </summary>
+            <returns>A new message-identifier for this message.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageEnvelope">
+            <summary>
+            When implemented by a class, represents (the envelope of) a message, carrying its payload and metadata.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelope.MessageId">
+            <summary>
+            Returns the unique identifier of this message.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelope.CorrelationId">
+            <summary>
+            If specified, returns the message-id of the message this message is correlated with
+            (which is typically the message that triggered this message to be dispatched or processed).
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelope.Content">
+            <summary>
+            Returns the contents/payload of the message.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageEnvelopeBuilder">
+            <summary>
+            When implemented by a class, represents a builder of <see cref="T:Kingo.MicroServices.IMessageEnvelope" /> instances.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelopeBuilder.MessageId">
+            <summary>
+            Gets or sets the message identifier. If not specified, the builder will generate a new message-id.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageEnvelopeBuilder.CorrelationId">
+            <summary>
+            Gets or sets the identifier of the message that the message is correlated with.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageEnvelopeFactory">
+            <summary>
+            When implemented by a class, represents a factory for <see cref="T:Kingo.MicroServices.IMessageEnvelope"/> objects.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.IMessageEnvelopeFactory.Wrap(System.Object)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.MessageEnvelope" /> with the specified <paramref name="message" />.
+            </summary>
+            <param name="message">Content of the message.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageEnvelope"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.IMessageEnvelopeFactory.Wrap``1(``0)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.MessageEnvelope`1" /> with the specified <paramref name="message" />.
+            </summary>
+            <typeparam name="TMessage">Type of the message of the message.</typeparam>
+            <param name="message">Content of the message.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageEnvelope"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageToDispatch">
+            <summary>
+            When implemented by a class, represents a message that is to be delivered by means of a service-bus.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageToDispatch.DeliveryTimeUtc">
+            <summary>
+            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.IMessageToProcess">
+            <summary>
+            When implemented by a class, represents a message that is being handled or executed by a processor.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.IMessageToProcess.Kind">
+            <summary>
+            Indicates whether this message represents a command, event or request.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.InternalServerErrorException">
+            <summary>
+            This exception is thrown by a service when a technical failure prevented the processor from
+            handling a message or executing a query correctly. This type semantically maps to HTTP response code <c>500</c>.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.InternalServerErrorException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.InternalServerErrorException" /> class.
+            </summary>        
+            <param name="message">Message of the exception.</param>
+            <param name="innerException">Cause of this exception.</param>        
+        </member>
+        <member name="M:Kingo.MicroServices.InternalServerErrorException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.InternalServerErrorException" /> class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The streaming context.</param>
+        </member>
+        <member name="P:Kingo.MicroServices.InternalServerErrorException.ErrorCode">
+            <summary>
+            Returns a value between <c>500</c> and <c>599</c>.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.InternalServerErrorException.FromInnerException(System.Exception)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.MicroServices.InternalServerErrorException" /> wrapping the specified <paramref name="innerException"/>.
+            </summary>
+            <param name="innerException">The exception to wrap.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.InternalServerErrorException" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="innerException"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.Message">
+            <summary>
+            Serves as a base-class for all messages that are able to generate their own identifiers.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.Message.GenerateMessageId">
+            <summary>
+            Generates a new message-identifier for this message.
+            </summary>
+            <returns>A new message-identifier for this message.</returns>
+        </member>
+        <member name="M:Kingo.MicroServices.Message.NewMessageId">
+            <summary>
+            Generates and returns a new, random message-id.
+            </summary>
+            <returns>A new message-id.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageEnvelope">
+            <summary>
+            Represents the envelope of a message carrying its payload and metadata.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope.#ctor(System.Object,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MessageEnvelope`1" /> class.
+            </summary>
+            <param name="message">Content of this message.</param>
+            <param name="messageId">Unique identifier of this message.</param>
+            <param name="correlationId">
+            Identifier of the message this message to related to.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> or <paramref name="messageId"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope.MessageId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope.CorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope.Content">
+            <summary>
+            Returns the contents/payload of the message.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.MessageEnvelope`1">
+            <summary>
+            Represents a message with a specific <see cref="P:Kingo.MicroServices.MessageEnvelope`1.MessageId" /> and a payload of type <typeparamref name="TMessage"/>.
+            </summary>
+            <typeparam name="TMessage">Type of the message payload.</typeparam>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope`1.#ctor(`0,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MessageEnvelope`1" /> class.
+            </summary>
+            <param name="message">Content of this message.</param>
+            <param name="messageId">Unique identifier of this message.</param>
+            <param name="correlationId">
+            Identifier of the message this message to related to.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> or <paramref name="messageId"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope`1.MessageId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope`1.CorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageEnvelope`1.Content">
+            <summary>
+            Returns the contents/payload of the message.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope`1.ToProcess(Kingo.MicroServices.MessageKind)">
+            <summary>
+            Converts this message to a message of a specific <see cref="T:Kingo.MicroServices.MessageKind" /> to process by a processor.
+            </summary>
+            <param name="kind">The kind of this message.</param>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageToProcess`1"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="kind"/> is not a valid value.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelope`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.MessageEnvelopeExtensions">
+            <summary>
+            Contains extension methods for object of type <see cref="T:Kingo.MicroServices.IMessageEnvelope" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelopeExtensions.ToDispatch(Kingo.MicroServices.IMessageEnvelope,Kingo.MicroServices.MessageKind,System.Nullable{System.DateTimeOffset})">
+            <summary>
+            Converts the specified <paramref name="message"/> to a message of a specific <paramref name="kind"/> that can be dispatched.
+            </summary>
+            <param name="message">The message to convert.</param>
+            <param name="kind">Indicates what kind of message the message represents.</param>
+            <param name="deliveryTime">
+            If specified, indicates at what time the message should be dispatched on the service-bus.
+            </param>
+            <returns>The message to dispatch.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="kind"/> is not a recognized <see cref="T:Kingo.MicroServices.MessageKind"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageEnvelopeExtensions.IsOfType``1(Kingo.MicroServices.IMessageEnvelope,Kingo.MicroServices.MessageEnvelope{``0}@)">
+            <summary>
+            Checks if the content of this envelope is of type <typeparamref name="TMessage"/> and if so,
+            convert this envelope into a strongly typed version.
+            </summary>
+            <typeparam name="TMessage">A message type.</typeparam>
+            <param name="message">The message to convert.</param>
+            <param name="typedMessage">
+            If <see cref="P:Kingo.MicroServices.IMessageEnvelope.Content"/> is of type <typeparamref name="TMessage"/>, this argument will be set to
+            an instance of <see cref="T:Kingo.MicroServices.MessageEnvelope`1"/>; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <see cref="P:Kingo.MicroServices.IMessageEnvelope.Content"/> is of type <typeparamref name="TMessage"/>, otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageKind">
+            <summary>
+            Represents a specific role or kind a message that a message can have.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.Unspecified">
+            <summary>
+            Indicates the kind is yet to be specified.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.Command">
+            <summary>
+            Represents a command.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.Event">
+            <summary>
+            Represents an event.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.QueryRequest">
+            <summary>
+            Represents the request-message of a query.
+            </summary>
+        </member>
+        <member name="F:Kingo.MicroServices.MessageKind.QueryResponse">
+            <summary>
+            Represents the response-message of a query.
+            </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageToDispatch">
+            <summary>
+            Represents a command or event that is scheduled to be sent or published on the service-bus.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.MessageId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.CorrelationId">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.Content">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.Kind">
+            <summary>
+            Indicates which kind of message is to be dispatched.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch.DeliveryTimeUtc">
+            <summary>
+            If specified, indicates at what (UTC) time the message should be sent or published on the service-bus.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.CorrelateWith(Kingo.MicroServices.IMessageEnvelope)">
+            <summary>
+            Creates and returns a copy of this message that is correlated with the specified <paramref name="message"/>.
+            </summary>
+            <param name="message">The message this message is correlated message.</param>
+            <returns>A copy of this message that is correlated with the specified <paramref name="message"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.IsOfType``1(Kingo.MicroServices.MessageToDispatch{``0}@)">
+            <summary>
+            Checks if the message of this message is of type <typeparamref name="TMessage"/> and if so,
+            convert this message into a message of that type.
+            </summary>
+            <typeparam name="TMessage">A message type.</typeparam>
+            <param name="messageToDispatch">
+            If <see cref="P:Kingo.MicroServices.MessageToDispatch.Content"/> is of type <typeparamref name="TMessage"/>, this argument will be set to
+            an instance of <see cref="T:Kingo.MicroServices.MessageToDispatch`1"/>; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <see cref="P:Kingo.MicroServices.MessageToDispatch.Content"/> is of type <typeparamref name="TMessage"/>, otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch.OfType``1">
+            <summary>
+            Converts this message to a (strongly typed) message to process.
+            </summary>
+            <typeparam name="TMessage">Type of the message message.</typeparam>
+            <returns>A new <see cref="T:Kingo.MicroServices.MessageToProcess`1"/>.</returns>
+            <exception cref="T:System.InvalidCastException">
+            <see cref="P:Kingo.MicroServices.MessageToDispatch.Content"/> is not an instance of type <typeparamref name="TMessage"/>.
+            </exception>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageToDispatch`1">
+            <summary>
+            Represents a command or event that is to be sent or published on a service-bus.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch`1.Kind">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToDispatch`1.DeliveryTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToDispatch`1.ToProcess">
+            <summary>
+            Converts this message to a message to process.
+            </summary>
+            <returns>A new message to process.</returns>
+        </member>
+        <member name="T:Kingo.MicroServices.MessageToProcess`1">
+            <summary>
+            Represents a message that is being handled or executed by a processor.
+            </summary>
+            <typeparam name="TMessage">Type of the content of this message.</typeparam>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageToProcess`1.Kind">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageToProcess`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.MicroProcessorOperationException">
+            <summary>
+            This exception is thrown by a service when it failed to handle a message or execute a query.
+            Any derived type of this class semantically maps to a <c>4xx</c> or <c>5xx</c> HTTP status code.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MicroProcessorOperationException" /> class.
+            </summary>        
+            <param name="message">Message of the exception.</param>
+            <param name="innerException">Cause of this exception.</param>        
+        </member>
+        <member name="M:Kingo.MicroServices.MicroProcessorOperationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.MicroProcessorOperationException" /> class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The streaming context.</param>
+        </member>
+        <member name="P:Kingo.MicroServices.MicroProcessorOperationException.ErrorCode">
+            <summary>
+            The ErrorCode that is associated with this Exception. This code typically corresponds with HttpStatusCodes,
+            which implies the returned value is always somewhere between <c>400</c> and <c>599</c>, depending on the
+            run-time type of the exception.
+            </summary>
+        </member>
+    </members>
+</doc>

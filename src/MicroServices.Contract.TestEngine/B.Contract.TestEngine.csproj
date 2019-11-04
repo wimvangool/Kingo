@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.TestEngine\Kingo.MicroServices.Contract.TestEngine.xml</DocumentationFile>
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Contract.TestEngine\Kingo.MicroServices.Contract.TestEngine.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

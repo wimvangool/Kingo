@@ -1,0 +1,2286 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Kingo.MicroServices</name>
+    </assembly>
+    <members>
+        <member name="T:Kingo.Clocks.Clock">
+            <summary>
+            Provides a basic implementation of the <see cref="T:Kingo.Clocks.IClock" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.LocalTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.LocalDate">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.LocalDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.UtcTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.UtcDate">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.Clock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="F:Kingo.Clocks.Clock.SystemClock">
+            <summary>
+            Returns the default clock of this system.
+            </summary>
+        </member>
+        <member name="P:Kingo.Clocks.Clock.Current">
+            <summary>
+            Returns the clock associated to the current thread.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideThreadLocal(System.Func{System.DateTimeOffset})">
+            <summary>
+            Sets the current clock that is accessible by the current thread through <see cref="P:Kingo.Clocks.Clock.Current" />
+            only as long as the scope is active.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>                       
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideThreadLocal(System.DateTimeOffset)">
+            <summary>
+            Sets the current clock that is accessible by the current thread through <see cref="P:Kingo.Clocks.Clock.Current" />
+            only as long as the scope is active.
+            </summary>
+            <param name="startTime">The time that will serve as the start time of the scope.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideThreadLocal(Kingo.Clocks.IClock)">
+            <summary>
+            Sets the current clock that is accessible by the current thread through <see cref="P:Kingo.Clocks.Clock.Current" />
+            only as long as the scope is active.
+            </summary>
+            <param name="clock">The clock to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideAsyncLocal(System.Func{System.DateTimeOffset})">
+            <summary>
+            Sets the current value that is accessible by all threads that share the same logical call context
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside a thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideAsyncLocal(System.DateTimeOffset)">
+            <summary>
+            Sets the current value that is accessible by all threads that share the same logical call context
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="startTime">The time that will serve as the start time of the scope.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside a thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.OverrideAsyncLocal(Kingo.Clocks.IClock)">
+            <summary>
+            Sets the current value that is accessible by all threads that share the same logical call context
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="clock">The clock to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside a thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.Clock.Override(System.Func{System.DateTimeOffset})">
+            <summary>
+            Sets the current value that is accessible by all threads
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>        
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside an async local or thread local scope.
+            </exception>      
+        </member>
+        <member name="M:Kingo.Clocks.Clock.Override(System.DateTimeOffset)">
+            <summary>
+            Sets the current value that is accessible by all threads
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="startTime">The time that will serve as the start time of the scope.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside an async local or thread local scope.
+            </exception> 
+        </member>
+        <member name="M:Kingo.Clocks.Clock.Override(Kingo.Clocks.IClock)">
+            <summary>
+            Sets the current value that is accessible by all threads
+            through <see cref="P:Kingo.Clocks.Clock.Current" /> as long as the scope is active.
+            </summary>
+            <param name="clock">The clock to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>  
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside an async local or thread local scope.
+            </exception>      
+        </member>
+        <member name="T:Kingo.Clocks.ClockExtensions">
+            <summary>
+            Contains extension methods for the <see cref="T:Kingo.Clocks.IClock" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.ClockExtensions.Shift(Kingo.Clocks.IClock,System.TimeSpan)">
+            <summary>
+            Returns a clock that shows the time of the current clock, plus the given offset.
+            </summary>
+            <param name="clock">A clock.</param>
+            <param name="offset">The offset to add to the time of the current clock.</param>
+            <returns>A clock that shows the time of the current clock, plus the given offset.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="clock"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.Clocks.DelegateClock">
+            <summary>
+            Represents a clock that implemented by a delegate.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.DelegateClock.#ctor(System.Func{System.DateTimeOffset})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Clocks.DelegateClock" /> class.
+            </summary>
+            <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="timeFactory"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Clocks.DelegateClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.Clocks.HighResolutionClock">
+            <summary>
+            Represents a clock that uses a <see cref="T:System.Diagnostics.Stopwatch" /> in combination with
+            the system clock to simulate a high resolution system time clock.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="F:Kingo.Clocks.HighResolutionClock.DefaultSynchronizationInterval">
+            <summary>
+            The default synchronization interval used when not explicitly specified is 10 seconds.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.StartNew">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.HighResolutionClock" /> that is counting from the current date and time.
+            </summary>        
+            <returns>A new <see cref="T:Kingo.Clocks.HighResolutionClock" />.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.StartNew(Kingo.Clocks.IClock)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.
+            </summary> 
+            <param name="referenceClock">
+            The clock that will be used as a reference for this clock.
+            </param>        
+            <returns>A new <see cref="T:Kingo.Clocks.HighResolutionClock" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="referenceClock "/> is <c>null</c>.
+            </exception>         
+        </member>
+        <member name="M:Kingo.Clocks.HighResolutionClock.StartNew(Kingo.Clocks.IClock,System.TimeSpan)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.
+            </summary> 
+            <param name="referenceClock">
+            The clock that will be used as a reference for this clock.
+            </param>
+            <param name="synchronizationInterval">
+            The interval that is used to periodically synchronize this clock with the specified <paramref name="referenceClock"/>.
+            A value of <see cref="F:System.TimeSpan.Zero" /> means this clock is never synchronized.
+            </param>
+            <returns>A new <see cref="T:Kingo.Clocks.HighResolutionClock" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="referenceClock "/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="synchronizationInterval"/> is a negative <see cref="T:System.TimeSpan" />.
+            </exception>               
+        </member>
+        <member name="T:Kingo.Clocks.IClock">
+            <summary>
+            When implemented by a class, represents a service that provides the current date and time.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.LocalTime">
+            <summary>
+            Returns the time of the day in local time.
+            </summary>
+            <returns>The time of the day in local time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.LocalDate">
+            <summary>
+            Returns the date in local time.
+            </summary>
+            <returns>The date in local time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.LocalDateAndTime">
+            <summary>
+            Returns the date and time in local time.
+            </summary>
+            <returns>The date and time in local time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.UtcTime">
+            <summary>
+            Returns the time of the day in UTC-time.
+            </summary>
+            <returns>Time of the day in UTC-time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.UtcDate">
+            <summary>
+            Returns the date in UTC-time.
+            </summary>
+            <returns>Date in UTC-time.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.IClock.UtcDateAndTime">
+            <summary>
+            Returns the date and time in UTC-time.
+            </summary>
+            <returns>Date and time in UTC-time.</returns>
+        </member>
+        <member name="T:Kingo.Clocks.StopwatchClock">
+            <summary>
+            This clock represents a stopwatch that starts at a specified date and/or time and can be started and stopped.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.#ctor(System.DateTimeOffset)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Clocks.StopwatchClock" /> class.
+            </summary>
+            <param name="startTime">The initial date and time.</param>
+        </member>
+        <member name="P:Kingo.Clocks.StopwatchClock.IsRunning">
+            <summary>
+            Indicates whether or not this clock is running.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.Start">
+            <summary>
+            Starts the clock.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.Stop">
+            <summary>
+            Stops the clock.
+            </summary>
+        </member>
+        <member name="P:Kingo.Clocks.StopwatchClock.ElapsedTime">
+            <summary>
+            Returns the total amount of time the stopwatch has been running.
+            </summary>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.StartNew">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.StopwatchClock" /> that is started immediately.
+            </summary>        
+            <returns>A new <see cref="T:Kingo.Clocks.StopwatchClock" />.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.StopwatchClock.StartNew(System.DateTimeOffset)">
+            <summary>
+            Creates and returns a new <see cref="T:Kingo.Clocks.StopwatchClock" /> that is started immediately.
+            </summary>    
+            <param name="startTime">The initial date and time.</param>    
+            <returns>A new <see cref="T:Kingo.Clocks.StopwatchClock" />.</returns>
+        </member>
+        <member name="M:Kingo.Clocks.SystemClock.LocalDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Clocks.SystemClock.UtcDateAndTime">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.Collections.Generic.CollectionExtensions">
+            <summary>
+            Contains extension methods and helper methods for collection types.
+            </summary>
+        </member>
+        <member name="M:Kingo.Collections.Generic.CollectionExtensions.WhereNotNull``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns a collection where all <c>null</c> values have been removed.
+            </summary>
+            <typeparam name="T">Type of the items in the collection.</typeparam>
+            <param name="collection">A collection of items.</param>
+            <returns>A subset of the specified <paramref name="collection"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="collection"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Collections.Generic.CollectionExtensions.TryGetItem``1(System.Collections.Generic.IEnumerable{``0},System.Int32,``0@)">
+            <summary>
+            Attempts to retrieve the <paramref name="element"/> at the specified <paramref name="index"/>.
+            </summary>
+            <typeparam name="TValue">Type of the element.</typeparam>
+            <param name="collection">The collection to get the element from.</param>
+            <param name="index">The index of the element.</param>
+            <param name="element">
+            If this method returns <c>true</c>, this parameter will refer to the element at the specified <paramref name="index"/>;
+            otherwise, it will be set to the default value of <typeparamref name="TValue"/>.
+            </param>
+            <returns>
+            <c>true</c> if the collection contains an element at the specified <paramref name="index"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="collection"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Collections.Generic.CollectionExtensions.TryGetFirstItem``1(System.Collections.Generic.IEnumerable{``0},``0@)">
+            <summary>
+            Attempts to retrieve the first element of the specified collection.
+            </summary>
+            <typeparam name="TValue">Type of the element.</typeparam>
+            <param name="collection">The collection to get the element from.</param>
+            <param name="element">
+            If this method returns <c>true</c>, this parameter will refer to the first element of the specified <paramref name="collection"/>;
+            otherwise, it will be set to the default value of <typeparamref name="TValue"/>.
+            </param>
+            <returns><c>true</c> if <paramref name="collection"/> contains any elements; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="collection"/> is <c>null</c>.
+            </exception>  
+        </member>
+        <member name="M:Kingo.Collections.Generic.CollectionExtensions.TryGetFirstItem``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0@)">
+            <summary>
+            Attempts to retrieve the first element of the specified collection that matches the specified <paramref name="predicate"/>. If
+            <paramref name="predicate"/> is <c>null</c>, the first element of the collection will be returned.
+            </summary>
+            <typeparam name="TValue">Type of the element.</typeparam>
+            <param name="collection">The collection to get the element from.</param>
+            <param name="predicate">The predicate that will be used to return the correct element.</param>
+            <param name="element">
+            If this method returns <c>true</c>, this parameter will refer to the first element of the specified <paramref name="collection"/>;
+            otherwise, it will be set to the default value of <typeparamref name="TValue"/>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="collection"/> contains any elements that matches the specified <paramref name="predicate"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="collection"/> is <c>null</c>.
+            </exception>  
+        </member>
+        <member name="T:Kingo.Collections.Generic.EmptyList`1">
+            <summary>
+            Represents an empty list.
+            </summary>
+            <typeparam name="T">Type of the items in the list.</typeparam>
+        </member>
+        <member name="P:Kingo.Collections.Generic.EmptyList`1.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.Collections.Generic.EmptyList`1.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Collections.Generic.EmptyList`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.Collections.Generic.ReadOnlyList`1">
+            <summary>
+            Provides a base class implementation for all classes that implement the <see cref="T:System.Collections.Generic.IReadOnlyList`1" /> interface.
+            </summary>
+            <typeparam name="T">Type of the items in the list.</typeparam>
+        </member>
+        <member name="P:Kingo.Collections.Generic.ReadOnlyList`1.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.Collections.Generic.ReadOnlyList`1.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Collections.Generic.ReadOnlyList`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.Comparable">
+            <summary>
+            Contains some helper methods for types implementing the <see cref="T:System.IComparable`1" /> interface.
+            </summary>
+        </member>
+        <member name="F:Kingo.Comparable.Less">
+            <summary>
+            Value indicating that left is less than right.
+            </summary>
+        </member>
+        <member name="F:Kingo.Comparable.Equal">
+            <summary>
+            Value indicating that left is equal to right.
+            </summary>
+        </member>
+        <member name="F:Kingo.Comparable.Greater">
+            <summary>
+            Value indicating that left is greater than right.
+            </summary>
+        </member>
+        <member name="M:Kingo.Comparable.CompareValues``1(``0,System.Object)">
+            <summary>
+            Determines whether <paramref name="instance"/> is less than, equal to or greater than <paramref name="obj"/>.
+            </summary>
+            <typeparam name="T">Type of the objects to compare.</typeparam>
+            <param name="instance">The typed instance.</param>
+            <param name="obj">The untyped instance.</param>
+            <returns>
+            A negative value if <paramref name="instance"/> is less than <paramref name="obj"/>,
+            zero if <paramref name="instance"/> is equal to <paramref name="obj"/>, or
+            A positive value if <paramref name="instance"/> is greater than <paramref name="obj"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="obj"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="obj"/> is not of type <typeparamref name="T"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Comparable.CompareReferences``1(``0,System.Object)">
+            <summary>
+            Determines whether <paramref name="instance"/> is less than, equal to or greater than <paramref name="obj"/>.
+            </summary>
+            <typeparam name="T">Type of the objects to compare.</typeparam>
+            <param name="instance">The typed instance.</param>
+            <param name="obj">The untyped instance.</param>
+            <returns>
+            A negative value if <paramref name="instance"/> is less than <paramref name="obj"/>,
+            zero if <paramref name="instance"/> is equal to <paramref name="obj"/>, or
+            A positive value if <paramref name="instance"/> is greater than <paramref name="obj"/>.
+            </returns>        
+            <exception cref="T:System.ArgumentException">
+            <paramref name="obj"/> is not of type <typeparamref name="T"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Comparable.IsLessThan``1(``0,``0)">
+            <summary>
+            Determines whether <paramref name="left"/> is less than <paramref name="right"/>.
+            </summary>
+            <typeparam name="T">Type of the objects to compare.</typeparam>
+            <param name="left">Left instance.</param>
+            <param name="right">Right instance.</param>
+            <returns>
+            <c>true</c> if <paramref name="left"/> is less than <paramref name="right"/>; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.Comparable.IsLessThanOrEqualTo``1(``0,``0)">
+            <summary>
+            Determines whether <paramref name="left"/> is less than or equal to <paramref name="right"/>.
+            </summary>
+            <typeparam name="T">Type of the objects to compare.</typeparam>
+            <param name="left">Left instance.</param>
+            <param name="right">Right instance.</param>
+            <returns>
+            <c>true</c> if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.Comparable.IsGreaterThan``1(``0,``0)">
+            <summary>
+            Determines whether <paramref name="left"/> is greater than <paramref name="right"/>.
+            </summary>
+            <typeparam name="T">Type of the objects to compare.</typeparam>
+            <param name="left">Left instance.</param>
+            <param name="right">Right instance.</param>
+            <returns>
+            <c>true</c> if <paramref name="left"/> is greater than <paramref name="right"/>; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.Comparable.IsGreaterThanOrEqualTo``1(``0,``0)">
+            <summary>
+            Determines whether <paramref name="left"/> is greater than or equal to <paramref name="right"/>.
+            </summary>
+            <typeparam name="T">Type of the objects to compare.</typeparam>
+            <param name="left">Left instance.</param>
+            <param name="right">Right instance.</param>
+            <returns>
+            <c>true</c> if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.Comparable.Compare``1(``0,``0)">
+            <summary>
+            Determines whether <paramref name="left"/> is less than, equal to or greater than <paramref name="right"/>.
+            </summary>
+            <typeparam name="T">Type of the rightects to compare.</typeparam>
+            <param name="left">Left instance.</param>
+            <param name="right">Right instance.</param>
+            <returns>
+            A negative value if <paramref name="left"/> is less than <paramref name="right"/>,
+            zero if <paramref name="left"/> is equal to <paramref name="right"/>, or
+            a positive value if <paramref name="left"/> is greater than <paramref name="right"/>.
+            </returns>
+        </member>
+        <member name="M:Kingo.Comparable.NewUnexpectedTypeException(System.Type,System.Type)">
+            <summary>
+            Creates and returns a new <see cref="T:System.ArgumentException" /> indicating that a certain instance could not be compared
+            to another instance because their types didn't match.
+            </summary>
+            <param name="instanceType">Type of the main instance.</param>
+            <param name="otherType">Type of the instance to compare.</param>
+            <returns>A new <see cref="T:System.ArgumentException" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="instanceType"/> or <paramref name="otherType"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.DateTimeSpan">
+            <summary>
+            Represents a timespan with a specific start- and end date and/or time.
+            </summary>
+        </member>
+        <member name="F:Kingo.DateTimeSpan.MaxValue">
+            <summary>
+            Represents the maximum span of time (from <see cref="F:System.DateTimeOffset.MinValue"/> to <see cref="F:System.DateTimeOffset.MaxValue"/>).
+            </summary>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.#ctor(System.DateTime,System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.DateTimeSpan" /> class.
+            </summary>
+            <param name="start">Start of this time span.</param>
+            <param name="duration">Duration of this time span.</param>        
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="duration"/> represents a negative time span, or the end of the resulting time span
+            exceeds <see cref="F:System.DateTimeOffset.MaxValue" />.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.#ctor(System.DateTimeOffset,System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.DateTimeSpan" /> class.
+            </summary>
+            <param name="start">Start of this time span.</param>
+            <param name="duration">Duration of this time span.</param>        
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="duration"/> represents a negative time span, or the end of the resulting time span
+            exceeds <see cref="F:System.DateTimeOffset.MaxValue" />.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.DateTimeSpan" /> class. If <paramref name="start"/> and <paramref name="end"/>
+            are in a different time-zone, <paramref name="end"/> will be adjusted to the time-zone of <paramref name="start"/>.
+            </summary>
+            <param name="start">Start of this time span.</param>
+            <param name="end">End of this time span.</param>        
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="start"/> represents a moment in time after <paramref name="end"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.#ctor(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.DateTimeSpan" /> class. If <paramref name="start"/> and <paramref name="end"/>
+            are in a different time-zone, <paramref name="end"/> will be adjusted to the time-zone of <paramref name="start"/>.
+            </summary>
+            <param name="start">Start of this time span.</param>
+            <param name="end">End of this time span.</param>        
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="start"/> represents a moment in time after <paramref name="end"/>.
+            </exception>
+        </member>
+        <member name="P:Kingo.DateTimeSpan.Start">
+            <summary>
+            Start of this time span.
+            </summary>
+        </member>
+        <member name="P:Kingo.DateTimeSpan.End">
+            <summary>
+            End of this time span.
+            </summary>
+        </member>
+        <member name="P:Kingo.DateTimeSpan.EndInclusive">
+            <summary>
+            End of this time span in its inclusive form.
+            </summary>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Equals(Kingo.DateTimeSpan)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.DateTimeSpan.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.DateTimeSpan.op_Equality(Kingo.DateTimeSpan,Kingo.DateTimeSpan)">
+            <summary>Determines whether <paramref name="left" /> is equal to <paramref name="right" />.</summary>
+            <param name="left">Left instance</param>
+            <param name="right">Right instance</param>
+            <returns>
+            <c>true</c> if <paramref name="left" /> is equal to <paramref name="right" />; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.op_Inequality(Kingo.DateTimeSpan,Kingo.DateTimeSpan)">
+            <summary>Determines whether <paramref name="left" /> is not equal to <paramref name="right" />.</summary>
+            <param name="left">Left instance</param>
+            <param name="right">Right instance</param>
+            <returns>
+            <c>true</c> if <paramref name="left" /> is not equal to <paramref name="right" />; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:Kingo.DateTimeSpan.Duration">
+            <summary>
+            Returns the duration of this time span.
+            </summary>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.op_Implicit(Kingo.DateTimeSpan)~System.TimeSpan">
+            <summary>
+            Implicitly converts a <see cref="T:Kingo.DateTimeSpan" /> to a <see cref="T:System.TimeSpan" />, representing its duration.
+            </summary>
+            <param name="value">The value to convert.</param>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Shift(System.TimeSpan)">
+            <summary>
+            Shifts the entire time span forwards or backwards in time, depending on the specified <paramref name="shift"/> value.
+            </summary>
+            <param name="shift">The amount of time to shift this time span.</param>
+            <returns>The resulting time span.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="shift"/> is not valid because the resulting time span would not be a valid time span.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ShiftStart(System.TimeSpan)">
+            <summary>
+            Shifts the start of this time span forwards or backwards in time, depending on the specified <paramref name="shift"/> value.
+            </summary>
+            <param name="shift">The amount of time to shift the start value.</param>
+            <returns>The resulting time span.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="shift"/> is not valid because the resulting time span would not be a valid time span.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ShiftStart(System.DateTimeOffset)">
+            <summary>
+            Shifts the start of this time span forwards or backwards in time, depending on the specified <paramref name="newStart"/> value.
+            </summary>
+            <param name="newStart">The new start value.</param>
+            <returns>The resulting time span, with the offset equal to the current time span offset.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="newStart"/> is not valid because the resulting time span would not be a valid time span.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ShiftEnd(System.TimeSpan)">
+            <summary>
+            Shifts the end of this time span forwards or backwards in time, depending on the specified <paramref name="shift"/> value.
+            </summary>
+            <param name="shift">The amount of time to shift the end value.</param>
+            <returns>The resulting time span.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="shift"/> is not valid because the resulting time span would not be a valid time span.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ShiftEnd(System.DateTimeOffset)">
+            <summary>
+            Shifts the end of this time span forwards or backwards in time, depending on the specified <paramref name="newEnd"/> value.
+            </summary>
+            <param name="newEnd">The new end value.</param>
+            <returns>The resulting time span, with the offset equal to the current time span offset.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="newEnd"/> is not valid because the resulting time span would not be a valid time span.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ToLocalTime">
+            <summary>
+            Creates and returns a time span that is identical to this instance, but is represented in times of the currently local time zone.
+            </summary>
+            <returns>A new <see cref="T:Kingo.DateTimeSpan"/> instance.</returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ToUniveralTime">
+            <summary>
+            Creates and returns a time span that is identical to this instance, but is represented in UTC time.
+            </summary>
+            <returns>A new <see cref="T:Kingo.DateTimeSpan"/> instance.</returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ToOffset(System.TimeSpan)">
+            <summary>
+            Creates and returns a time span that is identical to this instance, but is represented in times with the specified <paramref name="offset"/>.
+            </summary>
+            <returns>A new <see cref="T:Kingo.DateTimeSpan"/> instance.</returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ToString(System.String)">
+            <summary>
+            Formats the current time span in the specified format.
+            </summary>
+            <param name="format">
+            The format string used to format the times of this time span.
+            </param>
+            <returns>A formatted representation of this time span.</returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.ToString(System.String,System.IFormatProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Contains(System.DateTime)">
+            <summary>
+            Determines whether or not the specified <paramref name="value"/> is part of this time span.
+            </summary>
+            <param name="value">The value to check.</param>        
+            <returns><c>true</c> if <paramref name="value"/> is part of this time span; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Contains(System.DateTimeOffset)">
+            <summary>
+            Determines whether or not the specified <paramref name="value"/> is part of this time span.
+            </summary>
+            <param name="value">The value to check.</param>        
+            <returns><c>true</c> if <paramref name="value"/> is part of this time span; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Enumerate(System.TimeSpan)">
+            <summary>
+            Returns all particular points in time that are part of this time span, where each point in time is separated by the given <paramref name="stepSize" />.
+            If <paramref name="stepSize"/> represents a positive time span, enumeration will begin at <see cref="P:Kingo.DateTimeSpan.Start" />, and all points in time will be in
+            increasing chronological order. If <paramref name="stepSize" /> represents a negative time span, enumeration will begin at <see cref="P:Kingo.DateTimeSpan.End"/>, and all
+            points in time will be in decreasing chronological order.
+            </summary>
+            <param name="stepSize">The step-size of the enumeration.</param>
+            <returns>A lazy initialized collection of points in time.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="stepSize" /> is zero.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Split(System.TimeSpan,System.Boolean)">
+            <summary>
+            Splits this time span into several spans, of which all durations match the specified <paramref name="duration"/>, except
+            (possibly) the last span, which will have a duration of the remaining span of time. If <paramref name="duration"/> represents
+            a positive time span, enumeration will begin at <see cref="P:Kingo.DateTimeSpan.Start" />, and all spans will be in increasing chronological order.
+            If <paramref name="duration" /> represents a negative time span, enumeration will begin at <see cref="P:Kingo.DateTimeSpan.End"/>, and all
+            spans will be in decreasing chronological order.
+            </summary>
+            <param name="duration">The desired duration of each returned span.</param>
+            <param name="includeRemainder">
+            If <c>true</c>, the last element of the returned collection will be the remainder of the split-operation, which may or may not
+            have a duration of less than the specified <paramref name="duration"/>.
+            </param>
+            <returns>A lazy initialized collection of time spans.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="duration"/> is zero.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.IntersectsWith(Kingo.DateTimeSpan)">
+            <summary>
+            Determines whether or not this time span intersects with <paramref name="other"/>.
+            </summary>
+            <param name="other">Another time span.</param>
+            <returns>
+            <c>true</c> if this time span intersects with <paramref name="other"/>; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.GetIntersection(Kingo.DateTimeSpan)">
+            <summary>
+            Creates and returns a time span that represents the intersection of this time span and <paramref name="other"/>, if it exists.
+            </summary>
+            <param name="other">Another time span.</param>
+            <returns>
+            The calculated intersection, or <c>null</c> if no intersection exists.
+            </returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.TryGetIntersection(Kingo.DateTimeSpan,Kingo.DateTimeSpan@)">
+            <summary>
+            Creates and returns a time span that represents the intersection of this time span and <paramref name="other"/>, if it exists.
+            </summary>
+            <param name="other">Another time span.</param>
+            <param name="intersection">
+            If an intersection exists, this parameter will refer to the calculated intersection.
+            </param>
+            <returns>
+            <c>true</c> if this time span intersects with <paramref name="other"/>; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.GetDifference(Kingo.DateTimeSpan)">
+            <summary>
+            Returns a collection of time spans that represent the differences or non-intersecting spans between this time span and <paramref name="other"/>.
+            The resulting collection may contain zero, one or two spans, depending on if and how this time span intersects with <paramref name="other"/>.
+            </summary>
+            <param name="other">Another time span.</param>
+            <returns>
+            The difference between this span and <paramref name="other"/> in the form of a collection of spans with either
+            zero, one or two elements.
+            </returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.FromYear(System.Int32,System.Nullable{System.TimeSpan})">
+            <summary>
+            Creates and returns a new time span that represents the specified <paramref name="year"/> in the specified time zone.
+            </summary>
+            <param name="year">A year.</param>
+            <param name="offset">Offset representing the desired time zone.</param>
+            <returns>A time span representing the specified <paramref name="year"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="year"/> is a not a valid year.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.FromMonth(System.Int32,System.Int32,System.Nullable{System.TimeSpan})">
+            <summary>
+            Creates and returns a new time span that represents the specified <paramref name="month"/> of the specified <paramref name="year"/> in the specified time zone.
+            </summary>
+            <param name="year">A year.</param>
+            <param name="month">A month.</param>
+            <param name="offset">Offset representing the desired time zone.</param>
+            <returns>A time span representing the specified month>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="year"/> is a not a valid year or <paramref name="month"/> is not a valid month.
+            </exception>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.Today">
+            <summary>
+            Creates and returns a new time span that represents the current day (in local time).
+            </summary>
+            <returns>A time span representing today.</returns>
+        </member>
+        <member name="M:Kingo.DateTimeSpan.FromDay(System.DateTime)">
+            <summary>
+            Creates and returns a new time span that represents the specified day.
+            </summary>
+            <param name="day">A particular day.</param>
+            <returns>A time span representing the specified <paramref name="day"/>.</returns>        
+        </member>
+        <member name="M:Kingo.DateTimeSpan.FromDay(System.DateTimeOffset)">
+            <summary>
+            Creates and returns a new time span that represents the specified day.
+            </summary>
+            <param name="day">A particular day.</param>
+            <returns>A time span representing the specified <paramref name="day"/>.</returns>    
+        </member>
+        <member name="M:Kingo.DateTimeSpan.FromDay(System.Int32,System.Int32,System.Int32,System.Nullable{System.TimeSpan})">
+            <summary>
+            Creates and returns a new time span that represents the specified day.
+            </summary>
+            <param name="year">A year.</param>
+            <param name="month">A month.</param>
+            <param name="day">A day of the month.</param>
+            <param name="offset">Offset representing the desired time zone.</param>
+            <returns>A time span that represents the specified day.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="year"/>, <paramref name="month"/> and/or <paramref name="day"/> do not specify a valid day.
+            </exception>
+        </member>
+        <member name="T:Kingo.Disposable">
+            <summary>
+            Serves as a base-class for disposable objects.
+            </summary>
+        </member>
+        <member name="P:Kingo.Disposable.IsDisposed">
+            <summary>
+            Indicates whether or not an object has been disposed.
+            </summary>
+        </member>
+        <member name="M:Kingo.Disposable.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Kingo.Disposable.Dispose(System.Boolean)">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <param name="disposing">
+            Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
+            (<c>false</c>).
+            </param>
+            <remarks>
+            If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
+            Otherwise, only unmanaged resources will be released.
+            </remarks>
+        </member>
+        <member name="M:Kingo.Disposable.NewObjectDisposedException">
+            <summary>
+            Creates and returns a new <see cref="T:System.ObjectDisposedException" /> indicating this instance has been disposed.
+            </summary>
+            <returns>A new <see cref="T:System.ObjectDisposedException" />.</returns>
+        </member>
+        <member name="T:Kingo.EnumOperators`1">
+            <summary>
+            Contains several generic operators that can be used for Enum types.
+            </summary>
+            <typeparam name="TEnum">Type of the Enum.</typeparam>
+        </member>
+        <member name="M:Kingo.EnumOperators`1.AllValuesCombined">
+            <summary>
+            Returns an Enum value where are values of the Enum are bitwise OR-ed into a single value.
+            </summary>
+            <returns>A bitwise OR-ed value of all defined values.</returns>
+        </member>
+        <member name="M:Kingo.EnumOperators`1.AllValues">
+            <summary>
+            Returns all declared values of an enum.
+            </summary>
+            <returns>A collection of enum values.</returns>
+        </member>
+        <member name="M:Kingo.EnumOperators`1.IsDefined(`0,`0)">
+            <summary>
+            Determines whether or not all bits of <paramref name="value"/> are set in <paramref name="compositeValue"/>.
+            </summary>
+            <param name="value">The bits to check.</param>
+            <param name="compositeValue">The collection of bits that is checked.</param>
+            <returns>
+            <c>true</c> if all bits of <paramref name="value"/> are set in <paramref name="compositeValue"/>; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.EnumOperators`1.Or(`0,`0)">
+            <summary>
+            Performs a binary OR-operation on the specified Enum types.
+            </summary>
+            <param name="x">The first value.</param>
+            <param name="y">The second value.</param>
+            <returns>A value where the bits of <paramref name="x"/> and <paramref name="y"/> have been OR-ed.</returns>        
+        </member>
+        <member name="M:Kingo.EnumOperators`1.Or(`0,`0,`0[])">
+            <summary>
+            Performs a binary OR-operation on the specified Enum types.
+            </summary>
+            <param name="x">The first value.</param>
+            <param name="y">The second value.</param>
+            <param name="values">A collection of Enum values.</param>
+            <returns>A value where the bits of the specified <paramref name="values"/> have been OR-ed.</returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="values"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EnumOperators`1.Or(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Performs a binary OR-operation on the specified Enum types.
+            </summary>        
+            <param name="values">A collection of Enum values.</param>
+            <returns>A value where the bits of the specified <paramref name="values"/> have been OR-ed.</returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="values"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EnumOperators`1.And(`0,`0)">
+            <summary>
+            Performs a binary AND-operation on the specified Enum types.
+            </summary>
+            <param name="x">The first value.</param>
+            <param name="y">The second value.</param>
+            <returns>A value where the bits of <paramref name="x"/> and <paramref name="y"/> have been AND-ed.</returns>        
+        </member>
+        <member name="M:Kingo.EnumOperators`1.And(`0,`0,`0[])">
+            <summary>
+            Performs a binary AND-operation on the specified Enum types.
+            </summary>
+            <param name="x">The first value.</param>
+            <param name="y">The second value.</param>
+            <param name="values">A collection of Enum values.</param>
+            <returns>A value where the bits of the specified <paramref name="values"/> have been AND-ed.</returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="values"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EnumOperators`1.And(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Performs a binary AND-operation on the specified Enum types.
+            </summary>        
+            <param name="values">A collection of Enum values.</param>
+            <returns>A value where the bits of the specified <paramref name="values"/> have been AND-ed.</returns> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="values"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.Equatable">
+            <summary>
+            Contains some helper methods for types implementing the <see cref="T:System.IEquatable`1" /> interface.
+            </summary>
+        </member>
+        <member name="M:Kingo.Equatable.Equals``1(``0,``0)">
+            <summary>
+            Determines whether <paramref name="left"/> is equal to <paramref name="right"/>.
+            </summary>
+            <typeparam name="T">Type of the instances to compare.</typeparam>
+            <param name="left">First instance.</param>
+            <param name="right">Second instance.</param>
+            <returns><c>true</c> if both instances are equal; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:Kingo.EventHandlerExtensions">
+            <summary>
+            Contains extension-methods for raising events.
+            </summary>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.Raise(System.EventHandler,System.Object)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using empty arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>
+            <param name="sender">The sender of the event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="sender"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.Raise(System.EventHandler,System.Object,System.EventArgs)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using the specified arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>
+            <param name="sender">The sender of the event.</param>
+            <param name="e">The arguments of the event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="sender"/> or <paramref name="e"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.Raise``1(System.EventHandler{``0},System.Object,``0)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using the specified arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>
+            <param name="sender">The sender of the event.</param>
+            <param name="e">The arguments of the event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="sender"/> or <paramref name="e"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.Raise``2(``0,System.Object,``1)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using the specified arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>
+            <param name="sender">The sender of the event.</param>
+            <param name="e">The arguments of the event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="sender"/> or <paramref name="e"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.RaiseStatic(System.EventHandler)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using empty arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.RaiseStatic(System.EventHandler,System.EventArgs)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using the specified arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>        
+            <param name="e">The arguments of the event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="e"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.RaiseStatic``1(System.EventHandler{``0},``0)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using the specified arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>        
+            <param name="e">The arguments of the event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="e"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.EventHandlerExtensions.RaiseStatic``1(System.Delegate,``0)">
+            <summary>
+            Invokes the specified <paramref name="handlers"/>, if not <c>null</c>, using the specified arguments.
+            </summary>
+            <param name="handlers">The handlers to invoke.</param>        
+            <param name="e">The arguments of the event.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="e"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.ExceptionExtensions">
+            <summary>
+            Contains extension methods for the <see cref="T:System.Exception" /> class.
+            </summary>
+        </member>
+        <member name="M:Kingo.ExceptionExtensions.Rethrow(System.Exception)">
+            <summary>
+            Rethrows the specified <paramref name="exception"/> without losing its stacktrace.
+            </summary>
+            <param name="exception">The exception to rethrow.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="exception"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.ExceptionMessages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Comparable_IncomparableType">
+            <summary>
+              Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Context_IllegalScopeStarted">
+            <summary>
+              Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ContextScope_IncorrectNesting">
+            <summary>
+              Looks up a localized string similar to The scopes were not nested correctly..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.DateTimeSpan_InvalidTimeSpan">
+            <summary>
+              Looks up a localized string similar to Invalid time span specified: [{0}, {1}]..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.DateTimeSpan_TimeSpanZeroNotAllowed">
+            <summary>
+              Looks up a localized string similar to &apos;{0}&apos; is not allowed to be zero..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.MemberInfoExtensions_AmbiguousAttributeMatch">
+            <summary>
+              Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ReadOnlyList_IndexOutOfRange">
+            <summary>
+              Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
+            </summary>
+        </member>
+        <member name="T:Kingo.Reflection.MemberInfoExtensions">
+            <summary>
+            Contains extension methods for instances of type <see cref="T:System.Reflection.MemberInfo" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.TryGetAttributeOfType``1(System.Reflection.MemberInfo,``0@,System.Boolean)">
+            <summary>
+            Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="member">The member to obtain the attributes for.</param>
+            <param name="attribute">
+            When this method returns <c>true</c>, this parameter will refer to the retrieved attribute;
+            otherwise it will be <c>null</c>.
+            </param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns><c>true</c> if the attribute was retrieved; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="member"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Multiple attribute defined of the method are assignable to type <typeparamref name="TAttribute"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.GetAttributesOfType``1(System.Reflection.MemberInfo,System.Boolean)">
+            <summary>
+            Retrieves all attributes of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="member">The member to obtain the attributes for.</param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns>A collection of attributes.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="member"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.TryGetAttributeOfType``1(System.Reflection.ParameterInfo,``0@,System.Boolean)">
+            <summary>
+            Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="parameter">The member to obtain the attributes for.</param>
+            <param name="attribute">
+            When this method returns <c>true</c>, this parameter will refer to the retrieved attribute;
+            otherwise it will be <c>null</c>.
+            </param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns><c>true</c> if the attribute was retrieved; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="parameter"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Multiple attribute defined of the method are assignable to type <typeparamref name="TAttribute"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.MemberInfoExtensions.GetAttributesOfType``1(System.Reflection.ParameterInfo,System.Boolean)">
+            <summary>
+            Retrieves all attributes of type <typeparamref name="TAttribute"/>.
+            </summary>
+            <typeparam name="TAttribute">Type of the attribute to retrieve.</typeparam>
+            <param name="parameter">The member to obtain the attributes for.</param>
+            <param name="inherit">
+            <c>true</c> to search this member's inheritance chain to find the attributes; otherwise, <c>false</c>.
+            This parameter is ignored for properties and events.
+            </param>
+            <returns>A collection of attributes.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="parameter"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:Kingo.Reflection.TypeExtensions">
+            <summary>
+            Contains several extensions method for the <see cref="T:System.Type" /> class.
+            </summary>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetEqualityOperator``2(System.Type,System.Func{``0,``1,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the equality operator (==) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="equalityOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the equality operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetInequalityOperator``2(System.Type,System.Func{``0,``1,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the equality operator (!=) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="inequalityOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the inequality operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetLessThanOperator``2(System.Type,System.Func{``0,``1,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the less than operator (&lt;) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="lessThanOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the less than operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetLessThanOrEqualOperator``2(System.Type,System.Func{``0,``1,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the less than or equal to operator (&lt;=) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="lessThanOrEqualOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the less than or equal to operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetGreaterThanOperator``2(System.Type,System.Func{``0,``1,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the greater than operator (&gt;) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="greaterThanOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the greater than operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetGreaterThanOrEqualOperator``2(System.Type,System.Func{``0,``1,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the greater than or equal to operator (&gt;=) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="greaterThanOrEqualOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the greater than or equal to operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetAdditionOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the addition operator (+) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="additionOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the addition operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetSubtractionOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the subtraction operator (-) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="subtractiontOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the subtraction operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetMultiplyOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the multiply operator (*) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="multiplyOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the multiply operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetDivisionOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the division operator (/) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="divisionOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the division operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetModulusOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the modulus operator (%) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="modulusOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the modulus operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetExclusiveOrOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the exclusiveOr operator (^) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="exclusiveOrOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the exclusiveOr operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetBitwiseAndOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the bitwiseAnd operator (&amp;) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="bitwiseAndOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the bitwiseAnd operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetBitwiseOrOperator``3(System.Type,System.Func{``0,``1,``2}@)">
+            <summary>
+            Attempts to obtain the bitwiseOr operator (|) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn1">Type of the first argument.</typeparam>
+            <typeparam name="TIn2">Type of the second argument.</typeparam>
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="bitwiseOrOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the bitwiseOr operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetLeftShiftOperator``2(System.Type,System.Func{``0,System.Int32,``1}@)">
+            <summary>
+            Attempts to obtain the leftShift operator (&lt;&lt;) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="leftShiftOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the leftShift operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetRightShiftOperator``2(System.Type,System.Func{``0,System.Int32,``1}@)">
+            <summary>
+            Attempts to obtain the rightShift operator (&gt;&gt;) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="rightShiftOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the rightShift operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetUnaryPlusOperator``2(System.Type,System.Func{``0,``1}@)">
+            <summary>
+            Attempts to obtain the unaryPlus operator (+) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="unaryPlusOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the unaryPlus operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetUnaryNegationOperator``2(System.Type,System.Func{``0,``1}@)">
+            <summary>
+            Attempts to obtain the unaryNegation operator (-) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="unaryNegationtOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the unaryNegation operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetLogicalNotOperator``2(System.Type,System.Func{``0,``1}@)">
+            <summary>
+            Attempts to obtain the logicalNot operator (!) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="logicalNotOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the logicalNot operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetOnesComplementOperator``2(System.Type,System.Func{``0,``1}@)">
+            <summary>
+            Attempts to obtain the onesComplement operator (~) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="onesComplementOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the onesComplement operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetTrueOperator``1(System.Type,System.Func{``0,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the true operator (true) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>                
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="trueOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the true operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetFalseOperator``1(System.Type,System.Func{``0,System.Boolean}@)">
+            <summary>
+            Attempts to obtain the false operator (false) defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>                
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="falseOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the false operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetImplicitOperator``2(System.Type,System.Func{``0,``1}@)">
+            <summary>
+            Attempts to obtain the implicit operator defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="implicitOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the implicit operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.TryGetExplicitOperator``2(System.Type,System.Func{``0,``1}@)">
+            <summary>
+            Attempts to obtain the explicit operator defined within the specified <paramref name="type"/>
+            that has the specified argument-types.
+            </summary>
+            <typeparam name="TIn">Type of the first argument.</typeparam>        
+            <typeparam name="TOut">Return-type of the operator.</typeparam>
+            <param name="type">Type in which the operator is defined.</param>
+            <param name="explicitOperator">
+            If this method returns <c>true</c>, refers to the operator; otherwise it will be <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> is a closed type and the explicit operator with the exact
+            argument types as specified has been defined within the specified <paramref name="type"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.FriendlyName(System.Type,System.Boolean,System.Boolean)">
+            <summary>
+            Returns the friendly name of a type, useful for displaying type information in consoles or debug strings.
+            </summary>
+            <param name="type">A type.</param>
+            <param name="useFullNames">Indicates whether or not the full name of all types should be used in the friendly name.</param>
+            <param name="includeGenericParameters">
+            Indicates whether or not the returned name should include the generic parameters of the type.
+            </param>
+            <returns>A friendly name of a type</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.ImplementsInterface``1(System.Type)">
+            <summary>
+            Determines whether or not the specified <paramref name="type"/> implements <typeparamref name="TInterface"/>.
+            </summary>
+            <typeparam name="TInterface">Type of an interface.</typeparam>
+            <param name="type">A type.</param>        
+            <returns>
+            <c>true</c> if <paramref name="type"/> implements (at least one variation of) <typeparamref name="TInterface"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.ImplementsInterface(System.Type,System.Type)">
+            <summary>
+            Determines whether or not the specified <paramref name="type"/> implements the specified <paramref name="interfaceType"/>.
+            </summary>
+            <param name="type">A type.</param>
+            <param name="interfaceType">An interface type.</param>
+            <returns>
+            <c>true</c> if <paramref name="type"/> implements (at least one variation of) the specified <paramref name="interfaceType"/>;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> or <paramref name="interfaceType"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.GetInterfacesOfType``1(System.Type)">
+            <summary>
+            Returns all variations of <typeparamref name="TInterface" /> that are implemented by
+            the specified <paramref name="type"/>.
+            </summary>
+            <typeparam name="TInterface">Type of an interface.</typeparam>
+            <param name="type">Type that is checked for implementations of <typeparamref name="TInterface" />.</param>        
+            <returns>
+            All implemented variations of <typeparamref name="TInterface" /> that are implemented
+            by the specified <paramref name="type"/>. If <paramref name="type"/> is not a class or value type or
+            <paramref name="type"/> simply doesn't implement any instance of <typeparamref name="TInterface" />,
+            an empty collection is returned.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.GetInterfacesOfType(System.Type,System.Type[])">
+            <summary>
+            Returns all variations of the specified <paramref name="interfaceTypes" /> that are implemented by
+            the specified <paramref name="type"/>.
+            </summary>
+            <param name="type">Type that must implement one of the specified <paramref name="interfaceTypes"/>.</param>
+            <param name="interfaceTypes">A collection of interface types. These can contain generic type definitions.</param>
+            <returns>
+            All implemented variations of the specified <paramref name="interfaceTypes" /> that are implemented
+            by the specified <paramref name="type"/>. If <paramref name="type"/> is not a class or value type or
+            <paramref name="type"/> simply doesn't implement any instance of the specified <paramref name="interfaceTypes"/>,
+            an empty collection is returned.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> or <paramref name="interfaceTypes"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeExtensions.GetInterfacesOfType(System.Type,System.Type)">
+            <summary>
+            Returns all variations of the specified <paramref name="interfaceType" /> that are implemented by
+            the specified <paramref name="type"/>.
+            </summary>
+            <param name="type">Type that must implement the specified <paramref name="interfaceType"/>.</param>
+            <param name="interfaceType">An interface type. This can be a generic type definition of an interface.</param>
+            <returns>
+            All implemented variations of the specified <paramref name="interfaceType" /> that are implemented
+            by the specified <paramref name="type"/>. If <paramref name="type"/> is not a class or value type,
+            <paramref name="interfaceType"/> is not an interface type or <paramref name="type"/> simply doesn't
+            implement any instance of the specified <paramref name="interfaceType"/>, an empty collection is returned.
+            </returns>
+        </member>
+        <member name="T:Kingo.Reflection.TypeSet">
+            <summary>
+            Represents an immutable set of types.
+            </summary>
+        </member>
+        <member name="F:Kingo.Reflection.TypeSet.Empty">
+            <summary>
+            Represents the empty set.
+            </summary>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Contains``1">
+            <summary>
+            Determines whether or not this set contains the specified <typeparamref name="TItem"/>.
+            </summary>
+            <typeparam name="TItem">The type to check.</typeparam>
+            <returns><c>true</c> if this set contains the specified <typeparamref name="TItem"/>; otherwise <c>false</c>.</returns>        
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Contains(System.Type)">
+            <summary>
+            Determines whether or not this set contains the specified <paramref name="type"/>.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns><c>true</c> if this set contains the specified <paramref name="type"/>; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Add(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Adds all types defined in the assemblies that match the specified search criteria to this set.
+            </summary>
+            <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
+            <param name="path">A path pointing to a specific directory. If <c>null</c>, the <see cref="P:Kingo.Reflection.TypeSet.CurrentDirectory"/> is used.</param>
+            <param name="searchOption">
+            Indicates whether or not only the top-level directory is to be searched.        
+            </param>
+            <returns>A new set containing all types from the specified assemblies.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="searchPattern"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.IO.IOException">
+            An error occurred while reading files from the specified location(s).
+            </exception>
+            <exception cref="T:System.Security.SecurityException">
+            The caller does not have the required permission to access the specified path or its files.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Add(System.Reflection.Assembly[])">
+            <summary>
+            Adds all types from the specified <paramref name="assemblies"/> to this set.
+            </summary>
+            <param name="assemblies">A collection of assemblies.</param>
+            <returns>A new set where all types from the specified <paramref name="assemblies"/> were added.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="assemblies"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Add(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>
+            Adds all types from the specified <paramref name="assemblies"/> to this set.
+            </summary>
+            <param name="assemblies">A collection of assemblies.</param>
+            <returns>A new set where all types from the specified <paramref name="assemblies"/> were added.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="assemblies"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Add(System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Adds all the specified <paramref name="types"/> to this set.
+            </summary>
+            <param name="types">A collection of types.</param>
+            <returns>A new set containing all the specified <paramref name="types"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="types"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Add``1">
+            <summary>
+            Adds the specified <typeparamref name="TItem" /> to the set.
+            </summary>
+            <typeparam name="TItem">The type to add to this set.</typeparam>
+            <returns>A new set containing the specified <typeparamref name="TItem"/>.</returns>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Add(System.Type)">
+            <summary>
+            Adds the specified <paramref name="type" /> to the set.
+            </summary>
+            <param name="type">The type to add to this set.</param>
+            <returns>A new set containing the specified <paramref name="type"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Remove(System.String,System.String,System.IO.SearchOption)">
+            <summary>
+            Removes all types defined in the assemblies that match the specified search criteria to this set.
+            <paramref name="searchPattern"/> from this set.
+            </summary>
+            <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
+            <param name="path">A path pointing to a specific directory. If <c>null</c>, the <see cref="P:Kingo.Reflection.TypeSet.CurrentDirectory"/> is used.</param>
+            <param name="searchOption">
+            Indicates whether or not only the top-level directory is to be searched.        
+            </param>
+            <returns>A new set containing all types from the specified assemblies.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="searchPattern"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.IO.IOException">
+            An error occurred while reading files from the specified location(s).
+            </exception>
+            <exception cref="T:System.Security.SecurityException">
+            The caller does not have the required permission
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Remove(System.Reflection.Assembly[])">
+            <summary>
+            Removes all types from the specified <paramref name="assemblies"/> from this set.
+            </summary>
+            <param name="assemblies">A collection of assemblies.</param>
+            <returns>A new set where all types from the specified <paramref name="assemblies"/> have been removed.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="assemblies"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Remove(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>
+            Removes all types from the specified <paramref name="assemblies"/> from this set.
+            </summary>
+            <param name="assemblies">A collection of assemblies.</param>
+            <returns>A new set where all types from the specified <paramref name="assemblies"/> have been removed.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="assemblies"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Remove(System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Removes all specified <paramref name="types"/> from this set.
+            </summary>
+            <param name="types">A collection of types to remove.</param>
+            <returns>A new set where all the specified <paramref name="types"/> have been removed.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="types"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Remove``1">
+            <summary>
+            Removes the specified <typeparamref name="TItem"/> from this set.
+            </summary>
+            <typeparam name="TItem">The type to remove.</typeparam>
+            <returns>A new set where the specified <typeparamref name="TItem"/> has been removed.</returns>
+        </member>
+        <member name="M:Kingo.Reflection.TypeSet.Remove(System.Type)">
+            <summary>
+            Removes the specified <paramref name="type"/> from this set.
+            </summary>
+            <param name="type">The type to remove.</param>
+            <returns>A new set where the specified <paramref name="type"/> has been removed.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:Kingo.Reflection.TypeSet.CurrentDirectory">
+            <summary>
+            Returns the directory that has been configured as the default or current directory.
+            </summary>
+        </member>
+        <member name="T:Kingo.StringExtensions">
+            <summary>
+            Contains extensions methods for instances of type <see cref="T:System.String"/>.
+            </summary>
+        </member>
+        <member name="M:Kingo.StringExtensions.RemovePostfix(System.String,System.String,System.StringComparison)">
+            <summary>
+            Removes the specified <paramref name="postfix"/> from <paramref name="value"/>.
+            </summary>
+            <param name="value">The value to remove the postfix from.</param>
+            <param name="postfix">The postfix to remove.</param>
+            <param name="comparison">
+            Indicates which comparison must be used when checking if <paramref name="value"/> ends with <paramref name="postfix"/>.
+            </param>
+            <returns>
+            The value where the postfix has been removed if <paramref name="value"/> ends with the specified <paramref name="postfix"/>;
+            otherwise it will just return <paramref name="value"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> or <paramref name="postfix"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="comparison"/> is not a valid value.
+            </exception>
+        </member>
+        <member name="M:Kingo.StringExtensions.TryRemovePostfix(System.String,System.String,System.String@,System.StringComparison)">
+            <summary>
+            Attempts to remove the specified <paramref name="postfix"/> from the string.
+            </summary>
+            <param name="value">The value to remove the postfix from.</param>
+            <param name="postfix">The postfix to remove.</param>
+            <param name="newValue">
+            If <paramref name="value"/> ends with <paramref name="postfix"/>, this parameter will be assigned the
+            value where this postfix has been removed.
+            </param>
+            <param name="comparison">
+            Indicates which comparison must be used when checking if <paramref name="value"/> ends with <paramref name="postfix"/>.
+            </param>
+            <returns><c>true</c> if the postfix was removed; otherwise <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> or <paramref name="postfix"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="comparison"/> is not a valid value.
+            </exception>
+        </member>
+        <member name="T:Kingo.Threading.AsyncMethod">
+            <summary>
+            Contains several helper methods for async methods.
+            </summary>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Run(System.Func{System.Threading.Tasks.Task},System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Executes the specified asynchronous <paramref name="delegate"/> synchronously and
+            returns a completed <see cref="T:System.Threading.Tasks.Task" /> while encapsulating any exceptions
+            that might be thrown.
+            </summary>        
+            <param name="delegate">The delegate to invoke.</param>
+            <param name="token">
+            If specified, this token is checked before and after <paramref name="delegate"/> is executed,
+            and a cancelled task is returned if cancellation has been requested.
+            </param>
+            <returns>A completed <see cref="T:System.Threading.Tasks.Task" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="delegate"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Run(System.Action,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Executes the specified <paramref name="delegate"/> synchronously and
+            returns a completed <see cref="T:System.Threading.Tasks.Task" /> while encapsulating any exceptions
+            that might be thrown.
+            </summary>
+            <param name="delegate">The delegate to invoke.</param>
+            <param name="token">
+            If specified, this token is checked before and after <paramref name="delegate"/> is executed,
+            and a cancelled task is returned if cancellation has been requested.
+            </param>
+            <returns>A completed <see cref="T:System.Threading.Tasks.Task" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="delegate"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Run``1(System.Func{``0},System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Executes the specified <paramref name="delegate"/> synchronously and
+            returns a completed <see cref="T:System.Threading.Tasks.Task`1" /> while encapsulation any exceptions
+            that might be thrown.
+            </summary>
+            <typeparam name="TResult">Type of the result of the delegate.</typeparam>
+            <param name="delegate">The delegate to invoke.</param>
+            <param name="token">
+            If specified, this token is checked before and after <paramref name="delegate"/> is executed,
+            and a cancelled task is returned if cancellation has been requested.
+            </param>
+            <returns>A completed <see cref="T:System.Threading.Tasks.Task`1" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="delegate"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.OrAbort(System.Threading.Tasks.Task,System.Threading.CancellationToken,System.Nullable{System.TimeSpan})">
+            <summary>
+            Returns a task that completes as the specified <paramref name="task"/> is completed, unless
+            the specified <paramref name="token"/> request cancellation before the task is completed or
+            the specified <paramref name="timeout"/> expires. In that case, the returned task will complete
+            in the cancelled state.
+            </summary>
+            <param name="task">The task to await.</param>
+            <param name="token">Token that may signal cancellation of <paramref name="task"/>.</param>
+            <param name="timeout">Optional timeout period that may also cancel the specified <paramref name="task"/>.</param>
+            <returns>A new task representing the operation.</returns>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.WaitForCancellation(System.Threading.CancellationToken,System.Nullable{System.TimeSpan})">
+            <summary>
+            Creates and returns a <see cref="T:System.Threading.Tasks.Task"/> that will complete in the cancelled state as soon as the specified
+            <paramref name="token"/> is signaled or as soon as the specified <paramref name="timeout"/> expires.
+            </summary>
+            <param name="token">
+            The token that can be used to cancel and abort the operation immediately.
+            </param>
+            <param name="timeout">
+            The maximum time to wait for the operation to be cancelled. If not specified, the timeout is infinite.
+            </param>
+            <returns>
+            A task that will be completed as soon as <paramref name="token"/> is signaled or the specified
+            <paramref name="timeout"/> expires.
+            </returns>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Throw(System.Exception)">
+            <summary>
+            Creates and returns a new completed <see cref="T:System.Threading.Tasks.Task`1" /> that encapsulates
+            the specified <paramref name="exception"/>.
+            </summary>        
+            <param name="exception">The exception to encapsulate.</param>
+            <returns>A new completed <see cref="T:System.Threading.Tasks.Task`1" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="exception"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Throw``1(System.Exception)">
+            <summary>
+            Creates and returns a new completed <see cref="T:System.Threading.Tasks.Task`1" /> that encapsulates
+            the specified <paramref name="exception"/>.
+            </summary>
+            <typeparam name="TResult">Return-type of the <see cref="T:System.Threading.Tasks.Task`1" />.</typeparam>
+            <param name="exception">The exception to encapsulate.</param>
+            <returns>A new completed <see cref="T:System.Threading.Tasks.Task`1" />.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="exception"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Await(System.Threading.Tasks.Task,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Awaits the specified task, blocking the current thread, and unwraps any <see cref="T:System.AggregateException" />
+            by rethrowing the first inner exception, just like the await-statement would do.
+            </summary>
+            <param name="task">The task to await.</param>
+            <param name="token">Optional cancellation token.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="task"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Await(System.Threading.Tasks.Task,System.Int32,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Awaits the specified task, blocking the current thread, and unwraps any <see cref="T:System.AggregateException" />
+            by rethrowing the first inner exception, just like the await-statement would do.
+            </summary>
+            <param name="task">The task to await.</param>
+            <param name="timeoutInMilliseconds">Maximum amount of time in milliseconds to wait for the task to complete.</param>
+            <param name="token">Optional cancellation token.</param>
+            <returns><c>true</c> if the Task completed execution within the allotted time; otherwise, <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="task"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="timeoutInMilliseconds"/> is not a valid timeout period.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Await(System.Threading.Tasks.Task,System.TimeSpan,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Awaits the specified task, blocking the current thread, and unwraps any <see cref="T:System.AggregateException" />
+            by rethrowing the first inner exception, just like the await-statement would do.
+            </summary>
+            <param name="task">The task to await.</param>
+            <param name="timeout">Maximum amount of time to wait for the task to complete.</param>
+            <param name="token">Optional cancellation token.</param>
+            <returns><c>true</c> if the Task completed execution within the allotted time; otherwise, <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="task"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.Await``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+            Awaits the specified task, blocking the current thread, and unwraps any <see cref="T:System.AggregateException" />
+            by rethrowing the first inner exception, just like the await-statement would do.
+            </summary>
+            <param name="task">The task to await.</param>        
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="task"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.AsyncMethod.RethrowInnerException(System.AggregateException)">
+            <summary>
+            Re-throws the first inner exception of the specified <paramref name="exception"/> if it has any
+            inner exceptions, without losing the stacktrace of this exception.
+            </summary>
+            <param name="exception">The exception to unwrap.</param>
+            <returns><c>false</c> if the exception was not re-thrown.</returns>
+            <exception cref="T:System.Exception">
+            If <paramref name="exception"/> has any inner exceptions.
+            </exception>
+        </member>
+        <member name="T:Kingo.Threading.Context`1">
+            <summary>
+            Represents a contextual container for a specific value. All instance methods on this class are thread-safe.
+            </summary>
+            <typeparam name="TValue">Type of the value to store.</typeparam>
+        </member>
+        <member name="M:Kingo.Threading.Context`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Threading.Context`1" /> class.
+            </summary>
+        </member>
+        <member name="M:Kingo.Threading.Context`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Threading.Context`1" /> class.
+            </summary>
+            <param name="defaultValue">The default value.</param>
+        </member>
+        <member name="P:Kingo.Threading.Context`1.Current">
+            <summary>
+            Returns the value of the item that is current with respect to the current thread.
+            </summary>
+        </member>
+        <member name="M:Kingo.Threading.Context`1.OverrideThreadLocal(`0)">
+            <summary>
+            Sets the current value that is accessible by the current thread through <see cref="P:Kingo.Threading.Context`1.Current" />
+            only as long as the scope is active.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+        </member>
+        <member name="M:Kingo.Threading.Context`1.OverrideAsyncLocal(`0)">
+            <summary>
+            Sets the current value that is accessible by all threads that share the same logical call context
+            through <see cref="P:Kingo.Threading.Context`1.Current" /> as long as the scope is active.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside a thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.Context`1.Override(`0)">
+            <summary>
+            Sets the current value that is accessible by all threads
+            through <see cref="P:Kingo.Threading.Context`1.Current" /> as long as the scope is active.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>The scope that is to be disposed when ended.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            The call is made inside an async local or thread local scope.
+            </exception>
+        </member>
+        <member name="M:Kingo.Threading.Context`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Kingo.Threading.ContextScope`1">
+            <summary>
+            Represents a scope that is used to temporarily set the current value of a context.
+            </summary>
+            <typeparam name="TValue">Type of the value.</typeparam>
+        </member>
+        <member name="P:Kingo.Threading.ContextScope`1.Value">
+            <summary>
+            Returns the value that is managed by this scope.
+            </summary>
+        </member>
+        <member name="M:Kingo.Threading.ContextScope`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+    </members>
+</doc>
