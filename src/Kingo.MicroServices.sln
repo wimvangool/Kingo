@@ -12,19 +12,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Implementation", "Server.Implementation", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Implementation", "MicroServices.Implementation\03.Implementation.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C.Implementation", "MicroServices.Implementation\C.Implementation.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Implementation.Tests", "MicroServices.Implementation.Tests\01.Implementation.Tests.csproj", "{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "A.Implementation.Tests", "MicroServices.Implementation.Tests\A.Implementation.Tests.csproj", "{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Implementation.TestEngine", "MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "B.Implementation.TestEngine", "MicroServices.Implementation.TestEngine\B.Implementation.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Contract.TestEngine", "MicroServices.Contract.TestEngine\02.Contract.TestEngine.csproj", "{DC112CD6-A54D-4945-9AE7-5C82383C27DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "B.Contract.TestEngine", "MicroServices.Contract.TestEngine\B.Contract.TestEngine.csproj", "{DC112CD6-A54D-4945-9AE7-5C82383C27DB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Contract", "Server.Contract", "{393F0D54-9375-487A-B30D-8DE9DB36C0EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.Contract", "MicroServices.Contract.\03.Contract.csproj", "{6733306D-266E-41A6-9E92-371AF84E6ECD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C.Contract", "MicroServices.Contract\C.Contract.csproj", "{6733306D-266E-41A6-9E92-371AF84E6ECD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Contract.Tests", "MicroServices.Contract.Tests\01.Contract.Tests.csproj", "{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "A.Contract.Tests", "MicroServices.Contract.Tests\A.Contract.Tests.csproj", "{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B.Core", "MicroServices.Core\B.Core.csproj", "{B8D2084F-482C-4833-8ABE-B7B2AE31428A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service.Core", "Service.Core", "{9A67ABBA-F969-4DC3-82BC-C522DBC839B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A.Core.Tests", "MicroServices.Core.Tests\A.Core.Tests.csproj", "{74F22C50-8DAA-4928-B9D4-1C8905989018}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +62,14 @@ Global
 		{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D2084F-482C-4833-8ABE-B7B2AE31428A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D2084F-482C-4833-8ABE-B7B2AE31428A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D2084F-482C-4833-8ABE-B7B2AE31428A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D2084F-482C-4833-8ABE-B7B2AE31428A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74F22C50-8DAA-4928-B9D4-1C8905989018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F22C50-8DAA-4928-B9D4-1C8905989018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74F22C50-8DAA-4928-B9D4-1C8905989018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74F22C50-8DAA-4928-B9D4-1C8905989018}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +81,8 @@ Global
 		{DC112CD6-A54D-4945-9AE7-5C82383C27DB} = {393F0D54-9375-487A-B30D-8DE9DB36C0EB}
 		{6733306D-266E-41A6-9E92-371AF84E6ECD} = {393F0D54-9375-487A-B30D-8DE9DB36C0EB}
 		{24AFDD0B-F9E5-4C88-9FB5-0D6EDE2B93E9} = {393F0D54-9375-487A-B30D-8DE9DB36C0EB}
+		{B8D2084F-482C-4833-8ABE-B7B2AE31428A} = {9A67ABBA-F969-4DC3-82BC-C522DBC839B6}
+		{74F22C50-8DAA-4928-B9D4-1C8905989018} = {9A67ABBA-F969-4DC3-82BC-C522DBC839B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}

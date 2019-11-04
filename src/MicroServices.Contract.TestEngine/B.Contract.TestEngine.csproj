@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Kingo.MicroServices.Implementation.TestEngine</AssemblyName>
-    <Description>Contains components to implement tests for the Implementation-component(s) of a (Micro)Service.</Description>
+    <AssemblyName>Kingo.MicroServices.Contract.TestEngine</AssemblyName>
+    <Description>Contains components to implement tests for the (validation-logic of) request-messages of a (Micro)Service.</Description>
+    <PackageId>Kingo.MicroServices.TestEngine</PackageId>
     <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/test.png?raw=true</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.Implementation.TestEngine\Kingo.MicroServices.Implementation.TestEngine.xml</DocumentationFile>
+    <DocumentationFile>C:\Sources\Kingo\src\MicroServices.TestEngine\Kingo.MicroServices.Contract.TestEngine.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,28 +21,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Contract.TestEngine\02.Contract.TestEngine.csproj" />
-    <ProjectReference Include="..\MicroServices.Implementation\03.Implementation.csproj" />
+    <ProjectReference Include="..\MicroServices.Contract\C.Contract.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Update="ExceptionMessages.Designer.cs">
-      <DependentUpon>ExceptionMessages.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="ExceptionMessages.resx">
-      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

@@ -3,13 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Kingo.MicroServices.Implementation.Tests</AssemblyName>
-    <AssemblyDescription>Contains all unit tests for the Kingo.MicroServices library.</AssemblyDescription>
+    <AssemblyName>Kingo.MicroServices.Contract.Tests</AssemblyName>
     <RootNamespace>Kingo</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <OutputType>Library</OutputType>
-    <LangVersion>7.3</LangVersion>    
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,8 +29,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroServices.Contract.Tests\01.Contract.Tests.csproj" />
-    <ProjectReference Include="..\MicroServices.Implementation.TestEngine\02.Implementation.TestEngine.csproj" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroServices.Contract.TestEngine\B.Contract.TestEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ErrorMessages.Designer.cs">
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ErrorMessages.resx">
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
