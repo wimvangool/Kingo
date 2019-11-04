@@ -61,29 +61,65 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: version of type &apos;{1}&apos; introduced a circular update by returning an instance of type &apos;{2}&apos;..
+        ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
         /// </summary>
-        internal static string DataContractExtensions_CircularReference {
+        internal static string Comparable_IncomparableType {
             get {
-                return ResourceManager.GetString("DataContractExtensions_CircularReference", resourceCulture);
+                return ResourceManager.GetString("Comparable_IncomparableType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating instance of type &apos;{0}&apos; to its latest version failed: could not convert latest version of type &apos;{1}&apos; to instance of type &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
         /// </summary>
-        internal static string DataContractExtensions_InvalidCast {
+        internal static string Context_IllegalScopeStarted {
             get {
-                return ResourceManager.GetString("DataContractExtensions_InvalidCast", resourceCulture);
+                return ResourceManager.GetString("Context_IllegalScopeStarted", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified MessageKind ({0}) is not valid..
+        ///   Looks up a localized string similar to The scopes were not nested correctly..
         /// </summary>
-        internal static string MessageKindExtensions_MessageKindNotSupported {
+        internal static string ContextScope_IncorrectNesting {
             get {
-                return ResourceManager.GetString("MessageKindExtensions_MessageKindNotSupported", resourceCulture);
+                return ResourceManager.GetString("ContextScope_IncorrectNesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid time span specified: [{0}, {1}]..
+        /// </summary>
+        internal static string DateTimeSpan_InvalidTimeSpan {
+            get {
+                return ResourceManager.GetString("DateTimeSpan_InvalidTimeSpan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not allowed to be zero..
+        /// </summary>
+        internal static string DateTimeSpan_TimeSpanZeroNotAllowed {
+            get {
+                return ResourceManager.GetString("DateTimeSpan_TimeSpanZeroNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string MemberInfoExtensions_AmbiguousAttributeMatch {
+            get {
+                return ResourceManager.GetString("MemberInfoExtensions_AmbiguousAttributeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
+        /// </summary>
+        internal static string ReadOnlyList_IndexOutOfRange {
+            get {
+                return ResourceManager.GetString("ReadOnlyList_IndexOutOfRange", resourceCulture);
             }
         }
     }

@@ -4,7 +4,7 @@ using System.Runtime.ExceptionServices;
 namespace Kingo
 {
     /// <summary>
-    /// Contains extenion methods for the <see cref="Exception" /> class.
+    /// Contains extension methods for the <see cref="Exception" /> class.
     /// </summary>
     public static class ExceptionExtensions
     {
@@ -15,13 +15,10 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="exception"/> is <c>null</c>.
         /// </exception>
-        public static void Rethrow(this Exception exception)
-        {
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
-            ExceptionDispatchInfo.Capture(exception).Throw();
-        }
+        public static void Rethrow(this Exception exception) =>
+            ExceptionDispatchInfo.Capture(NotNull(exception)).Throw();
+
+        private static Exception NotNull(Exception exception) =>
+            exception ?? throw new ArgumentNullException(nameof(exception));
     }
 }
