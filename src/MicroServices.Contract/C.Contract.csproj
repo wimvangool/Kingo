@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Kingo.MicroServices</AssemblyName>
+    <AssemblyName>Kingo.MicroServices.Contract</AssemblyName>
     <Description>Contains core-components for implementing (Micro)Services.</Description>
     <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/logic.png?raw=true</PackageIconUrl>
     <PackageId>Kingo.MicroServices.Contract</PackageId>
@@ -30,6 +30,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroServices.Core\B.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

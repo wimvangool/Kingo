@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MicroServices.Contract.TestEngine\B.Contract.TestEngine.csproj" />
+    <ProjectReference Include="..\MicroServices.Core.Tests\A.Core.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
