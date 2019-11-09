@@ -7,14 +7,14 @@ namespace Kingo.MicroServices.Controllers
     /// <summary>
     /// Serves as a base-class for all test-classes that execute tests based on test scenarios.
     /// </summary>
-    public abstract class MicroProcessorOperationTestController : IHandleMessageOperationTestProcessor
+    public abstract class MicroProcessorOperationTestRunner : IHandleMessageOperationTestProcessor
     {
         private readonly Lazy<IServiceProvider> _serviceProvider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MicroProcessorOperationTestController" /> class.
+        /// Initializes a new instance of the <see cref="MicroProcessorOperationTestRunner" /> class.
         /// </summary>
-        protected MicroProcessorOperationTestController()
+        protected MicroProcessorOperationTestRunner()
         {
             _serviceProvider = new Lazy<IServiceProvider>(CreateServiceProvider);
         }
@@ -44,7 +44,7 @@ namespace Kingo.MicroServices.Controllers
 
         private abstract class TestEngine<TMicroProcessorTest> where TMicroProcessorTest : IMicroProcessorOperationTest
         {
-            protected TestEngine(MicroProcessorOperationTestController testRunner, TMicroProcessorTest test, MicroProcessorOperationTestContext context)
+            protected TestEngine(MicroProcessorOperationTestRunner testRunner, TMicroProcessorTest test, MicroProcessorOperationTestContext context)
             {
                 TestRunner = testRunner;
                 Test = test;
@@ -52,7 +52,7 @@ namespace Kingo.MicroServices.Controllers
                 Result = new NullTestResult(test);
             }
 
-            private MicroProcessorOperationTestController TestRunner
+            private MicroProcessorOperationTestRunner TestRunner
             {
                 get;
             }
@@ -106,7 +106,7 @@ namespace Kingo.MicroServices.Controllers
         
         private sealed class HandleMessageTestEngine<TMessage, TMessageStream> : TestEngine<IHandleMessageTest<TMessage, TMessageStream>>, IMessageProcessor<TMessage> where TMessageStream : MessageStream
         {                      
-            public HandleMessageTestEngine(MicroProcessorOperationTestController testRunner, IHandleMessageTest<TMessage, TMessageStream> test, MicroProcessorOperationTestContext context) :
+            public HandleMessageTestEngine(MicroProcessorOperationTestRunner testRunner, IHandleMessageTest<TMessage, TMessageStream> test, MicroProcessorOperationTestContext context) :
                 base(testRunner, test, context) { }
 
             protected override Task WhenAsync() =>
@@ -230,7 +230,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class ExecuteQueryTestEngine<TResponse> : TestEngine<IExecuteQueryTest<TResponse>>, IQueryProcessor<TResponse>
         {           
-            public ExecuteQueryTestEngine(MicroProcessorOperationTestController testRunner, IExecuteQueryTest<TResponse> test, MicroProcessorOperationTestContext context) :
+            public ExecuteQueryTestEngine(MicroProcessorOperationTestRunner testRunner, IExecuteQueryTest<TResponse> test, MicroProcessorOperationTestContext context) :
                 base(testRunner, test, context) { }
 
             protected override Task WhenAsync() =>
@@ -284,7 +284,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class ExecuteQueryTestEngine<TRequest, TResponse> : TestEngine<IExecuteQueryTest<TRequest, TResponse>>, IQueryProcessor<TRequest, TResponse>
         {           
-            public ExecuteQueryTestEngine(MicroProcessorOperationTestController testRunner, IExecuteQueryTest<TRequest, TResponse> test, MicroProcessorOperationTestContext context) :
+            public ExecuteQueryTestEngine(MicroProcessorOperationTestRunner testRunner, IExecuteQueryTest<TRequest, TResponse> test, MicroProcessorOperationTestContext context) :
                 base(testRunner, test, context) { }
 
             protected override Task WhenAsync() =>

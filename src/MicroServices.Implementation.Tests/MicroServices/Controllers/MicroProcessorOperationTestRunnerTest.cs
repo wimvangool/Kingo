@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.Controllers
 {    
     [TestClass]
-    public sealed class MicroProcessorOperationTestRunnerTest : MicroProcessorOperationTestController
+    public sealed class MicroProcessorOperationTestRunnerTest : MicroProcessorOperationTestRunner
     {
         #region [====== MessageHandlerTests (1) ======]
 
