@@ -6,7 +6,7 @@ namespace Kingo.MicroServices.DataAnnotations
     /// When implemented by a class, represents a request-message wrapper that can assert whether
     /// a request message is valid or not.
     /// </summary>
-    public interface IRequest
+    public interface IRequestMessageValidator
     {        
         /// <summary>
         /// Asserts that the message is valid.

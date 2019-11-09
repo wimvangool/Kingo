@@ -3,9 +3,9 @@
 namespace Kingo.MicroServices.DataAnnotations
 {
     /// <summary>
-    /// When implemented by a class, represents a test-class for a specific <see cref="Request" />.
+    /// When implemented by a class, represents a test-class for a specific <see cref="RequestMessageValidator" />.
     /// </summary>    
-    public abstract class RequestTest<TRequest> where TRequest : class
+    public abstract class RequestMessageTest<TRequest> where TRequest : class
     {        
         #region [====== AssertThat ======]
 
@@ -16,11 +16,11 @@ namespace Kingo.MicroServices.DataAnnotations
         /// <param name="requestConfigurator">
         /// A delegate that is used to configure the properties of a request before its expected state is verified.
         /// </param>
-        /// <returns>A new <see cref="IRequest"/>.</returns>
+        /// <returns>A new <see cref="IRequestMessageValidator"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="requestConfigurator"/> is <c>null</c>.
         /// </exception>
-        protected IRequest AssertThat(Action<TRequest> requestConfigurator)
+        protected IRequestMessageValidator AssertThat(Action<TRequest> requestConfigurator)
         {
             if (requestConfigurator == null)
             {
@@ -36,12 +36,12 @@ namespace Kingo.MicroServices.DataAnnotations
         /// to assert whether or not the request is valid.
         /// </summary>
         /// <param name="request">The request to test.</param>
-        /// <returns>A new <see cref="IRequest"/>.</returns>
+        /// <returns>A new <see cref="IRequestMessageValidator"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected virtual IRequest AssertThat(TRequest request) =>
-            new Request(request);
+        protected virtual IRequestMessageValidator AssertThat(TRequest request) =>
+            new RequestMessageValidator(request);
 
         /// <summary>
         /// Creates and returns a new request.

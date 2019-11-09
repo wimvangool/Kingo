@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Implementation.Tests\A.Implementation.Tests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Games\" />
+  </ItemGroup>
+
 </Project>

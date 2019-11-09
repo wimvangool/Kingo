@@ -6,7 +6,7 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices.DataAnnotations
 {
-    internal sealed class Request : IRequest
+    internal sealed class RequestMessageValidator : IRequestMessageValidator
     {
         #region [====== IsNotValidResult ======]
 
@@ -33,7 +33,7 @@ namespace Kingo.MicroServices.DataAnnotations
 
         private readonly object _request;
 
-        public Request(object request)
+        public RequestMessageValidator(object request)
         {
             _request = request ?? throw new ArgumentNullException(nameof(request));
         }

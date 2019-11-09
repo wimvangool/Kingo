@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Implementation.DataAccess.Tests\A.DataAccess.Tests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Games\" />
+  </ItemGroup>
+
 </Project>

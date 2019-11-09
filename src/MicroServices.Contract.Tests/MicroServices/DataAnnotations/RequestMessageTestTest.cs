@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.DataAnnotations
 {
     [TestClass]
-    public sealed class RequestTestTest : RequestTest<SomeCommand>
+    public sealed class RequestTestTest : RequestMessageTest<SomeCommand>
     {
         #region [====== AssertThat(...) ======]
 

@@ -137,7 +137,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="services"/> is <c>null</c>.
         /// </exception>
-        public virtual IServiceCollection AddSpecificComponentsTo(IServiceCollection services) =>
+        protected internal virtual IServiceCollection AddSpecificComponentsTo(IServiceCollection services) =>
             services ?? throw new ArgumentNullException(nameof(services));
 
         #endregion

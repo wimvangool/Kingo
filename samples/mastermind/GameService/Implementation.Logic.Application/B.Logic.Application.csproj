@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Implementation.Logic.Domain\C.Logic.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Games\" />
+  </ItemGroup>
+
 </Project>

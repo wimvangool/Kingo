@@ -103,7 +103,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== AddSpecificComponentsTo ======]
 
         /// <inheritdoc />
-        public override IServiceCollection AddSpecificComponentsTo(IServiceCollection services)
+        protected internal override IServiceCollection AddSpecificComponentsTo(IServiceCollection services)
         {
             if (services == null)
             {

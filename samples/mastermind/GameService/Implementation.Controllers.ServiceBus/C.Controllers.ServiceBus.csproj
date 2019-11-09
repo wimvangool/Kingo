@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Implementation.DataAccess.Repositories\B.DataAccess.Repositories.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Games\" />
+  </ItemGroup>
+
 </Project>

@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Implementation.Controllers.ServiceBus\C.Controllers.ServiceBus.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Games\" />
+  </ItemGroup>
+
 </Project>

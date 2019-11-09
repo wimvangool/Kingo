@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Implementation\B.Implementation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Games\" />
+  </ItemGroup>
+
 </Project>
