@@ -19,7 +19,7 @@ namespace Kingo.MasterMind.GameService.Games
 
             }).IsNotValid(1).And(members =>
             {
-                members[nameof(StartGameCommand.GameId)].HasError("'GameId' is not allowed to have its default value.");
+                members[nameof(StartGameCommand.GameId)].HasError("GameId must have a non-default value.");
             });
         }
 
@@ -32,7 +32,7 @@ namespace Kingo.MasterMind.GameService.Games
 
             }).IsNotValid(1).And(members =>
             {
-                members[nameof(StartGameCommand.PlayerName)].HasError("'PlayerName' is required");
+                members[nameof(StartGameCommand.PlayerName)].HasError("The PlayerName field is required.");
             });
         }
 
