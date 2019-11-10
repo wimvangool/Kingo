@@ -117,34 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Request_ErrorMessageNotFound" xml:space="preserve">
-    <value>Member '{0}' does not have expected validation-error '{1}'.</value>
-  </data>
-  <data name="Request_InstanceNotValid" xml:space="preserve">
-    <value>Instance of type '{0}' was expected to be valid, but {1} validation error(s) occurred.</value>
-  </data>
-  <data name="Request_InstanceValid" xml:space="preserve">
-    <value>Instance of type '{0}' was expected to be invalid, but no validation errors occurred.</value>
-  </data>
-  <data name="Request_InvalidNumberOfExpectedErrorsSpecified" xml:space="preserve">
-    <value>The number of expected validation errors ({0}) must be equal to or greater than 1.</value>
-  </data>
-  <data name="Request_MemberErrorsNotFound" xml:space="preserve">
-    <value>Member '{0}' does not have any validation-errors.</value>
-  </data>
-  <data name="Request_NoSuchErrorMessage" xml:space="preserve">
-    <value>Member '{0}' does not contain any validation-error that satisfies the specified predicate.</value>
-  </data>
-  <data name="Request_UnexpectedNumberOfErrorsOccurred" xml:space="preserve">
-    <value>The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1}).</value>
-  </data>
-  <data name="ValidationAttribute_UnexpectedErrorMessage" xml:space="preserve">
-    <value>The expected error message ({0}) did not match the actual error message ({1}).</value>
-  </data>
-  <data name="ValidationAttribute_ValidValid" xml:space="preserve">
-    <value>The specified value ({0}) was expected to be invalid, but was valid.</value>
-  </data>
-  <data name="ValidationAttribute_ValueNotValid" xml:space="preserve">
-    <value>The specified value ({0}) was expected to be valid, but wasn't ({1}).</value>
+  <data name="NotDefaultAttribute_ValueHasDefaultValue" xml:space="preserve">
+    <value>'{0}' is not allowed to have its default value.</value>
   </data>
 </root>

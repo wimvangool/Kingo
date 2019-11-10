@@ -122,5 +122,32 @@ namespace Kingo {
                 return ResourceManager.GetString("Request_UnexpectedNumberOfErrorsOccurred", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expected error message ({0}) did not match the actual error message ({1})..
+        /// </summary>
+        internal static string ValidationAttribute_UnexpectedErrorMessage {
+            get {
+                return ResourceManager.GetString("ValidationAttribute_UnexpectedErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified value ({0}) was expected to be invalid, but was valid..
+        /// </summary>
+        internal static string ValidationAttribute_ValidValid {
+            get {
+                return ResourceManager.GetString("ValidationAttribute_ValidValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified value ({0}) was expected to be valid, but wasn&apos;t ({1})..
+        /// </summary>
+        internal static string ValidationAttribute_ValueNotValid {
+            get {
+                return ResourceManager.GetString("ValidationAttribute_ValueNotValid", resourceCulture);
+            }
+        }
     }
 }

@@ -4,6 +4,27 @@
         <name>Kingo.MicroServices.Contract</name>
     </assembly>
     <members>
+        <member name="T:Kingo.ErrorMessages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kingo.ErrorMessages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ErrorMessages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Kingo.ErrorMessages.NotDefaultAttribute_ValueHasDefaultValue">
+            <summary>
+              Looks up a localized string similar to &apos;{0}&apos; is not allowed to have its default value..
+            </summary>
+        </member>
         <member name="T:Kingo.ExceptionMessages">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -93,6 +114,40 @@
             that is added to the collection of validation-results if any child-members are invalid.
             This property should be used in combination with the <see cref="P:Kingo.MicroServices.DataAnnotations.ChildMemberAttribute.ErrorMessageResourceType"/>-property.
             </summary>
+        </member>
+        <member name="T:Kingo.MicroServices.DataAnnotations.ConstraintValidationAttribute">
+            <summary>
+            Represents a validation-attribute that is implemented through a set of <see cref="T:Kingo.Constraints.IConstraint">constraints</see>.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.ConstraintValidationAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.DataAnnotations.ConstraintValidationAttribute" /> class.
+            </summary>
+            <param name="errorMessage">If specified, represents the (default) error message of this attribute.</param>
+        </member>
+        <member name="P:Kingo.MicroServices.DataAnnotations.ConstraintValidationAttribute.Constraint">
+            <summary>
+            When implemented by a class, returns the constraint
+            that will carry out the validation of (non-null) values.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.ConstraintValidationAttribute.IsValid(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.DataAnnotations.NotDefaultAttribute">
+            <summary>
+            Represents a <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute"/> that verifies that a value is not equal
+            to its default value.
+            </summary>
+        </member>
+        <member name="M:Kingo.MicroServices.DataAnnotations.NotDefaultAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.MicroServices.DataAnnotations.NotDefaultAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.DataAnnotations.NotDefaultAttribute.Constraint">
+            <inheritdoc />
         </member>
         <member name="T:Kingo.MicroServices.DataAnnotations.ObjectExtensions">
             <summary>

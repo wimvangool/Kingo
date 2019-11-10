@@ -5,7 +5,7 @@ namespace Kingo.MicroServices.DataAnnotations
     /// <summary>
     /// When implemented by a class, represents a test-class for a specific <see cref="RequestMessageValidator" />.
     /// </summary>    
-    public abstract class RequestMessageTest<TRequest> where TRequest : class
+    public abstract class RequestMessageTest<TRequestMessage> where TRequestMessage : class
     {        
         #region [====== AssertThat ======]
 
@@ -20,15 +20,15 @@ namespace Kingo.MicroServices.DataAnnotations
         /// <exception cref="ArgumentNullException">
         /// <paramref name="requestConfigurator"/> is <c>null</c>.
         /// </exception>
-        protected IRequestMessageValidator AssertThat(Action<TRequest> requestConfigurator)
+        protected IRequestMessageValidator AssertThat(Action<TRequestMessage> requestConfigurator)
         {
             if (requestConfigurator == null)
             {
                 throw new ArgumentNullException(nameof(requestConfigurator));
             }
-            var request = CreateRequest();
-            requestConfigurator.Invoke(request);
-            return AssertThat(request);
+            var message = CreateValidRequestMessage();
+            requestConfigurator.Invoke(message);
+            return AssertThat(message);
         }
 
         /// <summary>
@@ -40,14 +40,14 @@ namespace Kingo.MicroServices.DataAnnotations
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected virtual IRequestMessageValidator AssertThat(TRequest request) =>
+        protected virtual IRequestMessageValidator AssertThat(TRequestMessage request) =>
             new RequestMessageValidator(request);
 
         /// <summary>
-        /// Creates and returns a new request.
+        /// Creates and returns a new request that has the minimum amount of data while still being considered a valid message.
         /// </summary>
         /// <returns>A new request message.</returns>
-        protected abstract TRequest CreateRequest();        
+        protected abstract TRequestMessage CreateValidRequestMessage();        
 
         #endregion
     }

@@ -48,7 +48,7 @@ namespace Kingo.MicroServices.DataAnnotations
         [TestMethod]        
         public void IsValid_Succeeds_IfRequestIsValid()
         {
-            AssertThat(CreateRequest()).IsValid();
+            AssertThat(CreateValidRequestMessage()).IsValid();
         }
 
         #endregion
@@ -102,7 +102,7 @@ namespace Kingo.MicroServices.DataAnnotations
         {
             try
             {
-                AssertThat(CreateRequest()).IsNotValid(1);
+                AssertThat(CreateValidRequestMessage()).IsNotValid(1);
             }
             catch (TestFailedException exception)
             {
@@ -342,7 +342,7 @@ namespace Kingo.MicroServices.DataAnnotations
 
         #endregion
 
-        protected override SomeCommand CreateRequest()
+        protected override SomeCommand CreateValidRequestMessage()
         {
             return new SomeCommand()
             {

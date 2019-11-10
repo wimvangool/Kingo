@@ -55,6 +55,21 @@
               Looks up a localized string similar to The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1})..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.ValidationAttribute_UnexpectedErrorMessage">
+            <summary>
+              Looks up a localized string similar to The expected error message ({0}) did not match the actual error message ({1})..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ValidationAttribute_ValidValid">
+            <summary>
+              Looks up a localized string similar to The specified value ({0}) was expected to be invalid, but was valid..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.ValidationAttribute_ValueNotValid">
+            <summary>
+              Looks up a localized string similar to The specified value ({0}) was expected to be valid, but wasn&apos;t ({1})..
+            </summary>
+        </member>
         <member name="T:Kingo.MicroServices.DataAnnotations.IIsNotValidResult">
             <summary>
             When implemented by a class, represents the result of verifying whether or not a request is not valid.
@@ -96,13 +111,13 @@
             <paramref name="errorMessagePredicate"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="T:Kingo.MicroServices.DataAnnotations.IRequest">
+        <member name="T:Kingo.MicroServices.DataAnnotations.IRequestMessageValidator">
             <summary>
             When implemented by a class, represents a request-message wrapper that can assert whether
             a request message is valid or not.
             </summary>
         </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.IRequest.IsValid">
+        <member name="M:Kingo.MicroServices.DataAnnotations.IRequestMessageValidator.IsValid">
             <summary>
             Asserts that the message is valid.
             </summary>
@@ -110,7 +125,7 @@
             The message is not valid.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.IRequest.IsNotValid(System.Int32)">
+        <member name="M:Kingo.MicroServices.DataAnnotations.IRequestMessageValidator.IsNotValid(System.Int32)">
             <summary>
             Asserts that the message is not valid and has the specified number of validation errors.
             </summary>
@@ -161,12 +176,12 @@
             The specified <paramref name="expectedErrorMessage"/> was not found in the collection of error messages.
             </exception>
         </member>
-        <member name="T:Kingo.MicroServices.DataAnnotations.RequestTest`1">
+        <member name="T:Kingo.MicroServices.DataAnnotations.RequestMessageTest`1">
             <summary>
-            When implemented by a class, represents a test-class for a specific <see cref="T:Kingo.MicroServices.DataAnnotations.Request" />.
+            When implemented by a class, represents a test-class for a specific <see cref="T:Kingo.MicroServices.DataAnnotations.RequestMessageValidator" />.
             </summary>    
         </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.RequestTest`1.AssertThat(System.Action{`0})">
+        <member name="M:Kingo.MicroServices.DataAnnotations.RequestMessageTest`1.AssertThat(System.Action{`0})">
             <summary>
             Creates and returns a wrapper for a request that is configured using the specified
             <paramref name="requestConfigurator" />.
@@ -174,25 +189,25 @@
             <param name="requestConfigurator">
             A delegate that is used to configure the properties of a request before its expected state is verified.
             </param>
-            <returns>A new <see cref="T:Kingo.MicroServices.DataAnnotations.IRequest"/>.</returns>
+            <returns>A new <see cref="T:Kingo.MicroServices.DataAnnotations.IRequestMessageValidator"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="requestConfigurator"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.RequestTest`1.AssertThat(`0)">
+        <member name="M:Kingo.MicroServices.DataAnnotations.RequestMessageTest`1.AssertThat(`0)">
             <summary>
             Creates and returns a wrapper for the specified <paramref name="request" /> that can be used
             to assert whether or not the request is valid.
             </summary>
             <param name="request">The request to test.</param>
-            <returns>A new <see cref="T:Kingo.MicroServices.DataAnnotations.IRequest"/>.</returns>
+            <returns>A new <see cref="T:Kingo.MicroServices.DataAnnotations.IRequestMessageValidator"/>.</returns>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="request"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:Kingo.MicroServices.DataAnnotations.RequestTest`1.CreateRequest">
+        <member name="M:Kingo.MicroServices.DataAnnotations.RequestMessageTest`1.CreateValidRequestMessage">
             <summary>
-            Creates and returns a new request.
+            Creates and returns a new request that has the minimum amount of data while still being considered a valid message.
             </summary>
             <returns>A new request message.</returns>
         </member>

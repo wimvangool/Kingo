@@ -70,6 +70,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified value of type &apos;{0}&apos; is not supported by constraint of type &apos;{1}&apos;; expected value of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string Constraint_UnsupportedType {
+            get {
+                return ResourceManager.GetString("Constraint_UnsupportedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
         /// </summary>
         internal static string Context_IllegalScopeStarted {

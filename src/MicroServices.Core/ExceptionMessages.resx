@@ -120,6 +120,9 @@
   <data name="Comparable_IncomparableType" xml:space="preserve">
     <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'.</value>
   </data>
+  <data name="Constraint_UnsupportedType" xml:space="preserve">
+    <value>The specified value of type '{0}' is not supported by constraint of type '{1}'; expected value of type '{2}'.</value>
+  </data>
   <data name="ContextScope_IncorrectNesting" xml:space="preserve">
     <value>The scopes were not nested correctly.</value>
   </data>
