@@ -53,7 +53,7 @@ namespace Kingo.MicroServices.DataAnnotations
                 set;
             }
 
-            [NotDefault(ErrorMessage = "'{0}' is not valid.")]
+            [NotDefault(ErrorMessage = "{0} is not valid.")]
             public Guid B
             {
                 get;
@@ -70,7 +70,7 @@ namespace Kingo.MicroServices.DataAnnotations
 
             }).IsNotValid(1).And(errors =>
             {
-                errors["A"].HasError("'A' is not allowed to have its default value.");
+                errors["A"].HasError("A must have a non-default value.");
             });
         }
 
@@ -83,7 +83,7 @@ namespace Kingo.MicroServices.DataAnnotations
 
             }).IsNotValid(1).And(errors =>
             {
-                errors["B"].HasError("'B' is not valid.");
+                errors["B"].HasError("B is not valid.");
             });
         }
 

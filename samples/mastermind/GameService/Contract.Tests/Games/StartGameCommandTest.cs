@@ -16,15 +16,32 @@ namespace Kingo.MasterMind.GameService.Games
             AssertThat(command =>
             {
                 command.GameId = Guid.Empty;
-            }).IsNotValid(1);
+
+            }).IsNotValid(1).And(members =>
+            {
+                members[nameof(StartGameCommand.GameId)].HasError("'GameId' is not allowed to have its default value.");
+            });
         }
 
-        protected override StartGameCommand CreateRequest()
+        [TestMethod]
+        public void Command_IsNotValid_IfPlayerNameIsNotSpecified()
+        {
+            AssertThat(command =>
+            {
+                command.PlayerName = null;
+
+            }).IsNotValid(1).And(members =>
+            {
+                members[nameof(StartGameCommand.PlayerName)].HasError("'PlayerName' is required");
+            });
+        }
+
+        protected override StartGameCommand CreateValidRequestMessage()
         {
             return new StartGameCommand()
             {
                 GameId = Guid.NewGuid(),
-                PlayerName = "Wim"
+                PlayerName = "John"
             };
         }
     }

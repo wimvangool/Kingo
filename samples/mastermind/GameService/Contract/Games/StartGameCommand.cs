@@ -14,7 +14,7 @@ namespace Kingo.Games
         /// <summary>
         /// A unique identifier to assign to the new game.
         /// </summary>
-        [Required]
+        [NotDefault]
         public Guid GameId
         {
             get;

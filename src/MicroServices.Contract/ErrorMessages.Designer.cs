@@ -61,7 +61,7 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is not allowed to have its default value..
+        ///   Looks up a localized string similar to {0} must have a non-default value..
         /// </summary>
         internal static string NotDefaultAttribute_ValueHasDefaultValue {
             get {
