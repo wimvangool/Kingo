@@ -7,9 +7,9 @@ namespace Kingo.MicroServices.Controllers
     /// and produces a set of events as a result.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
-    /// <typeparam name="TEventStream">Type of the event-stream that is produced by this test.</typeparam>
-    public interface IHandleMessageTest<TMessage, out TEventStream> : IMicroProcessorOperationTest
-        where TEventStream : MessageStream
+    /// <typeparam name="TOutputStream">Type of the output-stream that is produced by this test.</typeparam>
+    public interface IHandleMessageTest<TMessage, out TOutputStream> : IMicroProcessorOperationTest
+        where TOutputStream : MessageStream
     {
         /// <summary>
         /// Executes this test by handling a specific message using the specified <paramref name="processor"/>.
@@ -24,6 +24,6 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="message">The message that was handled by this test.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        void Then(TMessage message, IHandleMessageResult<TEventStream> result, MicroProcessorOperationTestContext context);
+        void Then(TMessage message, IHandleMessageResult<TOutputStream> result, MicroProcessorOperationTestContext context);
     }
 }
