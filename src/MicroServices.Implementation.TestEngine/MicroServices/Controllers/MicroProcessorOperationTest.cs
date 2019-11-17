@@ -3,7 +3,7 @@
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// Serves as a base-class for all test's.
+    /// Serves as a base-class for all tests.
     /// </summary>    
     public abstract class MicroProcessorOperationTest : IMicroProcessorOperationTest
     {

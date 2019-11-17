@@ -9,12 +9,12 @@ namespace Kingo.MicroServices.Controllers
     /// </summary>
     public sealed class MicroProcessorOperationTestContext
     {        
-        private readonly Dictionary<IMicroProcessorOperationTest, MessageStream> _messageStreams;
+        private readonly Dictionary<IMicroProcessorOperationTest, MessageStream> _outputStreams;
         private readonly IMicroProcessor _processor;        
 
         internal MicroProcessorOperationTestContext(IMicroProcessor processor)
         {                        
-            _messageStreams = new Dictionary<IMicroProcessorOperationTest, MessageStream>();
+            _outputStreams = new Dictionary<IMicroProcessorOperationTest, MessageStream>();
             _processor = processor;            
         }
 
@@ -29,15 +29,15 @@ namespace Kingo.MicroServices.Controllers
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_messageStreams.Count} message stream(s) stored.";        
+            $"{_outputStreams.Count} output-stream(s) stored.";        
 
-        #region [====== SetMessageStream ======]
+        #region [====== SetOutputStream ======]
 
-        internal void SetMessageStream<TMessageStream>(IMicroProcessorOperationTest test, TMessageStream stream) where TMessageStream : MessageStream
+        internal void SetOutputStream<TOutputStream>(IMicroProcessorOperationTest test, TOutputStream stream) where TOutputStream : MessageStream
         {
             try
             {
-                _messageStreams.Add(test, stream);
+                _outputStreams.Add(test, stream);
             }
             catch (ArgumentException exception)
             {
@@ -54,7 +54,7 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== GetMessageStream ======]        
+        #region [====== GetOutputStream ======]        
 
         /// <summary>
         /// Returns the <see cref="MessageStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
@@ -67,7 +67,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentException">
         /// No message-stream produced by the specified <paramref name="test"/> was stored in this context.
         /// </exception>
-        public TMessageStream GetMessageStream<TMessage, TMessageStream>(IHandleMessageTest<TMessage, TMessageStream> test) where TMessageStream : MessageStream
+        public TOutputStream GetOutputStream<TMessage, TOutputStream>(IHandleMessageTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream
         {
             if (test == null)
             {
@@ -75,7 +75,7 @@ namespace Kingo.MicroServices.Controllers
             }
             try
             {
-                return (TMessageStream) _messageStreams[test];
+                return (TOutputStream) _outputStreams[test];
             }
             catch (KeyNotFoundException exception)
             {

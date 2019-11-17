@@ -112,8 +112,14 @@ namespace Kingo.MicroServices.Controllers
             protected override Task WhenAsync() =>
                 Test.WhenAsync(this, Context);
 
+            public Task ExecuteCommandAsync<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+                ExecuteCommandAsync(Context.ServiceProvider.GetRequiredService<TMessageHandler>(), message);
+
             public Task ExecuteCommandAsync(IMessageHandler<TMessage> messageHandler, TMessage message) =>
                 ExecuteAsync(new ExecuteCommandOperation<TMessage, TMessageStream>(messageHandler, message));
+
+            public Task HandleEventAsync<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+                HandleEventAsync(Context.ServiceProvider.GetRequiredService<TMessageHandler>(), message);
 
             public Task HandleEventAsync(IMessageHandler<TMessage> messageHandler, TMessage message) =>
                 ExecuteAsync(new HandleEventOperation<TMessage, TMessageStream>(messageHandler, message));
@@ -155,7 +161,7 @@ namespace Kingo.MicroServices.Controllers
                 }
                 return new HandleMessageResult<TMessageStream>(new MessageStream(result.Messages), stream =>
                 {
-                    context.SetMessageStream(test, stream);
+                    context.SetOutputStream(test, stream);
                 });
             }
 

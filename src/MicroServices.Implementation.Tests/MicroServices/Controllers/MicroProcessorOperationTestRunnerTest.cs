@@ -499,7 +499,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfWhenStatementAttemptsToObtainMessageStreamThatIsNotFound()
+        public async Task RunMessageHandlerTest_Throws_IfWhenStatementAttemptsToObtainOutputStreamThatIsNotFound()
         {
             var testA = CreateMessageHandlerTest();
 
@@ -508,7 +508,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     try
                     {
-                        testContext.GetMessageStream(testA);
+                        testContext.GetOutputStream(testA);
                     }
                     finally
                     {
@@ -572,7 +572,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .When(async (messageProcessor, testContext) =>
                 {
-                    testContext.GetMessageStream(testA).AssertEvent<object>(0, actualEvent =>
+                    testContext.GetOutputStream(testA).AssertEvent<object>(0, actualEvent =>
                     {
                         Assert.AreSame(@event, actualEvent.Content);
                     });
@@ -684,7 +684,7 @@ namespace Kingo.MicroServices.Controllers
                     await messageProcessor.ExecuteCommandAsync((message, context) =>
                     {
                         Assert.IsInstanceOfType(message, typeof(int));
-                    }, testContext.GetMessageStream(testA).Value);
+                    }, testContext.GetOutputStream(testA).Value);
                 })
                 .Then((message, result, testContext) =>
                 {

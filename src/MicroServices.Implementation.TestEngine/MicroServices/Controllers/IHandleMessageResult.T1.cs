@@ -16,7 +16,7 @@ namespace Kingo.MicroServices.Controllers
         /// Delegate to verify the details of all the messages. When verified, the delegate also creates and returns
         /// a message stream of type <typeparamref name="TMessageStream" /> that can be used by other tests
         /// to access the contents of each message.
-        /// </param>        
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assertion"/> is <c>null</c>.
         /// </exception>        

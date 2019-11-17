@@ -27,7 +27,7 @@ namespace Kingo.MicroServices.DataAnnotations
             return memberErrorCollections;
         }
 
-        private MemberErrorCollection GetOrAddMemberErrorCollection(IDictionary<string, MemberErrorCollection> collections, string memberName)
+        private static MemberErrorCollection GetOrAddMemberErrorCollection(IDictionary<string, MemberErrorCollection> collections, string memberName)
         {
             if (collections.TryGetValue(memberName, out var collection))
             {

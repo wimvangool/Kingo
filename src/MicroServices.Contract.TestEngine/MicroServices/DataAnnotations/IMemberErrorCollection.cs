@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Kingo.MicroServices.DataAnnotations
 {
     /// <summary>
     /// When implemented by a class, represents a collection of validation-errors of a single member.
     /// </summary>
-    public interface IMemberErrorCollection
+    public interface IMemberErrorCollection : IReadOnlyCollection<string>
     {       
         /// <summary>
         /// Returns the name of the member.

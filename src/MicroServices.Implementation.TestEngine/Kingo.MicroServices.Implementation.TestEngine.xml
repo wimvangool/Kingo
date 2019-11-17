@@ -334,7 +334,7 @@
             Delegate to verify the details of all the messages. When verified, the delegate also creates and returns
             a message stream of type <typeparamref name="TMessageStream" /> that can be used by other tests
             to access the contents of each message.
-            </param>        
+            </param>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="assertion"/> is <c>null</c>.
             </exception>        
@@ -379,6 +379,16 @@
             </summary>
             <typeparam name="TMessage">Type of the message that can be processed.</typeparam>
         </member>
+        <member name="M:Kingo.MicroServices.Controllers.IMessageProcessor`1.ExecuteCommandAsync``1(`0)">
+            <summary>
+            Executes a command with a specific message handler.
+            </summary>
+            <typeparam name="TMessageHandler">Type of the message handler that will handle the specified <paramref name="message"/>.</typeparam>
+            <param name="message">The command to execute.</param>        
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="M:Kingo.MicroServices.Controllers.IMessageProcessor`1.ExecuteCommandAsync(Kingo.MicroServices.IMessageHandler{`0},`0)">
             <summary>
             Executes a command with a specific message handler.
@@ -387,6 +397,16 @@
             <param name="message">The command to execute.</param>        
             <exception cref="T:System.ArgumentNullException">
             <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.MicroServices.Controllers.IMessageProcessor`1.HandleEventAsync``1(`0)">
+            <summary>
+            Handles an event with a specific message handler.
+            </summary>
+            <typeparam name="TMessageHandler">Type of the message handler that will handle the specified <paramref name="message"/>.</typeparam>
+            <param name="message">The event to handle.</param>        
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.MicroServices.Controllers.IMessageProcessor`1.HandleEventAsync(Kingo.MicroServices.IMessageHandler{`0},`0)">
@@ -539,7 +559,7 @@
         </member>
         <member name="T:Kingo.MicroServices.Controllers.MicroProcessorOperationTest">
             <summary>
-            Serves as a base-class for all test's.
+            Serves as a base-class for all tests.
             </summary>    
         </member>
         <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTest.GivenAsync(Kingo.MicroServices.Controllers.IHandleMessageOperationTestProcessor,Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext)">
@@ -564,7 +584,7 @@
         <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext.ToString">
             <inheritdoc />
         </member>
-        <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext.GetMessageStream``2(Kingo.MicroServices.Controllers.IHandleMessageTest{``0,``1})">
+        <member name="M:Kingo.MicroServices.Controllers.MicroProcessorOperationTestContext.GetOutputStream``2(Kingo.MicroServices.Controllers.IHandleMessageTest{``0,``1})">
             <summary>
             Returns the <see cref="T:Kingo.MicroServices.MessageStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
             </summary>        

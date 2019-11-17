@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,7 +14,25 @@ namespace Kingo.MicroServices.DataAnnotations
         {            
             _memberName = memberName;
             _validationErrors = new List<string>();
-        }    
+        }
+
+        #region [====== IReadOnlyCollection<string> ======]
+
+        public int Count =>
+            _validationErrors.Count;
+
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+
+        public IEnumerator<string> GetEnumerator() =>
+            _validationErrors.GetEnumerator();
+
+        public override string ToString() =>
+            $"{_memberName} --> {string.Join("; ", _validationErrors)}";
+
+        #endregion
+
+        #region [====== IMemberErrorCollection ======]
 
         public string MemberName =>
             _memberName;
@@ -40,5 +59,7 @@ namespace Kingo.MicroServices.DataAnnotations
 
         private static Exception NewNoSuchErrorMessageException(string messageFormat, params object[] args) =>
             new TestFailedException(string.Format(messageFormat, args));
+
+        #endregion
     }
 }
