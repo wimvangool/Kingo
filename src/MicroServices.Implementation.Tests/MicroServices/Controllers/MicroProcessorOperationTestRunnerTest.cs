@@ -131,7 +131,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task RunMessageHandlerTest_Succeeds_IfOneCommandIsExpected_And_OneCommandWasSent()
+        public async Task RunMessageHandlerTest_Succeeds_IfOneMessageIsExpected_And_OneMessageWasProduced()
         {
             var command = new object();
             var test = CreateMessageHandlerTest()
@@ -146,82 +146,8 @@ namespace Kingo.MicroServices.Controllers
                 {
                     result.IsMessageStream(stream =>
                     {
-                        stream.AssertCommand<object>(0, sentCommand =>
-                        {
-                            Assert.AreSame(command, sentCommand.Content);
-                        });
-                    });
-                });
-
-            await RunAsync(test);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfOneCommandIsExpected_But_OneEventWasPublished()
-        {
-            var test = CreateMessageHandlerTest()
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.ExecuteCommandAsync((processor, context) =>
-                    {
-                        context.MessageBus.PublishEvent(new object());
-                    }, new object());
-                })
-                .Then((message, result, testContext) =>
-                {
-                    result.IsMessageStream(stream =>
-                    {
-                        stream.AssertCommand<object>(0);
-                    });
-                });
-
-            await RunAsync(test);
-        }
-
-        [TestMethod]        
-        public async Task RunMessageHandlerTest_Succeeds_IfOneEventIsExpected_And_OneEventWasPublished()
-        {
-            var @event = new object();
-            var test = CreateMessageHandlerTest()
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.ExecuteCommandAsync((processor, context) =>
-                    {
-                        context.MessageBus.PublishEvent(@event);
-                    }, new object());
-                })
-                .Then((message, result, testContext) =>
-                {
-                    result.IsMessageStream(stream =>
-                    {
-                        stream.AssertEvent<object>(0, publishedEvent =>
-                        {
-                            Assert.AreSame(@event, publishedEvent.Content);
-                        });
-                    });
-                });
-
-            await RunAsync(test);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfOneEventIsExpected_But_OneCommandWasSent()
-        {
-            var test = CreateMessageHandlerTest()
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.ExecuteCommandAsync((processor, context) =>
-                    {
-                        context.MessageBus.SendCommand(new object());
-                    }, new object());
-                })
-                .Then((message, result, testContext) =>
-                {
-                    result.IsMessageStream(stream =>
-                    {
-                        stream.AssertEvent<object>(0);
+                        Assert.AreEqual(1, stream.Count);
+                        Assert.AreSame(command, stream[0].Content);
                     });
                 });
 
@@ -572,10 +498,9 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .When(async (messageProcessor, testContext) =>
                 {
-                    testContext.GetOutputStream(testA).AssertEvent<object>(0, actualEvent =>
-                    {
-                        Assert.AreSame(@event, actualEvent.Content);
-                    });
+                    var outputStream = testContext.GetOutputStream(testA);
+
+                    Assert.AreSame(@event, outputStream[0].Content);
 
                     await messageProcessor.ExecuteCommandAsync((message, context) => { }, new object());
                 });                
@@ -625,7 +550,7 @@ namespace Kingo.MicroServices.Controllers
                 base(stream) { }
 
             public int Value =>
-                GetMessage<int>(0);
+                GetMessage<int>().Content;
         }
 
         [TestMethod]

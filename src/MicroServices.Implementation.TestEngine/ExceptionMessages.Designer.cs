@@ -79,29 +79,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the MessageStream contains only {2} message(s)..
+        ///   Looks up a localized string similar to Index cannot be negative: {0}..
+        /// </summary>
+        internal static string MessageStream_IndexOutOfRange {
+            get {
+                return ResourceManager.GetString("MessageStream_IndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; was not found at index &apos;{1}&apos;; stream contains {2} message(s) of type &apos;{0}&apos;..
         /// </summary>
         internal static string MessageStream_MessageNotFound {
             get {
                 return ResourceManager.GetString("MessageStream_MessageNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message at index &apos;{0}&apos; was expected to be of kind &apos;{1}&apos; but was &apos;{2}&apos;..
-        /// </summary>
-        internal static string MessageStream_MessageNotOfExpectedKind {
-            get {
-                return ResourceManager.GetString("MessageStream_MessageNotOfExpectedKind", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expected message of type &apos;{0}&apos; at index &apos;{1}&apos;, but found message of type &apos;{2}&apos;..
-        /// </summary>
-        internal static string MessageStream_MessageNotOfExpectedType {
-            get {
-                return ResourceManager.GetString("MessageStream_MessageNotOfExpectedType", resourceCulture);
             }
         }
         

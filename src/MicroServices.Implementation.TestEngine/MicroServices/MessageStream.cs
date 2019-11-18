@@ -57,107 +57,104 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== AssertMessage & GetMessage ======]
+        #region [====== GetMessage ======]
 
         /// <summary>
-        /// Asserts that this stream contains a command at the specified <paramref name="index"/> and that
-        /// this message is an instance of type <typeparamref name="TCommand"/>.
+        /// Returns the message of the specified type <typeparamref name="TMessage"/>.
         /// </summary>
-        /// <typeparam name="TCommand">Expected type of the command.</typeparam>
-        /// <param name="index">Index of the message.</param>
-        /// <param name="assertion">Optional delegate to verify the details of the message.</param>        
-        /// <exception cref="IndexOutOfRangeException">
+        /// <typeparam name="TMessage">Type of the message to return.</typeparam>
+        /// <param name="index">
+        /// Indicates which message must be returned if this stream contains multiple messages of type <typeparamref name="TMessage"/>.
+        /// </param>
+        /// <returns>A message of the selected type.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> is negative.
         /// </exception>
         /// <exception cref="TestFailedException">
-        /// There is no message at the specified <paramref name="index"/>, or the message at that
-        /// <paramref name="index"/> is not a command of type <typeparamref name="TCommand"/>.
+        /// The requested message identified by the specified <paramref name="index"/> was not found.
         /// </exception>
-        public void AssertCommand<TCommand>(int index, Action<MessageToDispatch<TCommand>> assertion = null) =>
-            AssertMessage(index, MessageKind.Command, assertion);
-
-        /// <summary>
-        /// Asserts that this stream contains an event at the specified <paramref name="index"/> and that
-        /// this message is an instance of type <typeparamref name="TEvent"/>.
-        /// </summary>
-        /// <typeparam name="TEvent">Expected type of the event.</typeparam>
-        /// <param name="index">Index of the message.</param>
-        /// <param name="assertion">Optional delegate to verify the details of the message.</param>        
-        /// <exception cref="IndexOutOfRangeException">
-        /// <paramref name="index"/> is negative.
-        /// </exception>
-        /// <exception cref="TestFailedException">
-        /// There is no message at the specified <paramref name="index"/>, or the message at that
-        /// <paramref name="index"/> is not an event of type <typeparamref name="TEvent"/>.
-        /// </exception>
-        public void AssertEvent<TEvent>(int index, Action<MessageToDispatch<TEvent>> assertion = null) =>
-            AssertMessage(index, MessageKind.Event, assertion);
-
-        private void AssertMessage<TMessage>(int index, MessageKind kind, Action<MessageToDispatch<TMessage>> assertion)
+        protected MessageToDispatch<TMessage> GetMessage<TMessage>(int index = 0)
         {
-            MessageToDispatch message;
+            if (index < 0)
+            {
+                throw NewIndexOutOfRangeException(index);
+            }
+            var messages = GetMessages<TMessage>().ToArray();
+            
+            try
+            {
+                return messages[index];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                throw NewMessageOfTypeNotFoundException(typeof(TMessage), index, messages.Length);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to return the message of the specified type <typeparamref name="TMessage"/>.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message to return.</typeparam>
+        /// <param name="index">
+        /// Indicates which message must be returned if this stream contains multiple messages of type <typeparamref name="TMessage"/>.
+        /// </param>
+        /// <param name="message">
+        /// If the message of the specified type <typeparamref name="TMessage"/> was found at the specified <paramref name="index"/>,
+        /// this parameter will be assigned to the requested message; otherwise it will be <c>null</c>.
+        /// </param>
+        /// <returns><c>true</c> if the messages was found; otherwise <c>false</c>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is negative.
+        /// </exception>
+        protected bool TryGetMessage<TMessage>(int index, out MessageToDispatch<TMessage> message)
+        {
+            if (index < 0)
+            {
+                throw NewIndexOutOfRangeException(index);
+            }
+            var messages = GetMessages<TMessage>().ToArray();
 
             try
             {
-                message = _messages[index];
+                message = messages[index];
+                return true;
             }
-            catch (IndexOutOfRangeException exception)
+            catch (IndexOutOfRangeException)
             {
-                if (index < 0)
-                {
-                    throw;
-                }
-                throw NewMessageNotFoundException(typeof(TMessage), index, Count, exception);
+                message = null;
+                return false;
             }
-            if (message.Kind != kind)
-            {
-                throw NewMessageNotOfExpectedKindException(kind, message.Kind, index);
-            }
-            if (message.IsOfType<TMessage>(out var messageOfExpectedType))
-            {
-                assertion?.Invoke(messageOfExpectedType);                
-            }
-            else
-            {
-                throw NewMessageNotOfExpectedTypeException(typeof(TMessage), index, message.GetType());
-            }            
         }
-
-        private static Exception NewMessageNotFoundException(Type expectedType, int index, int messageCount, Exception innerException)
-        {
-            var messageFormat = ExceptionMessages.MessageStream_MessageNotFound;
-            var message = string.Format(messageFormat, expectedType.FriendlyName(), index, messageCount);
-            return new TestFailedException(message, innerException);
-        }
-
-        private static Exception NewMessageNotOfExpectedKindException(MessageKind expectedKind, MessageKind actualKind, int index)
-        {
-            var messageFormat = ExceptionMessages.MessageStream_MessageNotOfExpectedKind;
-            var message = string.Format(messageFormat, index, expectedKind, actualKind);
-            return new TestFailedException(message);
-        }
-
-        private static Exception NewMessageNotOfExpectedTypeException(Type expectedType, int index, Type actualType)
-        {
-            var messageFormat = ExceptionMessages.MessageStream_MessageNotOfExpectedType;
-            var message = string.Format(messageFormat, expectedType.FriendlyName(), index, actualType.FriendlyName());
-            return new TestFailedException(message);
-        }        
 
         /// <summary>
-        /// Returns the message at the specified <paramref name="index" />.
+        /// Returns all messages in this stream of the specified type <typeparamref name="TMessage"/>.
         /// </summary>
-        /// <typeparam name="TMessage">Expected message type.</typeparam>
-        /// <param name="index">Index of the requested message.</param>
-        /// <returns>The message at index <paramref name="index"/>.</returns>
-        /// <exception cref="IndexOutOfRangeException">
-        /// <paramref name="index"/> is not a valid index for this stream.
-        /// </exception>
-        /// <exception cref="InvalidCastException">
-        /// The message at the specified <paramref name="index"/> is not of type <typeparamref name="TMessage"/>.
-        /// </exception>
-        protected TMessage GetMessage<TMessage>(int index) =>
-            (TMessage) _messages[index].Content;
+        /// <typeparam name="TMessage">Type of the messages to return.</typeparam>
+        /// <returns>A collection of messages.</returns>
+        protected IEnumerable<MessageToDispatch<TMessage>> GetMessages<TMessage>()
+        {
+            foreach (var message in _messages)
+            {
+                if (message.IsOfType<TMessage>(out var messageOfRequestedType))
+                {
+                    yield return messageOfRequestedType;
+                }
+            }
+        }
+
+        private static Exception NewIndexOutOfRangeException(int index)
+        {
+            var messageFormat = ExceptionMessages.MessageStream_IndexOutOfRange;
+            var message = string.Format(messageFormat, index);
+            return new IndexOutOfRangeException(message);
+        }
+
+        private static Exception NewMessageOfTypeNotFoundException(Type messageType, int index, int messageCount)
+        {
+            var messageFormat = ExceptionMessages.MessageStream_MessageNotFound;
+            var message = string.Format(messageFormat, messageType.FriendlyName(), index, messageCount);
+            return new TestFailedException(message);
+        }
 
         #endregion
     }

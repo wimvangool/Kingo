@@ -14,8 +14,19 @@ namespace Kingo.MicroServices
             public MessageStreamStub(MessageStream stream) :
                 base(stream) { }
 
-            public new TMessage GetMessage<TMessage>(int index) =>
-                base.GetMessage<TMessage>(index);
+            public new TMessage GetMessage<TMessage>(int index = 0) =>
+                base.GetMessage<TMessage>(index).Content;
+
+            public bool TryGetMessage<TMessage>(int index, out TMessage message)
+            {
+                if (base.TryGetMessage<TMessage>(index, out var messageToDispatch))
+                {
+                    message = messageToDispatch.Content;
+                    return true;
+                }
+                message = default;
+                return false;
+            }
         }
 
         #endregion
@@ -31,126 +42,6 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== AssertCommand ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void AssertCommand_Throws_IfIndexIsNegative()
-        {
-            MessageStream.Empty.AssertCommand<object>(-1);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public void AssertCommand_Throws_IfIndexIsOutOfRange()
-        {
-            MessageStream.Empty.AssertCommand<object>(0);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public void AssertCommand_Throws_IfMessageIsEvent()
-        {
-            CreateEventStream(new object()).AssertCommand<object>(0);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public void AssertCommand_Throws_IfCommandIsNotOfExpectedType()
-        {
-            CreateCommandStream(string.Empty).AssertCommand<int>(0);
-        }
-
-        [TestMethod]
-        public void AssertCommand_InvokesSpecifiedAssertion_IfCommandIsOfDerivedType()
-        {
-            var counter = new InvocationCounter();
-
-            CreateCommandStream(string.Empty).AssertCommand<object>(0, command =>
-            {
-                Assert.AreSame(string.Empty, command.Content);
-                counter.Increment();
-            });
-
-            counter.AssertExactly(1);
-        }
-
-        [TestMethod]
-        public void AssertCommand_InvokesSpecifiedAssertion_IfCommandIsOfExpectedType()
-        {
-            var counter = new InvocationCounter();
-
-            CreateCommandStream(string.Empty).AssertCommand<string>(0, command =>
-            {
-                Assert.AreSame(string.Empty, command.Content);
-                counter.Increment();
-            });
-
-            counter.AssertExactly(1);
-        }
-
-        #endregion
-
-        #region [====== AssertEvent ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void AssertEvent_Throws_IfIndexIsNegative()
-        {
-            MessageStream.Empty.AssertEvent<object>(-1);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public void AssertEvent_Throws_IfIndexIsOutOfRange()
-        {
-            MessageStream.Empty.AssertEvent<object>(0);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public void AssertEvent_Throws_IfMessageIsCommand()
-        {
-            CreateCommandStream(new object()).AssertEvent<object>(0);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public void AssertEvent_Throws_IfEventIsNotOfExpectedType()
-        {
-            CreateEventStream(string.Empty).AssertEvent<int>(0);
-        }
-
-        [TestMethod]        
-        public void AssertEvent_InvokesSpecifiedAssertion_IfEventIsOfDerivedType()
-        {
-            var counter = new InvocationCounter();
-
-            CreateEventStream(string.Empty).AssertEvent<object>(0, @event =>
-            {
-                Assert.AreSame(string.Empty, @event.Content);
-                counter.Increment();
-            });
-
-            counter.AssertExactly(1);
-        }
-
-        [TestMethod]
-        public void AssertEvent_InvokesSpecifiedAssertion_IfEventIsOfExpectedType()
-        {
-            var counter = new InvocationCounter();
-
-            CreateEventStream(string.Empty).AssertEvent<string>(0, @event =>
-            {
-                Assert.AreSame(string.Empty, @event.Content);
-                counter.Increment();
-            });
-
-            counter.AssertExactly(1);
-        }
-
-        #endregion
-
         #region [====== GetMessage ======]
 
         [TestMethod]
@@ -161,38 +52,106 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public void GetMessage_Throws_IfStreamContainsNoMessages()
+        {
+            CreateEventStreamStub().GetMessage<object>();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public void GetMessage_Throws_IfStreamContainsNoMessagesOfTheSpecifiedType()
+        {
+            CreateEventStreamStub(string.Empty).GetMessage<int>();
+        }
+
+        [TestMethod]
+        public void GetMessage_ReturnsExpectedMessage_IfStreamContainsExactlyOneMessageOfTheSpecifiedType()
+        {
+            var messageA = string.Empty;
+            var messageB = CreateEventStreamStub(messageA).GetMessage<object>();
+
+            Assert.AreSame(messageA, messageB);
+        }
+
+        [TestMethod]
+        public void GetMessage_ReturnsExpectedMessage_IfStreamContainsTwoMessagesOfTheSpecifiedType_And_FirstOneIsSelected()
+        {
+            var messageA = string.Empty;
+            var messageB = 4;
+            var messageC = CreateEventStreamStub(messageA, messageB).GetMessage<object>();
+
+            Assert.AreSame(messageA, messageC);
+        }
+
+        [TestMethod]
+        public void GetMessage_ReturnsExpectedMessage_IfStreamContainsTwoMessagesOfTheSpecifiedType_And_SecondOneIsSelected()
+        {
+            var messageA = string.Empty;
+            var messageB = 4;
+            var messageC = CreateEventStreamStub(messageA, messageB).GetMessage<object>(1);
+
+            Assert.AreEqual(messageB, messageC);
+        }
+
+        #endregion
+
+        #region [====== TryGetMessage ======]
+
+        [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void GetMessage_Throws_IfIndexIsOutOfRange()
+        public void TryGetMessage_Throws_IfIndexIsNegative()
         {
-            CreateEventStreamStub().GetMessage<object>(0);
+            CreateEventStreamStub().TryGetMessage<object>(-1, out _);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidCastException))]
-        public void GetMessage_Throws_IfEventIsNotOfExpectedType()
+        public void TryGetMessage_ReturnsFalse_IfStreamContainsNoMessages()
         {
-            CreateEventStreamStub(string.Empty).GetMessage<int>(0);
-        }
-
-        [TestMethod]        
-        public void GetMessage_ReturnsEvent_IfEventIsNotOfDerivedType()
-        {
-            Assert.AreSame(string.Empty, CreateEventStreamStub(string.Empty).GetMessage<object>(0));
+            Assert.IsFalse(CreateEventStreamStub().TryGetMessage<object>(0, out var message));
+            Assert.IsNull(message);
         }
 
         [TestMethod]
-        public void GetMessage_ReturnsEvent_IfEventIsNotOfExpectedType()
+        public void TryGetMessage_ReturnsFalse_IfStreamContainsNoMessagesOfTheSpecifiedType()
         {
-            Assert.AreSame(string.Empty, CreateEventStreamStub(string.Empty).GetMessage<string>(0));
+            Assert.IsFalse(CreateEventStreamStub(string.Empty).TryGetMessage<int>(0, out var message));
+            Assert.AreEqual(0, message);
+        }
+
+        [TestMethod]
+        public void TryGetMessage_ReturnsTrue_IfStreamContainsExactlyOneMessageOfTheSpecifiedType()
+        {
+            var messageA = string.Empty;
+
+            Assert.IsTrue(CreateEventStreamStub(messageA).TryGetMessage<object>(0, out var messageB));
+            Assert.AreSame(messageA, messageB);
+        }
+
+        [TestMethod]
+        public void TryGetMessage_ReturnsTrue_IfStreamContainsTwoMessagesOfTheSpecifiedType_And_FirstOneIsSelected()
+        {
+            var messageA = string.Empty;
+            var messageB = 4;
+            
+            Assert.IsTrue(CreateEventStreamStub(messageA, messageB).TryGetMessage<object>(0, out var messageC));
+            Assert.AreSame(messageA, messageC);
+        }
+
+        [TestMethod]
+        public void TryGetMessage_ReturnsTrue_IfStreamContainsTwoMessagesOfTheSpecifiedType_And_SecondOneIsSelected()
+        {
+            var messageA = string.Empty;
+            var messageB = 4;
+
+            Assert.IsTrue(CreateEventStreamStub(messageA, messageB).TryGetMessage<object>(1, out var messageC));
+            Assert.AreEqual(messageB, messageC);
         }
 
         #endregion
 
         private static MessageStreamStub CreateEventStreamStub(params object[] events) =>
             new MessageStreamStub(CreateEventStream(events));
-
-        private static MessageStream CreateCommandStream(params object[] commands) =>
-            new MessageStream(commands.Select(command => command.ToCommand()));
 
         private static MessageStream CreateEventStream(params object[] events) =>
             new MessageStream(events.Select(@event => @event.ToEvent()));
