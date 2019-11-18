@@ -6,6 +6,7 @@
     <AssemblyName>Kingo.MasterMind.GameService.Implementation.Api</AssemblyName>
     <RootNamespace>Kingo.MasterMind.GameService</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <StartupObject>Kingo.MasterMind.GameService.ApiStartup</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

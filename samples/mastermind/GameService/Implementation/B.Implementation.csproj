@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kingo.MicroServices.Implementation" Version="4.0.19314.2-alpha" />
+    <PackageReference Include="Kingo.MicroServices.Implementation" Version="4.0.19322.1-alpha" />
   </ItemGroup>
 
   <ItemGroup>

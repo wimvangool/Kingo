@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Kingo.MasterMind.GameService.Contract</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>Kingo.MasterMind.GameService</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +12,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kingo.MicroServices.Contract" Version="4.0.19314.2-alpha" />
+    <PackageReference Include="Kingo.MicroServices.Contract" Version="4.0.19322.1-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ErrorMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ErrorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

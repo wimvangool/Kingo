@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using Kingo.MicroServices.DataAnnotations;
 
-namespace Kingo.Games
+namespace Kingo.MasterMind.GameService.Games
 {
     /// <summary>
     /// This command can be used to start a new game.
@@ -24,7 +22,7 @@ namespace Kingo.Games
         /// <summary>
         /// Name of the player that will be playing the game.
         /// </summary>
-        [Required]
+        [Required(AllowEmptyStrings = false), PlayerName]
         public string PlayerName
         {
             get;

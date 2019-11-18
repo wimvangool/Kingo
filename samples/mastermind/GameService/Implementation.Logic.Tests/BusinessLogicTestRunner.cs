@@ -18,8 +18,8 @@ namespace Kingo.MasterMind.GameService
         /// Adds the MicroProcessor that will be used to run all tests and all other dependencies to the specified
         /// <see cref="services"/>.
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
+        /// <param name="services">The service-collection to configure.</param>
+        /// <returns>The configured service-collection.</returns>
         protected override IServiceCollection ConfigureServices(IServiceCollection services)
         {
             return services.AddMicroProcessor(processor =>
