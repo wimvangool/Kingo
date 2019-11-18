@@ -138,11 +138,11 @@
   <data name="MicroProcessorConfiguration_ServicesAlreadyConfigured" xml:space="preserve">
     <value>Cannot invoke '{0}' at this point: the service collection has already been configured.</value>
   </data>
-  <data name="MicroProcessorTestContext_MessageStreamNotFound" xml:space="preserve">
-    <value>Cannot retrieve the MessageStream of '{0}' because its results haven't been saved in this context.</value>
-  </data>
   <data name="MicroProcessorTestContext_TestAlreadyRun" xml:space="preserve">
     <value>Cannot save the MessageStream of '{0}' because a previous result of this test has already been saved.</value>
+  </data>
+  <data name="MicroProcessorTestContext_TestResultNotFound" xml:space="preserve">
+    <value>Cannot retrieve the result of '{0}' because its results haven't been saved in this context.</value>
   </data>
   <data name="MicroProcessorTestResult_AssertionOfExceptionFailed" xml:space="preserve">
     <value>One or more assertions for exception of type '{0}' failed. See inner exception for details.</value>

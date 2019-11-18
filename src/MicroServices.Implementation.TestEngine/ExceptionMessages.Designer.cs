@@ -124,20 +124,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot retrieve the MessageStream of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
-        /// </summary>
-        internal static string MicroProcessorTestContext_MessageStreamNotFound {
-            get {
-                return ResourceManager.GetString("MicroProcessorTestContext_MessageStreamNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot save the MessageStream of &apos;{0}&apos; because a previous result of this test has already been saved..
         /// </summary>
         internal static string MicroProcessorTestContext_TestAlreadyRun {
             get {
                 return ResourceManager.GetString("MicroProcessorTestContext_TestAlreadyRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot retrieve the result of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
+        /// </summary>
+        internal static string MicroProcessorTestContext_TestResultNotFound {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestContext_TestResultNotFound", resourceCulture);
             }
         }
         

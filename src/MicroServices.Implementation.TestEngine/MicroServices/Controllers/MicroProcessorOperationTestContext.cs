@@ -8,13 +8,13 @@ namespace Kingo.MicroServices.Controllers
     /// When implemented by a class, represents the context in which a test executes.
     /// </summary>
     public sealed class MicroProcessorOperationTestContext
-    {        
-        private readonly Dictionary<IMicroProcessorOperationTest, MessageStream> _outputStreams;
+    {
+        private readonly Dictionary<IMicroProcessorOperationTest, object> _testResults;
         private readonly IMicroProcessor _processor;        
 
         internal MicroProcessorOperationTestContext(IMicroProcessor processor)
         {                        
-            _outputStreams = new Dictionary<IMicroProcessorOperationTest, MessageStream>();
+            _testResults = new Dictionary<IMicroProcessorOperationTest, object>();
             _processor = processor;            
         }
 
@@ -29,21 +29,21 @@ namespace Kingo.MicroServices.Controllers
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_outputStreams.Count} output-stream(s) stored.";        
+            $"{_testResults.Count} output-stream(s) stored.";        
 
-        #region [====== SetOutputStream ======]
+        #region [====== SetTestResult ======]
 
-        internal void SetOutputStream<TOutputStream>(IMicroProcessorOperationTest test, TOutputStream stream) where TOutputStream : MessageStream
+        internal void SetTestResult<TMessage, TOutputStream>(IMicroProcessorOperationTest test, MessageEnvelope<TMessage> message, TOutputStream outputStream) where TOutputStream : MessageStream
         {
             try
             {
-                _outputStreams.Add(test, stream);
+                _testResults.Add(test, Tuple.Create(message, outputStream));
             }
             catch (ArgumentException exception)
             {
                 throw NewTestAlreadyRunException(test, exception);
             }
-        }        
+        }
 
         private static Exception NewTestAlreadyRunException(object test, Exception innerException)
         {
@@ -54,10 +54,10 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== GetOutputStream ======]        
+        #region [====== GetTestResult ======]     
 
         /// <summary>
-        /// Returns the <see cref="MessageStream"/> that was produced by the specified <paramref name="test"/> and stored in this context.
+        /// Returns the message that was processed by the specified <paramref name="test"/>.
         /// </summary>        
         /// <param name="test">The test that produced the message-stream.</param>
         /// <returns>The message-stream that was stored in this context.</returns>
@@ -67,7 +67,24 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentException">
         /// No message-stream produced by the specified <paramref name="test"/> was stored in this context.
         /// </exception>
-        public TOutputStream GetOutputStream<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream
+        public MessageEnvelope<TMessage> GetInputMessage<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream =>
+            GetTestResult(test).Item1;
+
+        /// <summary>
+        /// Returns the <see cref="MessageStream"/> that was produced by the specified <paramref name="test"/>.
+        /// </summary>        
+        /// <param name="test">The test that produced the message-stream.</param>
+        /// <returns>The message-stream that was stored in this context.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="test"/> is <c>null</c>.        
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// No message-stream produced by the specified <paramref name="test"/> was stored in this context.
+        /// </exception>
+        public TOutputStream GetOutputStream<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream =>
+            GetTestResult(test).Item2;
+
+        private Tuple<MessageEnvelope<TMessage>, TOutputStream> GetTestResult<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream
         {
             if (test == null)
             {
@@ -75,17 +92,17 @@ namespace Kingo.MicroServices.Controllers
             }
             try
             {
-                return (TOutputStream) _outputStreams[test];
+                return (Tuple<MessageEnvelope<TMessage>, TOutputStream>) _testResults[test];
             }
             catch (KeyNotFoundException exception)
             {
-                throw NewMessageStreamNotFoundException(test, exception);
-            }            
+                throw NewTestResultNotFoundException(test, exception);
+            }
         }
 
-        private static Exception NewMessageStreamNotFoundException(object test, Exception innerException)            
+        private static Exception NewTestResultNotFoundException(object test, Exception innerException)            
         {
-            var messageFormat = ExceptionMessages.MicroProcessorTestContext_MessageStreamNotFound;
+            var messageFormat = ExceptionMessages.MicroProcessorTestContext_TestResultNotFound;
             var message = string.Format(messageFormat, test.GetType().FriendlyName());
             return new ArgumentException(message, nameof(test), innerException);
         }

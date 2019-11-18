@@ -1249,7 +1249,7 @@
             When implemented by a class, represents the result of handling a command or event.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.Messages">
+        <member name="P:Kingo.MicroServices.IMessageHandlerOperationResult.Output">
             <summary>
             Returns all messages in the order they were (scheduled to be) sent or published.
             </summary>
@@ -1652,7 +1652,11 @@
             Executes the query.
             </summary>   
             <param name="context">Context of the <see cref="T:Kingo.MicroServices.IMicroProcessor" /> that is currently executing the query.</param>    
-            <returns>The result of this query.</returns>        
+            <returns>The result of this query.</returns>
+            <remarks>
+            Note that the response of a query is never allowed to be <c>null</c>. To represent empty results,
+            please return an empty message or default value instead.
+            </remarks> 
         </member>
         <member name="T:Kingo.MicroServices.IQuery`2">
             <summary>
@@ -1672,6 +1676,10 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="message"/> is <c>null</c>.
             </exception>
+            <remarks>
+            Note that the response of a query is never allowed to be <c>null</c>. To represent empty results,
+            please return an empty message or default value instead.
+            </remarks>
         </member>
         <member name="T:Kingo.MicroServices.IQueryOperationContext">
             <summary>
@@ -1683,7 +1691,7 @@
             When implemented by a class, represents the result of executing a query.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.IQueryOperationResult`1.Response">
+        <member name="P:Kingo.MicroServices.IQueryOperationResult`1.Output">
             <summary>
             The response of the query.
             </summary>
@@ -1964,13 +1972,33 @@
             Represents an empty result.
             </summary>
         </member>
-        <member name="P:Kingo.MicroServices.MessageHandlerOperationResult.Messages">
+        <member name="P:Kingo.MicroServices.MessageHandlerOperationResult.Output">
             <inheritdoc />
         </member>
         <member name="P:Kingo.MicroServices.MessageHandlerOperationResult.MessageHandlerCount">
             <inheritdoc />
         </member>
         <member name="M:Kingo.MicroServices.MessageHandlerOperationResult.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.MessageHandlerOperationResult`1">
+            <summary>
+            Represents the result of a write-operation.
+            </summary>
+            <typeparam name="TMessage">Type of the input-message.</typeparam>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageHandlerOperationResult`1.Input">
+            <summary>
+            The command or event that was processed.
+            </summary>
+        </member>
+        <member name="P:Kingo.MicroServices.MessageHandlerOperationResult`1.Output">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.MicroServices.MessageHandlerOperationResult`1.MessageHandlerCount">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.MicroServices.MessageHandlerOperationResult`1.ToString">
             <inheritdoc />
         </member>
         <member name="T:Kingo.MicroServices.MessageHandlerOrQueryInterface`2">
@@ -2712,13 +2740,25 @@
             </summary>
             <typeparam name="TResponse">Type of the returned response message.</typeparam>
         </member>
-        <member name="P:Kingo.MicroServices.QueryOperationResult`1.Response">
+        <member name="P:Kingo.MicroServices.QueryOperationResult`1.Output">
             <summary>
             The response that was returned by the query.
             </summary>
         </member>
         <member name="M:Kingo.MicroServices.QueryOperationResult`1.ToString">
             <inheritdoc />
+        </member>
+        <member name="T:Kingo.MicroServices.QueryOperationResult`2">
+            <summary>
+            Represents the result of executing a query by a <see cref="T:Kingo.MicroServices.IMicroProcessor" />.
+            </summary>
+            <typeparam name="TRequest">Type of the request-message.</typeparam>
+            <typeparam name="TResponse">Type of the returned response message.</typeparam>
+        </member>
+        <member name="P:Kingo.MicroServices.QueryOperationResult`2.Input">
+            <summary>
+            The request-message of the query.
+            </summary>
         </member>
         <member name="T:Kingo.MicroServices.UnauthorizedRequestException">
             <summary>

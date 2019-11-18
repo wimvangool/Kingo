@@ -161,7 +161,7 @@ namespace Kingo.MicroServices.Controllers
                 }
                 return new MessageHandlerOperationTestResult<TMessageStream>(new MessageStream(result.Output), stream =>
                 {
-                    context.SetOutputStream(test, stream);
+                    context.SetTestResult(test, result.Input, stream);
                 });
             }
 
