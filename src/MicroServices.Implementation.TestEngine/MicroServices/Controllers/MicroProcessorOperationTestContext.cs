@@ -67,7 +67,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentException">
         /// No message-stream produced by the specified <paramref name="test"/> was stored in this context.
         /// </exception>
-        public TOutputStream GetOutputStream<TMessage, TOutputStream>(IHandleMessageTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream
+        public TOutputStream GetOutputStream<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream
         {
             if (test == null)
             {

@@ -3,9 +3,9 @@
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// Contains extension methods for instances that implement the <see cref="IHandleMessageResult" />
+    /// Contains extension methods for instances that implement the <see cref="IMessageHandlerOperationTestResult" />
     /// </summary>
-    public static class HandleMessageResultExtensions
+    public static class MessageHandlerOperationTestResultExtensions
     {
         /// <summary>
         /// Verifies that a test produces an empty message-stream.
@@ -17,7 +17,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="TestFailedException">
         /// The result is either not an message-stream, or the message-stream contains one or more events.
         /// </exception>
-        public static void IsEmptyStream(this IHandleMessageResult result) =>
+        public static void IsEmptyStream(this IMessageHandlerOperationTestResult result) =>
             NotNull(result).IsMessageStream(IsEmpty);
 
         private static void IsEmpty(MessageStream stream)
@@ -29,12 +29,12 @@ namespace Kingo.MicroServices.Controllers
             throw NewStreamNotEmptyException(stream);
         }
 
-        private static IHandleMessageResult NotNull(IHandleMessageResult result) =>
+        private static IMessageHandlerOperationTestResult NotNull(IMessageHandlerOperationTestResult result) =>
             result ?? throw new ArgumentNullException(nameof(result));
 
         private static Exception NewStreamNotEmptyException(MessageStream stream)
         {
-            var messageFormat = ExceptionMessages.MessageHandlerResult_StreamNotEmpty;
+            var messageFormat = ExceptionMessages.MessageHandlerOperationTestResult_StreamNotEmpty;
             var message = string.Format(messageFormat, stream.Count);
             return new TestFailedException(message);
         }

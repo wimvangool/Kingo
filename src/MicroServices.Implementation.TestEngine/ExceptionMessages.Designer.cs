@@ -63,18 +63,18 @@ namespace Kingo {
         /// <summary>
         ///   Looks up a localized string similar to One or more assertions for the published messages failed. See inner exception for details. .
         /// </summary>
-        internal static string MessageHandlerResult_AssertionOfMessageStreamFailed {
+        internal static string MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed {
             get {
-                return ResourceManager.GetString("MessageHandlerResult_AssertionOfMessageStreamFailed", resourceCulture);
+                return ResourceManager.GetString("MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Expected an empty stream, but stream contains {0} message(s)..
         /// </summary>
-        internal static string MessageHandlerResult_StreamNotEmpty {
+        internal static string MessageHandlerOperationTestResult_StreamNotEmpty {
             get {
-                return ResourceManager.GetString("MessageHandlerResult_StreamNotEmpty", resourceCulture);
+                return ResourceManager.GetString("MessageHandlerOperationTestResult_StreamNotEmpty", resourceCulture);
             }
         }
         

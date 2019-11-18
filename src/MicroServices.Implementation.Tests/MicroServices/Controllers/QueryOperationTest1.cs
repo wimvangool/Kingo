@@ -1,13 +1,12 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.XPath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.Controllers
 {
     [TestClass]
-    public sealed class ExecuteQueryTest2 : MicroProcessorTest<MicroProcessor>
+    public sealed class QueryOperationTest1 : MicroProcessorTest<MicroProcessor>
     {
         #region [====== Null Parameters ======]
 
@@ -15,42 +14,21 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync<object, object>(null, new object());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteQueryAsync_Throws_IfQueryMessageIsNull()
-        {
-            await CreateProcessor().ExecuteQueryAsync(new QueryStub(), null);
+            await CreateProcessor().ExecuteQueryAsync<object>(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryFuncIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync(null as Func<object, IQueryOperationContext, object>, new object());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteQueryAsync_Throws_IfQueryFuncMessageIsNull()
-        {
-            await CreateProcessor().ExecuteQueryAsync((message, context) => message, null as object);
+            await CreateProcessor().ExecuteQueryAsync(null as Func<IQueryOperationContext, object>);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryFuncAsyncIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync(null as Func<object, IQueryOperationContext, Task<object>>, new object());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteQueryAsync_Throws_IfQueryFuncAsyncMessageIsNull()
-        {
-            await CreateProcessor().ExecuteQueryAsync((message, context) => Task.FromResult(message), null as object);
+            await CreateProcessor().ExecuteQueryAsync(null as Func<IQueryOperationContext, Task<object>>);
         }
 
         #endregion
@@ -60,44 +38,36 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task ExecuteQueryAsync_ReturnsExpectedResponse_IfQueryIsExecuted()
         {
-            var request = new object();
-            var result = await CreateProcessor().ExecuteQueryAsync((message, context) => message, request);
+            var response = new object();
+            var result = await CreateProcessor().ExecuteQueryAsync(context => response);
 
             Assert.IsNotNull(result);
-            Assert.AreSame(request, result.Input.Content);
-            Assert.AreSame(request, result.Output.Content);
-
-            Assert.AreEqual(36, result.Input.MessageId.Length);
-            Assert.IsNull(result.Input.CorrelationId);
+            Assert.AreSame(response, result.Output.Content);
 
             Assert.AreEqual(36, result.Output.MessageId.Length);
-            Assert.AreEqual(result.Input.MessageId, result.Output.CorrelationId);
+            Assert.IsNull(result.Output.CorrelationId);
         }
 
         #endregion
 
         #region [====== Context Verification ======]
 
-        private sealed class QueryStub : IQuery<object, object>
+        private sealed class QueryStub : IQuery<object>
         {
-            public Task<object> ExecuteAsync(object message, IQueryOperationContext context)
+            public Task<object> ExecuteAsync(IQueryOperationContext context)
             {
                 Assert.AreEqual(1, context.StackTrace.Count);
-                AssertOperation(message, context.StackTrace.CurrentOperation);
-                return Task.FromResult(message);
+                AssertOperation(context.StackTrace.CurrentOperation);
+                return Task.FromResult(new object());
             }
 
-            private void AssertOperation(object message, IAsyncMethodOperation operation)
+            private void AssertOperation(IAsyncMethodOperation operation)
             {
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, operation.Type);
                 Assert.AreEqual(MicroProcessorOperationKind.RootOperation, operation.Kind);
 
-                Assert.IsNotNull(operation.Message);
-                Assert.AreSame(message, operation.Message.Content);
-                Assert.AreEqual(MessageKind.QueryRequest, operation.Message.Kind);
-
-                Assert.IsNotNull(operation.Method.MessageParameterInfo);
-                Assert.AreSame(typeof(object), operation.Method.MessageParameterInfo.ParameterType);
+                Assert.IsNull(operation.Message);
+                Assert.IsNull(operation.Method.MessageParameterInfo);
                 Assert.AreSame(typeof(IQueryOperationContext), operation.Method.ContextParameterInfo.ParameterType);
 
                 AssertComponentType(operation.Method.ComponentType);
@@ -113,7 +83,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task ExecuteQueryAsync_ProducesExpectedStackTrace_IfQueryIsExecuted()
         {
-            await CreateProcessor().ExecuteQueryAsync(new QueryStub(), new object());
+            await CreateProcessor().ExecuteQueryAsync(new QueryStub());
         }
 
         #endregion
@@ -128,11 +98,11 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await CreateProcessor().ExecuteQueryAsync((message, context) =>
+                await CreateProcessor().ExecuteQueryAsync(context =>
                 {
                     tokenSource.Cancel();
-                    return message;
-                }, new object(), tokenSource.Token);
+                    return new object();
+                }, tokenSource.Token);
             }
             catch (OperationCanceledException exception)
             {
@@ -154,10 +124,10 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await CreateProcessor().ExecuteQueryAsync<object, object>((message, context) =>
+                await CreateProcessor().ExecuteQueryAsync<object>(context =>
                 {
                     throw exceptionToThrow;
-                }, new object(), tokenSource.Token);
+                }, tokenSource.Token);
             }
             catch (InternalServerErrorException exception)
             {
@@ -178,10 +148,10 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await CreateProcessor().ExecuteQueryAsync<object, object>((message, context) =>
+                await CreateProcessor().ExecuteQueryAsync<object>(context =>
                 {
                     throw exceptionToThrow;
-                }, new object());
+                });
             }
             catch (InternalServerErrorException exception)
             {
@@ -198,10 +168,10 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await CreateProcessor().ExecuteQueryAsync<object, object>((message, context) =>
+                await CreateProcessor().ExecuteQueryAsync<object>(context =>
                 {
                     throw exceptionToThrow;
-                }, new object());
+                });
             }
             catch (BadRequestException exception)
             {
@@ -218,10 +188,10 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await CreateProcessor().ExecuteQueryAsync<object, object>((message, context) =>
+                await CreateProcessor().ExecuteQueryAsync<object>(context =>
                 {
                     throw exceptionToThrow;
-                }, new object());
+                });
             }
             catch (InternalServerErrorException exception)
             {
@@ -238,10 +208,10 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await CreateProcessor().ExecuteQueryAsync<object, object>((message, context) =>
+                await CreateProcessor().ExecuteQueryAsync<object>(context =>
                 {
                     throw exceptionToThrow;
-                }, new object());
+                });
             }
             catch (InternalServerErrorException exception)
             {

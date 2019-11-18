@@ -8,7 +8,7 @@ namespace Kingo.MicroServices.Controllers
     /// </summary>
     /// <typeparam name="TRequest">Type of the request of the query.</typeparam>
     /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
-    public interface IQueryProcessor<TRequest, TResponse>
+    public interface IQueryOperationTestProcessor<TRequest, TResponse>
     {
         /// <summary>
         /// Executes the specified <paramref name="query"/> with the specified <paramref name="request"/>.

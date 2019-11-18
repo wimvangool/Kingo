@@ -7,7 +7,7 @@ namespace Kingo.MicroServices.Controllers
     /// </summary>    
     public abstract class MicroProcessorOperationTest : IMicroProcessorOperationTest
     {
-        Task IMicroProcessorOperationTest.GivenAsync(IHandleMessageOperationTestProcessor processor, MicroProcessorOperationTestContext context) =>
+        Task IMicroProcessorOperationTest.GivenAsync(IMessageHandlerOperationTestProcessor processor, MicroProcessorOperationTestContext context) =>
             GivenAsync(processor, context);
 
         /// <summary>
@@ -17,7 +17,7 @@ namespace Kingo.MicroServices.Controllers
         /// Processor that can be used to run existing tests or handle messages as a means to setup a desired program state.
         /// </param>
         /// <param name="context">The context in which the test is running.</param>        
-        protected virtual Task GivenAsync(IHandleMessageOperationTestProcessor processor, MicroProcessorOperationTestContext context) =>
+        protected virtual Task GivenAsync(IMessageHandlerOperationTestProcessor processor, MicroProcessorOperationTestContext context) =>
             Task.CompletedTask;
     }
 }

@@ -3,10 +3,10 @@
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// Represents the result of a <see cref="IHandleMessageTest{TMessage,TEventStream}"/>.
+    /// Represents the result of a <see cref="IMessageHandlerOperationTest{TMessage,TOutputStream}"/>.
     /// </summary>
     /// <typeparam name="TOutputStream">Type of the event-stream produced by the test.</typeparam>
-    public interface IHandleMessageResult<in TOutputStream> : IMicroProcessorOperationTestResult
+    public interface IMessageHandlerOperationTestResult<in TOutputStream> : IMicroProcessorOperationTestResult
         where TOutputStream : MessageStream
     {
         /// <summary>

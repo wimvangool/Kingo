@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.Controllers
 {
     [TestClass]
-    public abstract class HandleMessageTest : MicroProcessorTest<MicroProcessor>
+    public abstract class MessageHandlerOperationTest : MicroProcessorTest<MicroProcessor>
     {        
         #region [====== Null Parameters ======]
 

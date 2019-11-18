@@ -609,8 +609,8 @@ namespace Kingo.MicroServices.Controllers
             await RunAsync(test);
         }
 
-        private static HandleMessageTestDelegate CreateMessageHandlerTest() =>
-            new HandleMessageTestDelegate();
+        private static MessageHandlerOperationTestDelegate CreateMessageHandlerTest() =>
+            new MessageHandlerOperationTestDelegate();
 
         #endregion
 
@@ -694,8 +694,8 @@ namespace Kingo.MicroServices.Controllers
             await RunAsync(testB);
         }
 
-        private static HandleMessageTestDelegate<TMessageStream> CreateMessageHandlerTest<TMessageStream>() where TMessageStream : MessageStream, new() =>
-            new HandleMessageTestDelegate<TMessageStream>();
+        private static MessageHandlerOperationTestDelegate<TMessageStream> CreateMessageHandlerTest<TMessageStream>() where TMessageStream : MessageStream, new() =>
+            new MessageHandlerOperationTestDelegate<TMessageStream>();
 
         #endregion
 
@@ -975,8 +975,8 @@ namespace Kingo.MicroServices.Controllers
             await RunAsync(test);
         }
 
-        private static ExecuteQueryTestDelegate<object> CreateQueryTest() =>
-            new ExecuteQueryTestDelegate<object>(new object());
+        private static QueryOperationTestDelegate<object> CreateQueryTest() =>
+            new QueryOperationTestDelegate<object>(new object());
 
         #endregion
 
@@ -1256,8 +1256,8 @@ namespace Kingo.MicroServices.Controllers
             await RunAsync(test);
         }
 
-        private static ExecuteQueryTestDelegate<TRequest, object> CreateQueryTest<TRequest>() where TRequest : new() =>
-            new ExecuteQueryTestDelegate<TRequest, object>(new object());
+        private static QueryOperationTestDelegate<TRequest, object> CreateQueryTest<TRequest>() where TRequest : new() =>
+            new QueryOperationTestDelegate<TRequest, object>(new object());
 
         #endregion
 

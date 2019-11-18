@@ -7,7 +7,7 @@ namespace Kingo.MicroServices.Controllers
     /// When implemented by a class, represents a processor that can be used to handle specific messages or run specific tests
     /// as a means to setup another test.
     /// </summary>
-    public interface IHandleMessageOperationTestProcessor
+    public interface IMessageHandlerOperationTestProcessor
     {
         /// <summary>
         /// Executes a command with a specific message handler.
@@ -43,6 +43,6 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="test"/> or <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        Task RunAsync<TMessage, TEventStream>(IHandleMessageTest<TMessage, TEventStream> test, MicroProcessorOperationTestContext context) where TEventStream : MessageStream;
+        Task RunAsync<TMessage, TEventStream>(IMessageHandlerOperationTest<TMessage, TEventStream> test, MicroProcessorOperationTestContext context) where TEventStream : MessageStream;
     }
 }

@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices.Controllers
 {
-    internal sealed class HandleMessageTestDelegate : HandleMessageTest<object>
+    internal sealed class MessageHandlerOperationTestDelegate : MessageHandlerOperationTest<object>
     {
         private readonly GivenStatementCollection _givenStatements;
 
-        public HandleMessageTestDelegate()
+        public MessageHandlerOperationTestDelegate()
         {
             _givenStatements = new GivenStatementCollection();
             _whenStatement = (messageProcessor, testContext) => messageProcessor.ExecuteCommandAsync((message, context) => { }, new object());
@@ -16,13 +16,13 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== Given ======]
 
-        public HandleMessageTestDelegate Given(Func<IHandleMessageOperationTestProcessor, MicroProcessorOperationTestContext, Task> givenStatement)
+        public MessageHandlerOperationTestDelegate Given(Func<IMessageHandlerOperationTestProcessor, MicroProcessorOperationTestContext, Task> givenStatement)
         {
             _givenStatements.Given(givenStatement);
             return this;
         }
 
-        protected override Task GivenAsync(IHandleMessageOperationTestProcessor processor, MicroProcessorOperationTestContext context) =>
+        protected override Task GivenAsync(IMessageHandlerOperationTestProcessor processor, MicroProcessorOperationTestContext context) =>
             _givenStatements.GivenAsync(processor, context);
 
         #endregion
@@ -31,7 +31,7 @@ namespace Kingo.MicroServices.Controllers
 
         private Func<IMessageProcessor<object>, MicroProcessorOperationTestContext, Task> _whenStatement;
 
-        public HandleMessageTestDelegate When(Func<IMessageProcessor<object>, MicroProcessorOperationTestContext, Task> whenStatement)
+        public MessageHandlerOperationTestDelegate When(Func<IMessageProcessor<object>, MicroProcessorOperationTestContext, Task> whenStatement)
         {
             _whenStatement = whenStatement ?? throw new ArgumentNullException(nameof(whenStatement));
             return this;
@@ -44,15 +44,15 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== Then ======]
 
-        private Action<object, IHandleMessageResult, MicroProcessorOperationTestContext> _thenStatement;        
+        private Action<object, IMessageHandlerOperationTestResult, MicroProcessorOperationTestContext> _thenStatement;        
 
-        public HandleMessageTestDelegate Then(Action<object, IHandleMessageResult, MicroProcessorOperationTestContext> thenStatement)
+        public MessageHandlerOperationTestDelegate Then(Action<object, IMessageHandlerOperationTestResult, MicroProcessorOperationTestContext> thenStatement)
         {
             _thenStatement = thenStatement ?? throw new ArgumentNullException(nameof(thenStatement));
             return this;
         }
 
-        protected override void Then(object message, IHandleMessageResult result, MicroProcessorOperationTestContext context) =>
+        protected override void Then(object message, IMessageHandlerOperationTestResult result, MicroProcessorOperationTestContext context) =>
             _thenStatement.Invoke(message, result, context);
 
         #endregion

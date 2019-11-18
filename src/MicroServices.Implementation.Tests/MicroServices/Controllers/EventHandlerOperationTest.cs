@@ -6,12 +6,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.Controllers
 {
     [TestClass]
-    public sealed class ExecuteCommandTest : HandleMessageTest
+    public sealed class EventHandlerOperationTest : MessageHandlerOperationTest
     {
         #region [====== Exception Handling ======]
 
         [TestMethod]
-        [ExpectedException(typeof(BadRequestException), AllowDerivedTypes = true)]
+        [ExpectedException(typeof(InternalServerErrorException), AllowDerivedTypes = true)]
         public override async Task HandleMessageAsync_ThrowsExpectedException_IfOperationThrowsMessageHandlerOperationException()
         {
             var exceptionToThrow = new BusinessRuleException();
@@ -23,7 +23,7 @@ namespace Kingo.MicroServices.Controllers
                     throw exceptionToThrow;
                 }, new object());
             }
-            catch (BadRequestException exception)
+            catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception.InnerException);
                 throw;
@@ -31,7 +31,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        [ExpectedException(typeof(BadRequestException))]
+        [ExpectedException(typeof(InternalServerErrorException))]
         public override async Task HandleMessageAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
         {
             var exceptionToThrow = new BadRequestException();
@@ -43,9 +43,9 @@ namespace Kingo.MicroServices.Controllers
                     throw exceptionToThrow;
                 }, new object());
             }
-            catch (BadRequestException exception)
+            catch (InternalServerErrorException exception)
             {
-                Assert.AreSame(exceptionToThrow, exception);
+                Assert.AreSame(exceptionToThrow, exception.InnerException);
                 throw;
             }
         }
@@ -55,16 +55,16 @@ namespace Kingo.MicroServices.Controllers
         #region [====== HandleMessageAsync ======]
 
         protected override MessageKind MessageKind =>
-            MessageKind.Command;
+            MessageKind.Event;
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.ExecuteCommandAsync(messageHandler, message, token);
+            processor.HandleEventAsync(messageHandler, message, token);
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.ExecuteCommandAsync(messageHandler, message, token);
+            processor.HandleEventAsync(messageHandler, message, token);
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.ExecuteCommandAsync(messageHandler, message, token);
+            processor.HandleEventAsync(messageHandler, message, token);
 
         #endregion
     }

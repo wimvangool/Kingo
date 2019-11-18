@@ -14,6 +14,6 @@ namespace Kingo.MicroServices.Controllers
         /// Processor that can be used to run existing tests or handle messages as a means to setup a desired program state.
         /// </param>
         /// <param name="context">The context in which the test is running.</param>                
-        Task GivenAsync(IHandleMessageOperationTestProcessor processor, MicroProcessorOperationTestContext context);        
+        Task GivenAsync(IMessageHandlerOperationTestProcessor processor, MicroProcessorOperationTestContext context);        
     }
 }

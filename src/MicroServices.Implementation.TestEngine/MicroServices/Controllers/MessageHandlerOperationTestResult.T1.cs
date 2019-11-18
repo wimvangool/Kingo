@@ -3,12 +3,12 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices.Controllers
 {
-    internal sealed class HandleMessageResult<TOutputStream> : MicroProcessorOperationTestResult, IHandleMessageResult<TOutputStream>
+    internal sealed class MessageHandlerOperationTestResult<TOutputStream> : MicroProcessorOperationTestResult, IMessageHandlerOperationTestResult<TOutputStream>
         where TOutputStream : MessageStream
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroProcessorOperationTestResultBase, IHandleMessageResult<TOutputStream>
+        private sealed class ExceptionResult : MicroProcessorOperationTestResultBase, IMessageHandlerOperationTestResult<TOutputStream>
         {
             private readonly Exception _exception;            
 
@@ -31,7 +31,7 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== OutputStreamResult ======]
 
-        private sealed class OutputStreamResult : MicroProcessorOperationTestResultBase, IHandleMessageResult<TOutputStream>
+        private sealed class OutputStreamResult : MicroProcessorOperationTestResultBase, IMessageHandlerOperationTestResult<TOutputStream>
         {                        
             private readonly MessageStream _stream;
             private readonly Action<TOutputStream> _streamConsumer;
@@ -71,7 +71,7 @@ namespace Kingo.MicroServices.Controllers
 
             private static Exception NewAssertionOfEventStreamFailedException(Exception innerException)
             {
-                var messageFormat = ExceptionMessages.MessageHandlerResult_AssertionOfMessageStreamFailed;
+                var messageFormat = ExceptionMessages.MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed;
                 var message = string.Format(messageFormat, typeof(TOutputStream).FriendlyName());
                 throw new TestFailedException(message, innerException);
             }
@@ -79,14 +79,14 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        private readonly IHandleMessageResult<TOutputStream> _result;
+        private readonly IMessageHandlerOperationTestResult<TOutputStream> _result;
 
-        public HandleMessageResult(Exception exception)
+        public MessageHandlerOperationTestResult(Exception exception)
         {
             _result = new ExceptionResult(exception);
         }
 
-        public HandleMessageResult(MessageStream stream, Action<TOutputStream> streamConsumer)
+        public MessageHandlerOperationTestResult(MessageStream stream, Action<TOutputStream> streamConsumer)
         {
             _result = new OutputStreamResult(stream, streamConsumer);
         }

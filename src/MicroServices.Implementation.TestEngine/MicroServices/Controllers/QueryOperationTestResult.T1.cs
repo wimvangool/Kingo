@@ -3,11 +3,11 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices.Controllers
 {
-    internal sealed class ExecuteQueryResult<TResponse> : MicroProcessorOperationTestResult, IExecuteQueryResult<TResponse>
+    internal sealed class QueryOperationTestResult<TResponse> : MicroProcessorOperationTestResult, IQueryOperationTestResult<TResponse>
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroProcessorOperationTestResultBase, IExecuteQueryResult<TResponse>
+        private sealed class ExceptionResult : MicroProcessorOperationTestResultBase, IQueryOperationTestResult<TResponse>
         {
             private readonly Exception _exception;
 
@@ -30,7 +30,7 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== ResponseResult ======]
 
-        private sealed class ResponseResult : MicroProcessorOperationTestResultBase, IExecuteQueryResult<TResponse>
+        private sealed class ResponseResult : MicroProcessorOperationTestResultBase, IQueryOperationTestResult<TResponse>
         {
             private readonly MessageEnvelope<TResponse> _output;
 
@@ -54,14 +54,14 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        private readonly IExecuteQueryResult<TResponse> _result;
+        private readonly IQueryOperationTestResult<TResponse> _result;
 
-        public ExecuteQueryResult(Exception exception)
+        public QueryOperationTestResult(Exception exception)
         {
             _result = new ExceptionResult(exception);
         }
 
-        public ExecuteQueryResult(IQueryOperationResult<TResponse> result)
+        public QueryOperationTestResult(IQueryOperationResult<TResponse> result)
         {
             _result = new ResponseResult(result.Output);
         }

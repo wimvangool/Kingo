@@ -3,10 +3,10 @@
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// Represents the result of a <see cref="IExecuteQueryTest{TRequest,TResponse}"/> or <see cref="IExecuteQueryTest{TResponse}"/>.
+    /// Represents the result of a <see cref="IQueryOperationTest{TRequest,TResponse}"/> or <see cref="IReadOperationTest{TResponse}"/>.
     /// </summary>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public interface IExecuteQueryResult<TResponse> : IMicroProcessorOperationTestResult
+    public interface IQueryOperationTestResult<TResponse> : IMicroProcessorOperationTestResult
     {
         /// <summary>
         /// Asserts that the query returned the expected response.

@@ -2,12 +2,12 @@
 
 namespace Kingo.MicroServices.Controllers
 {
-    internal sealed class HandleEventTestStub<TMessage> : HandleMessageTestStub<TMessage>
+    internal sealed class EventHandlerOperationTestStub<TMessage> : MessageHandlerOperationTestStub<TMessage>
     {
         private readonly IMessageHandler<TMessage> _messageHandler;
         private readonly TMessage _message;        
 
-        public HandleEventTestStub(IMessageHandler<TMessage> messageHandler, TMessage message)
+        public EventHandlerOperationTestStub(IMessageHandler<TMessage> messageHandler, TMessage message)
         {
             _messageHandler = messageHandler;
             _message = message;            

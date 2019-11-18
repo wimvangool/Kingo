@@ -7,10 +7,10 @@ namespace Kingo.MicroServices.Controllers
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
     /// <typeparam name="TOutputStream">Type of the resulting message-stream.</typeparam>
-    public abstract class HandleMessageTest<TMessage, TOutputStream> : MicroProcessorOperationTest, IHandleMessageTest<TMessage, TOutputStream>
+    public abstract class MessageHandlerOperationTest<TMessage, TOutputStream> : MicroProcessorOperationTest, IMessageHandlerOperationTest<TMessage, TOutputStream>
         where TOutputStream : MessageStream
     {
-        Task IHandleMessageTest<TMessage, TOutputStream>.WhenAsync(IMessageProcessor<TMessage> processor, MicroProcessorOperationTestContext context) =>
+        Task IMessageHandlerOperationTest<TMessage, TOutputStream>.WhenAsync(IMessageProcessor<TMessage> processor, MicroProcessorOperationTestContext context) =>
             WhenAsync(processor, context);
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="context">The context in which the test is running.</param> 
         protected abstract Task WhenAsync(IMessageProcessor<TMessage> processor, MicroProcessorOperationTestContext context);
 
-        void IHandleMessageTest<TMessage, TOutputStream>.Then(TMessage message, IHandleMessageResult<TOutputStream> result, MicroProcessorOperationTestContext context) =>
+        void IMessageHandlerOperationTest<TMessage, TOutputStream>.Then(TMessage message, IMessageHandlerOperationTestResult<TOutputStream> result, MicroProcessorOperationTestContext context) =>
             Then(message, result, context);
 
         /// <summary>
@@ -29,6 +29,6 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="message">The message that was handled by this test.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        protected abstract void Then(TMessage message, IHandleMessageResult<TOutputStream> result, MicroProcessorOperationTestContext context);
+        protected abstract void Then(TMessage message, IMessageHandlerOperationTestResult<TOutputStream> result, MicroProcessorOperationTestContext context);
     }
 }

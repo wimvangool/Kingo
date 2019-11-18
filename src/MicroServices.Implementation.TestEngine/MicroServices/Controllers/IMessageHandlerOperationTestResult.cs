@@ -3,10 +3,10 @@
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// When implemented by a class, represents the result of a <see cref="IHandleMessageTest{TMessage, TMessagetStream}"/>,
+    /// When implemented by a class, represents the result of a <see cref="IMessageHandlerOperationTest{TMessage,TOutputStream}"/>,
     /// where the result is either an exception or an empty message-stream.
     /// </summary>
-    public interface IHandleMessageResult : IMicroProcessorOperationTestResult
+    public interface IMessageHandlerOperationTestResult : IMicroProcessorOperationTestResult
     {
         /// <summary>
         /// Verifies that no events were published.

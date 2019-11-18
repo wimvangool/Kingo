@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// Contains extension methods for instance that implement the <see cref="IQueryProcessor{TResponse}"/> or
-    /// <see cref="IQueryProcessor{TRequest, TResponse}"/> interface.
+    /// Contains extension methods for instance that implement the <see cref="IQueryOperationTestProcessor{TResponse}"/> or
+    /// <see cref="IQueryOperationTestProcessor{TRequest,TResponse}"/> interface.
     /// </summary>
-    public static class QueryProcessorExtensions
+    public static class QueryOperationTestProcessorExtensions
     {
         #region [====== ExecuteAsync (1) ======]
 
@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<IQueryOperationContext, TResponse> query) =>
+        public static Task ExecuteAsync<TResponse>(this IQueryOperationTestProcessor<TResponse> processor, Func<IQueryOperationContext, TResponse> query) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TResponse>(this IQueryProcessor<TResponse> processor, Func<IQueryOperationContext, Task<TResponse>> query) =>
+        public static Task ExecuteAsync<TResponse>(this IQueryOperationTestProcessor<TResponse> processor, Func<IQueryOperationContext, Task<TResponse>> query) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
 
         #endregion
@@ -46,7 +46,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, IQueryOperationContext, TResponse> query, TRequest request) =>
+        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryOperationTestProcessor<TRequest, TResponse> processor, Func<TRequest, IQueryOperationContext, TResponse> query, TRequest request) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryProcessor<TRequest, TResponse> processor, Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest request) =>
+        public static Task ExecuteAsync<TRequest, TResponse>(this IQueryOperationTestProcessor<TRequest, TResponse> processor, Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest request) =>
             NotNull(processor).ExecuteAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), request);
 
         #endregion

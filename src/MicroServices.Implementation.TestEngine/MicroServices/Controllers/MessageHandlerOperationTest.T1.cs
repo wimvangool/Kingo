@@ -5,15 +5,15 @@ namespace Kingo.MicroServices.Controllers
     /// <summary>
     /// Serves as a base-class for all tests that handle a message and return an empty stream or throw an exception.
     /// </summary>
-    public abstract class HandleMessageTest<TMessage> : HandleMessageTest<TMessage, MessageStream>
+    public abstract class MessageHandlerOperationTest<TMessage> : MessageHandlerOperationTest<TMessage, MessageStream>
     {
         #region [====== HandleMessageResult ======]
 
-        private sealed class HandleMessageResult : IHandleMessageResult
+        private sealed class HandleMessageResult : IMessageHandlerOperationTestResult
         {
-            private readonly IHandleMessageResult<MessageStream> _result;
+            private readonly IMessageHandlerOperationTestResult<MessageStream> _result;
 
-            public HandleMessageResult(IHandleMessageResult<MessageStream> result)
+            public HandleMessageResult(IMessageHandlerOperationTestResult<MessageStream> result)
             {
                 _result = result;
             }
@@ -34,7 +34,7 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         /// <inheritdoc />
-        protected sealed override void Then(TMessage message, IHandleMessageResult<MessageStream> result, MicroProcessorOperationTestContext context) =>
+        protected sealed override void Then(TMessage message, IMessageHandlerOperationTestResult<MessageStream> result, MicroProcessorOperationTestContext context) =>
             Then(message, new HandleMessageResult(result), context);
 
         /// <summary>
@@ -43,6 +43,6 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="message">The message that was handled by this test.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        protected abstract void Then(TMessage message, IHandleMessageResult result, MicroProcessorOperationTestContext context);
+        protected abstract void Then(TMessage message, IMessageHandlerOperationTestResult result, MicroProcessorOperationTestContext context);
     }
 }
