@@ -56,7 +56,7 @@ namespace Kingo.MicroServices
         private async Task<IMessageHandlerOperationResult> InvokeAsync(MessageEnvelope<TMessage> message, CancellationToken? token)
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
-            // the infrastructure does not create a scope upon receiving a new message (like in ASP.NET).
+            // the infrastructure does not create a scope upon receiving a new message.
             using (_processor.ServiceProvider.CreateScope())
             {
                 return await _processor.ExecuteWriteOperationAsync(CreateOperation(message, token));

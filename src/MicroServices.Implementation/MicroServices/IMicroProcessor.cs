@@ -65,7 +65,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null);
 
         /// <summary>
         /// Executes a command with a specified <paramref name="messageHandler"/>.
@@ -80,7 +80,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null);
 
         #endregion
 
@@ -99,7 +99,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null);
 
             /// <summary>
         /// Handles an event with a specified <paramref name="messageHandler"/>.
@@ -114,7 +114,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, MessageEnvelope<TEvent> message, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, MessageEnvelope<TEvent> message, CancellationToken? token = null);
 
         #endregion
 
@@ -130,7 +130,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>         
-        Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -144,7 +144,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null);
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -158,7 +158,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token = null);
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token = null);
 
         #endregion
     }

@@ -100,9 +100,9 @@ namespace Kingo.MicroServices.Controllers
             var result = await processor.ExecuteCommandAsync(messageHandler, 3);
 
             Assert.AreEqual(1, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Messages.Count);
-            Assert.AreEqual(10, result.Messages[0].Content);
-            Assert.AreEqual(6, result.Messages[1].Content);
+            Assert.AreEqual(2, result.Output.Count);
+            Assert.AreEqual(10, result.Output[0].Content);
+            Assert.AreEqual(6, result.Output[1].Content);
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace Kingo.MicroServices.Controllers
             var query = processor.ServiceProvider.GetRequiredService<QueryWithSubQueries>();
             var result = await processor.ExecuteQueryAsync(query, 3);
 
-            Assert.AreEqual(23, result.Response);            
+            Assert.AreEqual(23, result.Output.Content);            
         }
     }
 }

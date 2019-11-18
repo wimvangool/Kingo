@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.Controllers
@@ -60,11 +61,17 @@ namespace Kingo.MicroServices.Controllers
         public async Task ExecuteQueryAsync_ReturnsExpectedResponse_IfQueryIsExecuted()
         {
             var request = new object();
-
             var result = await CreateProcessor().ExecuteQueryAsync((message, context) => message, request);
 
             Assert.IsNotNull(result);
-            Assert.AreSame(request, result.Response);
+            Assert.AreSame(request, result.Input.Content);
+            Assert.AreSame(request, result.Output.Content);
+
+            Assert.AreEqual(36, result.Input.MessageId.Length);
+            Assert.IsNull(result.Input.CorrelationId);
+
+            Assert.AreEqual(36, result.Output.MessageId.Length);
+            Assert.AreEqual(result.Input.MessageId, result.Output.CorrelationId);
         }
 
         #endregion

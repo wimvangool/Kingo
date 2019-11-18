@@ -14,10 +14,10 @@ namespace Kingo.MicroServices
         {
             public EmptyResult()
             {
-                Messages = new MessageToDispatch[0];
+                Output = new MessageToDispatch[0];
             }
 
-            public override IReadOnlyList<MessageToDispatch> Messages
+            public override IReadOnlyList<MessageToDispatch> Output
             {
                 get;
             }
@@ -40,10 +40,10 @@ namespace Kingo.MicroServices
         public static readonly MessageHandlerOperationResult Empty = new EmptyResult();
 
         IReadOnlyList<MessageToDispatch> IMicroProcessorOperationResult<IReadOnlyList<MessageToDispatch>>.Value =>
-            Messages;
+            Output;
 
         /// <inheritdoc />
-        public abstract IReadOnlyList<MessageToDispatch> Messages
+        public abstract IReadOnlyList<MessageToDispatch> Output
         {
             get;
         }
@@ -56,16 +56,19 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Messages} ({nameof(MessageHandlerCount)} = {MessageHandlerCount})";
+            $"{Output} ({nameof(MessageHandlerCount)} = {MessageHandlerCount})";
 
         internal virtual MessageHandlerOperationResult Append(MessageHandlerOperationResult result)
         {
-            var messages = Messages.Concat(result.Messages);
+            var messages = Output.Concat(result.Output);
             var messageHandlerCount = MessageHandlerCount + result.MessageHandlerCount;
             return new MessageListResult(messages, messageHandlerCount);
         }
 
         internal virtual MessageHandlerOperationResult Commit(IMessageEnvelope correlatedMessage) =>
-            new MessageListResult(Messages.Select(message => message.CorrelateWith(correlatedMessage)), MessageHandlerCount);
+            new MessageListResult(Output.Select(message => message.CorrelateWith(correlatedMessage)), MessageHandlerCount);
+
+        internal MessageHandlerOperationResult<TMessage> WithInput<TMessage>(MessageEnvelope<TMessage> input) =>
+            new MessageHandlerOperationResult<TMessage>(this, input);
     }
 }

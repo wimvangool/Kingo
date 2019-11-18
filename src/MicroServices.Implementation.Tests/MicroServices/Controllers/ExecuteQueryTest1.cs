@@ -39,11 +39,13 @@ namespace Kingo.MicroServices.Controllers
         public async Task ExecuteQueryAsync_ReturnsExpectedResponse_IfQueryIsExecuted()
         {
             var response = new object();
-
             var result = await CreateProcessor().ExecuteQueryAsync(context => response);
 
             Assert.IsNotNull(result);
-            Assert.AreSame(response, result.Response);
+            Assert.AreSame(response, result.Output.Content);
+
+            Assert.AreEqual(36, result.Output.MessageId.Length);
+            Assert.IsNull(result.Output.CorrelationId);
         }
 
         #endregion

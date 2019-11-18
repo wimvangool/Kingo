@@ -40,7 +40,14 @@ namespace Kingo.MicroServices
                 _context;
 
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
-                new QueryOperationResult<TResponse>(await _method.ExecuteAsync(_operation._message.Content, _context).ConfigureAwait(false));
+                new QueryOperationResult<TResponse>(await ExecuteMethodAsync().ConfigureAwait(false));
+
+            private async Task<MessageEnvelope<TResponse>> ExecuteMethodAsync()
+            {
+                var messageBuilder = Context.Processor.CreateMessageBuilder();
+                messageBuilder.CorrelationId = Message.MessageId;
+                return messageBuilder.Wrap(await _method.ExecuteAsync(_operation._message.Content, _context).ConfigureAwait(false));
+            }
         }
 
         #endregion

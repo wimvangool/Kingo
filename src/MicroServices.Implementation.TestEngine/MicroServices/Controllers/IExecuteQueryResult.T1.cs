@@ -6,7 +6,7 @@ namespace Kingo.MicroServices.Controllers
     /// Represents the result of a <see cref="IExecuteQueryTest{TRequest,TResponse}"/> or <see cref="IExecuteQueryTest{TResponse}"/>.
     /// </summary>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public interface IExecuteQueryResult<out TResponse> : IMicroProcessorOperationTestResult
+    public interface IExecuteQueryResult<TResponse> : IMicroProcessorOperationTestResult
     {
         /// <summary>
         /// Asserts that the query returned the expected response.
@@ -15,6 +15,6 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assertion"/> is <c>null</c>.
         /// </exception>
-        void IsResponse(Action<TResponse> assertion);        
+        void IsResponse(Action<MessageEnvelope<TResponse>> assertion);        
     }
 }

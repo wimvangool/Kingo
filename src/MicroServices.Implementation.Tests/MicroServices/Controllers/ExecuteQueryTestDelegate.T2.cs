@@ -8,10 +8,10 @@ namespace Kingo.MicroServices.Controllers
     {
         private readonly GivenStatementCollection _givenStatements;
 
-        public ExecuteQueryTestDelegate()
+        public ExecuteQueryTestDelegate(TResponse defaultResponse = default)
         {
             _givenStatements = new GivenStatementCollection();
-            _whenStatement = (processor, testContext) => processor.ExecuteAsync((request, context) => Task.FromResult(default(TResponse)), new TRequest());
+            _whenStatement = (processor, testContext) => processor.ExecuteAsync((request, context) => Task.FromResult(defaultResponse), new TRequest());
             _thenStatement = (request, result, testContext) => result.IsResponse(response => { });
         }
 

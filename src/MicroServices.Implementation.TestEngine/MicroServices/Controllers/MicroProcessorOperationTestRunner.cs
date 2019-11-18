@@ -149,7 +149,7 @@ namespace Kingo.MicroServices.Controllers
 
             public async Task<HandleMessageResult<TMessageStream>> ExecuteAsync(IMicroProcessorOperationTest test, MicroProcessorOperationTestContext context)
             {
-                IMessageHandlerOperationResult result;
+                MessageHandlerOperationResult<TMessage> result;
 
                 try
                 {
@@ -159,13 +159,13 @@ namespace Kingo.MicroServices.Controllers
                 {
                     return new HandleMessageResult<TMessageStream>(exception);
                 }
-                return new HandleMessageResult<TMessageStream>(new MessageStream(result.Messages), stream =>
+                return new HandleMessageResult<TMessageStream>(new MessageStream(result.Output), stream =>
                 {
                     context.SetOutputStream(test, stream);
                 });
             }
 
-            protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor);
+            protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync(IMicroProcessor processor);
         }
 
         private sealed class ExecuteCommandOperation<TMessage, TMessageStream> : HandleMessageOperation<TMessage, TMessageStream>
@@ -183,7 +183,7 @@ namespace Kingo.MicroServices.Controllers
             public override TMessage Message =>
                 _message;
 
-            protected override Task<IMessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor) =>
+            protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync(IMicroProcessor processor) =>
                 processor.ExecuteCommandAsync(_messageHandler, _message);
         }
 
@@ -202,7 +202,7 @@ namespace Kingo.MicroServices.Controllers
             public override TMessage Message =>
                 _message;
 
-            protected override Task<IMessageHandlerOperationResult> HandleMessageAsync(IMicroProcessor processor) =>
+            protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync(IMicroProcessor processor) =>
                 processor.HandleEventAsync(_messageHandler, _message);
         }
 

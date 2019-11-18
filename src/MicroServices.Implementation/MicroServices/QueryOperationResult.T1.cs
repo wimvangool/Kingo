@@ -4,26 +4,29 @@
     /// Represents the result of executing a query by a <see cref="IMicroProcessor" />.
     /// </summary>
     /// <typeparam name="TResponse">Type of the returned response message.</typeparam>
-    public sealed class QueryOperationResult<TResponse> : IMicroProcessorOperationResult<TResponse>, IQueryOperationResult<TResponse>
+    public class QueryOperationResult<TResponse> : IMicroProcessorOperationResult<TResponse>, IQueryOperationResult<TResponse>
     {        
-        internal QueryOperationResult(TResponse response)
+        internal QueryOperationResult(MessageEnvelope<TResponse> output)
         {
-            Response = response;
+            Output = output;
         }
 
         TResponse IMicroProcessorOperationResult<TResponse>.Value =>
-            Response;
+            Output.Content;
         
         /// <summary>
         /// The response that was returned by the query.
         /// </summary>
-        public TResponse Response
+        public MessageEnvelope<TResponse> Output
         {
             get;
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            Response == null ? "null" : Response.ToString();
+            Output == null ? "null" : Output.Content.ToString();
+
+        internal QueryOperationResult<TRequest, TResponse> WithInput<TRequest>(MessageEnvelope<TRequest> input) =>
+            new QueryOperationResult<TRequest, TResponse>(Output, input);
     }
 }

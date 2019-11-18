@@ -4,12 +4,12 @@ namespace Kingo.MicroServices
 {
     internal sealed class MessageBusResult : MessageHandlerOperationResult
     {
-        public MessageBusResult(IReadOnlyList<MessageToDispatch> messages)
+        public MessageBusResult(IReadOnlyList<MessageToDispatch> output)
         {
-            Messages = messages;
+            Output = output;
         }
 
-        public override IReadOnlyList<MessageToDispatch> Messages
+        public override IReadOnlyList<MessageToDispatch> Output
         {
             get;
         }

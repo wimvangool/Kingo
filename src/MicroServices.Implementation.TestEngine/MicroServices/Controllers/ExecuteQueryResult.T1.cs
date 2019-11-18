@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.Controllers
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 IsExpectedException(_exception, assertion);
 
-            public void IsResponse(Action<TResponse> assertion) =>
+            public void IsResponse(Action<MessageEnvelope<TResponse>> assertion) =>
                 throw NewExceptionThrownException(_exception);
         }
 
@@ -32,11 +32,11 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class ResponseResult : MicroProcessorOperationTestResultBase, IExecuteQueryResult<TResponse>
         {
-            private readonly TResponse _response;
+            private readonly MessageEnvelope<TResponse> _output;
 
-            public ResponseResult(TResponse response)
+            public ResponseResult(MessageEnvelope<TResponse> output)
             {                
-                _response = response;
+                _output = output;
             }
 
             public override string ToString() =>
@@ -45,14 +45,11 @@ namespace Kingo.MicroServices.Controllers
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 throw NewExceptionNotThrownException(typeof(TException));
 
-            public void IsResponse(Action<TResponse> assertion)
-            {
-                if (assertion == null)
-                {
-                    throw new ArgumentNullException(nameof(assertion));
-                }
-                assertion.Invoke(_response);
-            }            
+            public void IsResponse(Action<MessageEnvelope<TResponse>> assertion) =>
+                NotNull(assertion).Invoke(_output);
+
+            private static Action<MessageEnvelope<TResponse>> NotNull(Action<MessageEnvelope<TResponse>> assertion) =>
+                assertion ?? throw new ArgumentNullException(nameof(assertion));
         }
 
         #endregion
@@ -66,7 +63,7 @@ namespace Kingo.MicroServices.Controllers
 
         public ExecuteQueryResult(IQueryOperationResult<TResponse> result)
         {
-            _result = new ResponseResult(result.Response);
+            _result = new ResponseResult(result.Output);
         }
 
         public override string ToString() =>
@@ -84,7 +81,7 @@ namespace Kingo.MicroServices.Controllers
             }
         }            
 
-        public void IsResponse(Action<TResponse> assertion)
+        public void IsResponse(Action<MessageEnvelope<TResponse>> assertion)
         {
             try
             {

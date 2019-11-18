@@ -754,7 +754,7 @@ namespace Kingo.MicroServices.Controllers
             var test = CreateQueryTest()
                 .Then((result, testContext) =>
                 {
-                    result.IsResponse(Assert.IsNotNull);
+                    result.IsResponse(response => Assert.IsNull(response.Content));
                 });
 
             await RunAsync(test);
@@ -768,7 +768,7 @@ namespace Kingo.MicroServices.Controllers
                 .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context => Task.FromResult(expectedResponse)))
                 .Then((result, testContext) =>
                 {
-                    result.IsResponse(response => Assert.AreSame(expectedResponse, response));
+                    result.IsResponse(response => Assert.AreSame(expectedResponse, response.Content));
                 });
 
             await RunAsync(test);
@@ -976,7 +976,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         private static ExecuteQueryTestDelegate<object> CreateQueryTest() =>
-            new ExecuteQueryTestDelegate<object>();
+            new ExecuteQueryTestDelegate<object>(new object());
 
         #endregion
 
@@ -1035,7 +1035,7 @@ namespace Kingo.MicroServices.Controllers
             var test = CreateQueryTest<object>()
                 .Then((request, result, testContext) =>
                 {
-                    result.IsResponse(Assert.IsNotNull);
+                    result.IsResponse(response => Assert.IsNull(response.Content));
                 });
 
             await RunAsync(test);
@@ -1049,7 +1049,7 @@ namespace Kingo.MicroServices.Controllers
                 .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync((message, context) => Task.FromResult(expectedResponse), new object()))
                 .Then((request, result, testContext) =>
                 {
-                    result.IsResponse(response => Assert.AreSame(expectedResponse, response));
+                    result.IsResponse(response => Assert.AreSame(expectedResponse, response.Content));
                 });
 
             await RunAsync(test);
@@ -1257,7 +1257,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         private static ExecuteQueryTestDelegate<TRequest, object> CreateQueryTest<TRequest>() where TRequest : new() =>
-            new ExecuteQueryTestDelegate<TRequest, object>();
+            new ExecuteQueryTestDelegate<TRequest, object>(new object());
 
         #endregion
 

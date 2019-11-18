@@ -281,7 +281,7 @@ namespace Kingo.MicroServices.Controllers
             var result = await endpoint.InvokeAsync(new object());
 
             Assert.AreEqual(0, result.MessageHandlerCount);
-            Assert.AreEqual(0, result.Messages.Count);
+            Assert.AreEqual(0, result.Output.Count);
         }
 
         [TestMethod]
@@ -297,7 +297,7 @@ namespace Kingo.MicroServices.Controllers
             var result = await endpoint.InvokeAsync(DateTimeOffset.UtcNow.Second);
 
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Messages.Count);
+            Assert.AreEqual(2, result.Output.Count);
         }
 
         [TestMethod]
@@ -389,7 +389,7 @@ namespace Kingo.MicroServices.Controllers
             var result = await endpoint.InvokeAsync(DateTimeOffset.UtcNow.Second);
 
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Messages.Count);
+            Assert.AreEqual(2, result.Output.Count);
         }
 
         [TestMethod]

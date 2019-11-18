@@ -13,7 +13,11 @@ namespace Kingo.MicroServices
         /// Executes the query.
         /// </summary>   
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently executing the query.</param>    
-        /// <returns>The result of this query.</returns>        
+        /// <returns>The result of this query.</returns>
+        /// <remarks>
+        /// Note that the response of a query is never allowed to be <c>null</c>. To represent empty results,
+        /// please return an empty message or default value instead.
+        /// </remarks> 
         Task<TResponse> ExecuteAsync(IQueryOperationContext context);
     }
 }

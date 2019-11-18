@@ -51,7 +51,7 @@ namespace Kingo.MicroServices.Controllers
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.MessageHandlerCount);
-            Assert.AreEqual(0, result.Messages.Count);
+            Assert.AreEqual(0, result.Output.Count);
         }
 
         [TestMethod]
@@ -65,8 +65,8 @@ namespace Kingo.MicroServices.Controllers
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.MessageHandlerCount);
-            Assert.AreEqual(1, result.Messages.Count);
-            Assert.AreSame(command, result.Messages[0].Content);
+            Assert.AreEqual(1, result.Output.Count);
+            Assert.AreSame(command, result.Output[0].Content);
         }
 
         [TestMethod]
@@ -89,9 +89,9 @@ namespace Kingo.MicroServices.Controllers
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(2, result.Messages.Count);
-            Assert.AreSame(eventA, result.Messages[0].Content);
-            Assert.AreSame(eventB, result.Messages[1].Content);
+            Assert.AreEqual(2, result.Output.Count);
+            Assert.AreSame(eventA, result.Output[0].Content);
+            Assert.AreSame(eventB, result.Output[1].Content);
         }
 
         [TestMethod]
@@ -128,11 +128,11 @@ namespace Kingo.MicroServices.Controllers
 
             Assert.IsNotNull(result);
             Assert.AreEqual(4, result.MessageHandlerCount);
-            Assert.AreEqual(4, result.Messages.Count);
-            Assert.AreSame(eventA, result.Messages[0].Content);
-            Assert.AreEqual(eventB, result.Messages[1].Content);
-            Assert.AreSame(eventC, result.Messages[2].Content);
-            Assert.AreSame(eventD, result.Messages[3].Content);
+            Assert.AreEqual(4, result.Output.Count);
+            Assert.AreSame(eventA, result.Output[0].Content);
+            Assert.AreEqual(eventB, result.Output[1].Content);
+            Assert.AreSame(eventC, result.Output[2].Content);
+            Assert.AreSame(eventD, result.Output[3].Content);
         }
 
         #endregion
@@ -742,7 +742,7 @@ namespace Kingo.MicroServices.Controllers
         private static void AssertMessageHandlerResult(IMessageHandlerOperationResult result)
         {
             Assert.AreEqual(2, result.MessageHandlerCount);
-            Assert.AreEqual(1, result.Messages.Count);
+            Assert.AreEqual(1, result.Output.Count);
         }
 
         private static void AssertInstanceCount(IMicroProcessor processor, int count) =>
@@ -757,20 +757,20 @@ namespace Kingo.MicroServices.Controllers
             get;
         }
 
-        protected Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null);
 
-        protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null);
 
-        protected abstract Task<IMessageHandlerOperationResult> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null);
 
         #endregion
     }

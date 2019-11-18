@@ -176,32 +176,32 @@ namespace Kingo.MicroServices
         #region [====== ExecuteAsync ======]                  
 
         /// <inheritdoc />
-        public Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
+        public Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
             ExecuteCommandAsync(messageHandler, CreateMessageFactory().Wrap(message), token);
 
         /// <inheritdoc />
-        public async Task<IMessageHandlerOperationResult> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null) =>
-            await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token)).ConfigureAwait(false);
+        public async Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null) =>
+            (await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
 
         /// <inheritdoc />
-        public Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
+        public Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
             HandleEventAsync(messageHandler, CreateMessageFactory().Wrap(message), token);
 
         /// <inheritdoc />
-        public async Task<IMessageHandlerOperationResult> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, MessageEnvelope<TEvent> message, CancellationToken? token = null) =>
-            await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token)).ConfigureAwait(false);
+        public async Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, MessageEnvelope<TEvent> message, CancellationToken? token = null) =>
+            (await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
 
         /// <inheritdoc />
-        public async Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
+        public async Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
             await ExecuteReadOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token)).ConfigureAwait(false);
 
         /// <inheritdoc />
-        public Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
+        public Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
             ExecuteQueryAsync(query, CreateMessageFactory().Wrap(message), token);
 
         /// <inheritdoc />
-        public async Task<IQueryOperationResult<TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token = null) =>
-            await ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token)).ConfigureAwait(false);
+        public async Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token = null) =>
+            (await ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token)).ConfigureAwait(false)).WithInput(message);
 
         #endregion
 
@@ -216,9 +216,9 @@ namespace Kingo.MicroServices
         protected internal virtual async Task<MessageHandlerOperationResult> ExecuteWriteOperationAsync(MessageHandlerOperation operation)
         {
             var result = await ExecuteOperationAsync(operation).ConfigureAwait(false);
-            if (result.Messages.Count > 0)
+            if (result.Output.Count > 0)
             {
-                await ResolveMicroServiceBus().DispatchAsync(result.Messages).ConfigureAwait(false);
+                await ResolveMicroServiceBus().DispatchAsync(result.Output).ConfigureAwait(false);
             }
             return result;
         }

@@ -20,6 +20,10 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
+        /// <remarks>
+        /// Note that the response of a query is never allowed to be <c>null</c>. To represent empty results,
+        /// please return an empty message or default value instead.
+        /// </remarks>
         Task<TResponse> ExecuteAsync(TRequest message, IQueryOperationContext context);
     }
 }

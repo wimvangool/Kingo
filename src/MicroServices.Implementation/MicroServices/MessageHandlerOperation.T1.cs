@@ -96,12 +96,12 @@ namespace Kingo.MicroServices
                 // can be added/produced by the operation and all messages are automatically correlated to the
                 // current message.
                 var result = Commit(await operation.ExecuteAsync().ConfigureAwait(false), operation);
-                if (result.Messages.Count > 0)
+                if (result.Output.Count > 0)
                 {
                     // Every operation potentially yields a new stream of messages, which is immediately handled by the processor
                     // inside the current context. The processor uses a depth-first approach, which means that each message and its resulting
                     // sub-tree of events are handled before the next event in the stream.
-                    return result.Append(await HandleAsync(result.Messages, operation.Context).ConfigureAwait(false));
+                    return result.Append(await HandleAsync(result.Output, operation.Context).ConfigureAwait(false));
                 }
                 return result;
             }

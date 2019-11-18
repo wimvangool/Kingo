@@ -28,6 +28,6 @@ namespace Kingo.MicroServices
             GetResponse(await operation.ExecuteAsync());
 
         private static TResponse GetResponse<TResponse>(QueryOperationResult<TResponse> result) =>
-            result.Response;
+            result.Output.Content;
     }
 }
