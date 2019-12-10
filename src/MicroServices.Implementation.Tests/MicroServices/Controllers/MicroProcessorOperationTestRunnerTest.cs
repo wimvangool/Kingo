@@ -12,7 +12,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedMessageStream_And_GivenThrowsException()
+        public async Task RunMessageHandlerTest_Throws_IfGivenThrowsException()
         {
             var test = CreateMessageHandlerTest()
                 .Given((processor, context) => throw NewRandomBusinessRuleException());                
@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedMessageStream_And_ResultIsNotProduced()
+        public async Task RunMessageHandlerTest_Throws_IfResultIsNotProduced()
         {
             var test = CreateMessageHandlerTest()
                 .When((messageProcessor, testContext) => Task.CompletedTask);                
@@ -32,7 +32,7 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedMessageStream_And_ResultIsNotVerified()
+        public async Task RunMessageHandlerTest_Throws_IfResultIsNotVerified()
         {
             var test = CreateMessageHandlerTest()
                 .Then((message, result, testContext) => { });
@@ -427,14 +427,14 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfWhenStatementAttemptsToObtainOutputStreamThatIsNotFound()
         {
-            var testA = CreateMessageHandlerTest();
+            IMessageHandlerOperation<object> testA = CreateMessageHandlerTest();
 
             var testB = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
                 {
                     try
                     {
-                        testContext.GetOutputStream(testA);
+                        testA.GetOutputStream(testContext);
                     }
                     finally
                     {
@@ -478,7 +478,7 @@ namespace Kingo.MicroServices.Controllers
         {
             var @event = new object();
 
-            var testA = CreateMessageHandlerTest()
+            IMessageHandlerOperationTest<object> testA = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
@@ -498,7 +498,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .When(async (messageProcessor, testContext) =>
                 {
-                    var outputStream = testContext.GetOutputStream(testA);
+                    var outputStream = testA.GetOutputStream(testContext);
 
                     Assert.AreSame(@event, outputStream[0].Content);
 
@@ -510,14 +510,15 @@ namespace Kingo.MicroServices.Controllers
 
         [TestMethod]
         public async Task RunMessageHandlerTest_Succeeds_IfGivenHandlesAnotherMessage_And_WhenStatementAttemptsToObtainMessageStreamThatIsFound()
-        {            
+        {
+            var operation = CreateMessageHandlerOperation();
             var test = CreateMessageHandlerTest()
                 .Given(async (testProcessor, testContext) =>
                 {
-                    await testProcessor.HandleAsync(new object(), testContext, (processor, context) =>
+                    await testProcessor.Run(operation, testContext).ExecuteCommandAsync((processor, context) =>
                     {
                         context.ServiceProvider.GetRequiredService<InvocationCounter>().Increment();
-                    });
+                    }, new object());
                 })
                 .When(async (messageProcessor, testContext) =>
                 {
@@ -534,93 +535,13 @@ namespace Kingo.MicroServices.Controllers
             await RunAsync(test);
         }
 
+        //public 
+
         private static MessageHandlerOperationTestDelegate CreateMessageHandlerTest() =>
             new MessageHandlerOperationTestDelegate();
 
-        #endregion
-
-        #region [====== MessageHandlerTests (2) ======]
-
-        private sealed class OutputStream : MessageStream
-        {            
-            public OutputStream() :
-                this(Empty) { }
-
-            public OutputStream(MessageStream stream) :
-                base(stream) { }
-
-            public int Value =>
-                GetMessage<int>().Content;
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedMessageStream_And_GivenThrowsException()
-        {
-            var test = CreateMessageHandlerTest<OutputStream>()
-                .Given((processor, context) => throw NewRandomBusinessRuleException());                
-
-            await RunAsync(test);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedMessageStream_And_ResultIsNotProduced()
-        {
-            var test = CreateMessageHandlerTest<OutputStream>()
-                .When((messageProcessor, testContext) => Task.CompletedTask);                
-
-            await RunAsync(test);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedMessageStream_And_ResultIsNotVerified()
-        {
-            var test = CreateMessageHandlerTest<OutputStream>()
-                .Then((message, result, testContext) => { });
-
-            await RunAsync(test);
-        }
-
-        [TestMethod]
-        public async Task RunMessageHandlerTest_Succeeds_IfTypedMessageStreamIsCorrectlyStoredAndRetrieved()
-        {
-            var testA = CreateMessageHandlerTest<OutputStream>()
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.ExecuteCommandAsync((message, context) =>
-                    {
-                        context.MessageBus.PublishEvent(DateTimeOffset.UtcNow.Millisecond);
-                    }, new object());
-                })
-                .Then((message, result, testContext) =>
-                {
-                    result.IsMessageStream(stream => new OutputStream(stream));
-                });
-
-            var testB = CreateMessageHandlerTest()
-                .Given(async (testProcessor, testContext) =>
-                {
-                    await testProcessor.RunAsync(testA, testContext);
-                })
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.ExecuteCommandAsync((message, context) =>
-                    {
-                        Assert.IsInstanceOfType(message, typeof(int));
-                    }, testContext.GetOutputStream(testA).Value);
-                })
-                .Then((message, result, testContext) =>
-                {
-                    result.IsEmptyStream();
-                });
-
-            await RunAsync(testB);
-        }
-
-        private static MessageHandlerOperationTestDelegate<TMessageStream> CreateMessageHandlerTest<TMessageStream>() where TMessageStream : MessageStream, new() =>
-            new MessageHandlerOperationTestDelegate<TMessageStream>();
+        private static MessageHandlerOperation<object> CreateMessageHandlerOperation() =>
+            new MessageHandlerOperation<object>();
 
         #endregion
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.Controllers
@@ -7,7 +9,7 @@ namespace Kingo.MicroServices.Controllers
     /// <summary>
     /// Serves as a base-class for all test-classes that execute tests based on test scenarios.
     /// </summary>
-    public abstract class MicroProcessorOperationTestRunner : IMessageHandlerOperationTestProcessor
+    public abstract class MicroProcessorOperationTestRunner : IMicroProcessorOperationRunner
     {
         private readonly Lazy<IServiceProvider> _serviceProvider;
 
@@ -104,9 +106,9 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== RunAsync - MessageHandlerOperationTest ======]
         
-        private sealed class MessageHandlerOperationTestEngine<TMessage, TMessageStream> : TestEngine<IMessageHandlerOperationTest<TMessage, TMessageStream>>, IMessageProcessor<TMessage> where TMessageStream : MessageStream
+        private sealed class MessageHandlerOperationTestEngine<TMessage> : TestEngine<IMessageHandlerOperationTest<TMessage>>, IMessageHandlerOperationRunner<TMessage>
         {                      
-            public MessageHandlerOperationTestEngine(MicroProcessorOperationTestRunner testRunner, IMessageHandlerOperationTest<TMessage, TMessageStream> test, MicroProcessorOperationTestContext context) :
+            public MessageHandlerOperationTestEngine(MicroProcessorOperationTestRunner testRunner, IMessageHandlerOperationTest<TMessage> test, MicroProcessorOperationTestContext context) :
                 base(testRunner, test, context) { }
 
             protected override Task WhenAsync() =>
@@ -116,17 +118,17 @@ namespace Kingo.MicroServices.Controllers
                 ExecuteCommandAsync(Context.ServiceProvider.GetRequiredService<TMessageHandler>(), message);
 
             public Task ExecuteCommandAsync(IMessageHandler<TMessage> messageHandler, TMessage message) =>
-                ExecuteAsync(new ExecuteCommandOperation<TMessage, TMessageStream>(messageHandler, message));
+                ExecuteAsync(new ExecuteCommandOperation<TMessage>(messageHandler, message));
 
             public Task HandleEventAsync<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
                 HandleEventAsync(Context.ServiceProvider.GetRequiredService<TMessageHandler>(), message);
 
             public Task HandleEventAsync(IMessageHandler<TMessage> messageHandler, TMessage message) =>
-                ExecuteAsync(new HandleEventOperation<TMessage, TMessageStream>(messageHandler, message));
+                ExecuteAsync(new HandleEventOperation<TMessage>(messageHandler, message));
 
-            private async Task ExecuteAsync(HandleMessageOperation<TMessage, TMessageStream> operation)
+            private async Task ExecuteAsync(HandleMessageOperation<TMessage> operation)
             {
-                var result = await operation.ExecuteAsync(Test, Context).ConfigureAwait(false);
+                var result = await operation.ExecuteAsync(Test.Operation, Context).ConfigureAwait(false);
 
                 try
                 {
@@ -139,15 +141,14 @@ namespace Kingo.MicroServices.Controllers
             }                       
         }
 
-        private abstract class HandleMessageOperation<TMessage, TMessageStream>
-            where TMessageStream : MessageStream
+        private abstract class HandleMessageOperation<TMessage>
         {                                    
             public abstract TMessage Message
             {
                 get;
             }            
 
-            public async Task<MessageHandlerOperationTestResult<TMessageStream>> ExecuteAsync(IMicroProcessorOperationTest test, MicroProcessorOperationTestContext context)
+            public async Task<MessageHandlerOperationTestResult> ExecuteAsync(MessageHandlerOperation<TMessage> operation, MicroProcessorOperationTestContext context)
             {
                 MessageHandlerOperationResult<TMessage> result;
 
@@ -157,19 +158,15 @@ namespace Kingo.MicroServices.Controllers
                 }
                 catch (Exception exception)
                 {
-                    return new MessageHandlerOperationTestResult<TMessageStream>(exception);
+                    return new MessageHandlerOperationTestResult(exception);
                 }
-                return new MessageHandlerOperationTestResult<TMessageStream>(new MessageStream(result.Output), stream =>
-                {
-                    context.SetTestResult(test, result.Input, stream);
-                });
+                return new MessageHandlerOperationTestResult(operation.SaveResult(context, result));
             }
 
             protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync(IMicroProcessor processor);
         }
 
-        private sealed class ExecuteCommandOperation<TMessage, TMessageStream> : HandleMessageOperation<TMessage, TMessageStream>
-            where TMessageStream : MessageStream
+        private sealed class ExecuteCommandOperation<TMessage> : HandleMessageOperation<TMessage>
         {
             private readonly IMessageHandler<TMessage> _messageHandler;
             private readonly TMessage _message;
@@ -187,8 +184,7 @@ namespace Kingo.MicroServices.Controllers
                 processor.ExecuteCommandAsync(_messageHandler, _message);
         }
 
-        private sealed class HandleEventOperation<TMessage, TMessageStream> : HandleMessageOperation<TMessage, TMessageStream>
-            where TMessageStream : MessageStream
+        private sealed class HandleEventOperation<TMessage> : HandleMessageOperation<TMessage>
         {
             private readonly IMessageHandler<TMessage> _messageHandler;
             private readonly TMessage _message;
@@ -206,35 +202,61 @@ namespace Kingo.MicroServices.Controllers
                 processor.HandleEventAsync(_messageHandler, _message);
         }
 
+        private sealed class MessageHandlerOperationRunner<TMessage> : IMessageHandlerOperationRunner<TMessage>
+        {
+            private readonly MicroProcessorOperationTestRunner _testRunner;
+            private readonly MessageHandlerOperation<TMessage> _operation;
+            private readonly MicroProcessorOperationTestContext _context;
+
+            public MessageHandlerOperationRunner(MicroProcessorOperationTestRunner testRunner, MessageHandlerOperation<TMessage> operation, MicroProcessorOperationTestContext context)
+            {
+                _testRunner = testRunner;
+                _operation = operation;
+                _context = context;
+            }
+
+            public Task ExecuteCommandAsync<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+                ExecuteCommandAsync(_context.ServiceProvider.GetRequiredService<TMessageHandler>(), message);
+
+            public Task ExecuteCommandAsync(IMessageHandler<TMessage> messageHandler, TMessage message) =>
+                RunAsync(new CommandHandlerOperationTest<TMessage>(_operation, messageHandler, message));
+
+            public Task HandleEventAsync<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+                HandleEventAsync(_context.ServiceProvider.GetRequiredService<TMessageHandler>(), message);
+
+            public Task HandleEventAsync(IMessageHandler<TMessage> messageHandler, TMessage message) =>
+                RunAsync(new EventHandlerOperationTest<TMessage>(_operation, messageHandler, message));
+
+            private Task RunAsync(MessageHandlerOperationTest<TMessage> test) =>
+                _testRunner.RunAsync(test, _context);
+        }
+
         /// <summary>
         /// Runs the specified <paramref name="test" />.
         /// </summary>        
         /// <param name="test">The test to run.</param>        
-        protected virtual async Task RunAsync<TMessage, TMessageStream>(IMessageHandlerOperationTest<TMessage, TMessageStream> test) where TMessageStream : MessageStream
+        protected virtual async Task RunAsync<TMessage>(IMessageHandlerOperationTest<TMessage> test)
         {            
             using (var scope = ServiceProvider.CreateScope())
             {
                 await RunAsync(test, CreateTestContext(scope.ServiceProvider)).ConfigureAwait(false);
             }
-        }        
+        }
 
-        Task IMessageHandlerOperationTestProcessor.ExecuteCommandAsync<TMessage>(IMessageHandler<TMessage> messageHandler, TMessage message, MicroProcessorOperationTestContext context) =>
-            RunAsync(new CommandHandlerOperationTestStub<TMessage>(messageHandler, message), context);
+        IMessageHandlerOperationRunner<TMessage> IMicroProcessorOperationRunner.Run<TMessage>(MessageHandlerOperation<TMessage> operation, MicroProcessorOperationTestContext context) =>
+            new MessageHandlerOperationRunner<TMessage>(this, operation, context);
 
-        Task IMessageHandlerOperationTestProcessor.HandleEventAsync<TMessage>(IMessageHandler<TMessage> messageHandler, TMessage message, MicroProcessorOperationTestContext context) =>
-            RunAsync(new EventHandlerOperationTestStub<TMessage>(messageHandler, message), context);
-
-        Task IMessageHandlerOperationTestProcessor.RunAsync<TMessage, TMessageStream>(IMessageHandlerOperationTest<TMessage, TMessageStream> test, MicroProcessorOperationTestContext context) =>
+        Task IMicroProcessorOperationRunner.RunAsync<TMessage>(IMessageHandlerOperationTest<TMessage> test, MicroProcessorOperationTestContext context) =>
             RunAsync(test, context);
 
-        private Task RunAsync<TMessage, TMessageStream>(IMessageHandlerOperationTest<TMessage, TMessageStream> test, MicroProcessorOperationTestContext context) where TMessageStream : MessageStream =>
-            new MessageHandlerOperationTestEngine<TMessage, TMessageStream>(this, test, context).RunTestAsync();            
+        private Task RunAsync<TMessage>(IMessageHandlerOperationTest<TMessage> test, MicroProcessorOperationTestContext context) =>
+            new MessageHandlerOperationTestEngine<TMessage>(this, test, context).RunTestAsync();            
 
         #endregion
 
         #region [====== RunAsync - QueryOperationTest (1) ======]
 
-        private sealed class QueryOperationTestEngine<TResponse> : TestEngine<IReadOperationTest<TResponse>>, IQueryOperationTestProcessor<TResponse>
+        private sealed class QueryOperationTestEngine<TResponse> : TestEngine<IReadOperationTest<TResponse>>, IQueryOperationRunner<TResponse>
         {           
             public QueryOperationTestEngine(MicroProcessorOperationTestRunner testRunner, IReadOperationTest<TResponse> test, MicroProcessorOperationTestContext context) :
                 base(testRunner, test, context) { }
@@ -288,7 +310,7 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== RunAsync - QueryOperationTest (2) ======]
 
-        private sealed class QueryOperationTestEngine<TRequest, TResponse> : TestEngine<IQueryOperationTest<TRequest, TResponse>>, IQueryOperationTestProcessor<TRequest, TResponse>
+        private sealed class QueryOperationTestEngine<TRequest, TResponse> : TestEngine<IQueryOperationTest<TRequest, TResponse>>, IQueryOperationRunner<TRequest, TResponse>
         {           
             public QueryOperationTestEngine(MicroProcessorOperationTestRunner testRunner, IQueryOperationTest<TRequest, TResponse> test, MicroProcessorOperationTestContext context) :
                 base(testRunner, test, context) { }

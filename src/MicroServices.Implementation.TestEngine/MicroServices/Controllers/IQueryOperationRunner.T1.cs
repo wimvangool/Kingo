@@ -7,7 +7,7 @@ namespace Kingo.MicroServices.Controllers
     /// When implemented by a class, represents a processor that can execute a specific query.
     /// </summary>    
     /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
-    public interface IQueryOperationTestProcessor<TResponse>
+    public interface IQueryOperationRunner<TResponse>
     {        
         /// <summary>
         /// Executes the specified <paramref name="query"/>.

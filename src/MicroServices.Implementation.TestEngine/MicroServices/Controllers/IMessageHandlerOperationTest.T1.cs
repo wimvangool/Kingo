@@ -7,16 +7,22 @@ namespace Kingo.MicroServices.Controllers
     /// and produces a set of events as a result.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
-    /// <typeparam name="TOutputStream">Type of the output-stream that is produced by this test.</typeparam>
-    public interface IMessageHandlerOperationTest<TMessage, out TOutputStream> : IMicroProcessorOperationTest
-        where TOutputStream : MessageStream
+    public interface IMessageHandlerOperationTest<TMessage> : IMicroProcessorOperationTest, IMessageHandlerOperation<TMessage>
     {
         /// <summary>
-        /// Executes this test by handling a specific message using the specified <paramref name="processor"/>.
+        /// Returns the operation that is tested.
         /// </summary>
-        /// <param name="processor">The processor to handle the message with.</param>
+        MessageHandlerOperation<TMessage> Operation
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Executes this test by handling a specific message using the specified <paramref name="runner"/>.
+        /// </summary>
+        /// <param name="runner">The processor to handle the message with.</param>
         /// <param name="context">The context in which the test is running.</param>        
-        Task WhenAsync(IMessageProcessor<TMessage> processor, MicroProcessorOperationTestContext context);
+        Task WhenAsync(IMessageHandlerOperationRunner<TMessage> runner, MicroProcessorOperationTestContext context);
 
         /// <summary>
         /// Verifies the <paramref name="result"/> of this test.
@@ -24,6 +30,6 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="message">The message that was handled by this test.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        void Then(TMessage message, IMessageHandlerOperationTestResult<TOutputStream> result, MicroProcessorOperationTestContext context);
+        void Then(TMessage message, IMessageHandlerOperationTestResult result, MicroProcessorOperationTestContext context);
     }
 }

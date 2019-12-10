@@ -4,7 +4,7 @@ using System.Linq;
 using Kingo.Collections.Generic;
 using Kingo.Reflection;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// Represents a set of messages that were produced by a <see cref="IMicroProcessor"/> as a result of running

@@ -10,11 +10,11 @@ namespace Kingo.MicroServices.Controllers
     public interface IQueryOperationTest<TRequest, TResponse> : IMicroProcessorOperationTest
     {
         /// <summary>
-        /// Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+        /// Executes this test by executing a specific query using the specified <paramref name="runner"/>.
         /// </summary>
-        /// <param name="processor">The processor to execute the query with.</param>
+        /// <param name="runner">The runner that will execute the query.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        Task WhenAsync(IQueryOperationTestProcessor<TRequest, TResponse> processor, MicroProcessorOperationTestContext context);
+        Task WhenAsync(IQueryOperationRunner<TRequest, TResponse> runner, MicroProcessorOperationTestContext context);
 
         /// <summary>
         /// Verifies the <paramref name="result"/> of this test.

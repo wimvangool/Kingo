@@ -10,35 +10,35 @@ namespace Kingo.MicroServices.Controllers
         public MessageHandlerOperationTestDelegate()
         {
             _givenStatements = new GivenStatementCollection();
-            _whenStatement = (messageProcessor, testContext) => messageProcessor.ExecuteCommandAsync((message, context) => { }, new object());
-            _thenStatement = (message, result, context) => result.IsMessageStream();
+            _whenStatement = (runner, testContext) => runner.ExecuteCommandAsync((message, context) => { }, new object());
+            _thenStatement = (message, result, context) => result.IsEmptyStream();
         }
 
         #region [====== Given ======]
 
-        public MessageHandlerOperationTestDelegate Given(Func<IMessageHandlerOperationTestProcessor, MicroProcessorOperationTestContext, Task> givenStatement)
+        public MessageHandlerOperationTestDelegate Given(Func<IMicroProcessorOperationRunner, MicroProcessorOperationTestContext, Task> givenStatement)
         {
             _givenStatements.Given(givenStatement);
             return this;
         }
 
-        protected override Task GivenAsync(IMessageHandlerOperationTestProcessor processor, MicroProcessorOperationTestContext context) =>
-            _givenStatements.GivenAsync(processor, context);
+        protected override Task GivenAsync(IMicroProcessorOperationRunner runner, MicroProcessorOperationTestContext context) =>
+            _givenStatements.GivenAsync(runner, context);
 
         #endregion
 
         #region [====== When ======]
 
-        private Func<IMessageProcessor<object>, MicroProcessorOperationTestContext, Task> _whenStatement;
+        private Func<IMessageHandlerOperationRunner<object>, MicroProcessorOperationTestContext, Task> _whenStatement;
 
-        public MessageHandlerOperationTestDelegate When(Func<IMessageProcessor<object>, MicroProcessorOperationTestContext, Task> whenStatement)
+        public MessageHandlerOperationTestDelegate When(Func<IMessageHandlerOperationRunner<object>, MicroProcessorOperationTestContext, Task> whenStatement)
         {
             _whenStatement = whenStatement ?? throw new ArgumentNullException(nameof(whenStatement));
             return this;
         }
 
-        protected override Task WhenAsync(IMessageProcessor<object> processor, MicroProcessorOperationTestContext context) =>
-            _whenStatement.Invoke(processor, context);
+        protected override Task WhenAsync(IMessageHandlerOperationRunner<object> runner, MicroProcessorOperationTestContext context) =>
+            _whenStatement.Invoke(runner, context);
 
         #endregion        
 

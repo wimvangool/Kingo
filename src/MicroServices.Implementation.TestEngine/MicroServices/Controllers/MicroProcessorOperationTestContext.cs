@@ -9,12 +9,38 @@ namespace Kingo.MicroServices.Controllers
     /// </summary>
     public sealed class MicroProcessorOperationTestContext
     {
-        private readonly Dictionary<IMicroProcessorOperationTest, object> _testResults;
+        #region [====== MessageHandlerOperattionResult ======]
+
+        private sealed class MessageHandlerOperationResult
+        {
+            public MessageHandlerOperationResult(IMessageEnvelope inputMessage, MessageStream outputStream)
+            {
+                InputMessage = inputMessage;
+                OutputStream = outputStream;
+            }
+
+            public IMessageEnvelope InputMessage
+            {
+                get;
+            }
+
+            public MessageStream OutputStream
+            {
+                get;
+            }
+
+            public override string ToString() =>
+                $"{InputMessage.Content.GetType().FriendlyName()} --> {OutputStream.Count} message(s)";
+        }
+
+        #endregion
+
+        private readonly Dictionary<Guid, MessageHandlerOperationResult> _results;
         private readonly IMicroProcessor _processor;        
 
         internal MicroProcessorOperationTestContext(IMicroProcessor processor)
         {                        
-            _testResults = new Dictionary<IMicroProcessorOperationTest, object>();
+            _results = new Dictionary<Guid, MessageHandlerOperationResult>();
             _processor = processor;            
         }
 
@@ -29,23 +55,26 @@ namespace Kingo.MicroServices.Controllers
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_testResults.Count} output-stream(s) stored.";        
+            $"{_results.Count} operation(s) executed.";
 
-        #region [====== SetTestResult ======]
+        #region [====== SetResult ======]
 
-        internal void SetTestResult<TMessage, TOutputStream>(IMicroProcessorOperationTest test, MessageEnvelope<TMessage> message, TOutputStream outputStream) where TOutputStream : MessageStream
+        internal MessageStream SetResult<TMessage>(Guid operationId, MessageHandlerOperationResult<TMessage> result)
         {
+            var outputStream = new MessageStream(result.Output);
+
             try
             {
-                _testResults.Add(test, Tuple.Create(message, outputStream));
+                _results.Add(operationId, new MessageHandlerOperationResult(result.Input, outputStream));
             }
             catch (ArgumentException exception)
             {
-                throw NewTestAlreadyRunException(test, exception);
+                throw NewOperationAlreadyExecutedException(operationId, exception);
             }
+            return outputStream;
         }
 
-        private static Exception NewTestAlreadyRunException(object test, Exception innerException)
+        private static Exception NewOperationAlreadyExecutedException(object test, Exception innerException)
         {
             var messageFormat = ExceptionMessages.MicroProcessorTestContext_TestAlreadyRun;
             var message = string.Format(messageFormat, test.GetType().FriendlyName());
@@ -54,57 +83,31 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== GetTestResult ======]     
+        #region [====== GetResult ======]     
 
-        /// <summary>
-        /// Returns the message that was processed by the specified <paramref name="test"/>.
-        /// </summary>        
-        /// <param name="test">The test that produced the message-stream.</param>
-        /// <returns>The message-stream that was stored in this context.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="test"/> is <c>null</c>.        
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// No message-stream produced by the specified <paramref name="test"/> was stored in this context.
-        /// </exception>
-        public MessageEnvelope<TMessage> GetInputMessage<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream =>
-            GetTestResult(test).Item1;
+        internal MessageEnvelope<TMessage> GetInputMessage<TMessage>(Guid operationId) =>
+            (MessageEnvelope<TMessage>) GetResult(operationId).InputMessage;
 
-        /// <summary>
-        /// Returns the <see cref="MessageStream"/> that was produced by the specified <paramref name="test"/>.
-        /// </summary>        
-        /// <param name="test">The test that produced the message-stream.</param>
-        /// <returns>The message-stream that was stored in this context.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="test"/> is <c>null</c>.        
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// No message-stream produced by the specified <paramref name="test"/> was stored in this context.
-        /// </exception>
-        public TOutputStream GetOutputStream<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream =>
-            GetTestResult(test).Item2;
+        internal MessageStream GetOutputStream(Guid operationId) =>
+            GetResult(operationId).OutputStream;
 
-        private Tuple<MessageEnvelope<TMessage>, TOutputStream> GetTestResult<TMessage, TOutputStream>(IMessageHandlerOperationTest<TMessage, TOutputStream> test) where TOutputStream : MessageStream
+        private MessageHandlerOperationResult GetResult(Guid operationId)
         {
-            if (test == null)
-            {
-                throw new ArgumentNullException(nameof(test));
-            }
             try
             {
-                return (Tuple<MessageEnvelope<TMessage>, TOutputStream>) _testResults[test];
+                return _results[operationId];
             }
             catch (KeyNotFoundException exception)
             {
-                throw NewTestResultNotFoundException(test, exception);
+                throw NewOperationNotExecutedException(operationId, exception);
             }
         }
 
-        private static Exception NewTestResultNotFoundException(object test, Exception innerException)            
+        private static Exception NewOperationNotExecutedException(Guid operationId, Exception innerException)            
         {
             var messageFormat = ExceptionMessages.MicroProcessorTestContext_TestResultNotFound;
-            var message = string.Format(messageFormat, test.GetType().FriendlyName());
-            return new ArgumentException(message, nameof(test), innerException);
+            var message = string.Format(messageFormat, operationId);
+            return new ArgumentException(message, nameof(operationId), innerException);
         }
 
         #endregion                

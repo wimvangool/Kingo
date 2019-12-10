@@ -3,7 +3,7 @@
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// When implemented by a class, represents the result of a <see cref="IMessageHandlerOperationTest{TMessage,TOutputStream}"/>,
+    /// When implemented by a class, represents the result of a <see cref="IMessageHandlerOperationTest{TMessage}"/>,
     /// where the result is either an exception or an empty message-stream.
     /// </summary>
     public interface IMessageHandlerOperationTestResult : IMicroProcessorOperationTestResult

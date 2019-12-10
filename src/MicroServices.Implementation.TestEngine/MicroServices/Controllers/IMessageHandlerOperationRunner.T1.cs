@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// When implemented by a class, represents a processor that can process a specific message.
+    /// When implemented by a class, represents a component that can be used to run a specific message
+    /// using a specific <see cref="IMessageHandler{TMessage}"/>.
     /// </summary>
-    /// <typeparam name="TMessage">Type of the message that can be processed.</typeparam>
-    public interface IMessageProcessor<TMessage>
+    /// <typeparam name="TMessage"></typeparam>
+    public interface IMessageHandlerOperationRunner<TMessage>
     {
         #region [====== ExecuteCommandAsync ======]
 
         /// <summary>
-        /// Executes a command with a specific message handler.
+        /// Executes a command using the specified <typeparamref name="TMessageHandler"/>.
         /// </summary>
         /// <typeparam name="TMessageHandler">Type of the message handler that will handle the specified <paramref name="message"/>.</typeparam>
         /// <param name="message">The command to execute.</param>        
@@ -22,7 +25,7 @@ namespace Kingo.MicroServices.Controllers
         Task ExecuteCommandAsync<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage>;
 
         /// <summary>
-        /// Executes a command with a specific message handler.
+        /// Executes a command using the specified <paramref name="messageHandler"/>.
         /// </summary>
         /// <param name="messageHandler">Message handler that will handle the specified <paramref name="message"/>.</param>
         /// <param name="message">The command to execute.</param>        
@@ -36,7 +39,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== HandleEventAsync ======]
 
         /// <summary>
-        /// Handles an event with a specific message handler.
+        /// Handles an event using the specified <typeparamref name="TMessageHandler"/>.
         /// </summary>
         /// <typeparam name="TMessageHandler">Type of the message handler that will handle the specified <paramref name="message"/>.</typeparam>
         /// <param name="message">The event to handle.</param>        
@@ -46,7 +49,7 @@ namespace Kingo.MicroServices.Controllers
         Task HandleEventAsync<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage>;
 
         /// <summary>
-        /// Handles an event with a specific message handler.
+        /// Handles an event using the specified <paramref name="messageHandler"/>.
         /// </summary>
         /// <param name="messageHandler">Message handler that will handle the specified <paramref name="message"/>.</param>
         /// <param name="message">The event to handle.</param>        

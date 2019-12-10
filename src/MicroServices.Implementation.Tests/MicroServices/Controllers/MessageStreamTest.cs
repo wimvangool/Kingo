@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Controllers
 {
     [TestClass]
     public sealed class MessageStreamTest
