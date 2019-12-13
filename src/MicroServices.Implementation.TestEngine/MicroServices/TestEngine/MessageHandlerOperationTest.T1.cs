@@ -26,9 +26,11 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== IMessageHandlerOperationTest<TMessage> ======]
 
+        /// <inheritdoc />
         public MessageEnvelope<TMessage> GetInputMessage(MicroProcessorOperationTestContext context) =>
             _operation.GetInputMessage(context);
 
+        /// <inheritdoc />
         public MessageStream GetOutputStream(MicroProcessorOperationTestContext context) =>
             _operation.GetOutputStream(context);
 

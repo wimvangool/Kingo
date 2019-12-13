@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.MicroServices.TestEngine;
+using Kingo.MicroServices.Controllers;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.TestEngine
 {
     internal sealed class QueryOperationTestDelegate<TResponse> : QueryOperationTest<TResponse>
     {

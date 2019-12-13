@@ -128,7 +128,6 @@ namespace Kingo.MicroServices.TestEngine
         /// <summary>
         /// Attempts to return the message of the specified type <typeparamref name="TMessage"/>.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to return.</typeparam>
         /// <param name="index">
         /// Indicates which message must be returned if this stream contains multiple messages of type <typeparamref name="TMessage"/>.
         /// </param>

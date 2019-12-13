@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.MicroServices.TestEngine;
+using Kingo.MicroServices.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.TestEngine
 {    
     [TestClass]
     public sealed class MicroProcessorOperationTestRunnerTest : MicroProcessorOperationTestRunner
@@ -122,7 +122,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(1);
+                    result.Is<object>();
                 });
 
             await RunAsync(test);
@@ -142,9 +142,9 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(1, stream =>
+                    result.Is<object>(@event =>
                     {
-                        Assert.AreSame(command, stream[0].Content);
+                        Assert.AreSame(command, @event);
                     });
                 });
 
@@ -155,20 +155,20 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfOneEventIsExpected_But_DifferentEventWasPublished()
         {
-            var @event = new object();
+            var eventIn = new object();
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
                 {
                     await messageProcessor.ExecuteCommandAsync((processor, context) =>
                     {
-                        context.MessageBus.PublishEvent(@event);
+                        context.MessageBus.PublishEvent(eventIn);
                     }, new object());
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(1, stream =>
+                    result.Is<object>(@eventOut =>
                     {                        
-                        Assert.AreNotSame(@event, stream[0].Content);                     
+                        Assert.AreNotSame(eventIn, @eventOut);                     
                     });
                 });
 
@@ -485,7 +485,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(1);
+                    result.Is<object>();
                 });
 
             var testB = CreateMessageHandlerTest()
@@ -554,9 +554,9 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(1, stream =>
+                    result.Is<object>(@event =>
                     {
-                        Assert.AreSame(messageA, stream[0].Content);
+                        Assert.AreSame(messageA, @event);
                     });
                 });
 

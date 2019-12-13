@@ -21,6 +21,72 @@ namespace Kingo.MicroServices.TestEngine
             result.IsMessageStream(0);
 
         /// <summary>
+        /// Verifies that one specific message was produced.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the content of the message.</typeparam>
+        /// <param name="result">The result to verify.</param>
+        /// <param name="assertion">
+        /// Optional delegate to verify the details of the message.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="result"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="TestFailedException">
+        /// The result is not an message-stream
+        /// - or -
+        /// The stream is empty
+        /// - or -
+        /// More than once message was produced
+        /// - or -
+        /// The message is not of the specified type <typeparamref name="TMessage" />.
+        /// </exception>
+        public static void Is<TMessage>(this IMessageHandlerOperationTestResult result, Action<TMessage> assertion = null)
+        {
+            if (assertion == null)
+            {
+                result.Is<TMessage>(message => { });
+                return;
+            }
+            result.IsMessageStream(1, stream =>
+            {
+                stream.Assert(assertion);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that one specific message was produced.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the content of the message.</typeparam>
+        /// <param name="result">The result to verify.</param>
+        /// <param name="assertion">
+        /// Optional delegate to verify the details of the message.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="result"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="TestFailedException">
+        /// The result is not an message-stream
+        /// - or -
+        /// The stream is empty
+        /// - or -
+        /// More than once message was produced
+        /// - or -
+        /// The message is not of the specified type <typeparamref name="TMessage" />.
+        /// </exception>
+        public static void IsMessage<TMessage>(this IMessageHandlerOperationTestResult result, Action<MessageToDispatch<TMessage>> assertion = null)
+        {
+            if (assertion == null)
+            {
+                result.IsMessage<TMessage>(message => { });
+                return;
+            }
+            result.IsMessageStream(1, stream =>
+            {
+                stream.AssertMessage(assertion);
+            });
+        }
+
+        /// <summary>
         /// Verifies that a specific amount of messages were produced.
         /// </summary>
         /// <param name="result">The result to verify.</param>
@@ -28,6 +94,9 @@ namespace Kingo.MicroServices.TestEngine
         /// <param name="assertion">
         /// Optional delegate to verify the details of all the messages.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="result"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> is negative.
         /// </exception>

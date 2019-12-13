@@ -1,8 +1,8 @@
 ﻿using System;
-using Kingo.MicroServices.TestEngine;
+using Kingo.MicroServices.DataAnnotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.DataAnnotations
+namespace Kingo.MicroServices.TestEngine
 {
     [TestClass]
     public sealed class RequestTestTest : RequestMessageTest<SomeCommand>
