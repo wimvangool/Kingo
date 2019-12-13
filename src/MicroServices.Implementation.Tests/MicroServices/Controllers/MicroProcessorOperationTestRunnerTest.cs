@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.MicroServices.TestEngine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,7 +9,7 @@ namespace Kingo.MicroServices.Controllers
     [TestClass]
     public sealed class MicroProcessorOperationTestRunnerTest : MicroProcessorOperationTestRunner
     {
-        #region [====== MessageHandlerTests (1) ======]
+        #region [====== MessageHandlerTests ======]
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
@@ -121,10 +122,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(stream =>
-                    {
-                        Assert.AreEqual(1, stream.Count);
-                    });
+                    result.IsMessageStream(1);
                 });
 
             await RunAsync(test);
@@ -144,9 +142,8 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(stream =>
+                    result.IsMessageStream(1, stream =>
                     {
-                        Assert.AreEqual(1, stream.Count);
                         Assert.AreSame(command, stream[0].Content);
                     });
                 });
@@ -169,7 +166,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream(stream =>
+                    result.IsMessageStream(1, stream =>
                     {                        
                         Assert.AreNotSame(@event, stream[0].Content);                     
                     });
@@ -488,7 +485,7 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream();
+                    result.IsMessageStream(1);
                 });
 
             var testB = CreateMessageHandlerTest()
@@ -498,9 +495,9 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .When(async (messageProcessor, testContext) =>
                 {
-                    var outputStream = testA.GetOutputStream(testContext);
+                    var outputMessage = testA.GetOutput<object>(testContext);
 
-                    Assert.AreSame(@event, outputStream[0].Content);
+                    Assert.AreSame(@event, outputMessage);
 
                     await messageProcessor.ExecuteCommandAsync((message, context) => { }, new object());
                 });                
@@ -529,19 +526,48 @@ namespace Kingo.MicroServices.Controllers
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsMessageStream();
+                    result.IsEmptyStream();
                 });
 
             await RunAsync(test);
         }
 
-        //public 
+        [TestMethod]
+        public async Task RunMessageHandlerTest_Succeeds_IfMessageToHandleIsReusedFromPreviousOperation()
+        {
+            var messageA = new object();
+            var operation = CreateMessageHandlerOperation();
+            var test = CreateMessageHandlerTest()
+                .Given(async (runner, testContext) =>
+                {
+                    await runner.Run(operation, testContext).ExecuteCommandAsync((messageB, context) =>
+                    {
+                        context.MessageBus.PublishEvent(messageB);
+                    }, messageA);
+                })
+                .When(async (runner, testContext) =>
+                {
+                    await runner.ExecuteCommandAsync((messageC, context) =>
+                    {
+                        context.MessageBus.PublishEvent(messageC);
+                    }, operation.GetInput(testContext));
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsMessageStream(1, stream =>
+                    {
+                        Assert.AreSame(messageA, stream[0].Content);
+                    });
+                });
+
+            await RunAsync(test);
+        }
 
         private static MessageHandlerOperationTestDelegate CreateMessageHandlerTest() =>
             new MessageHandlerOperationTestDelegate();
 
-        private static MessageHandlerOperation<object> CreateMessageHandlerOperation() =>
-            new MessageHandlerOperation<object>();
+        private static TestEngine.MessageHandlerOperation<object> CreateMessageHandlerOperation() =>
+            new TestEngine.MessageHandlerOperation<object>();
 
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.MicroServices.TestEngine;
 
 namespace Kingo.MicroServices.Controllers
 {

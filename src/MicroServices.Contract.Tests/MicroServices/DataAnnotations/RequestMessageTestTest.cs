@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.MicroServices.TestEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.DataAnnotations

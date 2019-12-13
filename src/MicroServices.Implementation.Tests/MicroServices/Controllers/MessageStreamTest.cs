@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Kingo.MicroServices.TestEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.Controllers
@@ -7,30 +8,6 @@ namespace Kingo.MicroServices.Controllers
     [TestClass]
     public sealed class MessageStreamTest
     {
-        #region [====== MessageStreamStub ======]
-
-        private sealed class MessageStreamStub : MessageStream
-        {
-            public MessageStreamStub(MessageStream stream) :
-                base(stream) { }
-
-            public new TMessage GetMessage<TMessage>(int index = 0) =>
-                base.GetMessage<TMessage>(index).Content;
-
-            public bool TryGetMessage<TMessage>(int index, out TMessage message)
-            {
-                if (base.TryGetMessage<TMessage>(index, out var messageToDispatch))
-                {
-                    message = messageToDispatch.Content;
-                    return true;
-                }
-                message = default;
-                return false;
-            }
-        }
-
-        #endregion
-
         #region [====== Constructor ======]
 
         [TestMethod]
@@ -42,36 +19,113 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
+        #region [====== ToString ======]
+
+        [TestMethod]
+        public void ToString_ReturnsExpectedValue_IfStreamIsEmpty()
+        {
+            Assert.AreEqual("[0]", CreateEventStream().ToString());
+        }
+
+        [TestMethod]
+        public void ToString_ReturnsExpectedValue_IfStreamContainsOneMessage()
+        {
+            Assert.AreEqual("[1] { Object }", CreateEventStream(new object()).ToString());
+        }
+
+        [TestMethod]
+        public void ToString_ReturnsExpectedValue_IfStreamContainsThreeMessages()
+        {
+            Assert.AreEqual("[3] { Object, Int32, String }", CreateEventStream(new object(), 10, "Bla").ToString());
+        }
+
+        [TestMethod]
+        public void ToString_ReturnsExpectedValue_IfStreamContainFourMessages()
+        {
+            Assert.AreEqual("[4] { Object, Int32, String, ... }", CreateEventStream(new object(), 10, "Bla", 'v').ToString());
+        }
+
+        [TestMethod]
+        public void ToString_ReturnsExpectedValue_IfStreamContainFiveMessages()
+        {
+            Assert.AreEqual("[5] { Object, Int32, String, ... }", CreateEventStream(new object(), 10, "Bla", 'v', 55).ToString());
+        }
+
+        #endregion
+
+        #region [====== AssertMessage ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void AssertMessage_Throws_IfIndexIsNegative()
+        {
+            CreateEventStream().AssertMessage<object>(message => { }, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public void AssertMessage_Throws_IfStreamContainsNoMessages()
+        {
+            CreateEventStream().AssertMessage<object>(message => { });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public void AssertMessage_Throws_IfStreamContainsNoMessagesOfTheSpecifiedType()
+        {
+            CreateEventStream(string.Empty).AssertMessage<int>(message => { });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AssertMessage_Throws_IfAssertionIsNull()
+        {
+            CreateEventStream(string.Empty).AssertMessage<object>(null);
+        }
+
+        [TestMethod]
+        public void AssertMessage_AssertsExpectedMessage_IfStreamContainsExactlyOneMessageOfTheSpecifiedType()
+        {
+            var messageA = string.Empty;
+            
+            CreateEventStream(messageA).AssertMessage<object>(messageB =>
+            {
+                Assert.AreSame(messageA, messageB.Content);
+            });
+        }
+
+        #endregion
+
         #region [====== GetMessage ======]
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void GetMessage_Throws_IfIndexIsNegative()
         {
-            CreateEventStreamStub().GetMessage<object>(-1);
+            CreateEventStream().GetMessage<object>(-1);
         }
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
         public void GetMessage_Throws_IfStreamContainsNoMessages()
         {
-            CreateEventStreamStub().GetMessage<object>();
+            CreateEventStream().GetMessage<object>();
         }
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
         public void GetMessage_Throws_IfStreamContainsNoMessagesOfTheSpecifiedType()
         {
-            CreateEventStreamStub(string.Empty).GetMessage<int>();
+            CreateEventStream(string.Empty).GetMessage<int>();
         }
 
         [TestMethod]
         public void GetMessage_ReturnsExpectedMessage_IfStreamContainsExactlyOneMessageOfTheSpecifiedType()
         {
             var messageA = string.Empty;
-            var messageB = CreateEventStreamStub(messageA).GetMessage<object>();
+            var messageB = CreateEventStream(messageA).GetMessage<object>();
 
-            Assert.AreSame(messageA, messageB);
+            Assert.AreSame(messageA, messageB.Content);
         }
 
         [TestMethod]
@@ -79,9 +133,9 @@ namespace Kingo.MicroServices.Controllers
         {
             var messageA = string.Empty;
             var messageB = 4;
-            var messageC = CreateEventStreamStub(messageA, messageB).GetMessage<object>();
+            var messageC = CreateEventStream(messageA, messageB).GetMessage<object>();
 
-            Assert.AreSame(messageA, messageC);
+            Assert.AreSame(messageA, messageC.Content);
         }
 
         [TestMethod]
@@ -89,9 +143,9 @@ namespace Kingo.MicroServices.Controllers
         {
             var messageA = string.Empty;
             var messageB = 4;
-            var messageC = CreateEventStreamStub(messageA, messageB).GetMessage<object>(1);
+            var messageC = CreateEventStream(messageA, messageB).GetMessage<object>(1);
 
-            Assert.AreEqual(messageB, messageC);
+            Assert.AreEqual(messageB, messageC.Content);
         }
 
         #endregion
@@ -102,21 +156,21 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void TryGetMessage_Throws_IfIndexIsNegative()
         {
-            CreateEventStreamStub().TryGetMessage<object>(-1, out _);
+            CreateEventStream().TryGetMessage<object>(-1, out _);
         }
 
         [TestMethod]
         public void TryGetMessage_ReturnsFalse_IfStreamContainsNoMessages()
         {
-            Assert.IsFalse(CreateEventStreamStub().TryGetMessage<object>(0, out var message));
+            Assert.IsFalse(CreateEventStream().TryGetMessage<object>(0, out var message));
             Assert.IsNull(message);
         }
 
         [TestMethod]
         public void TryGetMessage_ReturnsFalse_IfStreamContainsNoMessagesOfTheSpecifiedType()
         {
-            Assert.IsFalse(CreateEventStreamStub(string.Empty).TryGetMessage<int>(0, out var message));
-            Assert.AreEqual(0, message);
+            Assert.IsFalse(CreateEventStream(string.Empty).TryGetMessage<int>(0, out var message));
+            Assert.IsNull(message);
         }
 
         [TestMethod]
@@ -124,8 +178,8 @@ namespace Kingo.MicroServices.Controllers
         {
             var messageA = string.Empty;
 
-            Assert.IsTrue(CreateEventStreamStub(messageA).TryGetMessage<object>(0, out var messageB));
-            Assert.AreSame(messageA, messageB);
+            Assert.IsTrue(CreateEventStream(messageA).TryGetMessage<object>(0, out var messageB));
+            Assert.AreSame(messageA, messageB.Content);
         }
 
         [TestMethod]
@@ -134,8 +188,8 @@ namespace Kingo.MicroServices.Controllers
             var messageA = string.Empty;
             var messageB = 4;
             
-            Assert.IsTrue(CreateEventStreamStub(messageA, messageB).TryGetMessage<object>(0, out var messageC));
-            Assert.AreSame(messageA, messageC);
+            Assert.IsTrue(CreateEventStream(messageA, messageB).TryGetMessage<object>(0, out var messageC));
+            Assert.AreSame(messageA, messageC.Content);
         }
 
         [TestMethod]
@@ -144,14 +198,11 @@ namespace Kingo.MicroServices.Controllers
             var messageA = string.Empty;
             var messageB = 4;
 
-            Assert.IsTrue(CreateEventStreamStub(messageA, messageB).TryGetMessage<object>(1, out var messageC));
-            Assert.AreEqual(messageB, messageC);
+            Assert.IsTrue(CreateEventStream(messageA, messageB).TryGetMessage<object>(1, out var messageC));
+            Assert.AreEqual(messageB, messageC.Content);
         }
 
         #endregion
-
-        private static MessageStreamStub CreateEventStreamStub(params object[] events) =>
-            new MessageStreamStub(CreateEventStream(events));
 
         private static MessageStream CreateEventStream(params object[] events) =>
             new MessageStream(events.Select(@event => @event.ToEvent()));

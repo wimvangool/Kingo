@@ -61,20 +61,29 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified expected length of the stream is not valid: {0}..
+        /// </summary>
+        internal static string MessageHandlerOperationResult_InvalidStreamLengthSpecified {
+            get {
+                return ResourceManager.GetString("MessageHandlerOperationResult_InvalidStreamLengthSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The length of the stream ({0}) doesn&apos;t match the expected length ({1})..
+        /// </summary>
+        internal static string MessageHandlerOperationResult_UnexpectedStreamLength {
+            get {
+                return ResourceManager.GetString("MessageHandlerOperationResult_UnexpectedStreamLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more assertions for the published messages failed. See inner exception for details. .
         /// </summary>
         internal static string MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed {
             get {
                 return ResourceManager.GetString("MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expected an empty stream, but stream contains {0} message(s)..
-        /// </summary>
-        internal static string MessageHandlerOperationTestResult_StreamNotEmpty {
-            get {
-                return ResourceManager.GetString("MessageHandlerOperationTestResult_StreamNotEmpty", resourceCulture);
             }
         }
         
