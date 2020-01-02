@@ -8,7 +8,7 @@ using Kingo.Collections.Generic;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// Serves as a base-class for collections of specific <see cref="MicroProcessorComponent" /> types
@@ -115,7 +115,8 @@ namespace Kingo.MicroServices.Controllers
         }
 
         /// <summary>
-        /// Adds the specified <paramref name="component"/> to this collection if the same type wasn't added before.
+        /// Adds the specified <paramref name="component"/> to this collection if its type
+        /// matches the criteria of this collection.
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <returns><c>true</c> if the type was added; otherwise <c>false</c>.</returns>

@@ -4,7 +4,7 @@ using System.Linq;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     internal sealed class MicroProcessorBuilder<TProcessor> : IMicroProcessorBuilder
         where TProcessor : MicroProcessor
@@ -12,6 +12,7 @@ namespace Kingo.MicroServices.Controllers
         private readonly MicroProcessorOptions _options;
         private readonly MessageHandlerCollection _messageHandlers;
         private readonly QueryCollection _queries;
+        private readonly RepositoryCollection _repositories;
         private readonly MicroServiceBusControllerCollection _microServiceBusControllers;
         private readonly MessageIdFactoryCollection _messageIdFactory;
         private readonly List<MicroProcessorComponentCollection> _components;
@@ -21,6 +22,7 @@ namespace Kingo.MicroServices.Controllers
             _options = new MicroProcessorOptions();
             _messageHandlers = new MessageHandlerCollection();
             _queries = new QueryCollection();
+            _repositories = new RepositoryCollection();
             _microServiceBusControllers = new MicroServiceBusControllerCollection();
             _messageIdFactory = new MessageIdFactoryCollection();
             _components = new List<MicroProcessorComponentCollection>();
@@ -40,6 +42,9 @@ namespace Kingo.MicroServices.Controllers
 
         public QueryCollection Queries =>
             _queries;
+
+        public RepositoryCollection Repositories =>
+            _repositories;
 
         public MicroServiceBusControllerCollection MicroServiceBusControllers =>
             _microServiceBusControllers;
@@ -86,6 +91,7 @@ namespace Kingo.MicroServices.Controllers
         {
             yield return _messageHandlers;
             yield return _queries;
+            yield return _repositories;
             yield return _microServiceBusControllers;
             yield return _messageIdFactory;
 

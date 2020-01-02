@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// When implemented by a class, represents the configuration for a component.

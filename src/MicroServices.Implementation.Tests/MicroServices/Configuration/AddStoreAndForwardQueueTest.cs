@@ -1,9 +1,10 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Kingo.MicroServices.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     [TestClass]
     public sealed class AddStoreAndForwardQueueTest : MicroProcessorTest<MicroProcessor>

@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Kingo.MicroServices.Controllers;
 using Kingo.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     [TestClass]
     public sealed class AddMessageIdFactoryTest : MicroProcessorTest<MicroProcessor>

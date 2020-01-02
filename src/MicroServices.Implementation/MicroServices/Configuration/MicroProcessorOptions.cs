@@ -1,4 +1,4 @@
-﻿namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices.Configuration
 {
     internal sealed class MicroProcessorOptions : IMicroProcessorOptions
     {

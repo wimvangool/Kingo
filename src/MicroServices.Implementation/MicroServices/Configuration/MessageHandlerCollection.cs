@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// Represents a collection of message handler instances and types.

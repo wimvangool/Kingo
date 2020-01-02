@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Kingo.MicroServices.Controllers;
 using Kingo.Reflection;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     internal sealed class StoreAndForwardQueueResolver : IMicroServiceBusResolver
     {

@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Kingo.MicroServices.Configuration;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represent a component that implements one or more variations of the <see cref="IQuery{TResponse}"/> or
+    /// Represent a component that implements one or more variations of the <see cref="IQuery{TResponse}"/> and/or
     /// <see cref="IQuery{TRequest, TResponse}"/> interfaces.
     /// </summary>
     public abstract class QueryComponent : MicroProcessorComponent, IReadOnlyCollection<ExecuteAsyncMethod>

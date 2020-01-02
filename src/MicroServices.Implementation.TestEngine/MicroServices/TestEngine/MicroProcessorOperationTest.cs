@@ -7,17 +7,17 @@ namespace Kingo.MicroServices.TestEngine
     /// </summary>    
     public abstract class MicroProcessorOperationTest : IMicroProcessorOperationTest
     {
-        Task IMicroProcessorOperationTest.GivenAsync(IMicroProcessorOperationRunner processor, MicroProcessorOperationTestContext context) =>
-            GivenAsync(processor, context);
+        Task IMicroProcessorOperationTest.GivenAsync(IMicroProcessorOperationRunner runner, MicroProcessorOperationTestContext context) =>
+            GivenAsync(runner, context);
 
         /// <summary>
         /// Prepares this test for execution.
         /// </summary>
-        /// <param name="processor">
+        /// <param name="runner">
         /// Processor that can be used to run existing tests or handle messages as a means to setup a desired program state.
         /// </param>
         /// <param name="context">The context in which the test is running.</param>        
-        protected virtual Task GivenAsync(IMicroProcessorOperationRunner processor, MicroProcessorOperationTestContext context) =>
+        protected virtual Task GivenAsync(IMicroProcessorOperationRunner runner, MicroProcessorOperationTestContext context) =>
             Task.CompletedTask;
     }
 }

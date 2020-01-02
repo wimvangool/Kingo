@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kingo.MicroServices.Controllers;
 using Kingo.Reflection;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     internal sealed class MicroServiceBusResolver : IMicroServiceBusResolver
     {

@@ -1,4 +1,4 @@
-﻿namespace Kingo.MicroServices.Controllers
+﻿namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// Represents a collection of query-types.

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.MicroServices.Controllers;
+using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

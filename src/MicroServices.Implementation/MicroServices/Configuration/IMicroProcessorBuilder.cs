@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// When implemented by a class, represents a builder that can be used to configure
@@ -22,6 +22,12 @@ namespace Kingo.MicroServices.Controllers
         /// registered and used by the <see cref="IMicroProcessor" />.
         /// </summary>
         QueryCollection Queries
+        {
+            get;
+        }
+
+
+        RepositoryCollection Repositories
         {
             get;
         }

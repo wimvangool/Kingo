@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.MicroServices.Configuration;
 using Kingo.Reflection;
 using Kingo.Threading;
 using Microsoft.Extensions.DependencyInjection;

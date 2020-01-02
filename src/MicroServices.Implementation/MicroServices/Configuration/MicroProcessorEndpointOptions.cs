@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// Represents a set of options that can be set for the endpoints of a <see cref="MicroProcessor" />.
