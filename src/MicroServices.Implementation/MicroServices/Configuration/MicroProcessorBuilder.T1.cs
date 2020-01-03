@@ -49,7 +49,7 @@ namespace Kingo.MicroServices.Configuration
         public MicroServiceBusControllerCollection MicroServiceBusControllers =>
             _microServiceBusControllers;
 
-        public MessageIdFactoryCollection MessageIdFactory =>
+        public MessageIdFactoryCollection MessageIdFactories =>
             _messageIdFactory;
 
         public void Add(MicroProcessorComponentCollection components) =>

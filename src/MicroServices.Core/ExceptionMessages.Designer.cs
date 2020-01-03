@@ -61,6 +61,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not decode the specified value (&apos;{0}&apos;). See inner exception for details..
+        /// </summary>
+        internal static string BinaryFormatterSerializer_DecodeFailed {
+            get {
+                return ResourceManager.GetString("BinaryFormatterSerializer_DecodeFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
         /// </summary>
         internal static string Comparable_IncomparableType {
@@ -129,6 +138,15 @@ namespace Kingo {
         internal static string ReadOnlyList_IndexOutOfRange {
             get {
                 return ResourceManager.GetString("ReadOnlyList_IndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not convert instance of type &apos;{0}&apos; to an instance of type &apos;{1}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string Serializer_TypeConversionFailed {
+            get {
+                return ResourceManager.GetString("Serializer_TypeConversionFailed", resourceCulture);
             }
         }
     }

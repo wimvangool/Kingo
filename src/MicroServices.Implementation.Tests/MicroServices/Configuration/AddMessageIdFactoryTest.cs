@@ -106,7 +106,7 @@ namespace Kingo.MicroServices.Configuration
         {
             var factory = new CustomMessageIdFactory();
 
-            Assert.IsTrue(ProcessorBuilder.MessageIdFactory.AddInstance<int>(factory.GenerateMessageIdFor));
+            Assert.IsTrue(ProcessorBuilder.MessageIdFactories.AddInstance<int>(factory.GenerateMessageIdFor));
 
             await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
@@ -123,8 +123,8 @@ namespace Kingo.MicroServices.Configuration
         {
             var factory = new CustomMessageIdFactory();
 
-            Assert.IsTrue(ProcessorBuilder.MessageIdFactory.AddInstance<int>(factory.GenerateMessageIdFor));
-            Assert.IsTrue(ProcessorBuilder.MessageIdFactory.AddInstance<string>(factory.GenerateMessageIdFor));
+            Assert.IsTrue(ProcessorBuilder.MessageIdFactories.AddInstance<int>(factory.GenerateMessageIdFor));
+            Assert.IsTrue(ProcessorBuilder.MessageIdFactories.AddInstance<string>(factory.GenerateMessageIdFor));
 
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
@@ -150,7 +150,7 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public async Task ProcessorBuilder_UsesCustomMessageIdFactoryType_IfCustomFactoryWasAdded_And_CustomFactoryMatchesMessageTypes()
         {
-            Assert.IsTrue(ProcessorBuilder.MessageIdFactory.Add<CustomMessageIdFactory>());
+            Assert.IsTrue(ProcessorBuilder.MessageIdFactories.Add<CustomMessageIdFactory>());
 
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
@@ -174,7 +174,7 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public async Task ProcessorBuilder_UsesCustomMessageIdFactoryInstance_IfCustomFactoryWasAdded_And_CustomFactoryMatchesMessageTypes()
         {
-            Assert.IsTrue(ProcessorBuilder.MessageIdFactory.Add<CustomMessageIdFactory>());
+            Assert.IsTrue(ProcessorBuilder.MessageIdFactories.Add<CustomMessageIdFactory>());
 
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
@@ -199,8 +199,8 @@ namespace Kingo.MicroServices.Configuration
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task ExecuteCommand_Throws_IfMultipleFactoriesWereRegisteredForSameMessageType()
         {
-            Assert.IsTrue(ProcessorBuilder.MessageIdFactory.AddInstance<object>(message => message.ToString()));
-            Assert.IsTrue(ProcessorBuilder.MessageIdFactory.AddInstance<object>(message => message.ToString()));
+            Assert.IsTrue(ProcessorBuilder.MessageIdFactories.AddInstance<object>(message => message.ToString()));
+            Assert.IsTrue(ProcessorBuilder.MessageIdFactories.AddInstance<object>(message => message.ToString()));
 
             try
             {

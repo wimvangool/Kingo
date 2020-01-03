@@ -9,8 +9,7 @@ namespace Kingo.MicroServices.Configuration
     public interface IMicroProcessorBuilder : IMicroProcessorOptions
     {
         /// <summary>
-        /// Represents a collection of <see cref="IMessageHandler{TMessage}"/> types that will be
-        /// registered and used by the <see cref="IMicroProcessor" />.
+        /// Returns the collection of all message-handlers that are to be used by the processor.
         /// </summary>
         MessageHandlerCollection MessageHandlers
         {
@@ -18,23 +17,23 @@ namespace Kingo.MicroServices.Configuration
         }
 
         /// <summary>
-        /// Represents a collection of <see cref="IQuery{TResponse}"/> and <see cref="IQuery{TRequest, TResponse}"/> that will be
-        /// registered and used by the <see cref="IMicroProcessor" />.
+        /// Returns the collection of queries that are to be used by the processor.
         /// </summary>
         QueryCollection Queries
         {
             get;
         }
 
-
+        /// <summary>
+        /// Returns the collection of all repositories that are to be used by the processor.
+        /// </summary>
         RepositoryCollection Repositories
         {
             get;
         }
 
         /// <summary>
-        /// Represents a collection of <see cref="IMicroServiceBus"/> types that we be used to build a single
-        /// <see cref="IMicroServiceBus"/> instance to be used by the <see cref="IMicroProcessor" />.
+        /// Returns the collection of service-bus controllers that are to be used by the processor.
         /// </summary>
         MicroServiceBusControllerCollection MicroServiceBusControllers
         {
@@ -42,10 +41,9 @@ namespace Kingo.MicroServices.Configuration
         }
 
         /// <summary>
-        /// Represents a collection of <see cref="IMessageIdFactory{TMessage}" /> types that will be
-        /// registered and used by the <see cref="IMicroProcessor" />.
+        /// Returns the collection of message-id factories that are to be used by the processor.
         /// </summary>
-        MessageIdFactoryCollection MessageIdFactory
+        MessageIdFactoryCollection MessageIdFactories
         {
             get;
         }
