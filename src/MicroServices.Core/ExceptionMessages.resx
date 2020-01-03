@@ -147,4 +147,10 @@
   <data name="Serializer_TypeConversionFailed" xml:space="preserve">
     <value>Could not convert instance of type '{0}' to an instance of type '{1}'. See inner exception for details.</value>
   </data>
+  <data name="XmlFormatSerializer_DeserializationFailed" xml:space="preserve">
+    <value>Could not deserialize instance of type '{0}'. See inner exception for details.</value>
+  </data>
+  <data name="XmlFormatSerializer_SerializationFailed" xml:space="preserve">
+    <value>Could not serialize instance of type '{0}'. See inner exception for details.</value>
+  </data>
 </root>

@@ -149,5 +149,23 @@ namespace Kingo {
                 return ResourceManager.GetString("Serializer_TypeConversionFailed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not deserialize instance of type &apos;{0}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string XmlFormatSerializer_DeserializationFailed {
+            get {
+                return ResourceManager.GetString("XmlFormatSerializer_DeserializationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not serialize instance of type &apos;{0}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string XmlFormatSerializer_SerializationFailed {
+            get {
+                return ResourceManager.GetString("XmlFormatSerializer_SerializationFailed", resourceCulture);
+            }
+        }
     }
 }

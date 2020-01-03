@@ -8,30 +8,11 @@ namespace Kingo.Serialization
     [TestClass]
     public sealed class SerializerExtensionsTest
     {
-        #region [====== SomeCustomObject ======]
-
-        [Serializable]
-        private sealed class SomeCustomObject
-        {
-            public SomeCustomObject()
-            {
-                Id = Guid.NewGuid();
-            }
-
-            public Guid Id
-            {
-                get;
-                set;
-            }
-        }
-
-        #endregion
-
-        private readonly BinaryFormatterSerializer _serializer;
+        private readonly BinaryFormatSerializer _serializer;
 
         public SerializerExtensionsTest()
         {
-            _serializer = new BinaryFormatterSerializer();
+            _serializer = new BinaryFormatSerializer();
         }
 
         #region [====== Deserialize ======]

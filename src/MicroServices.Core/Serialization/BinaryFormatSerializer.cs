@@ -8,23 +8,20 @@ namespace Kingo.Serialization
     /// <summary>
     /// Represents a <see cref="ISerializer" /> that serializes objects using a <see cref="BinaryFormatter" />.
     /// </summary>
-    public class BinaryFormatterSerializer : Serializer
+    public class BinaryFormatSerializer : Serializer
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryFormatterSerializer" /> class.
-        /// </summary>
-        public BinaryFormatterSerializer()
-        {
-            Formatter = new BinaryFormatter();
-        }
+        private readonly Lazy<BinaryFormatter> _formatter;
 
         /// <summary>
-        /// The formatter that is used to serialize and deserialize objects.
+        /// Initializes a new instance of the <see cref="BinaryFormatSerializer" /> class.
         /// </summary>
-        public BinaryFormatter Formatter
+        public BinaryFormatSerializer()
         {
-            get;
+            _formatter = new Lazy<BinaryFormatter>(CreateFormatter);
         }
+
+        private BinaryFormatter Formatter =>
+            _formatter.Value;
 
         #region [====== Serialize & Deserialize ======]
 
@@ -59,6 +56,14 @@ namespace Kingo.Serialization
             }
         }
 
+        /// <summary>
+        /// Creates and returns the <see cref="BinaryFormatter" /> that will be used
+        /// to serialize and deserialize objects.
+        /// </summary>
+        /// <returns>A new <see cref="BinaryFormatter"/>.</returns>
+        protected virtual BinaryFormatter CreateFormatter() =>
+            new BinaryFormatter();
+
         #endregion
 
         #region [====== Encode & Decode ======]
@@ -77,6 +82,10 @@ namespace Kingo.Serialization
             try
             {
                 return Decode(value);
+            }
+            catch (SerializationException)
+            {
+                throw;
             }
             catch (Exception exception)
             {
