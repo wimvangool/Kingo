@@ -17,49 +17,30 @@ namespace Kingo.Serialization
         public abstract object Deserialize(string value, Type type);
 
         /// <summary>
-        /// If the specified <paramref name="instance"/> is not of the specified <paramref name="type"/>,
-        /// attempts to convert <paramref name="instance"/> to an instance of this <paramref name="type"/>.
+        /// Creates and returns an exception that indicates serialization of an object of type
+        /// <paramref name="type"/> failed.
         /// </summary>
-        /// <param name="instance">The instance to convert.</param>
-        /// <param name="type">The type to convert the instance to.</param>
-        /// <returns>
-        /// The specified <paramref name="instance"/> if it is already of the specified <paramref name="type"/>;
-        /// otherwise the converted value of the specified <paramref name="type"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="instance"/> or <paramref name="type"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// The conversion failed.
-        /// </exception>
-        public static object Convert(object instance, Type type)
+        /// <param name="type">Type of the instance that was being serialized.</param>
+        /// <param name="exception">Exception that was thrown while serializing the object.</param>
+        /// <returns>A wrapper exception indicating the error.</returns>
+        protected static SerializationException NewSerializationFailedException(Type type, Exception exception)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (type.IsInstanceOfType(instance))
-            {
-                return instance;
-            }
-            try
-            {
-                return System.Convert.ChangeType(instance, type);
-            }
-            catch (Exception exception)
-            {
-                throw NewTypeConversionFailedException(instance.GetType(), type, exception);
-            }
+            var messageFormat = ExceptionMessages.Serializer_SerializationFailed;
+            var message = string.Format(messageFormat, type.FriendlyName());
+            return new SerializationException(message, exception);
         }
 
-        private static Exception NewTypeConversionFailedException(Type sourceType, Type targetType, Exception exception)
+        /// <summary>
+        /// Creates and returns an exception that indicates deserialization of an object of type
+        /// <paramref name="type"/> failed.
+        /// </summary>
+        /// <param name="type">Type of the instance that was being deserialized.</param>
+        /// <param name="exception">Exception that was thrown while deserializing the object.</param>
+        /// <returns>A wrapper exception indicating the error.</returns>
+        protected static SerializationException NewDeserializationFailedException(Type type, Exception exception)
         {
-            var messageFormat = ExceptionMessages.Serializer_TypeConversionFailed;
-            var message = string.Format(messageFormat, sourceType.FriendlyName(), targetType.FriendlyName());
+            var messageFormat = ExceptionMessages.Serializer_DeserializationFailed;
+            var message = string.Format(messageFormat, type.FriendlyName());
             return new SerializationException(message, exception);
         }
     }

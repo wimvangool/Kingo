@@ -61,15 +61,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not decode the specified value (&apos;{0}&apos;). See inner exception for details..
-        /// </summary>
-        internal static string BinaryFormatterSerializer_DecodeFailed {
-            get {
-                return ResourceManager.GetString("BinaryFormatterSerializer_DecodeFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
         /// </summary>
         internal static string Comparable_IncomparableType {
@@ -142,29 +133,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not convert instance of type &apos;{0}&apos; to an instance of type &apos;{1}&apos;. See inner exception for details..
-        /// </summary>
-        internal static string Serializer_TypeConversionFailed {
-            get {
-                return ResourceManager.GetString("Serializer_TypeConversionFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not deserialize instance of type &apos;{0}&apos;. See inner exception for details..
         /// </summary>
-        internal static string XmlFormatSerializer_DeserializationFailed {
+        internal static string Serializer_DeserializationFailed {
             get {
-                return ResourceManager.GetString("XmlFormatSerializer_DeserializationFailed", resourceCulture);
+                return ResourceManager.GetString("Serializer_DeserializationFailed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Could not serialize instance of type &apos;{0}&apos;. See inner exception for details..
         /// </summary>
-        internal static string XmlFormatSerializer_SerializationFailed {
+        internal static string Serializer_SerializationFailed {
             get {
-                return ResourceManager.GetString("XmlFormatSerializer_SerializationFailed", resourceCulture);
+                return ResourceManager.GetString("Serializer_SerializationFailed", resourceCulture);
             }
         }
     }

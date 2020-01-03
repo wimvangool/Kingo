@@ -3,7 +3,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using Kingo.Reflection;
 
 namespace Kingo.Serialization
 {
@@ -105,20 +104,6 @@ namespace Kingo.Serialization
         /// <returns>A new <see cref="XmlObjectSerializer"/>.</returns>
         protected virtual XmlObjectSerializer CreateXmlSerializer(Type type) =>
             new DataContractSerializer(type);
-
-        private static Exception NewSerializationFailedException(Type type, Exception exception)
-        {
-            var messageFormat = ExceptionMessages.XmlFormatSerializer_SerializationFailed;
-            var message = string.Format(messageFormat, type.FriendlyName());
-            return new SerializationException(message, exception);
-        }
-
-        private static Exception NewDeserializationFailedException(Type type, Exception exception)
-        {
-            var messageFormat = ExceptionMessages.XmlFormatSerializer_DeserializationFailed;
-            var message = string.Format(messageFormat, type.FriendlyName());
-            return new SerializationException(message, exception);
-        }
 
         #endregion
     }

@@ -50,9 +50,36 @@ namespace Kingo.Serialization
             {
                 throw new ArgumentNullException(nameof(type));
             }
-            using (var stream = new MemoryStream(DecodeSafe(value)))
+            try
             {
-                return Convert(Formatter.Deserialize(stream), type);
+                using (var stream = new MemoryStream(Decode(value)))
+                {
+                    return Convert(Formatter.Deserialize(stream), type);
+                }
+            }
+            catch (SerializationException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw NewDeserializationFailedException(type, exception);
+            }
+        }
+
+        private static object Convert(object instance, Type type)
+        {
+            if (type.IsInstanceOfType(instance))
+            {
+                return instance;
+            }
+            try
+            {
+                return System.Convert.ChangeType(instance, type);
+            }
+            catch (Exception exception)
+            {
+                throw NewDeserializationFailedException(type, exception);
             }
         }
 
@@ -77,22 +104,6 @@ namespace Kingo.Serialization
         protected virtual string Encode(byte[] data) =>
             System.Convert.ToBase64String(data);
 
-        private byte[] DecodeSafe(string value)
-        {
-            try
-            {
-                return Decode(value);
-            }
-            catch (SerializationException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw NewDecodeFailedException(value, exception);
-            }
-        }
-
         /// <summary>
         /// Decodes the specified <paramref name="value"/> to its raw byte-representation. The default
         /// implementation expects <paramref name="value"/> to be a base64 encoded string.
@@ -101,13 +112,6 @@ namespace Kingo.Serialization
         /// <returns>The raw byte-representation of the <paramref name="value"/>.</returns>
         protected virtual byte[] Decode(string value) =>
             System.Convert.FromBase64String(value);
-
-        private static Exception NewDecodeFailedException(string value, Exception exception)
-        {
-            var messageFormat = ExceptionMessages.BinaryFormatterSerializer_DecodeFailed;
-            var message = string.Format(messageFormat, value);
-            return new SerializationException(message, exception);
-        }
 
         #endregion
     }

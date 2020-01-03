@@ -1371,6 +1371,16 @@
               Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
             </summary>
         </member>
+        <member name="P:Kingo.ExceptionMessages.Serializer_DeserializationFailed">
+            <summary>
+              Looks up a localized string similar to Could not deserialize instance of type &apos;{0}&apos;. See inner exception for details..
+            </summary>
+        </member>
+        <member name="P:Kingo.ExceptionMessages.Serializer_SerializationFailed">
+            <summary>
+              Looks up a localized string similar to Could not serialize instance of type &apos;{0}&apos;. See inner exception for details..
+            </summary>
+        </member>
         <member name="T:Kingo.Reflection.MemberInfoExtensions">
             <summary>
             Contains extension methods for instances of type <see cref="T:System.Reflection.MemberInfo" />.
@@ -2200,6 +2210,201 @@
             <summary>
             Returns the directory that has been configured as the default or current directory.
             </summary>
+        </member>
+        <member name="T:Kingo.Serialization.BinaryFormatSerializer">
+            <summary>
+            Represents a <see cref="T:Kingo.Serialization.ISerializer" /> that serializes objects using a <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.Serialization.BinaryFormatSerializer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Serialization.BinaryFormatSerializer" /> class.
+            </summary>
+        </member>
+        <member name="M:Kingo.Serialization.BinaryFormatSerializer.Serialize(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.BinaryFormatSerializer.Deserialize(System.String,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.BinaryFormatSerializer.CreateFormatter">
+            <summary>
+            Creates and returns the <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" /> that will be used
+            to serialize and deserialize objects.
+            </summary>
+            <returns>A new <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/>.</returns>
+        </member>
+        <member name="M:Kingo.Serialization.BinaryFormatSerializer.Encode(System.Byte[])">
+            <summary>
+            Encodes the specified <paramref name="data"/> as a string. The default implementation
+            converts the data into a base64-format.
+            </summary>
+            <param name="data">The data to encode.</param>
+            <returns>A string-representation of the specified <paramref name="data"/>.</returns>
+        </member>
+        <member name="M:Kingo.Serialization.BinaryFormatSerializer.Decode(System.String)">
+            <summary>
+            Decodes the specified <paramref name="value"/> to its raw byte-representation. The default
+            implementation expects <paramref name="value"/> to be a base64 encoded string.
+            </summary>
+            <param name="value">The value to decode.</param>
+            <returns>The raw byte-representation of the <paramref name="value"/>.</returns>
+        </member>
+        <member name="T:Kingo.Serialization.ISerializer">
+            <summary>
+            When implemented by a class, represents a serializer that can serialize and deserialize
+            objects using a specific serialization-protocol.
+            </summary>
+        </member>
+        <member name="M:Kingo.Serialization.ISerializer.Serialize(System.Object)">
+            <summary>
+            Serializes the specified <paramref name="instance" />.
+            </summary>
+            <param name="instance">The object to serialize.</param>
+            <returns>The serialized object encoded as a string.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="instance"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            Serialization of the specified <paramref name="instance"/> failed.
+            </exception>
+        </member>
+        <member name="M:Kingo.Serialization.ISerializer.Deserialize(System.String,System.Type)">
+            <summary>
+            Deserializes the specified <paramref name="value"/> to an object of the specified <paramref name="type"/>.
+            </summary>
+            <param name="value">A serialized object encoded as a string.</param>
+            <param name="type">The type of the object to which the value is deserialized.</param>
+            <returns>An instance of the specified <paramref name="type"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> or <paramref name="type"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            Deserialization of the specified <paramref name="value"/> to the specified <paramref name="type"/> failed.
+            </exception>
+        </member>
+        <member name="T:Kingo.Serialization.JsonFormatSerializer">
+            <summary>
+            Represents a <see cref="T:Kingo.Serialization.ISerializer"/> that uses JSON as a serialization format.
+            </summary>
+        </member>
+        <member name="M:Kingo.Serialization.JsonFormatSerializer.Serialize(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.JsonFormatSerializer.Deserialize(System.String,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.JsonFormatSerializer.CreateSerializerOptions">
+            <summary>
+            Creates and returns the options that determine how the serializer should serialize
+            and deserialize objects.
+            </summary>
+            <returns>A new options-object.</returns>
+        </member>
+        <member name="T:Kingo.Serialization.Serializer">
+            <summary>
+            When implemented, represents a serializer that can serialize and deserialize
+            objects using a specific serialization-protocol.
+            </summary>
+        </member>
+        <member name="M:Kingo.Serialization.Serializer.Serialize(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.Serializer.Deserialize(System.String,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.Serializer.NewSerializationFailedException(System.Type,System.Exception)">
+            <summary>
+            Creates and returns an exception that indicates serialization of an object of type
+            <paramref name="type"/> failed.
+            </summary>
+            <param name="type">Type of the instance that was being serialized.</param>
+            <param name="exception">Exception that was thrown while serializing the object.</param>
+            <returns>A wrapper exception indicating the error.</returns>
+        </member>
+        <member name="M:Kingo.Serialization.Serializer.NewDeserializationFailedException(System.Type,System.Exception)">
+            <summary>
+            Creates and returns an exception that indicates deserialization of an object of type
+            <paramref name="type"/> failed.
+            </summary>
+            <param name="type">Type of the instance that was being deserialized.</param>
+            <param name="exception">Exception that was thrown while deserializing the object.</param>
+            <returns>A wrapper exception indicating the error.</returns>
+        </member>
+        <member name="T:Kingo.Serialization.SerializerExtensions">
+            <summary>
+            Contains extensions methods for instances of type <see cref="T:Kingo.Serialization.ISerializer" />.
+            </summary>
+        </member>
+        <member name="M:Kingo.Serialization.SerializerExtensions.Copy``1(Kingo.Serialization.ISerializer,``0)">
+            <summary>
+            Creates and returns a deep copy of the specified <paramref name="instance"/> by serializing and
+            deserializing it with the specified <paramref name="serializer"/>.
+            </summary>
+            <typeparam name="TValue">Type of the value to copy.</typeparam>
+            <param name="serializer">A serializer.</param>
+            <param name="instance">The instance to copy.</param>
+            <returns>A deep copy of the specified <paramref name="instance"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="serializer"/> or <paramref name="instance"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            Serialization or deserialization of the specified <paramref name="instance"/> failed.
+            </exception>
+        </member>
+        <member name="M:Kingo.Serialization.SerializerExtensions.Deserialize``1(Kingo.Serialization.ISerializer,System.String)">
+            <summary>
+            Deserializes and converts the specified <paramref name="value"/> to an instance of type <typeparamref name="TValue"/>.
+            </summary>
+            <typeparam name="TValue">Type of instance that the specified <paramref name="value"/> must be converted to.</typeparam>
+            <param name="serializer">A serializer.</param>
+            <param name="value">The value to deserialize.</param>
+            <returns>
+            An instance of type <typeparamref name="TValue"/> that represents the deserialized version
+            of the specified <paramref name="value"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="serializer"/> or <paramref name="value"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The specified <paramref name="value"/> could not be deserialized and/or converted to an instance of
+            type <typeparamref name="TValue"/>.
+            </exception>
+        </member>
+        <member name="T:Kingo.Serialization.XmlFormatSerializer">
+            <summary>
+            Represents a <see cref="T:Kingo.Serialization.ISerializer" /> that uses XML as a serialization format.
+            </summary>
+        </member>
+        <member name="M:Kingo.Serialization.XmlFormatSerializer.Serialize(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.XmlFormatSerializer.Deserialize(System.String,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Serialization.XmlFormatSerializer.CreateXmlWriter(System.Text.StringBuilder)">
+            <summary>
+            Creates and returns a new <see cref="T:System.Xml.XmlWriter"/> that will write all xml-data
+            to the specified <paramref name="value"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.Text.StringBuilder"/> to which all xml-data is to be written.</param>
+            <returns>A new <see cref="T:System.Xml.XmlWriter"/>.</returns>
+        </member>
+        <member name="M:Kingo.Serialization.XmlFormatSerializer.CreateXmlReader(System.String)">
+            <summary>
+            Creates and returns a new <see cref="T:System.Xml.XmlReader"/> that will read all xml-data
+            from the specified <paramref name="value"/>.
+            </summary>
+            <param name="value">The xml-data in string format.</param>
+            <returns>A new <see cref="T:System.Xml.XmlReader"/>.</returns>
+        </member>
+        <member name="M:Kingo.Serialization.XmlFormatSerializer.CreateXmlSerializer(System.Type)">
+            <summary>
+            Creates and returns a new <see cref="T:System.Runtime.Serialization.XmlObjectSerializer" /> that can serialize
+            and deserialize objects using a specific xml-format.
+            </summary>
+            <param name="type">Type of the object that will be serialized or deserialized.</param>
+            <returns>A new <see cref="T:System.Runtime.Serialization.XmlObjectSerializer"/>.</returns>
         </member>
         <member name="T:Kingo.StringExtensions">
             <summary>
