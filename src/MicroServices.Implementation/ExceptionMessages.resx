@@ -165,14 +165,17 @@
   <data name="MicroServiceBus_CircularDependencyDetected" xml:space="preserve">
     <value>Cannot publish the specified event(s) inside the constructor of a type that is registered as a '{0}'-type, because this causes a circular reference.</value>
   </data>
+  <data name="Repository_ItemNotFound" xml:space="preserve">
+    <value>Item of type '{0}' with id '{1}' was not found.</value>
+  </data>
   <data name="StoreAndForwardQueueResolver_CannotFindConstructor" xml:space="preserve">
     <value>Cannot resolve queue of type '{0}' because the resolver cannot find the appropriate constructor. Please make sure this type declares exactly one public constructor.</value>
   </data>
   <data name="StoreAndForwardQueueResolver_CircularDependencyDetected" xml:space="preserve">
     <value>Cannot resolve queue of type '{0}' because a circular dependency was detected in the pipeline.</value>
   </data>
-  <data name="UnitOfWork_EnlistmentTimeout" xml:space="preserve">
-    <value>The operation to enlist to the current unit of work (as a result of modification of aggregate of type '{0}'), was aborted because execution time exceeded the specified timeout ({1}).</value>
+  <data name="UnitOfWork_Disabled" xml:space="preserve">
+    <value>Cannot enlist instance of type '{0}' because the unit of work controller has been disabled.</value>
   </data>
   <data name="UnitOfWork_InvalidMode" xml:space="preserve">
     <value>The specified mode is invalid: {0}.</value>

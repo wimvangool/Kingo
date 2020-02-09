@@ -4,23 +4,20 @@ namespace Kingo.Clocks
 {
     internal sealed class ShiftedClock : Clock
     {
-        private readonly IClock _clock;
+        private readonly IClock _referenceClock;
         private readonly TimeSpan _offset;        
 
-        private ShiftedClock(IClock clock, TimeSpan offset)
+        public ShiftedClock(IClock referenceClock, TimeSpan offset)
         {
-            _clock = clock;
+            _referenceClock = referenceClock;
             _offset = offset;            
         }
 
         public override DateTimeOffset LocalDateAndTime() =>
-             Shift(_clock.LocalDateAndTime(), _offset);
+             Shift(_referenceClock.LocalDateAndTime(), _offset);
 
         public override DateTimeOffset UtcDateAndTime() =>
-             Shift(_clock.UtcDateAndTime(), _offset);
-
-        internal static ShiftedClock Shift(IClock clock, TimeSpan offset) =>
-             new ShiftedClock(clock, offset);
+             Shift(_referenceClock.UtcDateAndTime(), _offset);
 
         private static DateTimeOffset Shift(DateTimeOffset value, TimeSpan offset) =>
              value.Add(offset);

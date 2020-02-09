@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.Threading;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -13,19 +13,21 @@ namespace Kingo.MicroServices
 
         private sealed class DisabledMode : IUnitOfWork
         {
-            public async Task EnlistAsync(IUnitOfWorkResourceManager resourceManager)
-            {                
-                if (resourceManager.RequiresFlush())
-                {
-                    await resourceManager.FlushAsync().ConfigureAwait(false);
-                }
-            }
+            public void Enlist(IChangeTracker changeTracker) =>
+                throw NewUnitOfWorkDisabledException(changeTracker ?? throw new ArgumentNullException());
 
-            public Task FlushAsync() =>
+            public Task SaveChangesAsync() =>
                 Task.CompletedTask;
 
             public override string ToString() =>
                 UnitOfWorkMode.Disabled.ToString();
+
+            private static Exception NewUnitOfWorkDisabledException(IChangeTracker changeTracker)
+            {
+                var messageFormat = ExceptionMessages.UnitOfWork_Disabled;
+                var message = string.Format(messageFormat, changeTracker.GetType().FriendlyName());
+                return new InvalidOperationException(message);
+            }
         }
 
         #endregion
@@ -34,50 +36,70 @@ namespace Kingo.MicroServices
 
         private abstract class EnabledMode : IUnitOfWork
         {
-            private static readonly object _NullResourceId = new object();
-            private Dictionary<object, List<IUnitOfWorkResourceManager>> _resourceGroups;
+            private readonly Guid _unitOfWorkId;
+            private Dictionary<string, List<IChangeTracker>> _changeTrackerGroups;
 
             protected EnabledMode()
             {
-                _resourceGroups = new Dictionary<object, List<IUnitOfWorkResourceManager>>();
+                _unitOfWorkId = Guid.NewGuid();
+                _changeTrackerGroups = new Dictionary<string, List<IChangeTracker>>();
             }
+
+            protected Guid UnitOfWorkId =>
+                _unitOfWorkId;
 
             protected abstract UnitOfWorkMode Mode
             {
                 get;
             }
 
-            private int ResourceManagerCount =>
-                _resourceGroups.Values.Sum(group => group.Count);
+            private int ChangeTrackerCount =>
+                _changeTrackerGroups.Values.Sum(group => group.Count);
 
-            public Task EnlistAsync(IUnitOfWorkResourceManager resourceManager) =>
-                AsyncMethod.Run(() => Enlist(resourceManager));
-
-            private void Enlist(IUnitOfWorkResourceManager resourceManager)
-            {                
-                var resourceId = resourceManager.ResourceId ?? _NullResourceId;
-
-                if (_resourceGroups.TryGetValue(resourceId, out var resourceGroup))
+            public void Enlist(IChangeTracker changeTracker)
+            {
+                if (_changeTrackerGroups.TryGetValue(changeTracker.GroupId, out var changeTrackerGroup))
                 {
-                    if (resourceGroup.Contains(resourceManager))
+                    if (changeTrackerGroup.Contains(changeTracker))
                     {
                         return;
                     }
-                    resourceGroup.Add(resourceManager);
+                    changeTrackerGroup.Add(changeTracker);
                 }
                 else
                 {
-                    _resourceGroups.Add(resourceId, new List<IUnitOfWorkResourceManager> { resourceManager });
+                    _changeTrackerGroups.Add(changeTracker.GroupId, new List<IChangeTracker> { changeTracker });
                 }
-            }            
+            }
 
-            public Task FlushAsync() =>
-                FlushAsync(Interlocked.Exchange(ref _resourceGroups, new Dictionary<object, List<IUnitOfWorkResourceManager>>()).Values);
+            public Task SaveChangesAsync() =>
+                SaveChangesAsync(Interlocked.Exchange(ref _changeTrackerGroups, new Dictionary<string, List<IChangeTracker>>()).Values);
 
-            protected abstract Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups);
+            private async Task SaveChangesAsync(IReadOnlyCollection<List<IChangeTracker>> changeTrackerGroups)
+            {
+                try
+                {
+                    await SaveChangesOfAllGroupsAsync(changeTrackerGroups);
+                }
+                catch
+                {
+                    UndoChangesOfAllGroups(changeTrackerGroups);
+                    throw;
+                }
+            }
+
+            protected abstract Task SaveChangesOfAllGroupsAsync(IEnumerable<List<IChangeTracker>> changeTrackerGroups);
+
+            private void UndoChangesOfAllGroups(IEnumerable<List<IChangeTracker>> changeTrackerGroups)
+            {
+                foreach (var changeTrackerGroup in changeTrackerGroups)
+                {
+                    UndoChangesOfGroup(changeTrackerGroup, UnitOfWorkId);
+                }
+            }
 
             public override string ToString() =>
-                $"{Mode} ({ResourceManagerCount} resource manager(s) enlisted)";
+                $"{Mode} ({ChangeTrackerCount} change tracker(s) enlisted)";
         }
 
         #endregion
@@ -89,11 +111,11 @@ namespace Kingo.MicroServices
             protected override UnitOfWorkMode Mode =>
                 UnitOfWorkMode.SingleThreaded;
 
-            protected override async Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups)
+            protected override async Task SaveChangesOfAllGroupsAsync(IEnumerable<List<IChangeTracker>> changeTrackerGroups)
             {
-                foreach (var resourceGroup in resourceGroups)
+                foreach (var changeTrackerGroup in changeTrackerGroups)
                 {
-                    await FlushGroupAsync(resourceGroup).ConfigureAwait(false);
+                    await SaveChangesOfGroupAsync(changeTrackerGroup, UnitOfWorkId).ConfigureAwait(false);
                 }
             }                           
         }
@@ -107,8 +129,8 @@ namespace Kingo.MicroServices
             protected override UnitOfWorkMode Mode =>
                 UnitOfWorkMode.MultiThreaded;
 
-            protected override Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups) =>
-                Task.WhenAll(resourceGroups.Select(FlushGroupAsync));
+            protected override Task SaveChangesOfAllGroupsAsync(IEnumerable<List<IChangeTracker>> flushGroups) =>
+                Task.WhenAll(flushGroups.Select(flushGroup => SaveChangesOfGroupAsync(flushGroup, UnitOfWorkId)));
         }
 
         #endregion
@@ -120,20 +142,28 @@ namespace Kingo.MicroServices
             _unitOfWork = unitOfWork;
         }        
 
-        public Task EnlistAsync(IUnitOfWorkResourceManager resourceManager) =>
-            _unitOfWork.EnlistAsync(resourceManager ?? throw new ArgumentNullException(nameof(resourceManager)));
+        public void Enlist(IChangeTracker changeTracker) =>
+            _unitOfWork.Enlist(changeTracker ?? throw new ArgumentNullException(nameof(changeTracker)));
 
-        public Task FlushAsync() =>
-            _unitOfWork.FlushAsync();
+        public Task SaveChangesAsync() =>
+            _unitOfWork.SaveChangesAsync();
 
         public override string ToString() =>
             _unitOfWork.ToString();
 
-        private static async Task FlushGroupAsync(IEnumerable<IUnitOfWorkResourceManager> resourceGroup)
+        private static async Task SaveChangesOfGroupAsync(IEnumerable<IChangeTracker> changeTrackerGroup, Guid unitOfWorkId)
         {
-            foreach (var resourceManager in resourceGroup.Where(resource => resource.RequiresFlush()))
+            foreach (var changeTracker in changeTrackerGroup.Where(tracker => tracker.HasChanges(unitOfWorkId)))
             {
-                await resourceManager.FlushAsync().ConfigureAwait(false);
+                await changeTracker.SaveChangesAsync(unitOfWorkId).ConfigureAwait(false);
+            }
+        }
+
+        private static void UndoChangesOfGroup(IEnumerable<IChangeTracker> changeTrackerGroup, Guid unitOfWorkId)
+        {
+            foreach (var changeTracker in changeTrackerGroup)
+            {
+                changeTracker.UndoChanges(unitOfWorkId);
             }
         }
 

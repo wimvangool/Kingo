@@ -29,7 +29,7 @@ namespace Kingo.MicroServices
             {
                 // After the logical transaction has been completed, all changes are flushed.
                 var result = await base.ExecuteAsync().ConfigureAwait(false);
-                await _unitOfWork.FlushAsync().ConfigureAwait(false);
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
                 return result;
             }
             catch (MessageHandlerOperationException exception)

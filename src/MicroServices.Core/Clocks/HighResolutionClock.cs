@@ -7,7 +7,7 @@ namespace Kingo.Clocks
 {
     /// <summary>
     /// Represents a clock that uses a <see cref="Stopwatch" /> in combination with
-    /// the system clock to simulate a high resolution system time clock.
+    /// a reference clock (such as the system clock) to simulate a high resolution clock.
     /// </summary>
     public sealed class HighResolutionClock : Clock, IDisposable
     {

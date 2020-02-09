@@ -205,6 +205,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Item of type &apos;{0}&apos; with id &apos;{1}&apos; was not found..
+        /// </summary>
+        internal static string Repository_ItemNotFound {
+            get {
+                return ResourceManager.GetString("Repository_ItemNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot resolve queue of type &apos;{0}&apos; because the resolver cannot find the appropriate constructor. Please make sure this type declares exactly one public constructor..
         /// </summary>
         internal static string StoreAndForwardQueueResolver_CannotFindConstructor {
@@ -223,11 +232,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The operation to enlist to the current unit of work (as a result of modification of aggregate of type &apos;{0}&apos;), was aborted because execution time exceeded the specified timeout ({1})..
+        ///   Looks up a localized string similar to Cannot enlist instance of type &apos;{0}&apos; because the unit of work controller has been disabled..
         /// </summary>
-        internal static string UnitOfWork_EnlistmentTimeout {
+        internal static string UnitOfWork_Disabled {
             get {
-                return ResourceManager.GetString("UnitOfWork_EnlistmentTimeout", resourceCulture);
+                return ResourceManager.GetString("UnitOfWork_Disabled", resourceCulture);
             }
         }
         

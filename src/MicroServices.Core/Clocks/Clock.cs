@@ -49,7 +49,7 @@ namespace Kingo.Clocks
         /// </summary>
         public static readonly IClock SystemClock = new SystemClock();
 
-        private static readonly Context<IClock> _Context = new Context<IClock>(SystemClock);              
+        private static readonly Context<IClock> _Context = new Context<IClock>(SystemClock);
 
         /// <summary>
         /// Returns the clock associated to the current thread.

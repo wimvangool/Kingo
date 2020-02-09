@@ -133,6 +133,78 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot move to state &apos;{0}&apos; because the test was not in the expected state &apos;{1}&apos;..
+        /// </summary>
+        internal static string MicroProcessorTest_CannotMoveToState {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_CannotMoveToState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot invoke method &apos;{0}.{1}()&apos; while the test is in state &apos;{2}&apos;. Make sure you correctly follow the builder pattern provided by the framework..
+        /// </summary>
+        internal static string MicroProcessorTest_InvalidOperation {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_InvalidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot invoke &apos;{0}.{1}()&apos; while the test is in state &apos;{2}&apos;. Make sure &apos;{0}.{1}.()&apos; is invoked only once before the test is configured and executed..
+        /// </summary>
+        internal static string MicroProcessorTest_SetupFailed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_SetupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot invoke &apos;{0}.{1}()&apos; while the test is in state &apos;{2}&apos;. Make sure &apos;{0}.{1}()&apos; is invoked only once after the test has ran to completion..
+        /// </summary>
+        internal static string MicroProcessorTest_TearDownFailed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_TearDownFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test failed because an exception of type &apos;{0}&apos; was thrown while configuring an operation..
+        /// </summary>
+        internal static string MicroProcessorTestContext_ConfigureOperationFailed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestContext_ConfigureOperationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not resolve message-handler of type &apos;{0}&apos;. Please make sure all message-handers are registered in the service-collection..
+        /// </summary>
+        internal static string MicroProcessorTestContext_CouldNotResolveMessageHandler {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestContext_CouldNotResolveMessageHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test failed because message of type &apos;{0}&apos; was not set by the configurator..
+        /// </summary>
+        internal static string MicroProcessorTestContext_MessageNotSet {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestContext_MessageNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test failed because request of type &apos;{0}&apos; was not set by the configurator..
+        /// </summary>
+        internal static string MicroProcessorTestContext_RequestNotSet {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestContext_RequestNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot save the MessageStream of &apos;{0}&apos; because a previous result of this test has already been saved..
         /// </summary>
         internal static string MicroProcessorTestContext_TestAlreadyRun {
@@ -201,6 +273,51 @@ namespace Kingo {
         internal static string MicroProcessorTestResult_ResultNotVerified {
             get {
                 return ResourceManager.GetString("MicroProcessorTestResult_ResultNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot set time to &apos;{0}&apos; here because the current time is set to &apos;{1}&apos; and you are not allowed to go backwards in time during a test..
+        /// </summary>
+        internal static string MicroProcessorTestTimeline_InvalidTime {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestTimeline_InvalidTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot move the clock backwards in a test by specifying a negative value ({0})..
+        /// </summary>
+        internal static string MicroProcessorTestTimeline_NegativeTimeSpan {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestTimeline_NegativeTimeSpan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot move the clock backwards in a test by specifying a negative value ({0})..
+        /// </summary>
+        internal static string MicroProcessorTestTimeline_NegativeTimeUnit {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestTimeline_NegativeTimeUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot set time to &apos;{0}&apos; here because the test already runs in relative time, which may cause a jump backwards in time..
+        /// </summary>
+        internal static string MicroProcessorTestTimeline_SpecificTimeNotAllowed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestTimeline_SpecificTimeNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot move timeline to state &apos;{0}&apos; because the timeline was not in the expected state &apos;{1}&apos;..
+        /// </summary>
+        internal static string MicroProcessorTestTimeline_UnexpectedState {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestTimeline_UnexpectedState", resourceCulture);
             }
         }
         

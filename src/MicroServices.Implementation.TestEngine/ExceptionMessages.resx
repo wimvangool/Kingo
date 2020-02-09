@@ -141,6 +141,18 @@
   <data name="MicroProcessorConfiguration_ServicesAlreadyConfigured" xml:space="preserve">
     <value>Cannot invoke '{0}' at this point: the service collection has already been configured.</value>
   </data>
+  <data name="MicroProcessorTestContext_ConfigureOperationFailed" xml:space="preserve">
+    <value>Test failed because an exception of type '{0}' was thrown while configuring an operation.</value>
+  </data>
+  <data name="MicroProcessorTestContext_CouldNotResolveMessageHandler" xml:space="preserve">
+    <value>Could not resolve message-handler of type '{0}'. Please make sure all message-handers are registered in the service-collection.</value>
+  </data>
+  <data name="MicroProcessorTestContext_MessageNotSet" xml:space="preserve">
+    <value>Test failed because message of type '{0}' was not set by the configurator.</value>
+  </data>
+  <data name="MicroProcessorTestContext_RequestNotSet" xml:space="preserve">
+    <value>Test failed because request of type '{0}' was not set by the configurator.</value>
+  </data>
   <data name="MicroProcessorTestContext_TestAlreadyRun" xml:space="preserve">
     <value>Cannot save the MessageStream of '{0}' because a previous result of this test has already been saved.</value>
   </data>
@@ -164,6 +176,33 @@
   </data>
   <data name="MicroProcessorTestResult_ResultNotVerified" xml:space="preserve">
     <value>Test failed by default because its result was not verified.</value>
+  </data>
+  <data name="MicroProcessorTestTimeline_InvalidTime" xml:space="preserve">
+    <value>Cannot set time to '{0}' here because the current time is set to '{1}' and you are not allowed to go backwards in time during a test.</value>
+  </data>
+  <data name="MicroProcessorTestTimeline_NegativeTimeSpan" xml:space="preserve">
+    <value>Cannot move the clock backwards in a test by specifying a negative value ({0}).</value>
+  </data>
+  <data name="MicroProcessorTestTimeline_NegativeTimeUnit" xml:space="preserve">
+    <value>Cannot move the clock backwards in a test by specifying a negative value ({0}).</value>
+  </data>
+  <data name="MicroProcessorTestTimeline_SpecificTimeNotAllowed" xml:space="preserve">
+    <value>Cannot set time to '{0}' here because the test already runs in relative time, which may cause a jump backwards in time.</value>
+  </data>
+  <data name="MicroProcessorTestTimeline_UnexpectedState" xml:space="preserve">
+    <value>Cannot move timeline to state '{0}' because the timeline was not in the expected state '{1}'.</value>
+  </data>
+  <data name="MicroProcessorTest_CannotMoveToState" xml:space="preserve">
+    <value>Cannot move to state '{0}' because the test was not in the expected state '{1}'.</value>
+  </data>
+  <data name="MicroProcessorTest_InvalidOperation" xml:space="preserve">
+    <value>Cannot invoke method '{0}.{1}()' while the test is in state '{2}'. Make sure you correctly follow the builder pattern provided by the framework.</value>
+  </data>
+  <data name="MicroProcessorTest_SetupFailed" xml:space="preserve">
+    <value>Cannot invoke '{0}.{1}()' while the test is in state '{2}'. Make sure '{0}.{1}.()' is invoked only once before the test is configured and executed.</value>
+  </data>
+  <data name="MicroProcessorTest_TearDownFailed" xml:space="preserve">
+    <value>Cannot invoke '{0}.{1}()' while the test is in state '{2}'. Make sure '{0}.{1}()' is invoked only once after the test has ran to completion.</value>
   </data>
   <data name="NullTestResult_MissingResult" xml:space="preserve">
     <value>Test '{0}' did not produce any result. Please verify that the processor provided as an argument to the WhenAsync-method has been used to handle a message or execute a query.</value>

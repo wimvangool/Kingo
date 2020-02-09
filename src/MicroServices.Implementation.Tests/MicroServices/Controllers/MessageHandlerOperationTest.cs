@@ -231,105 +231,107 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task HandleMessageAsync_DoesNotFlushResourceManager_IfUnitOfWorkModeIsDisabled_And_ResourceManagerDoesNotRequireFlush()
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task HandleMessageAsync_ThrowsOnEnlist_IfUnitOfWorkIsDisabled()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.Disabled;
 
-            var resourceManager = new UnitOfWorkResourceManagerSpy(false);
+            var changeTracker = new ChangeTrackerSpy(true);
 
-            await HandleMessageAsync(async (message, context) =>
+            try
             {
-                await context.UnitOfWork.EnlistAsync(resourceManager);
+                await HandleMessageAsync((message, context) =>
+                {
+                    context.UnitOfWork.Enlist(changeTracker);
 
-                resourceManager.AssertRequiresFlushCountIs(1);
-                resourceManager.AssertFlushCountIs(0);
-            }, new object());
-
-            resourceManager.AssertRequiresFlushCountIs(1);
-            resourceManager.AssertFlushCountIs(0);
+                }, new object());
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.IsInstanceOfType(exception.InnerException, typeof(InvalidOperationException));
+                throw;
+            }
+            finally
+            {
+                changeTracker.AssertRequiresFlushCountIs(0);
+                changeTracker.AssertFlushCountIs(0);
+            }
         }
 
         [TestMethod]
-        public async Task HandleMessageAsync_FlushesResourceManagerOnEnlistment_IfUnitOfWorkIsDisabled_And_ResourceManagerRequiresFlush()
+        public async Task HandleMessageAsync_DoesNothingOnFlushAsync_IfUnitOfWorkModeIsDisabled()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.Disabled;
 
-            var resourceManager = new UnitOfWorkResourceManagerSpy(true);
-
             await HandleMessageAsync(async (message, context) =>
             {
-                await context.UnitOfWork.EnlistAsync(resourceManager);
+                await context.UnitOfWork.SaveChangesAsync();
 
-                resourceManager.AssertRequiresFlushCountIs(1);
-                resourceManager.AssertFlushCountIs(1);
             }, new object());
-
-            resourceManager.AssertRequiresFlushCountIs(1);
-            resourceManager.AssertFlushCountIs(1);
         }
 
         [TestMethod]
-        public async Task HandleMessageAsync_FlushesResourceManagersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagersRequireFlush()
+        public async Task HandleMessageAsync_FlushesChangeTrackersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeChangeTrackersRequireFlush()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
 
-            var resourceManagerA = new UnitOfWorkResourceManagerSpy(true);
-            var resourceManagerB = new UnitOfWorkResourceManagerSpy(true);
-            var resourceManagerC = new UnitOfWorkResourceManagerSpy(false);
+            var changeTrackerA = new ChangeTrackerSpy(true);
+            var changeTrackerB = new ChangeTrackerSpy(true);
+            var changeTrackerC = new ChangeTrackerSpy(false);
 
-            await HandleMessageAsync(async (message, context) =>
+            await HandleMessageAsync((message, context) =>
             {
-                await context.UnitOfWork.EnlistAsync(resourceManagerA);
-                await context.UnitOfWork.EnlistAsync(resourceManagerB);
-                await context.UnitOfWork.EnlistAsync(resourceManagerC);
+                context.UnitOfWork.Enlist(changeTrackerA);
+                context.UnitOfWork.Enlist(changeTrackerB);
+                context.UnitOfWork.Enlist(changeTrackerC);
 
-                resourceManagerA.AssertRequiresFlushCountIs(0);
-                resourceManagerA.AssertFlushCountIs(0);
+                changeTrackerA.AssertRequiresFlushCountIs(0);
+                changeTrackerA.AssertFlushCountIs(0);
 
-                resourceManagerB.AssertRequiresFlushCountIs(0);
-                resourceManagerB.AssertFlushCountIs(0);
+                changeTrackerB.AssertRequiresFlushCountIs(0);
+                changeTrackerB.AssertFlushCountIs(0);
 
-                resourceManagerC.AssertRequiresFlushCountIs(0);
-                resourceManagerC.AssertFlushCountIs(0);
+                changeTrackerC.AssertRequiresFlushCountIs(0);
+                changeTrackerC.AssertFlushCountIs(0);
             }, new object());
 
-            resourceManagerA.AssertRequiresFlushCountIs(1);
-            resourceManagerA.AssertFlushCountIs(1);
+            changeTrackerA.AssertRequiresFlushCountIs(1);
+            changeTrackerA.AssertFlushCountIs(1);
 
-            resourceManagerB.AssertRequiresFlushCountIs(1);
-            resourceManagerB.AssertFlushCountIs(1);
+            changeTrackerB.AssertRequiresFlushCountIs(1);
+            changeTrackerB.AssertFlushCountIs(1);
 
-            resourceManagerC.AssertRequiresFlushCountIs(1);
-            resourceManagerC.AssertFlushCountIs(0);
+            changeTrackerC.AssertRequiresFlushCountIs(1);
+            changeTrackerC.AssertFlushCountIs(0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task HandleMessageAsync_FlushesResourceManagersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagerThrows()
+        public async Task HandleMessageAsync_FlushesChangeTrackersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeChangeTrackerThrows()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
 
             var exceptionToThrow = new InternalServerErrorException();
-            var resourceManagerA = new UnitOfWorkResourceManagerSpy(true);
-            var resourceManagerB = new UnitOfWorkResourceManagerSpy(true, exceptionToThrow);
-            var resourceManagerC = new UnitOfWorkResourceManagerSpy(true);
+            var changeTrackerA = new ChangeTrackerSpy(true);
+            var changeTrackerB = new ChangeTrackerSpy(true, exceptionToThrow);
+            var changeTrackerC = new ChangeTrackerSpy(true);
 
             try
             {
-                await HandleMessageAsync(async (message, context) =>
+                await HandleMessageAsync((message, context) =>
                 {
-                    await context.UnitOfWork.EnlistAsync(resourceManagerA);
-                    await context.UnitOfWork.EnlistAsync(resourceManagerB);
-                    await context.UnitOfWork.EnlistAsync(resourceManagerC);
+                    context.UnitOfWork.Enlist(changeTrackerA);
+                    context.UnitOfWork.Enlist(changeTrackerB);
+                    context.UnitOfWork.Enlist(changeTrackerC);
 
-                    resourceManagerA.AssertRequiresFlushCountIs(0);
-                    resourceManagerA.AssertFlushCountIs(0);
+                    changeTrackerA.AssertRequiresFlushCountIs(0);
+                    changeTrackerA.AssertFlushCountIs(0);
 
-                    resourceManagerB.AssertRequiresFlushCountIs(0);
-                    resourceManagerB.AssertFlushCountIs(0);
+                    changeTrackerB.AssertRequiresFlushCountIs(0);
+                    changeTrackerB.AssertFlushCountIs(0);
 
-                    resourceManagerC.AssertRequiresFlushCountIs(0);
-                    resourceManagerC.AssertFlushCountIs(0);
+                    changeTrackerC.AssertRequiresFlushCountIs(0);
+                    changeTrackerC.AssertFlushCountIs(0);
                 }, new object());
             }
             catch (InternalServerErrorException exception)
@@ -339,81 +341,88 @@ namespace Kingo.MicroServices.Controllers
             }
             finally
             {
-                // All resource managers required a flush, but since the second resource manager
-                // throws an exception, the third resource manager is never flushed.
-                resourceManagerA.AssertRequiresFlushCountIs(1);
-                resourceManagerA.AssertFlushCountIs(1);
+                // All change trackers required a flush, but since the second tracker
+                // throws an exception, the third tracker is never flushed, and all
+                // changes are undone.
+                changeTrackerA.AssertRequiresFlushCountIs(1);
+                changeTrackerA.AssertFlushCountIs(1);
+                changeTrackerA.AssertUndoCountIs(1);
 
-                resourceManagerB.AssertRequiresFlushCountIs(1);
-                resourceManagerB.AssertFlushCountIs(1);
+                changeTrackerB.AssertRequiresFlushCountIs(1);
+                changeTrackerB.AssertFlushCountIs(1);
+                changeTrackerB.AssertUndoCountIs(1);
 
-                resourceManagerC.AssertRequiresFlushCountIs(0);
-                resourceManagerC.AssertFlushCountIs(0);
+                changeTrackerC.AssertRequiresFlushCountIs(0);
+                changeTrackerC.AssertFlushCountIs(0);
+                changeTrackerC.AssertUndoCountIs(1);
             }
         }
 
         [TestMethod]
-        public async Task HandleMessageAsync_FlushesResourceManagersAsynchronously_IfUnitOfWorkIsMultiThreaded_And_SomeResourceManagersRequireFlush()
+        public async Task HandleMessageAsync_FlushesChangeTrackersAsynchronously_IfUnitOfWorkIsMultiThreaded_And_SomeChangeTrackersRequireFlush()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
 
-            var resourceManagerA = new UnitOfWorkResourceManagerSpy(true);
-            var resourceManagerB = new UnitOfWorkResourceManagerSpy(true);
-            var resourceManagerC = new UnitOfWorkResourceManagerSpy(false);
+            var changeTrackerA = new ChangeTrackerSpy(true);
+            var changeTrackerB = new ChangeTrackerSpy(true);
+            var changeTrackerC = new ChangeTrackerSpy(false);
 
-            await HandleMessageAsync(async (message, context) =>
+            await HandleMessageAsync((message, context) =>
             {
-                await context.UnitOfWork.EnlistAsync(resourceManagerA);
-                await context.UnitOfWork.EnlistAsync(resourceManagerB);
-                await context.UnitOfWork.EnlistAsync(resourceManagerC);
+                context.UnitOfWork.Enlist(changeTrackerA);
+                context.UnitOfWork.Enlist(changeTrackerB);
+                context.UnitOfWork.Enlist(changeTrackerC);
 
-                resourceManagerA.AssertRequiresFlushCountIs(0);
-                resourceManagerA.AssertFlushCountIs(0);
+                changeTrackerA.AssertRequiresFlushCountIs(0);
+                changeTrackerA.AssertFlushCountIs(0);
 
-                resourceManagerB.AssertRequiresFlushCountIs(0);
-                resourceManagerB.AssertFlushCountIs(0);
+                changeTrackerB.AssertRequiresFlushCountIs(0);
+                changeTrackerB.AssertFlushCountIs(0);
 
-                resourceManagerC.AssertRequiresFlushCountIs(0);
-                resourceManagerC.AssertFlushCountIs(0);
+                changeTrackerC.AssertRequiresFlushCountIs(0);
+                changeTrackerC.AssertFlushCountIs(0);
             }, new object());
 
-            resourceManagerA.AssertRequiresFlushCountIs(1);
-            resourceManagerA.AssertFlushCountIs(1);
+            changeTrackerA.AssertRequiresFlushCountIs(1);
+            changeTrackerA.AssertFlushCountIs(1);
+            changeTrackerA.AssertUndoCountIs(0);
 
-            resourceManagerB.AssertRequiresFlushCountIs(1);
-            resourceManagerB.AssertFlushCountIs(1);
+            changeTrackerB.AssertRequiresFlushCountIs(1);
+            changeTrackerB.AssertFlushCountIs(1);
+            changeTrackerB.AssertUndoCountIs(0);
 
-            resourceManagerC.AssertRequiresFlushCountIs(1);
-            resourceManagerC.AssertFlushCountIs(0);
+            changeTrackerC.AssertRequiresFlushCountIs(1);
+            changeTrackerC.AssertFlushCountIs(0);
+            changeTrackerC.AssertUndoCountIs(0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task HandleMessageAsync_FlushesResourceManagersAsynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeResourceManagerThrows()
+        public async Task HandleMessageAsync_FlushesChangeTrackersAsynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeChangeTrackerThrows()
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
 
             var exceptionToThrow = new InternalServerErrorException();
-            var resourceManagerA = new UnitOfWorkResourceManagerSpy(true);
-            var resourceManagerB = new UnitOfWorkResourceManagerSpy(true, exceptionToThrow);
-            var resourceManagerC = new UnitOfWorkResourceManagerSpy(true);
+            var changeTrackerA = new ChangeTrackerSpy(true);
+            var changeTrackerB = new ChangeTrackerSpy(true, exceptionToThrow);
+            var changeTrackerC = new ChangeTrackerSpy(true);
 
             try
             {
-                await HandleMessageAsync(async (message, context) =>
+                await HandleMessageAsync((message, context) =>
                 {
-                    await context.UnitOfWork.EnlistAsync(resourceManagerA);
-                    await context.UnitOfWork.EnlistAsync(resourceManagerB);
-                    await context.UnitOfWork.EnlistAsync(resourceManagerC);
+                    context.UnitOfWork.Enlist(changeTrackerA);
+                    context.UnitOfWork.Enlist(changeTrackerB);
+                    context.UnitOfWork.Enlist(changeTrackerC);
 
-                    resourceManagerA.AssertRequiresFlushCountIs(0);
-                    resourceManagerA.AssertFlushCountIs(0);
+                    changeTrackerA.AssertRequiresFlushCountIs(0);
+                    changeTrackerA.AssertFlushCountIs(0);
 
-                    resourceManagerB.AssertRequiresFlushCountIs(0);
-                    resourceManagerB.AssertFlushCountIs(0);
+                    changeTrackerB.AssertRequiresFlushCountIs(0);
+                    changeTrackerB.AssertFlushCountIs(0);
 
-                    resourceManagerC.AssertRequiresFlushCountIs(0);
-                    resourceManagerC.AssertFlushCountIs(0);
+                    changeTrackerC.AssertRequiresFlushCountIs(0);
+                    changeTrackerC.AssertFlushCountIs(0);
                 }, new object());
             }
             catch (InternalServerErrorException exception)
@@ -426,14 +435,14 @@ namespace Kingo.MicroServices.Controllers
                 // All resource managers required a flush, and since all managers
                 // manage a different resource and are flushed asynchronously,
                 // the third manager is flushed even though the second one throws an exception.
-                resourceManagerA.AssertRequiresFlushCountIs(1);
-                resourceManagerA.AssertFlushCountIs(1);
+                changeTrackerA.AssertRequiresFlushCountIs(1);
+                changeTrackerA.AssertFlushCountIs(1);
 
-                resourceManagerB.AssertRequiresFlushCountIs(1);
-                resourceManagerB.AssertFlushCountIs(1);
+                changeTrackerB.AssertRequiresFlushCountIs(1);
+                changeTrackerB.AssertFlushCountIs(1);
 
-                resourceManagerC.AssertRequiresFlushCountIs(1);
-                resourceManagerC.AssertFlushCountIs(1);
+                changeTrackerC.AssertRequiresFlushCountIs(1);
+                changeTrackerC.AssertFlushCountIs(1);
             }
         }
 

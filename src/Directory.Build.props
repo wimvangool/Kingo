@@ -4,7 +4,7 @@
     <RootNamespace>Kingo</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">4.0</Version>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
     <Authors>Wim van Gool</Authors>
