@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.TestEngine
 
         public override Task SetupAsync()
         {
-            Test.MoveToState(this, new ReadyState(Test));
+            Test.MoveToState(this, new ReadyToConfigureTestState(Test));
             return Task.CompletedTask;
         }
 

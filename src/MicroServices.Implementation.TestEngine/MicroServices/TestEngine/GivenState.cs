@@ -4,13 +4,13 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal sealed class GivenState : MicroProcessorTestState, IGivenState
     {
-        #region [====== GivenChildState ======]
+        #region [====== GivenTimeOrMessageState ======]
 
-        private abstract class GivenChildState : MicroProcessorTestState
+        private abstract class GivenTimeOrMessageState : MicroProcessorTestState
         {
             private readonly GivenState _givenState;
 
-            protected GivenChildState(GivenState givenState)
+            protected GivenTimeOrMessageState(GivenState givenState)
             {
                 _givenState = givenState;
             }
@@ -21,15 +21,15 @@ namespace Kingo.MicroServices.TestEngine
             public override string ToString() =>
                 _givenState.ToString();
 
-            protected void AddOperation(GivenOperation operation) =>
-                _givenState.AddOperation(this, operation);
+            protected void AddOperation(MicroProcessorTestOperation operation) =>
+                _givenState.AddGivenOperation(this, operation);
         }
 
         #endregion
 
         #region [====== TimeHasPassedForState ======]
 
-        private sealed class TimeHasPassedForState : GivenChildState, IGivenTimeHasPassedForState
+        private sealed class TimeHasPassedForState : GivenTimeOrMessageState, IGivenTimeHasPassedForState
         {
             private readonly MicroProcessorTestTimeline _timeline;
             private readonly int _value;
@@ -70,7 +70,7 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== MessageState<TMessage> ======]
 
-        private sealed class MessageState<TMessage> : GivenChildState, IGivenMessageState<TMessage>
+        private sealed class MessageState<TMessage> : GivenTimeOrMessageState, IGivenCommandOrEventState<TMessage>
         {
             public MessageState(GivenState givenState) : base(givenState)
             {
@@ -84,50 +84,50 @@ namespace Kingo.MicroServices.TestEngine
             }
 
             public void IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
-                AddOperation(new GivenCommandOperation<TMessage, TMessageHandler>(configurator));
+                AddOperation(new CommandOperation<TMessage, TMessageHandler>(configurator));
 
             public void IsExecutedByCommandHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-                AddOperation(new GivenCommandOperation<TMessage>(configurator, messageHandler));
+                AddOperation(new CommandOperation<TMessage>(configurator, messageHandler));
 
             public void IsHandledBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
-                AddOperation(new GivenEventOperation<TMessage, TMessageHandler>(configurator));
+                AddOperation(new EventOperation<TMessage, TMessageHandler>(configurator));
 
             public void IsHandledByEventHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-                AddOperation(new GivenEventOperation<TMessage>(configurator, messageHandler));
+                AddOperation(new EventOperation<TMessage>(configurator, messageHandler));
         }
 
         #endregion
 
         private readonly MicroProcessorTest _test;
         private readonly MicroProcessorTestTimeline _timeline;
-        private readonly GivenOperationQueue _operations;
+        private readonly MicroProcessorTestOperationQueue _givenOperations;
 
-        public GivenState(MicroProcessorTest test, MicroProcessorTestTimeline timeline, GivenOperationQueue operations)
+        public GivenState(MicroProcessorTest test, MicroProcessorTestTimeline timeline, MicroProcessorTestOperationQueue givenOperations)
         {
             _test = test;
             _timeline = timeline;
-            _operations = operations;
+            _givenOperations = givenOperations;
         }
 
         protected override MicroProcessorTest Test =>
             _test;
 
         public override string ToString() =>
-            $"Scheduling new operation... ({_operations})";
+            $"Scheduling new operation... ({_givenOperations})";
 
         public void TimeIs(DateTimeOffset value) =>
-            AddOperation(this, _timeline.CreateTimeIsOperation(value));
+            AddGivenOperation(this, _timeline.CreateTimeIsOperation(value));
 
         public IGivenTimeHasPassedForState TimeHasPassedFor(int value) =>
             _test.MoveToState(this, new TimeHasPassedForState(this, value));
 
         public void TimeHasPassed(TimeSpan value) =>
-            AddOperation(this, _timeline.CreateTimeHasPassedOperation(value));
+            AddGivenOperation(this, _timeline.CreateTimeHasPassedOperation(value));
 
-        private void AddOperation(MicroProcessorTestState expectedState, GivenOperation operation) =>
-            _test.MoveToState(expectedState, new ReadyState(_test, _timeline, _operations.Enqueue(operation)));
+        private void AddGivenOperation(MicroProcessorTestState expectedState, MicroProcessorTestOperation givenOperation) =>
+            _test.MoveToState(expectedState, new ReadyToConfigureTestState(_test, _timeline, _givenOperations.Enqueue(givenOperation)));
 
-        public IGivenMessageState<TMessage> Message<TMessage>() =>
+        public IGivenCommandOrEventState<TMessage> Message<TMessage>() =>
             _test.MoveToState(this, new MessageState<TMessage>(this));
     }
 }

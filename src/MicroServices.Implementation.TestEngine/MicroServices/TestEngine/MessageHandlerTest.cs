@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        protected IWhenMessageState<TMessage> When<TMessage>() =>
+        protected IWhenCommandOrEventState<TMessage> When<TMessage>() =>
             State.WhenCommandOrEvent<TMessage>();
     }
 }

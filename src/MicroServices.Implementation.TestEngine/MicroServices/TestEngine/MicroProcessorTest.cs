@@ -95,13 +95,13 @@ namespace Kingo.MicroServices.TestEngine
         /// </summary>
         /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
         /// <returns>
-        /// A <see cref="IGivenMessageState{TMessage}"/> that can be used to configure which
+        /// A <see cref="IGivenCommandOrEventState{TMessage}"/> that can be used to configure which
         /// <see cref="IMessageHandler{TMessage}"/> to use when handling or executing the specified message.
         /// </returns>
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        protected IGivenMessageState<TMessage> Given<TMessage>() =>
+        protected IGivenCommandOrEventState<TMessage> Given<TMessage>() =>
             Given().Message<TMessage>();
 
         /// <summary>

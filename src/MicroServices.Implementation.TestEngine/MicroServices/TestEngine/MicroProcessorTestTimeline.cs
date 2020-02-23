@@ -26,7 +26,7 @@ namespace Kingo.MicroServices.TestEngine
 
             public abstract State TimeHasPassed(TimeSpan value);
 
-            public abstract GivenOperation CreateGivenOperation();
+            public abstract MicroProcessorTestOperation CreateGivenOperation();
 
             protected State MoveToState(State newState) =>
                 Timeline.MoveToState(this, newState);
@@ -50,8 +50,8 @@ namespace Kingo.MicroServices.TestEngine
             public override State TimeHasPassed(TimeSpan value) =>
                 MoveToState(new RelativeShiftedTimeState(Timeline, value));
 
-            public override GivenOperation CreateGivenOperation() =>
-                new GivenNullOperation();
+            public override MicroProcessorTestOperation CreateGivenOperation() =>
+                new NullOperation();
         }
 
         #endregion
@@ -81,8 +81,8 @@ namespace Kingo.MicroServices.TestEngine
             public override State TimeHasPassed(TimeSpan value) =>
                 MoveToState(new AbsoluteTimeState(Timeline, _valueUtc.Add(value)));
 
-            public override GivenOperation CreateGivenOperation() =>
-                new SetClockToSpecificTimeOperation(_valueUtc);
+            public override MicroProcessorTestOperation CreateGivenOperation() =>
+                new TimeIsOperation(_valueUtc);
         }
 
         #endregion
@@ -100,8 +100,8 @@ namespace Kingo.MicroServices.TestEngine
             public override State TimeHasPassed(TimeSpan value) =>
                 MoveToState(new RelativeShiftedTimeState(Timeline, value));
 
-            public override GivenOperation CreateGivenOperation() =>
-                new GivenNullOperation();
+            public override MicroProcessorTestOperation CreateGivenOperation() =>
+                new NullOperation();
         }
 
         #endregion
@@ -121,8 +121,8 @@ namespace Kingo.MicroServices.TestEngine
             public override State TimeHasPassed(TimeSpan value) =>
                 MoveToState(new RelativeShiftedTimeState(Timeline, _value.Add(value)));
 
-            public override GivenOperation CreateGivenOperation() =>
-                new ShiftClockBySpecificPeriodOperation(_value);
+            public override MicroProcessorTestOperation CreateGivenOperation() =>
+                new TimeHasPassedOperation(_value);
         }
 
         #endregion
@@ -137,10 +137,10 @@ namespace Kingo.MicroServices.TestEngine
         public void CommitToAbsoluteOrRelativeTime() =>
             _state.CommitToAbsoluteOrRelativeTime();
 
-        public GivenOperation CreateTimeIsOperation(DateTimeOffset value) =>
+        public MicroProcessorTestOperation CreateTimeIsOperation(DateTimeOffset value) =>
             CreateOperation(_state.TimeIs(value));
 
-        public GivenOperation CreateTimeHasPassedOperation(TimeSpan value)
+        public MicroProcessorTestOperation CreateTimeHasPassedOperation(TimeSpan value)
         {
             if (value < TimeSpan.Zero)
             {
@@ -148,12 +148,12 @@ namespace Kingo.MicroServices.TestEngine
             }
             if (value == TimeSpan.Zero)
             {
-                return new GivenNullOperation();
+                return new NullOperation();
             }
             return CreateOperation(_state.TimeHasPassed(value));
         }
 
-        private GivenOperation CreateOperation(State newState) =>
+        private MicroProcessorTestOperation CreateOperation(State newState) =>
             MoveToState(_state, newState).CreateGivenOperation();
 
         private State MoveToState(State expectedState, State newState)

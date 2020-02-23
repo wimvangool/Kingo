@@ -10,7 +10,7 @@ namespace Kingo.MicroServices.TestEngine
         public new IGivenState Given() =>
             base.Given();
 
-        public new IWhenMessageState<TMessage> When<TMessage>() =>
+        public new IWhenCommandOrEventState<TMessage> When<TMessage>() =>
             base.When<TMessage>();
 
         #endregion

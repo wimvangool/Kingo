@@ -23,7 +23,6 @@ namespace Kingo.MicroServices.TestEngine
             await RunTestAsync(test => test.When<object>(), false);
         }
 
-        [Ignore]
         [TestMethod]
         public async Task When_SetsTestEngineToWhenMessageState_IfTestEngineIsInReadyState_And_NoGivenOperationsWereScheduled()
         {
@@ -33,7 +32,6 @@ namespace Kingo.MicroServices.TestEngine
             });
         }
 
-        [Ignore]
         [TestMethod]
         public async Task When_SetsTestEngineToWhenMessageState_IfTestEngineIsInReadyState_And_SomeGivenOperationsWereScheduled()
         {

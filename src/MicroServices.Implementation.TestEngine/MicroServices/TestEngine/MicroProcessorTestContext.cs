@@ -37,12 +37,12 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        private readonly Dictionary<Guid, MessageHandlerOperationResult> _results;
+        private readonly Dictionary<MicroProcessorTestOperationId, MessageHandlerOperationResult> _results;
         private readonly IMicroProcessor _processor;        
 
         internal MicroProcessorTestContext(IMicroProcessor processor)
         {                        
-            _results = new Dictionary<Guid, MessageHandlerOperationResult>();
+            _results = new Dictionary<MicroProcessorTestOperationId, MessageHandlerOperationResult>();
             _processor = processor;            
         }
 
@@ -160,7 +160,7 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== SetResult ======]
 
-        internal MessageStream SetResult<TMessage>(Guid operationId, MessageHandlerOperationResult<TMessage> result)
+        internal MessageStream SetResult<TMessage>(MicroProcessorTestOperationId operationId, MessageHandlerOperationResult<TMessage> result)
         {
             var outputStream = new MessageStream(result.Output);
 
@@ -186,13 +186,13 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== GetResult ======]     
 
-        internal MessageEnvelope<TMessage> GetInputMessage<TMessage>(Guid operationId) =>
+        internal MessageEnvelope<TMessage> GetInputMessage<TMessage>(MicroProcessorTestOperationId operationId) =>
             (MessageEnvelope<TMessage>) GetResult(operationId).InputMessage;
 
-        internal MessageStream GetOutputStream(Guid operationId) =>
+        internal MessageStream GetOutputStream(MicroProcessorTestOperationId operationId) =>
             GetResult(operationId).OutputStream;
 
-        private MessageHandlerOperationResult GetResult(Guid operationId)
+        private MessageHandlerOperationResult GetResult(MicroProcessorTestOperationId operationId)
         {
             try
             {
@@ -204,7 +204,7 @@ namespace Kingo.MicroServices.TestEngine
             }
         }
 
-        private static Exception NewOperationNotExecutedException(Guid operationId, Exception innerException)            
+        private static Exception NewOperationNotExecutedException(MicroProcessorTestOperationId operationId, Exception innerException)            
         {
             var messageFormat = ExceptionMessages.MicroProcessorTestContext_TestResultNotFound;
             var message = string.Format(messageFormat, operationId);

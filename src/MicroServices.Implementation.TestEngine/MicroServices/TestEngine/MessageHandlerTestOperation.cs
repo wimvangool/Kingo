@@ -2,18 +2,23 @@
 
 namespace Kingo.MicroServices.TestEngine
 {
-    internal abstract class GivenMessageOperation<TMessage> : GivenOperation
+    internal abstract class MessageHandlerTestOperation<TMessage> : MicroProcessorTestOperation
     {
         private readonly Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> _configurator;
 
-        protected GivenMessageOperation(GivenMessageOperation<TMessage> operation)
+        protected MessageHandlerTestOperation(MessageHandlerTestOperation<TMessage> operation)
         {
             _configurator = operation._configurator;
         }
 
-        protected GivenMessageOperation(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator)
+        protected MessageHandlerTestOperation(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator)
         {
             _configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
+        }
+
+        public abstract Type MessageHandlerType
+        {
+            get;
         }
 
         protected MessageHandlerTestOperationInfo<TMessage> CreateOperationInfo(MicroProcessorTestContext context) =>

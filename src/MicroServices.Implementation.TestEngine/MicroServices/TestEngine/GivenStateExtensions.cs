@@ -48,26 +48,6 @@ namespace Kingo.MicroServices.TestEngine
         public static void TimeIs(this IGivenState state, int year, int month, int day, int hour, int minute, int second) =>
             NotNull(state).TimeIs(new DateTime(year, month, day, hour, minute, second));
 
-        /// <summary>
-        /// Sets the current date and time to a specific value before or between operations.
-        /// </summary>
-        /// <param name="state">State of the test-engine.</param>
-        /// <param name="value">
-        /// The date and time that will represent the current date and time at the start of
-        /// the next operation(s).
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="state"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The test-engine is not in a state where it can perform this operation.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="value"/> is a time in the past relative to the current timeline.
-        /// </exception>
-        public static void TimeIs(this IGivenState state, DateTime value) =>
-            NotNull(state).TimeIs(new DateTimeOffset(value));
-
         private static IGivenState NotNull(IGivenState state) =>
             state ?? throw new ArgumentNullException(nameof(state));
     }
