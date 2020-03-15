@@ -12,7 +12,7 @@ namespace Kingo.MicroServices.TestEngine
         public override Type MessageHandlerType =>
             typeof(TMessageHandler);
 
-        public override Task RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
             CreateOperation(context.Resolve<TMessageHandler>()).RunAsync(state, context);
 
         private CommandOperation<TMessage> CreateOperation(IMessageHandler<TMessage> messageHandler) =>

@@ -7,6 +7,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a command or event that is scheduled to be sent or published on the service-bus.
     /// </summary>
+    [Serializable]
     public sealed class MessageToDispatch : IMessageToDispatch, IMessageToProcess
     {
         private readonly IMessageEnvelope _message;

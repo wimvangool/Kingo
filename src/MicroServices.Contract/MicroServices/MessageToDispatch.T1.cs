@@ -5,6 +5,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a command or event that is to be sent or published on a service-bus.
     /// </summary>
+    [Serializable]
     public sealed class MessageToDispatch<TMessage> : MessageEnvelope<TMessage>, IMessageToDispatch, IMessageToProcess
     {
         internal MessageToDispatch(MessageEnvelope<TMessage> message, MessageKind kind, DateTimeOffset? deliveryTimeUtc) :

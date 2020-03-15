@@ -195,6 +195,9 @@
   <data name="MicroProcessorTest_CannotMoveToState" xml:space="preserve">
     <value>Cannot move to state '{0}' because the test was not in the expected state '{1}'.</value>
   </data>
+  <data name="MicroProcessorTest_GivenOperatonFailed" xml:space="preserve">
+    <value>Test failed because given operation '{0}' threw an exception of type '{1}'. See inner exception for details.</value>
+  </data>
   <data name="MicroProcessorTest_InvalidOperation" xml:space="preserve">
     <value>Cannot invoke method '{0}.{1}()' while the test is in state '{2}'. Make sure you correctly follow the builder pattern provided by the framework.</value>
   </data>

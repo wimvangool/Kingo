@@ -31,8 +31,7 @@ namespace Kingo.MicroServices
         private readonly MicroProcessor _processor;
         private readonly MessageKind _messageKind;
 
-        public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, MicroServiceBusEndpointAttribute attribute) :
-            base(method)
+        public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, MicroServiceBusEndpointAttribute attribute) : base(method)
         {            
             _processor = processor;
             _messageKind = attribute.DetermineMessageKind(processor.Options.Endpoints.MessageKindResolver, typeof(TMessage));

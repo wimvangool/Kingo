@@ -23,21 +23,15 @@ namespace Kingo.MicroServices
         public override MicroProcessorOperationKind Kind =>
             MicroProcessorOperationKind.RootOperation;      
 
-        public override async Task<MessageHandlerOperationResult> ExecuteAsync()
+        protected override async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
         {
             try
             {
                 // After the logical transaction has been completed, all changes are flushed.
-                var result = await base.ExecuteAsync().ConfigureAwait(false);
+                var result = await base.ExecuteAsync(operation).ConfigureAwait(false);
                 await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
                 return result;
             }
-            catch (MessageHandlerOperationException exception)
-            {
-                // Depending on whether this operation is executing a command or handling an event,
-                // the exception is converted to the appropriate MicroProcessorOperationException.
-                throw NewMicroProcessorOperationException(exception);
-            }            
             catch (MicroProcessorOperationException)
             {
                 // MicroProcessorOperations are let through by default, because these exceptions
@@ -45,24 +39,23 @@ namespace Kingo.MicroServices
                 // to properly handle the exception.
                 throw;
             }
-            catch (OperationCanceledException exception)
+            catch (MessageHandlerOperationException exception)
             {
-                // OperationCanceledExceptions are let through if and only if they were thrown because
-                // cancellation of the processor operation was requested. In any other case they are regarded
-                // as regular unhandled exceptions that represent an error.
-                if (exception.CancellationToken == Token)
-                {
-                    throw;
-                }                             
-                throw InternalServerErrorException.FromInnerException(exception);                
+                throw NewMicroProcessorOperationException(exception.AssignStackTrace(operation.CaptureStackTrace()));
+            }
+            catch (MessageHandlerOperationException.WithStackTrace exception)
+            {
+                throw NewMicroProcessorOperationException(exception);
             }
             catch (Exception exception)
             {
-                throw InternalServerErrorException.FromInnerException(exception);
+                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
             }
         }
 
-        protected abstract MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException exception);        
+        // Depending on whether this operation is executing a command or handling an event,
+        // the exception is converted to the appropriate MicroProcessorOperationException.
+        protected abstract MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException.WithStackTrace exception);        
 
         protected override IEnumerable<HandleAsyncMethodOperation> CreateMethodOperations(MessageHandlerOperationContext context)
         {

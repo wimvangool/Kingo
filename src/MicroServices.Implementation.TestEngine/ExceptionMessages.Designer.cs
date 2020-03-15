@@ -142,6 +142,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test failed because given operation &apos;{0}&apos; threw an exception of type &apos;{1}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string MicroProcessorTest_GivenOperatonFailed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_GivenOperatonFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot invoke method &apos;{0}.{1}()&apos; while the test is in state &apos;{2}&apos;. Make sure you correctly follow the builder pattern provided by the framework..
         /// </summary>
         internal static string MicroProcessorTest_InvalidOperation {

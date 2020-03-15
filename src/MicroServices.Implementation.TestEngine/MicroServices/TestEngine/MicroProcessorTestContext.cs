@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,11 +39,13 @@ namespace Kingo.MicroServices.TestEngine
         #endregion
 
         private readonly Dictionary<MicroProcessorTestOperationId, MessageHandlerOperationResult> _results;
+        private readonly MicroProcessorTest _test;
         private readonly IMicroProcessor _processor;        
 
-        internal MicroProcessorTestContext(IMicroProcessor processor)
+        internal MicroProcessorTestContext(MicroProcessorTest test, IMicroProcessor processor)
         {                        
             _results = new Dictionary<MicroProcessorTestOperationId, MessageHandlerOperationResult>();
+            _test = test;
             _processor = processor;            
         }
 
@@ -92,7 +95,7 @@ namespace Kingo.MicroServices.TestEngine
                 }
                 if (operation.User == null)
                 {
-                    operation.User = ClaimsPrincipal.Current;
+                    operation.User = _test.User;
                 }
                 return operation;
             }

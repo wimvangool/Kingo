@@ -160,6 +160,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation was cancelled because of a timeout..
+        /// </summary>
+        internal static string MicroProcessorOperation_GatewayTimeout {
+            get {
+                return ResourceManager.GetString("MicroProcessorOperation_GatewayTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot publish the specified event(s) inside the constructor of a type that is registered as a &apos;{0}&apos;-type, because this causes a circular reference..
         /// </summary>
         internal static string MicroServiceBus_CircularDependencyDetected {

@@ -34,7 +34,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(BadRequestException))]
         public override async Task HandleMessageAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
         {
-            var exceptionToThrow = new BadRequestException();
+            var exceptionToThrow = new BadRequestException(null, null);
 
             try
             {

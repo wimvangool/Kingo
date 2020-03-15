@@ -4,7 +4,7 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal sealed class NullOperation : MicroProcessorTestOperation
     {
-        public override Task RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
-            Task.CompletedTask;
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
+            Task.FromResult(MicroProcessorTestOperationId.Empty);
     }
 }

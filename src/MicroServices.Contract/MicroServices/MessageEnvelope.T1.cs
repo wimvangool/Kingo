@@ -22,7 +22,7 @@ namespace Kingo.MicroServices
         /// </exception>
         public MessageEnvelope(TMessage message, string messageId, string correlationId = null)
         {
-            if (ReferenceEquals(message, null))
+            if (message == null)
             {
                 throw new ArgumentException(nameof(message));
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,7 +74,7 @@ namespace Kingo.MicroServices
             _message;
 
         public override MicroProcessorOperationKind Kind =>
-            MicroProcessorOperationKind.BranchOperation;        
+            MicroProcessorOperationKind.BranchOperation;
 
         public override async Task<MessageHandlerOperationResult> ExecuteAsync()
         {
@@ -86,7 +87,7 @@ namespace Kingo.MicroServices
             return result;
         }
 
-        private async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
+        protected virtual async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
         {
             Token.ThrowIfCancellationRequested();
 
@@ -105,14 +106,49 @@ namespace Kingo.MicroServices
                 }
                 return result;
             }
+            catch (MicroProcessorOperationException)
+            {
+                // MicroProcessorOperations are let through by default, because these exceptions
+                // contain the error information that the client of the processor will want to use
+                // to properly handle the exception.
+                throw;
+            }
+            catch (MessageHandlerOperationException exception)
+            {
+                // When a MessageHandlerOperationException was thrown, we wrap it into a new exception that
+                // also stored the current stack-trace. Later, in the root-operation, this exception
+                // can then be converted to the appropriate BadRequestException or InternalServerErrorException,
+                // based on the specific operation type.
+                throw exception.AssignStackTrace(operation.CaptureStackTrace());
+            }
+            catch (OperationCanceledException exception)
+            {
+                // OperationCanceledExceptions are let through if and only if they were thrown because
+                // cancellation of the processor operation was requested. In any other case they are regarded
+                // as regular unhandled exceptions that represent an error.
+                if (exception.CancellationToken == Token)
+                {
+                    throw NewGatewayTimeoutException(exception, operation.CaptureStackTrace());
+                }
+                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+            }
+            catch (Exception exception)
+            {
+                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+            }
+        }
+
+        private MessageHandlerOperationResult Commit(MessageHandlerOperationResult result, IMicroProcessorOperation operation)
+        {
+            try
+            {
+                return result.Commit(operation.Message);
+            }
             finally
             {
                 Token.ThrowIfCancellationRequested();
-            }            
+            }
         }
-
-        private static MessageHandlerOperationResult Commit(MessageHandlerOperationResult result, IMicroProcessorOperation operation) =>
-            result.Commit(operation.Message);
 
         private async Task<MessageHandlerOperationResult> HandleAsync(IEnumerable<MessageToDispatch> messages, MessageHandlerOperationContext context)
         {

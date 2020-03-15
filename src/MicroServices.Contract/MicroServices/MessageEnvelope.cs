@@ -6,24 +6,43 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents the envelope of a message carrying its payload and metadata.
     /// </summary>
+    [Serializable]
     public class MessageEnvelope : IMessageEnvelope
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageEnvelope{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="MessageEnvelope" /> class.
         /// </summary>
-        /// <param name="message">Content of this message.</param>
+        /// <param name="content">Content of this message.</param>
         /// <param name="messageId">Unique identifier of this message.</param>
         /// <param name="correlationId">
         /// Identifier of the message this message to related to.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="messageId"/> is <c>null</c>.
+        /// <paramref name="content"/> or <paramref name="messageId"/> is <c>null</c>.
         /// </exception>
-        public MessageEnvelope(object message, string messageId, string correlationId = null)
+        public MessageEnvelope(object content, string messageId, string correlationId = null)
         {
             MessageId = messageId ?? throw new ArgumentNullException(nameof(messageId));
             CorrelationId = correlationId;
-            Content = message ?? throw new ArgumentNullException(nameof(message));
+            Content = content ?? throw new ArgumentNullException(nameof(content));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageEnvelope" /> class.
+        /// </summary>
+        /// <param name="message">The message to copy.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        public MessageEnvelope(IMessageEnvelope message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+            MessageId = message.MessageId;
+            CorrelationId = message.CorrelationId;
+            Content = message.Content;
         }
 
         /// <inheritdoc />

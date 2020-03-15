@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.TestEngine
@@ -283,7 +284,12 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        protected virtual async Task RunTestAsync(Action<TMicroProcessorTestStub> testMethod, bool runSetup = true, bool runTearDown = false)
+        #region [====== RunTestAsync(...) ======]
+
+        protected Task RunTestAsync(Action<TMicroProcessorTestStub> testMethod, bool runSetup = true, bool runTearDown = false) =>
+            RunTestAsync(test => AsyncMethod.Run(() => testMethod.Invoke(test)), runSetup, runTearDown);
+
+        protected virtual async Task RunTestAsync(Func<TMicroProcessorTestStub, Task> testMethod, bool runSetup = true, bool runTearDown = false)
         {
             var test = CreateMicroProcessorTest();
 
@@ -293,7 +299,7 @@ namespace Kingo.MicroServices.TestEngine
             }
             try
             {
-                testMethod.Invoke(test);
+                await testMethod.Invoke(test);
             }
             finally
             {
@@ -304,6 +310,11 @@ namespace Kingo.MicroServices.TestEngine
             }
         }
 
+        #endregion
+
         protected abstract TMicroProcessorTestStub CreateMicroProcessorTest();
+
+        protected static Exception NewInternalServerErrorException() =>
+            new InternalServerErrorException(null, null);
     }
 }

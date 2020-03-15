@@ -2,9 +2,9 @@
 
 namespace Kingo.MicroServices.TestEngine
 {
-    internal sealed class NotReadyState : MicroProcessorTestState
+    internal sealed class NotReadyToConfigureState : MicroProcessorTestState
     {
-        public NotReadyState(MicroProcessorTest test)
+        public NotReadyToConfigureState(MicroProcessorTest test)
         {
             Test = test;
         }
@@ -15,7 +15,7 @@ namespace Kingo.MicroServices.TestEngine
         }
 
         public override string ToString() =>
-            $"Not ready - waiting for {nameof(SetupAsync)}...";
+            $"Not ready to configure test - waiting for {nameof(SetupAsync)}...";
 
         public override Task SetupAsync()
         {
@@ -25,7 +25,7 @@ namespace Kingo.MicroServices.TestEngine
 
         public override Task TearDownAsync()
         {
-            Test.MoveToState(this, new NotReadyState(Test));
+            Test.MoveToState(this, new NotReadyToConfigureState(Test));
             return Task.CompletedTask;
         }
     }

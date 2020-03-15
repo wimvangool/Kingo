@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 using Kingo.MicroServices.Controllers;
 using Kingo.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -196,7 +197,7 @@ namespace Kingo.MicroServices.Configuration
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
+        [ExpectedException(typeof(AmbiguousMatchException))]
         public async Task ExecuteCommand_Throws_IfMultipleFactoriesWereRegisteredForSameMessageType()
         {
             Assert.IsTrue(ProcessorBuilder.MessageIdFactories.AddInstance<object>(message => message.ToString()));

@@ -10,7 +10,25 @@ namespace Kingo.MicroServices.TestEngine
         public RunningMessageHandlerTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> operations) :
             base(test, operations) { }
 
-        public Task<object> RunAsync(MessageHandlerTestOperation<TMessage> operation) =>
-            throw new NotImplementedException();
+        public Task<VerifyingMessageHandlerTestOutputState<TMessage>> RunAsync(MessageHandlerTestOperation<TMessage> operation) =>
+            RunAsync(operation, Test.CreateTestContext());
+
+        private async Task<VerifyingMessageHandlerTestOutputState<TMessage>> RunAsync(MessageHandlerTestOperation<TMessage> operation, MicroProcessorTestContext context)
+        {
+            using (context.Processor.ServiceProvider.CreateScope())
+            {
+                await RunGivenOperationsAsync(context);
+
+                try
+                {
+                    await operation.RunAsync(this, context);
+                }
+                catch (Exception exception)
+                {
+                    throw new NotImplementedException();
+                }
+                throw new NotImplementedException();
+            }
+        }
     }
 }

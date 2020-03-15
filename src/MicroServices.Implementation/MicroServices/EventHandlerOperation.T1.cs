@@ -11,22 +11,24 @@ namespace Kingo.MicroServices
         public EventHandlerOperation(MicroProcessor processor, HandleAsyncMethod<TEvent> method, MessageEnvelope<TEvent> message, CancellationToken? token) :
             base(processor, method, message.ToProcess(MessageKind.Event), token) { }
 
-        public override async Task<MessageHandlerOperationResult> ExecuteAsync()
+        protected override async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
         {
             try
             {
-                return await base.ExecuteAsync().ConfigureAwait(false);
+                return await base.ExecuteAsync(operation).ConfigureAwait(false);
             }
             catch (BadRequestException exception)
             {
                 // When a BadRequestException is thrown while processing an event, it is
                 // handled as an error because events are not requests and BadRequestExceptions
                 // should not occur in this context.
-                throw InternalServerErrorException.FromInnerException(exception);
+                throw NewInternalServerErrorException(exception, exception.OperationStackTrace);
             }
         }
 
-        protected override MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException exception) =>
-            exception.AsInternalServerErrorException(exception.Message);
+        // When a MessageHandlerOperationException was thrown while handling an event, it is regarded as an InternalServerError, because
+        // processing an event can never result in a BadRequestException.
+        protected override MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException.WithStackTrace exception) =>
+            exception.ToInternalServerErrorException(exception.Message);
     }
 }

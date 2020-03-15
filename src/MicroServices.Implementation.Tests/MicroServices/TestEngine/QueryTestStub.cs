@@ -18,7 +18,7 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        protected override IServiceCollection ConfigureServices(IServiceCollection services) =>
-            throw new NotImplementedException();
+        public new IGivenCommandOrEventState<TMessage> Given<TMessage>() =>
+            base.Given<TMessage>();
     }
 }

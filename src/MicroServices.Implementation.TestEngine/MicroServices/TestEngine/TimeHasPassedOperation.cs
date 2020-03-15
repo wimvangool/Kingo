@@ -13,7 +13,10 @@ namespace Kingo.MicroServices.TestEngine
             _value = value;
         }
 
-        public override Task RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
+        public override string ToString() =>
+            $"Time += {_value}";
+
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
             state.ShiftClockBySpecificPeriodAsync(context, _value);
     }
 }

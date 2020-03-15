@@ -1,4 +1,5 @@
-﻿using Kingo.Reflection;
+﻿using System;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -6,6 +7,7 @@ namespace Kingo.MicroServices
     /// Represents a message that is being handled or executed by a processor.
     /// </summary>
     /// <typeparam name="TMessage">Type of the content of this message.</typeparam>
+    [Serializable]
     public sealed class MessageToProcess<TMessage> : MessageEnvelope<TMessage>, IMessageToProcess
     {
         internal MessageToProcess(MessageEnvelope<TMessage> message, MessageKind kind) :

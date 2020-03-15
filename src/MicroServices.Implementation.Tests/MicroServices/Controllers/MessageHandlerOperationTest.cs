@@ -222,7 +222,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== UnitOfWork ======]
 
         [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public async Task HandleMessageAsync_Throws_IfUnitOfWorkModeIsInvalid()
         {
             ProcessorBuilder.UnitOfWorkMode = (UnitOfWorkMode)(-1);
@@ -311,7 +311,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
 
-            var exceptionToThrow = new InternalServerErrorException();
+            var exceptionToThrow = new InternalServerErrorException(null, null);
             var changeTrackerA = new ChangeTrackerSpy(true);
             var changeTrackerB = new ChangeTrackerSpy(true, exceptionToThrow);
             var changeTrackerC = new ChangeTrackerSpy(true);
@@ -402,7 +402,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
 
-            var exceptionToThrow = new InternalServerErrorException();
+            var exceptionToThrow = new InternalServerErrorException(null, null);
             var changeTrackerA = new ChangeTrackerSpy(true);
             var changeTrackerB = new ChangeTrackerSpy(true, exceptionToThrow);
             var changeTrackerC = new ChangeTrackerSpy(true);
@@ -428,6 +428,7 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception);
+                Assert.AreEqual(0, exception.OperationStackTrace.Count);
                 throw;
             }
             finally
@@ -451,7 +452,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== Exception Handling ======]
 
         [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException), AllowDerivedTypes = true)]
+        [ExpectedException(typeof(GatewayTimeoutException))]
         public async Task HandleMessageAsync_ThrowsExpectedException_IfOperationIsCancelledWithTheSpecifiedToken()
         {
             var tokenSource = new CancellationTokenSource();
@@ -463,9 +464,12 @@ namespace Kingo.MicroServices.Controllers
                     tokenSource.Cancel();
                 }, new object(), tokenSource.Token);
             }
-            catch (OperationCanceledException exception)
+            catch (GatewayTimeoutException exception)
             {
-                Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                Assert.IsInstanceOfType(exception.InnerException, typeof(OperationCanceledException));
+                Assert.AreEqual(1, exception.OperationStackTrace.Count);
+                Assert.IsInstanceOfType(exception.OperationStackTrace.RootOperation.Message.Content, typeof(object));
+                Assert.IsInstanceOfType(exception.OperationStackTrace.CurrentOperation.Message.Content, typeof(object));
                 throw;
             }
             finally
@@ -491,6 +495,9 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception.InnerException);
+                Assert.AreEqual(1, exception.OperationStackTrace.Count);
+                Assert.IsInstanceOfType(exception.OperationStackTrace.RootOperation.Message.Content, typeof(object));
+                Assert.IsInstanceOfType(exception.OperationStackTrace.CurrentOperation.Message.Content, typeof(object));
                 throw;
             }
             finally
@@ -509,7 +516,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task HandleMessageAsync_ThrowsExpectedException_IfOperationThrowsInternalServerErrorException()
         {
-            var exceptionToThrow = new InternalServerErrorException();
+            var exceptionToThrow = new InternalServerErrorException(null, null);
 
             try
             {
@@ -521,6 +528,7 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception);
+                Assert.AreEqual(0, exception.OperationStackTrace.Count);
                 throw;
             }
         }
@@ -541,6 +549,9 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception.InnerException);
+                Assert.AreEqual(1, exception.OperationStackTrace.Count);
+                Assert.IsInstanceOfType(exception.OperationStackTrace.RootOperation.Message.Content, typeof(object));
+                Assert.IsInstanceOfType(exception.OperationStackTrace.CurrentOperation.Message.Content, typeof(object));
                 throw;
             }
         }

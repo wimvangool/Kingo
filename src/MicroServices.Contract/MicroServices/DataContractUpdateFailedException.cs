@@ -25,6 +25,7 @@ namespace Kingo.MicroServices
         public DataContractUpdateFailedException(string message, Exception innerException) :
             base(message, innerException) { }
 
-        private DataContractUpdateFailedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        private DataContractUpdateFailedException(SerializationInfo info, StreamingContext context) :
+            base(info, context) { }
     }
 }

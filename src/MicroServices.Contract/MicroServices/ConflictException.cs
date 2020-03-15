@@ -9,22 +9,31 @@ namespace Kingo.MicroServices
     /// </summary>
     [Serializable]
     public class ConflictException : BadRequestException
-    {        
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="ConflictException" /> class.
         /// </summary>        
         /// <param name="message">Message of the exception.</param>
-        /// <param name="innerException">Cause of this exception.</param>        
-        public ConflictException(string message = null, Exception innerException = null)
-            : base(message, innerException) { }
+        /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param> 
+        public ConflictException(string message = null, MicroProcessorOperationStackTrace operationStackTrace = null) :
+            base(message, operationStackTrace) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConflictException" /> class.
+        /// </summary>        
+        /// <param name="message">Message of the exception.</param>
+        /// <param name="innerException">Cause of this exception.</param>
+        /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param> 
+        public ConflictException(string message = null, Exception innerException = null, MicroProcessorOperationStackTrace operationStackTrace = null) :
+            base(message, innerException, operationStackTrace) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConflictException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected ConflictException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
+        protected ConflictException(SerializationInfo info, StreamingContext context) :
+            base(info, context) { }
 
         /// <summary>
         /// Returns <c>409</c>.

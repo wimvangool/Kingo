@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.MicroServices.Configuration;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +15,7 @@ namespace Kingo.MicroServices.TestEngine
     public abstract class MicroProcessorTest
     {
         private readonly Lazy<IServiceProvider> _serviceProvider;
+        private readonly ClaimsPrincipal _user;
         private MicroProcessorTestState _state;
 
         /// <summary>
@@ -20,8 +24,19 @@ namespace Kingo.MicroServices.TestEngine
         internal MicroProcessorTest()
         {
             _serviceProvider = new Lazy<IServiceProvider>(CreateServiceProvider);
-            _state = new NotReadyState(this);
+            _user = new ClaimsPrincipal(new GenericIdentity($"{Environment.UserDomainName}\\{Environment.UserName}", "Anonymous"));
+            _state = new NotReadyToConfigureState(this);
         }
+
+        internal MicroProcessorTestContext CreateTestContext() =>
+            new MicroProcessorTestContext(this, ServiceProvider.GetRequiredService<IMicroProcessor>());
+
+        /// <summary>
+        /// Returns the default <see cref="ClaimsPrincipal" /> that is used to run operations for
+        /// which no explicit user has been configured.
+        /// </summary>
+        protected internal virtual ClaimsPrincipal User =>
+            _user;
 
         /// <inheritdoc />
         public override string ToString() =>
@@ -39,12 +54,13 @@ namespace Kingo.MicroServices.TestEngine
             ConfigureServices(new ServiceCollection()).BuildServiceProvider(true);
 
         /// <summary>
-        /// When overridden, configures <paramref name="services"/> with a <see cref="IMicroProcessor" /> and other
+        /// Configures <paramref name="services"/> with a <see cref="IMicroProcessor" /> and other
         /// dependencies for the tests to run.
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <returns>The configured service collection.</returns>
-        protected abstract IServiceCollection ConfigureServices(IServiceCollection services);
+        protected virtual IServiceCollection ConfigureServices(IServiceCollection services) =>
+            services.AddMicroProcessor();
 
         #endregion
 

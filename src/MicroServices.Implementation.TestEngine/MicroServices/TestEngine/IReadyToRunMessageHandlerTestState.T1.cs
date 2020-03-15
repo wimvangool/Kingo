@@ -8,8 +8,25 @@ namespace Kingo.MicroServices.TestEngine
     /// verifying the behavior of a certain <see cref="IMessageHandler{TMessage}" /> operation.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message handled in the operation.</typeparam>
-    public interface IReadyToRunMessageHandlerTestState<out TMessage> : IReadyToRunTestState
+    public interface IReadyToRunMessageHandlerTestState<out TMessage>
     {
+        /// <summary>
+        /// Runs the test and expects the operation to throw an exception of type <typeparamref name="TException" />.
+        /// </summary>
+        /// <typeparam name="TException">Type of the expected exception.</typeparam>
+        /// <param name="assertMethod">
+        /// Optional delegate that will be used to assert the properties of the exception.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// The test-engine is not in a state where it can perform this operation.
+        /// </exception>
+        /// <exception cref="TestFailedException">
+        /// The operation did not throw the expected exception or the specified <paramref name="assertMethod" />
+        /// failed on asserting the properties of the exception.
+        /// </exception>
+        Task ThenOutputIs<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod = null)
+            where TException : Exception;
+
         /// <summary>
         /// Runs the test and expects the operation to publish and/or send a bunch of messages.
         /// </summary>

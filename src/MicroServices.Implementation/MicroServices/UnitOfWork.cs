@@ -189,7 +189,7 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.UnitOfWork_InvalidMode;
             var message = string.Format(messageFormat, mode);
-            return new InternalServerErrorException(message);
+            return new ArgumentOutOfRangeException(nameof(mode), message);
         }
     }
 }

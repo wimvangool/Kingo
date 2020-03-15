@@ -356,7 +356,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(BadRequestException))]
         public async Task InvokeAsync_ThrowsExpectedException_IfMessageHandlerIsCommandHandler_And_BadRequestExceptionIsThrown()
         {
-            var exceptionToThrow = new BadRequestException();
+            var exceptionToThrow = new BadRequestException(null, null);
 
             ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
@@ -448,7 +448,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task InvokeAsync_ThrowsExpectedException_IfMessageHandlerIsEventHandler_And_BadRequestExceptionIsThrown()
         {
-            var exceptionToThrow = new BadRequestException();
+            var exceptionToThrow = new BadRequestException(null, null);
 
             ProcessorBuilder.MessageHandlers.AddInstance(new SomeEventHandler());
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>

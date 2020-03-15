@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.TestEngine
         public override Type MessageHandlerType =>
             _messageHandler.GetType();
 
-        public override Task RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
             state.HandleEventAsync(context, _messageHandler, CreateOperationInfo(context));
     }
 }

@@ -144,7 +144,7 @@ namespace Kingo.MicroServices
         #region [====== MessageBuilder ======]
 
         /// <inheritdoc />
-        public IMessageEnvelopeBuilder CreateMessageBuilder() =>
+        public IMessageEnvelopeBuilder CreateMessageEnvelopeBuilder() =>
             CreateMessageFactory().ToBuilder();
 
         internal MessageEnvelopeFactory CreateMessageFactory() =>

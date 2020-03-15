@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,7 +44,7 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.MessageIdFactory_MultipleFactoriesAddedForSameMessageType;
             var message = string.Format(messageFormat, messageType.FriendlyName(), string.Join(", ", factoryTypes.Select(type => type.FriendlyName())));
-            return new InternalServerErrorException(message);
+            return new AmbiguousMatchException(message);
         }
     }
 }

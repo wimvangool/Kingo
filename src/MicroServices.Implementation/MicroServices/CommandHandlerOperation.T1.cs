@@ -10,7 +10,9 @@ namespace Kingo.MicroServices
         public CommandHandlerOperation(MicroProcessor processor, HandleAsyncMethod<TCommand> method, MessageEnvelope<TCommand> message, CancellationToken? token) :
             base(processor, method, message.ToProcess(MessageKind.Command), token) { }        
 
-        protected override MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException exception) =>
-            exception.AsBadRequestException(exception.Message);        
+        // When a MessageHandlerOperationException was thrown when processing a Command, we regard it as a BadRequest, assuming the
+        // exception was caused because some business rule was violated or a conflict occurred.
+        protected override MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException.WithStackTrace exception) =>
+            exception.ToBadRequestException(exception.Message);        
     }
 }

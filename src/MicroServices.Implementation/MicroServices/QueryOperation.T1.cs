@@ -39,38 +39,43 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override MicroProcessorOperationKind Kind =>
-            Context.StackTrace.Count == 0 ? MicroProcessorOperationKind.RootOperation : MicroProcessorOperationKind.BranchOperation;                        
+            Context.StackTrace.Count == 0 ? MicroProcessorOperationKind.RootOperation : MicroProcessorOperationKind.BranchOperation;
 
         /// <inheritdoc />
-        public override async Task<QueryOperationResult<TResponse>> ExecuteAsync()
+        public override Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
+            ExecuteAsync(CreateQueryOperationPipeline(Context));
+
+        private async Task<QueryOperationResult<TResponse>> ExecuteAsync(ExecuteAsyncMethodOperation<TResponse> operation)
         {
             Token.ThrowIfCancellationRequested();
 
             try
             {
-                return await CreateQueryOperationPipeline(Context).ExecuteAsync().ConfigureAwait(false);
-            }
-            catch (OperationCanceledException exception)
-            {
-                if (exception.CancellationToken == Token)
-                {
-                    throw;
-                }
-                throw InternalServerErrorException.FromInnerException(exception);
+                return Commit(await operation.ExecuteAsync().ConfigureAwait(false));
             }
             catch (MicroProcessorOperationException)
             {
                 throw;
             }
-            catch (MessageHandlerOperationException exception)
+            catch (OperationCanceledException exception)
             {
-                // When executing a query, MessageHandlerOperationExceptions should not occur.
-                // If they do, they are treated as internal server errors.
-                throw exception.AsInternalServerErrorException(exception.Message);
+                if (exception.CancellationToken == Token)
+                {
+                    throw NewGatewayTimeoutException(exception, operation.CaptureStackTrace());
+                }
+                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
             }
             catch (Exception exception)
             {
-                throw new InternalServerErrorException(exception.Message, exception);
+                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+            }
+        }
+
+        private QueryOperationResult<TResponse> Commit(QueryOperationResult<TResponse> result)
+        {
+            try
+            {
+                return result;
             }
             finally
             {

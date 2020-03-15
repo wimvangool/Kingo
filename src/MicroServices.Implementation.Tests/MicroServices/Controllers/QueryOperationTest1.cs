@@ -91,7 +91,7 @@ namespace Kingo.MicroServices.Controllers
         #region [====== Exception Handling ======]
 
         [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException), AllowDerivedTypes = true)]
+        [ExpectedException(typeof(GatewayTimeoutException))]
         public async Task ExecuteQueryAsync_ThrowsExpectedException_IfOperationIsCancelledWithTheSpecifiedToken()
         {
             var tokenSource = new CancellationTokenSource();
@@ -104,9 +104,12 @@ namespace Kingo.MicroServices.Controllers
                     return new object();
                 }, tokenSource.Token);
             }
-            catch (OperationCanceledException exception)
+            catch (GatewayTimeoutException exception)
             {
-                Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                Assert.IsInstanceOfType(exception.InnerException, typeof(OperationCanceledException));
+                Assert.AreEqual(1, exception.OperationStackTrace.Count);
+                Assert.IsNull(exception.OperationStackTrace.RootOperation.Message);
+                Assert.IsNull(exception.OperationStackTrace.CurrentOperation.Message);
                 throw;
             }
             finally
@@ -132,6 +135,9 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception.InnerException);
+                Assert.AreEqual(1, exception.OperationStackTrace.Count);
+                Assert.IsNull(exception.OperationStackTrace.RootOperation.Message);
+                Assert.IsNull(exception.OperationStackTrace.CurrentOperation.Message);
                 throw;
             }
             finally
@@ -156,6 +162,9 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception.InnerException);
+                Assert.AreEqual(1, exception.OperationStackTrace.Count);
+                Assert.IsNull(exception.OperationStackTrace.RootOperation.Message);
+                Assert.IsNull(exception.OperationStackTrace.CurrentOperation.Message);
                 throw;
             }
         }
@@ -164,7 +173,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(BadRequestException))]
         public async Task ExecuteQueryAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
         {
-            var exceptionToThrow = new BadRequestException();
+            var exceptionToThrow = new BadRequestException(null, null);
 
             try
             {
@@ -176,6 +185,7 @@ namespace Kingo.MicroServices.Controllers
             catch (BadRequestException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception);
+                Assert.AreEqual(0, exception.OperationStackTrace.Count);
                 throw;
             }
         }
@@ -184,7 +194,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task ExecuteQueryAsync_ThrowsExpectedException_IfOperationThrowsInternalServerErrorException()
         {
-            var exceptionToThrow = new InternalServerErrorException();
+            var exceptionToThrow = new InternalServerErrorException(null, null);
 
             try
             {
@@ -196,6 +206,7 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception);
+                Assert.AreEqual(0, exception.OperationStackTrace.Count);
                 throw;
             }
         }
@@ -216,6 +227,9 @@ namespace Kingo.MicroServices.Controllers
             catch (InternalServerErrorException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception.InnerException);
+                Assert.AreEqual(1, exception.OperationStackTrace.Count);
+                Assert.IsNull(exception.OperationStackTrace.RootOperation.Message);
+                Assert.IsNull(exception.OperationStackTrace.CurrentOperation.Message);
                 throw;
             }
         }

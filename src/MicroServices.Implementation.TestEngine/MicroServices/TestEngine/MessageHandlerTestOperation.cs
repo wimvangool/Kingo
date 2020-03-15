@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices.TestEngine
 {
@@ -20,6 +21,9 @@ namespace Kingo.MicroServices.TestEngine
         {
             get;
         }
+
+        public override string ToString() =>
+            $"{MessageHandlerType.FriendlyName()}.{nameof(IMessageHandler<TMessage>.HandleAsync)}({typeof(TMessage).FriendlyName()}, {nameof(MessageHandlerOperationContext)})";
 
         protected MessageHandlerTestOperationInfo<TMessage> CreateOperationInfo(MicroProcessorTestContext context) =>
             context.CreateOperationInfo(_configurator);

@@ -44,7 +44,7 @@ namespace Kingo.MicroServices
 
             private async Task<MessageEnvelope<TResponse>> ExecuteMethodAsync()
             {
-                var messageBuilder = Context.Processor.CreateMessageBuilder();
+                var messageBuilder = Context.Processor.CreateMessageEnvelopeBuilder();
                 messageBuilder.CorrelationId = Message.MessageId;
                 return messageBuilder.Wrap(await _method.ExecuteAsync(_operation._message.Content, _context).ConfigureAwait(false));
             }

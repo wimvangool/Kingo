@@ -42,7 +42,7 @@ namespace Kingo.MicroServices
         /// Creates and returns a new <see cref="IMessageEnvelopeBuilder" /> that can be used to build new messages to process by this processor.
         /// </summary>
         /// <returns>A new <see cref="IMessageEnvelopeBuilder" />.</returns>
-        IMessageEnvelopeBuilder CreateMessageBuilder();
+        IMessageEnvelopeBuilder CreateMessageEnvelopeBuilder();
 
         /// <summary>
         /// Creates and returns all endpoints that are configured to handle commands or events from a service bus.
@@ -50,7 +50,9 @@ namespace Kingo.MicroServices
         /// <returns>A collection of endpoints.</returns>
         IEnumerable<IMicroServiceBusEndpoint> CreateMicroServiceBusEndpoints();
 
-        #region [====== Commands ======]
+        #region [====== Commands & Events ======]
+
+
 
         /// <summary>
         /// Executes a command with a specified <paramref name="messageHandler"/>.
@@ -81,10 +83,6 @@ namespace Kingo.MicroServices
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
         Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null);
-
-        #endregion
-
-        #region [====== Events ======]
 
         /// <summary>
         /// Handles an event with a specified <paramref name="messageHandler"/>.
