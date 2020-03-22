@@ -59,15 +59,17 @@ namespace Kingo.MicroServices
             }
             catch (OperationCanceledException exception)
             {
+                // OperationCanceledExceptions are treated as InternalServerErrors, even if the operation was
+                // deliberately cancelled, because this typically happens because an upstream timeout has occurred.
                 if (exception.CancellationToken == Token)
                 {
-                    throw NewGatewayTimeoutException(exception, operation.CaptureStackTrace());
+                    throw operation.Context.NewGatewayTimeoutException(ExceptionMessages.MicroProcessorOperation_OperationCancelled, exception);
                 }
-                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+                throw operation.Context.NewInternalServerErrorException(ExceptionMessages.MicroProcessorOperation_OperationCancelledUnexpectedly, exception);
             }
             catch (Exception exception)
             {
-                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+                throw operation.Context.NewInternalServerErrorException(ExceptionMessages.MicroProcessorOperation_InternalServerError, exception);
             }
         }
 

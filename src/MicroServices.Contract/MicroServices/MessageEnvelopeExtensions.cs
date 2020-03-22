@@ -26,6 +26,23 @@ namespace Kingo.MicroServices
             new MessageToDispatch(NotNull(message), kind, deliveryTime);
 
         /// <summary>
+        /// Casts the specified <paramref name="message"/> to a typed version.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the expected message content.</typeparam>
+        /// <returns>An instance of <see cref="MessageEnvelope{TMessage}"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidCastException">
+        /// The content of the specified <paramref name="message"/> is not of the specified type <typeparamref name="TMessage"/>.
+        /// </exception>
+        public static MessageEnvelope<TMessage> CastTo<TMessage>(this IMessageEnvelope message) =>
+            CastToNotNull<TMessage>(NotNull(message));
+
+        public static MessageEnvelope<TMessage> CastToNotNull<TMessage>(IMessageEnvelope message) =>
+            new MessageEnvelope<TMessage>((TMessage) message.Content, message.MessageId, message.CorrelationId);
+
+        /// <summary>
         /// Checks if the content of this envelope is of type <typeparamref name="TMessage"/> and if so,
         /// convert this envelope into a strongly typed version.
         /// </summary>

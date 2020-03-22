@@ -25,7 +25,7 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             $"Ready to process message of type '{typeof(TMessage).FriendlyName()}' with message handler of type '{_whenOperation.MessageHandlerType.FriendlyName()}'...";
 
-        public async Task ThenOutputIs<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod = null) where TException : Exception =>
+        public async Task ThenOutputIs<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod = null) where TException : MicroProcessorOperationException =>
             (await RunMessageHandlerTestAsync()).AssertOutputIsException(assertMethod);
 
         public async Task ThenOutputIsMessageStream(Action<TMessage, MessageStream, MicroProcessorTestContext> assertMethod = null) =>

@@ -116,25 +116,24 @@ namespace Kingo.MicroServices
             catch (MessageHandlerOperationException exception)
             {
                 // When a MessageHandlerOperationException was thrown, we wrap it into a new exception that
-                // also stored the current stack-trace. Later, in the root-operation, this exception
+                // also stores the current stack-trace. Later, in the root-operation, this exception
                 // can then be converted to the appropriate BadRequestException or InternalServerErrorException,
                 // based on the specific operation type.
-                throw exception.AssignStackTrace(operation.CaptureStackTrace());
+                throw exception.AssignStackTrace(operation.Context.CaptureOperationStackTrace());
             }
             catch (OperationCanceledException exception)
             {
-                // OperationCanceledExceptions are let through if and only if they were thrown because
-                // cancellation of the processor operation was requested. In any other case they are regarded
-                // as regular unhandled exceptions that represent an error.
+                // OperationCanceledExceptions are treated as InternalServerErrors, even if the operation was
+                // deliberately cancelled, because this typically happens because an upstream timeout has occurred.
                 if (exception.CancellationToken == Token)
                 {
-                    throw NewGatewayTimeoutException(exception, operation.CaptureStackTrace());
+                    throw operation.Context.NewGatewayTimeoutException(ExceptionMessages.MicroProcessorOperation_OperationCancelled, exception);
                 }
-                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+                throw operation.Context.NewInternalServerErrorException(ExceptionMessages.MicroProcessorOperation_OperationCancelledUnexpectedly, exception);
             }
             catch (Exception exception)
             {
-                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+                throw operation.Context.NewInternalServerErrorException(ExceptionMessages.MicroProcessorOperation_InternalServerError, exception);
             }
         }
 

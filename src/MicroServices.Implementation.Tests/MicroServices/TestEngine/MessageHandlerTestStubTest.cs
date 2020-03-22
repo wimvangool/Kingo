@@ -178,28 +178,45 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                var exceptionToThrow = NewInternalServerErrorException();
+                var errorMessage = Guid.NewGuid().ToString();
 
                 test.Given<object>().IsExecutedByCommandHandler((operation, context) =>
                 {
                     operation.Message = new object();
                 }, (message, context) =>
                 {
-                    throw exceptionToThrow;
+                    throw context.NewInternalServerErrorException(errorMessage);
                 });
 
                 try
                 {
-                    await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
+                    await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
                     {
                         operation.Message = new object();
-                    }).ThenOutputIs<Exception>();
+                    }, (message, context) =>
+                    {
+                        throw context.NewBadRequestException();
+                    }).ThenOutputIs<BadRequestException>();
                 }
                 catch (TestFailedException exception)
                 {
-                    Assert.AreSame(exceptionToThrow, exception.InnerException);
+                    Assert.IsInstanceOfType(exception.InnerException, typeof(InternalServerErrorException));
+                    Assert.AreEqual(errorMessage, exception.InnerException.Message);
                     throw;
                 }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfWhenOperationDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
+                {
+                    operation.Message = new object();
+                }).ThenOutputIs<BadRequestException>();
             });
         }
 
@@ -214,8 +231,77 @@ namespace Kingo.MicroServices.TestEngine
                     operation.Message = new object();
                 }, (message, context) =>
                 {
-                    throw NewInternalServerErrorException();
-                }).ThenOutputIs<InvalidOperationException>();
+                    throw context.NewInternalServerErrorException();
+                }).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfWhenOperationThrowsExceptionOfExpectedType_And_NoAssertMethodIsSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = new object();
+                }, (message, context) =>
+                {
+                    throw context.NewBadRequestException();
+                }).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfWhenOperationThrowsExceptionOfDerivedType_And_NoAssertMethodIsSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = new object();
+                }, (message, context) =>
+                {
+                    throw context.NewNotFoundException();
+                }).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfSpecifiedAssertMethodThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = new object();
+                }, (message, context) =>
+                {
+                    throw context.NewBadRequestException();
+                }).ThenOutputIs<BadRequestException>((message, exception, context) =>
+                {
+                    throw NewRandomException();
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfSpecifiedAssertMethodDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var inputMessage = new object();
+
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = inputMessage;
+                }, (message, context) =>
+                {
+                    throw context.NewBadRequestException();
+                }).ThenOutputIs<BadRequestException>((message, exception, context) =>
+                {
+                    Assert.AreSame(inputMessage, message);
+                });
             });
         }
 

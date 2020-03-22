@@ -26,7 +26,7 @@ namespace Kingo.MicroServices
             base(info, context) { }
 
         /// <inheritdoc />
-        public override BadRequestException ToBadRequestException(string message, MicroProcessorOperationStackTrace operationStackTrace = null) =>
-            new UnprocessableEntityException(message, this, operationStackTrace);
+        public override BadRequestException ToBadRequestException(MicroProcessorOperationStackTrace operationStackTrace, string message) =>
+            new UnprocessableEntityException(operationStackTrace, message, this);
     }
 }

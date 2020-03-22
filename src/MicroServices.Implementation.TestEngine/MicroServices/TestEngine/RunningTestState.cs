@@ -84,13 +84,13 @@ namespace Kingo.MicroServices.TestEngine
             }
             catch (Exception exception)
             {
-                throw NewGivenOperationFailedException(operation, exception);
+                throw NewOperationFailedException(operation, exception);
             }
         }
 
-        private static Exception NewGivenOperationFailedException(MicroProcessorTestOperation operation, Exception exception)
+        protected static Exception NewOperationFailedException(MicroProcessorTestOperation operation, Exception exception)
         {
-            var messageFormat = ExceptionMessages.MicroProcessorTest_GivenOperatonFailed;
+            var messageFormat = ExceptionMessages.MicroProcessorTest_OperatonFailed;
             var message = string.Format(messageFormat, operation, exception.GetType().FriendlyName());
             return new TestFailedException(message, exception);
         }

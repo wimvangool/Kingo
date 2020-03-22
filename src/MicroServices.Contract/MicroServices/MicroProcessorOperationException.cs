@@ -15,13 +15,16 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessorOperationException" /> class.
         /// </summary>
+        /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param>
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>
-        /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param>
-        internal MicroProcessorOperationException(string message = null, Exception innerException = null, MicroProcessorOperationStackTrace operationStackTrace = null) :
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="operationStackTrace"/> is <c>null</c>.
+        /// </exception>
+        internal MicroProcessorOperationException(MicroProcessorOperationStackTrace operationStackTrace, string message = null, Exception innerException = null) :
             base(message, innerException)
         {
-            OperationStackTrace = operationStackTrace ?? MicroProcessorOperationStackTrace.Empty;
+            OperationStackTrace = operationStackTrace ?? throw new ArgumentNullException(nameof(operationStackTrace));
         }
 
         /// <summary>

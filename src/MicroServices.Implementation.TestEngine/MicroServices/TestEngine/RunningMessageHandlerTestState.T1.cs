@@ -21,14 +21,30 @@ namespace Kingo.MicroServices.TestEngine
 
                 try
                 {
-                    await operation.RunAsync(this, context);
+                    return MoveToOutputState(context, await operation.RunAsync(this, context));
+                }
+                catch (MicroProcessorOperationException exception)
+                {
+                    return MoveToOutputState(context, exception);
+                }
+                catch (TestFailedException)
+                {
+                    throw;
                 }
                 catch (Exception exception)
                 {
-                    throw new NotImplementedException();
+                    throw NewOperationFailedException(operation, exception);
                 }
-                throw new NotImplementedException();
             }
         }
+
+        private VerifyingMessageHandlerTestOutputState<TMessage> MoveToOutputState(MicroProcessorTestContext context, MicroProcessorTestOperationId operationId) =>
+            MoveTo(new VerifyingMessageHandlerTestOutputState<TMessage>(Test, context, operationId));
+
+        private VerifyingMessageHandlerTestOutputState<TMessage> MoveToOutputState(MicroProcessorTestContext context, MicroProcessorOperationException exception) =>
+            MoveTo(new VerifyingMessageHandlerTestOutputState<TMessage>(Test, context, exception));
+
+        private VerifyingMessageHandlerTestOutputState<TMessage> MoveTo(VerifyingMessageHandlerTestOutputState<TMessage> newState) =>
+            Test.MoveToState(this, newState);
     }
 }

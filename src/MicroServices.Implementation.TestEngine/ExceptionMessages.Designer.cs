@@ -61,33 +61,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified expected length of the stream is not valid: {0}..
-        /// </summary>
-        internal static string MessageHandlerOperationResult_InvalidStreamLengthSpecified {
-            get {
-                return ResourceManager.GetString("MessageHandlerOperationResult_InvalidStreamLengthSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The length of the stream ({0}) doesn&apos;t match the expected length ({1})..
-        /// </summary>
-        internal static string MessageHandlerOperationResult_UnexpectedStreamLength {
-            get {
-                return ResourceManager.GetString("MessageHandlerOperationResult_UnexpectedStreamLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to One or more assertions for the published messages failed. See inner exception for details. .
-        /// </summary>
-        internal static string MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed {
-            get {
-                return ResourceManager.GetString("MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Index cannot be negative: {0}..
         /// </summary>
         internal static string MessageStream_IndexOutOfRange {
@@ -133,6 +106,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One or more assertions for exception of type &apos;{0}&apos; failed. See inner exception for details..
+        /// </summary>
+        internal static string MicroProcessorTest_AssertionOfExceptionFailed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_AssertionOfExceptionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot move to state &apos;{0}&apos; because the test was not in the expected state &apos;{1}&apos;..
         /// </summary>
         internal static string MicroProcessorTest_CannotMoveToState {
@@ -142,11 +124,29 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test failed because given operation &apos;{0}&apos; threw an exception of type &apos;{1}&apos;. See inner exception for details..
+        ///   Looks up a localized string similar to Expected an exception of type &apos;{0}&apos;, but encountered an exception of type &apos;{1}&apos; instead..
         /// </summary>
-        internal static string MicroProcessorTest_GivenOperatonFailed {
+        internal static string MicroProcessorTest_ExceptionNotOfExpectedType {
             get {
-                return ResourceManager.GetString("MicroProcessorTest_GivenOperatonFailed", resourceCulture);
+                return ResourceManager.GetString("MicroProcessorTest_ExceptionNotOfExpectedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expected exception of type &apos;{0}&apos; was not thrown..
+        /// </summary>
+        internal static string MicroProcessorTest_ExceptionNotThrown {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_ExceptionNotThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected exception of type &apos;{0}&apos; was thrown..
+        /// </summary>
+        internal static string MicroProcessorTest_ExceptionThrown {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_ExceptionThrown", resourceCulture);
             }
         }
         
@@ -160,11 +160,29 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test failed because operation &apos;{0}&apos; threw an exception of type &apos;{1}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string MicroProcessorTest_OperatonFailed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_OperatonFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot invoke &apos;{0}.{1}()&apos; while the test is in state &apos;{2}&apos;. Make sure &apos;{0}.{1}.()&apos; is invoked only once before the test is configured and executed..
         /// </summary>
         internal static string MicroProcessorTest_SetupFailed {
             get {
                 return ResourceManager.GetString("MicroProcessorTest_SetupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stream was not empty: stream contains {0} message(s)..
+        /// </summary>
+        internal static string MicroProcessorTest_StreamNotEmpty {
+            get {
+                return ResourceManager.GetString("MicroProcessorTest_StreamNotEmpty", resourceCulture);
             }
         }
         
@@ -228,60 +246,6 @@ namespace Kingo {
         internal static string MicroProcessorTestContext_TestResultNotFound {
             get {
                 return ResourceManager.GetString("MicroProcessorTestContext_TestResultNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to One or more assertions for exception of type &apos;{0}&apos; failed. See inner exception for details..
-        /// </summary>
-        internal static string MicroProcessorTestResult_AssertionOfExceptionFailed {
-            get {
-                return ResourceManager.GetString("MicroProcessorTestResult_AssertionOfExceptionFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expected an exception of type &apos;{0}&apos;, but encountered an exception of type &apos;{1}&apos; instead..
-        /// </summary>
-        internal static string MicroProcessorTestResult_ExceptionNotOfExpectedType {
-            get {
-                return ResourceManager.GetString("MicroProcessorTestResult_ExceptionNotOfExpectedType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The expected exception of type &apos;{0}&apos; was not thrown..
-        /// </summary>
-        internal static string MicroProcessorTestResult_ExceptionNotThrown {
-            get {
-                return ResourceManager.GetString("MicroProcessorTestResult_ExceptionNotThrown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An unexpected exception of type &apos;{0}&apos; was thrown..
-        /// </summary>
-        internal static string MicroProcessorTestResult_ExceptionThrown {
-            get {
-                return ResourceManager.GetString("MicroProcessorTestResult_ExceptionThrown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Exception of type &apos;{0}&apos; was expected to have an inner-exception of type &apos;{1}&apos;, but did not have any inner-exception..
-        /// </summary>
-        internal static string MicroProcessorTestResult_InnerExceptionNull {
-            get {
-                return ResourceManager.GetString("MicroProcessorTestResult_InnerExceptionNull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Test failed by default because its result was not verified..
-        /// </summary>
-        internal static string MicroProcessorTestResult_ResultNotVerified {
-            get {
-                return ResourceManager.GetString("MicroProcessorTestResult_ResultNotVerified", resourceCulture);
             }
         }
         

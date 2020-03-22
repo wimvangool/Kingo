@@ -150,8 +150,14 @@
   <data name="MicroProcessorComponent_TypeNotSupported" xml:space="preserve">
     <value>Cannot use instance of type '{0}' as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported.</value>
   </data>
-  <data name="MicroProcessorOperation_GatewayTimeout" xml:space="preserve">
-    <value>The operation was cancelled because of a timeout.</value>
+  <data name="MicroProcessorOperation_InternalServerError" xml:space="preserve">
+    <value>A unexpected exception occurred. See inner exception for details.</value>
+  </data>
+  <data name="MicroProcessorOperation_OperationCancelled" xml:space="preserve">
+    <value>The operation was cancelled, possibly due to a timeout.</value>
+  </data>
+  <data name="MicroProcessorOperation_OperationCancelledUnexpectedly" xml:space="preserve">
+    <value>A certain operation was cancelled unexpectedly.</value>
   </data>
   <data name="MicroServiceBusClient_EndpointNotSupported" xml:space="preserve">
     <value>Cannot connect endpoint '{0}' (Name = {1}) to the service-bus because it is not supported by this client.</value>

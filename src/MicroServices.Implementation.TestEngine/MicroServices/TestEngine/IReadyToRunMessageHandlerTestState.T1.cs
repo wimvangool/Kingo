@@ -25,7 +25,7 @@ namespace Kingo.MicroServices.TestEngine
         /// failed on asserting the properties of the exception.
         /// </exception>
         Task ThenOutputIs<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod = null)
-            where TException : Exception;
+            where TException : MicroProcessorOperationException;
 
         /// <summary>
         /// Runs the test and expects the operation to publish and/or send a bunch of messages.

@@ -117,15 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MessageHandlerOperationResult_InvalidStreamLengthSpecified" xml:space="preserve">
-    <value>The specified expected length of the stream is not valid: {0}.</value>
-  </data>
-  <data name="MessageHandlerOperationResult_UnexpectedStreamLength" xml:space="preserve">
-    <value>The length of the stream ({0}) doesn't match the expected length ({1}).</value>
-  </data>
-  <data name="MessageHandlerOperationTestResult_AssertionOfMessageStreamFailed" xml:space="preserve">
-    <value>One or more assertions for the published messages failed. See inner exception for details. </value>
-  </data>
   <data name="MessageStream_IndexOutOfRange" xml:space="preserve">
     <value>Index cannot be negative: {0}.</value>
   </data>
@@ -159,24 +150,6 @@
   <data name="MicroProcessorTestContext_TestResultNotFound" xml:space="preserve">
     <value>Cannot retrieve the result of '{0}' because its results haven't been saved in this context.</value>
   </data>
-  <data name="MicroProcessorTestResult_AssertionOfExceptionFailed" xml:space="preserve">
-    <value>One or more assertions for exception of type '{0}' failed. See inner exception for details.</value>
-  </data>
-  <data name="MicroProcessorTestResult_ExceptionNotOfExpectedType" xml:space="preserve">
-    <value>Expected an exception of type '{0}', but encountered an exception of type '{1}' instead.</value>
-  </data>
-  <data name="MicroProcessorTestResult_ExceptionNotThrown" xml:space="preserve">
-    <value>The expected exception of type '{0}' was not thrown.</value>
-  </data>
-  <data name="MicroProcessorTestResult_ExceptionThrown" xml:space="preserve">
-    <value>An unexpected exception of type '{0}' was thrown.</value>
-  </data>
-  <data name="MicroProcessorTestResult_InnerExceptionNull" xml:space="preserve">
-    <value>Exception of type '{0}' was expected to have an inner-exception of type '{1}', but did not have any inner-exception.</value>
-  </data>
-  <data name="MicroProcessorTestResult_ResultNotVerified" xml:space="preserve">
-    <value>Test failed by default because its result was not verified.</value>
-  </data>
   <data name="MicroProcessorTestTimeline_InvalidTime" xml:space="preserve">
     <value>Cannot set time to '{0}' here because the current time is set to '{1}' and you are not allowed to go backwards in time during a test.</value>
   </data>
@@ -192,17 +165,32 @@
   <data name="MicroProcessorTestTimeline_UnexpectedState" xml:space="preserve">
     <value>Cannot move timeline to state '{0}' because the timeline was not in the expected state '{1}'.</value>
   </data>
+  <data name="MicroProcessorTest_AssertionOfExceptionFailed" xml:space="preserve">
+    <value>One or more assertions for exception of type '{0}' failed. See inner exception for details.</value>
+  </data>
   <data name="MicroProcessorTest_CannotMoveToState" xml:space="preserve">
     <value>Cannot move to state '{0}' because the test was not in the expected state '{1}'.</value>
   </data>
-  <data name="MicroProcessorTest_GivenOperatonFailed" xml:space="preserve">
-    <value>Test failed because given operation '{0}' threw an exception of type '{1}'. See inner exception for details.</value>
+  <data name="MicroProcessorTest_ExceptionNotOfExpectedType" xml:space="preserve">
+    <value>Expected an exception of type '{0}', but encountered an exception of type '{1}' instead.</value>
+  </data>
+  <data name="MicroProcessorTest_ExceptionNotThrown" xml:space="preserve">
+    <value>The expected exception of type '{0}' was not thrown.</value>
+  </data>
+  <data name="MicroProcessorTest_ExceptionThrown" xml:space="preserve">
+    <value>An unexpected exception of type '{0}' was thrown.</value>
   </data>
   <data name="MicroProcessorTest_InvalidOperation" xml:space="preserve">
     <value>Cannot invoke method '{0}.{1}()' while the test is in state '{2}'. Make sure you correctly follow the builder pattern provided by the framework.</value>
   </data>
+  <data name="MicroProcessorTest_OperatonFailed" xml:space="preserve">
+    <value>Test failed because operation '{0}' threw an exception of type '{1}'. See inner exception for details.</value>
+  </data>
   <data name="MicroProcessorTest_SetupFailed" xml:space="preserve">
     <value>Cannot invoke '{0}.{1}()' while the test is in state '{2}'. Make sure '{0}.{1}.()' is invoked only once before the test is configured and executed.</value>
+  </data>
+  <data name="MicroProcessorTest_StreamNotEmpty" xml:space="preserve">
+    <value>The stream was not empty: stream contains {0} message(s).</value>
   </data>
   <data name="MicroProcessorTest_TearDownFailed" xml:space="preserve">
     <value>Cannot invoke '{0}.{1}()' while the test is in state '{2}'. Make sure '{0}.{1}()' is invoked only once after the test has ran to completion.</value>

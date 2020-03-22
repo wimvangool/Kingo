@@ -160,11 +160,29 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The operation was cancelled because of a timeout..
+        ///   Looks up a localized string similar to A unexpected exception occurred. See inner exception for details..
         /// </summary>
-        internal static string MicroProcessorOperation_GatewayTimeout {
+        internal static string MicroProcessorOperation_InternalServerError {
             get {
-                return ResourceManager.GetString("MicroProcessorOperation_GatewayTimeout", resourceCulture);
+                return ResourceManager.GetString("MicroProcessorOperation_InternalServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation was cancelled, possibly due to a timeout..
+        /// </summary>
+        internal static string MicroProcessorOperation_OperationCancelled {
+            get {
+                return ResourceManager.GetString("MicroProcessorOperation_OperationCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A certain operation was cancelled unexpectedly..
+        /// </summary>
+        internal static string MicroProcessorOperation_OperationCancelledUnexpectedly {
+            get {
+                return ResourceManager.GetString("MicroProcessorOperation_OperationCancelledUnexpectedly", resourceCulture);
             }
         }
         

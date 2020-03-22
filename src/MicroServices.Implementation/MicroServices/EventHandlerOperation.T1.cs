@@ -22,7 +22,7 @@ namespace Kingo.MicroServices
                 // When a BadRequestException is thrown while processing an event, it is
                 // handled as an error because events are not requests and BadRequestExceptions
                 // should not occur in this context.
-                throw NewInternalServerErrorException(exception, exception.OperationStackTrace);
+                throw new InternalServerErrorException(exception.OperationStackTrace, exception.Message, exception);
             }
         }
 

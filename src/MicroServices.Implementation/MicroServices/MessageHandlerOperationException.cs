@@ -26,10 +26,10 @@ namespace Kingo.MicroServices
             }
 
             public BadRequestException ToBadRequestException(string message) =>
-                _exception.ToBadRequestException(message, _operationStackTrace);
+                _exception.ToBadRequestException(_operationStackTrace, message);
 
             public InternalServerErrorException ToInternalServerErrorException(string message) =>
-                _exception.ToInternalServerErrorException(message, _operationStackTrace);
+                _exception.ToInternalServerErrorException(_operationStackTrace, message);
         }
 
         #endregion
@@ -57,21 +57,27 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Creates and returns this exception as a <see cref="BadRequestException"/>, indicating that
         /// the current exception occurred because of a bad client request.
-        /// </summary>        
-        /// <param name="message">Message describing the context of the newly created message.</param>
+        /// </summary>
         /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param> 
-        /// <returns>A new <see cref="BadRequestException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>        
-        public virtual BadRequestException ToBadRequestException(string message, MicroProcessorOperationStackTrace operationStackTrace = null) =>
-            new BadRequestException(message, this, operationStackTrace);
+        /// <param name="message">Message describing the context of the newly created message.</param>
+        /// <returns>A new <see cref="BadRequestException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="operationStackTrace"/> is <c>null</c>.
+        /// </exception>
+        public virtual BadRequestException ToBadRequestException(MicroProcessorOperationStackTrace operationStackTrace, string message) =>
+            new BadRequestException(operationStackTrace, message, this);
 
         /// <summary>
         /// Creates and returns this exception as a <see cref="InternalServerErrorException"/>, indicating that
         /// the current exception occurred because of an internal server error.        
-        /// </summary>        
-        /// <param name="message">Message describing the context of the newly created message.</param>
+        /// </summary>
         /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param> 
-        /// <returns>A new <see cref="InternalServerErrorException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>        
-        public virtual InternalServerErrorException ToInternalServerErrorException(string message, MicroProcessorOperationStackTrace operationStackTrace = null) =>
-            new InternalServerErrorException(message, this, operationStackTrace);
+        /// <param name="message">Message describing the context of the newly created message.</param>
+        /// <returns>A new <see cref="InternalServerErrorException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="operationStackTrace"/> is <c>null</c>.
+        /// </exception>
+        public virtual InternalServerErrorException ToInternalServerErrorException(MicroProcessorOperationStackTrace operationStackTrace, string message) =>
+            new InternalServerErrorException(operationStackTrace, message, this);
     }
 }

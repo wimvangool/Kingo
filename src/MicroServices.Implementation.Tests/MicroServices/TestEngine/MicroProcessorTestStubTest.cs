@@ -314,7 +314,7 @@ namespace Kingo.MicroServices.TestEngine
 
         protected abstract TMicroProcessorTestStub CreateMicroProcessorTest();
 
-        protected static Exception NewInternalServerErrorException() =>
-            new InternalServerErrorException(null, null);
+        protected static Exception NewRandomException() =>
+            new Exception(Guid.NewGuid().ToString());
     }
 }

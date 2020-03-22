@@ -39,15 +39,5 @@ namespace Kingo.MicroServices
 
         internal string ToString(object operationOrMethod) =>
             $"{operationOrMethod} [{Kind}]";
-
-        #region [====== Exception Handling ======]
-
-        internal static InternalServerErrorException NewInternalServerErrorException(Exception exception, MicroProcessorOperationStackTrace operationStackTrace) =>
-            new InternalServerErrorException(exception.Message, exception, operationStackTrace);
-
-        internal static GatewayTimeoutException NewGatewayTimeoutException(Exception exception, MicroProcessorOperationStackTrace operationStackTrace) =>
-            new GatewayTimeoutException(ExceptionMessages.MicroProcessorOperation_GatewayTimeout, exception, operationStackTrace);
-
-        #endregion
     }
 }

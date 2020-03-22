@@ -12,20 +12,15 @@ namespace Kingo.MicroServices
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UnprocessableEntityException" /> class.
-        /// </summary>        
-        /// <param name="message">Message of the exception.</param>
+        /// </summary>
         /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param>  
-        public UnprocessableEntityException(string message = null, MicroProcessorOperationStackTrace operationStackTrace = null) :
-            base(message, operationStackTrace) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnprocessableEntityException" /> class.
-        /// </summary>        
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>
-        /// <param name="operationStackTrace">The stack trace of the processor at the time the exception was thrown.</param>  
-        public UnprocessableEntityException(string message = null, Exception innerException = null, MicroProcessorOperationStackTrace operationStackTrace = null) :
-            base(message, innerException, operationStackTrace) { }
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="operationStackTrace"/> is <c>null</c>.
+        /// </exception>
+        public UnprocessableEntityException(MicroProcessorOperationStackTrace operationStackTrace, string message = null, Exception innerException = null) :
+            base(operationStackTrace, message, innerException) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnprocessableEntityException" /> class.

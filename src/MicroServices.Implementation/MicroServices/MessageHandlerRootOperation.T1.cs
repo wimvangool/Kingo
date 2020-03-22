@@ -41,7 +41,7 @@ namespace Kingo.MicroServices
             }
             catch (MessageHandlerOperationException exception)
             {
-                throw NewMicroProcessorOperationException(exception.AssignStackTrace(operation.CaptureStackTrace()));
+                throw NewMicroProcessorOperationException(exception.AssignStackTrace(operation.Context.CaptureOperationStackTrace()));
             }
             catch (MessageHandlerOperationException.WithStackTrace exception)
             {
@@ -49,7 +49,7 @@ namespace Kingo.MicroServices
             }
             catch (Exception exception)
             {
-                throw NewInternalServerErrorException(exception, operation.CaptureStackTrace());
+                throw operation.Context.NewInternalServerErrorException(ExceptionMessages.MicroProcessorOperation_InternalServerError, exception);
             }
         }
 
