@@ -307,6 +307,141 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
+        #region [====== ThenOutputIsMessageStream ======]
 
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsMessageStream_Throws_IfGivenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var errorMessage = Guid.NewGuid().ToString();
+
+                test.Given<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = new object();
+                }, (message, context) =>
+                {
+                    throw context.NewInternalServerErrorException(errorMessage);
+                });
+
+                try
+                {
+                    await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
+                    {
+                        operation.Message = new object();
+                    }).ThenOutputIsMessageStream();
+                }
+                catch (TestFailedException exception)
+                {
+                    Assert.IsInstanceOfType(exception.InnerException, typeof(InternalServerErrorException));
+                    Assert.AreEqual(errorMessage, exception.InnerException.Message);
+                    throw;
+                }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsMessageStream_Throws_IfWhenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = new object();
+                }, (message, context) =>
+                {
+                    throw NewRandomException();
+                }).ThenOutputIsMessageStream();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsMessageStream_Succeeds_IfWhenOperationDoesNotThrowException_And_AssertMethodIsNotSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
+                {
+                    operation.Message = new object();
+                }).ThenOutputIsMessageStream();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsMessageStream_Throws_IfAssertMethodThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
+                {
+                    operation.Message = new object();
+                }).ThenOutputIsMessageStream((message, stream, context) =>
+                {
+                    throw NewRandomException();
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsMessageStream_Succeeds_IfAssertMethodDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var inputMessage = new object();
+
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = inputMessage;
+                }, (message, context) =>
+                {
+                    context.MessageBus.PublishEvent(new object());
+                }).ThenOutputIsMessageStream((message, stream, context) =>
+                {
+                    Assert.AreSame(inputMessage, message);
+                    Assert.AreEqual(1, stream.Count);
+                });
+            });
+        }
+
+        #endregion
+
+        #region [====== ThenOutputIsEmptyStream ======]
+
+        [TestMethod]
+        public async Task ThenOutputIsEmptyStream_Succeeds_IfOperationProducesEmptyStream()
+        {
+            await RunTestAsync(async test =>
+            {
+                var inputMessage = new object();
+
+                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
+                {
+                    operation.Message = inputMessage;
+                }).ThenOutputIsEmptyStream();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsEmptyStream_Throws_IfOperationProducesEmptyStream()
+        {
+            await RunTestAsync(async test =>
+            {
+                var inputMessage = new object();
+
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = inputMessage;
+                }, (message, context) =>
+                {
+                    context.MessageBus.PublishEvent(new object());
+                }).ThenOutputIsEmptyStream();
+            });
+        }
+
+        #endregion
     }
 }

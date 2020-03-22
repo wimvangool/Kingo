@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.TestEngine
@@ -17,5 +18,13 @@ namespace Kingo.MicroServices.TestEngine
             base.When<TMessage>();
 
         #endregion
+
+        protected override IServiceCollection ConfigureServices(IServiceCollection services)
+        {
+            return services.AddMicroProcessor(processor =>
+            {
+                processor.MessageHandlers.Add<NullHandler>();
+            });
+        }
     }
 }
