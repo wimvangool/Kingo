@@ -305,6 +305,21 @@ namespace Kingo.MicroServices.TestEngine
             });
         }
 
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
+                {
+                    operation.Message = new object();
+                }, (message, context) =>
+                {
+                    throw context.NewBadRequestException();
+                }).ThenOutputIs<BadRequestException>();
+            }, true, true);
+        }
+
         #endregion
 
         #region [====== ThenOutputIsMessageStream ======]
@@ -404,6 +419,18 @@ namespace Kingo.MicroServices.TestEngine
                     Assert.AreEqual(1, stream.Count);
                 });
             });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsMessageStream_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
+                {
+                    operation.Message = new object();
+                }).ThenOutputIsMessageStream();
+            }, true, true);
         }
 
         #endregion

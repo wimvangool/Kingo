@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.TestEngine
 {
     [TestClass]
-    public sealed class QueryTestStubTest : MicroProcessorTestStubTest<QueryTestStub>
+    public abstract class QueryTestStubTest : MicroProcessorTestStubTest<QueryTestStub>
     {
         #region [====== CreateMicroProcessorTest ======]
 
@@ -14,16 +14,7 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        #region [====== When (1) ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public async Task When1_Throws_IfSetupWasNotCalled()
-        {
-            await RunTestAsync(test => test.WhenRequest(), true);
-        }
-
-        #endregion
+        
 
         #region [====== When (2) ======]
 
@@ -31,7 +22,7 @@ namespace Kingo.MicroServices.TestEngine
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task When2_Throws_IfSetupWasNotCalled()
         {
-            await RunTestAsync(test => test.When<object>(), true);
+            await RunTestAsync(test => test.When<object>(), false);
         }
 
         #endregion

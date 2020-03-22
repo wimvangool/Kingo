@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.TestEngine
@@ -10,6 +11,9 @@ namespace Kingo.MicroServices.TestEngine
         public new IGivenState Given() =>
             base.Given();
 
+        public new IGivenCommandOrEventState<TMessage> Given<TMessage>() =>
+            base.Given<TMessage>();
+
         public new IWhenRequestState WhenRequest() =>
             base.WhenRequest();
 
@@ -18,7 +22,12 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        public new IGivenCommandOrEventState<TMessage> Given<TMessage>() =>
-            base.Given<TMessage>();
+        protected override IServiceCollection ConfigureServices(IServiceCollection services)
+        {
+            return services.AddMicroProcessor(processor =>
+            {
+                processor.Queries.Add<NullQuery>();
+            });
+        }
     }
 }
