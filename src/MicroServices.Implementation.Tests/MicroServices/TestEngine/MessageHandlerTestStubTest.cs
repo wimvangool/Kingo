@@ -14,7 +14,7 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        #region [====== When ======]
+        #region [====== When<...>() ======]
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -31,7 +31,7 @@ namespace Kingo.MicroServices.TestEngine
                 var state = test.When<object>();
 
                 Assert.IsNotNull(state);
-                Assert.AreEqual("Configuring a message handler to process message of type 'Object'...", state.ToString());
+                Assert.AreEqual("Configuring a message handler of type 'IMessageHandler<Object>'...", state.ToString());
             });
         }
 

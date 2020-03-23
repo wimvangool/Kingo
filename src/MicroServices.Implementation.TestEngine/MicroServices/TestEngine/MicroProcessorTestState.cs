@@ -32,7 +32,7 @@ namespace Kingo.MicroServices.TestEngine
         public virtual IWhenRequestState WhenRequest() =>
             throw NewInvalidOperationException(nameof(WhenRequest));
 
-        public IWhenRequestState<TRequest> WhenRequest<TRequest>() =>
+        public virtual IWhenRequestState<TRequest> WhenRequest<TRequest>() =>
             throw NewInvalidOperationException(nameof(WhenRequest));
 
         #endregion

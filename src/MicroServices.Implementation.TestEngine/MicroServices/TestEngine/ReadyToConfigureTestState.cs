@@ -27,5 +27,11 @@
 
         public override IWhenCommandOrEventState<TMessage> WhenCommandOrEvent<TMessage>() =>
             Test.MoveToState(this, new WhenCommandOrEventState<TMessage>(_test, _givenOperations));
+
+        public override IWhenRequestState WhenRequest() =>
+            Test.MoveToState(this, new WhenRequestState(_test, _givenOperations));
+
+        public override IWhenRequestState<TRequest> WhenRequest<TRequest>() =>
+            Test.MoveToState(this, new WhenRequestState<TRequest>(_test, _givenOperations));
     }
 }

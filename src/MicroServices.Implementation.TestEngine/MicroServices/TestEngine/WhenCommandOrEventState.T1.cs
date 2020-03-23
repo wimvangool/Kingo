@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.TestEngine
             _test;
 
         public override string ToString() =>
-            $"Configuring a message handler to process message of type '{typeof(TMessage).FriendlyName()}'...";
+            $"Configuring a message handler of type '{typeof(IMessageHandler<TMessage>).FriendlyName()}'...";
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
             MoveToReadyToProcessorMessageState(new CommandOperation<TMessage, TMessageHandler>(configurator));
