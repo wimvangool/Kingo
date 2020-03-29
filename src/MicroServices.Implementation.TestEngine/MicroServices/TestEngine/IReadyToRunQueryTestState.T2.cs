@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 namespace Kingo.MicroServices.TestEngine
 {
     /// <summary>
-    /// When implemented by a class, represents a test-runner that is able to run a specific test verifying
-    /// the behavior of a certain <see cref="IQuery{TResponse}" /> operation.
+    /// When implemented by a class, represents a state in which the test-engine is able to run a specific test
+    /// verifying the behavior of a certain <see cref="IQuery{TRequest, TResponse}" /> operation.
     /// </summary>
+    /// <typeparam name="TRequest">Type of the request executed by the query.</typeparam>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public interface IQueryTestRunner<out TResponse>
+    public interface IReadyToRunQueryTestState<out TRequest, out TResponse>
     {
         /// <summary>
         /// Runs the test and expects the operation to throw an exception of type <typeparamref name="TException" />.
@@ -24,22 +25,23 @@ namespace Kingo.MicroServices.TestEngine
         /// The operation did not throw the expected exception or the specified <paramref name="assertMethod" />
         /// failed on asserting the properties of the exception.
         /// </exception>
-        Task ThenOutputIs<TException>(Action<TException, MicroProcessorTestContext> assertMethod = null)
-            where TException : Exception;
+        Task ThenOutputIs<TException>(Action<TRequest, TException, MicroProcessorTestContext> assertMethod = null)
+            where TException : MicroProcessorOperationException;
 
         /// <summary>
-        /// Runs the test and expects the operation to return a specific response.
+        /// Runs the test and expects the operation to publish and/or send a bunch of messages.
         /// </summary>
         /// <param name="assertMethod">
-        /// Optional delegate that will be used to assert the properties of the response.
+        /// Optional delegate that will be used to assert the messages that were published or sent and their
+        /// properties.
         /// </param>
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
         /// <exception cref="TestFailedException">
         /// The operation threw an exception or the specified <paramref name="assertMethod" />
-        /// failed on asserting the (properties of the) response.
+        /// failed on asserting the (properties of the) messages.
         /// </exception>
-        Task ThenOutputIsResponse(Action<TResponse, MicroProcessorTestContext> assertMethod = null);
+        Task ThenOutputIsResponse(Action<TRequest, TResponse, MicroProcessorTestContext> assertMethod = null);
     }
 }

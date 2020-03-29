@@ -83,5 +83,19 @@ namespace Kingo.MicroServices.TestEngine
         }
 
         #endregion
+
+        #region [====== When<...>().Returning<...>().IsExecutedBy(...) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task WhenRequestIsExecutedBy_Throws_IfConfiguratorIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.When<object>().Returning<object>().IsExecutedByQuery(null, new NullQuery());
+            });
+        }
+
+        #endregion
     }
 }

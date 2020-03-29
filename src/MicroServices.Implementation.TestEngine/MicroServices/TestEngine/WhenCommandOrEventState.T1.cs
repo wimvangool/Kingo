@@ -23,18 +23,18 @@ namespace Kingo.MicroServices.TestEngine
             $"Configuring a message handler of type '{typeof(IMessageHandler<TMessage>).FriendlyName()}'...";
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
-            MoveToReadyToProcessorMessageState(new CommandOperation<TMessage, TMessageHandler>(configurator));
+            MoveToReadyToRunMessageHandlerTestState(new CommandOperation<TMessage, TMessageHandler>(configurator));
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedByCommandHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-            MoveToReadyToProcessorMessageState(new CommandOperation<TMessage>(configurator, messageHandler));
+            MoveToReadyToRunMessageHandlerTestState(new CommandOperation<TMessage>(configurator, messageHandler));
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
-            MoveToReadyToProcessorMessageState(new EventOperation<TMessage, TMessageHandler>(configurator));
+            MoveToReadyToRunMessageHandlerTestState(new EventOperation<TMessage, TMessageHandler>(configurator));
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsHandledByEventHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-            MoveToReadyToProcessorMessageState(new EventOperation<TMessage>(configurator, messageHandler));
+            MoveToReadyToRunMessageHandlerTestState(new EventOperation<TMessage>(configurator, messageHandler));
 
-        private IReadyToRunMessageHandlerTestState<TMessage> MoveToReadyToProcessorMessageState(MessageHandlerTestOperation<TMessage> whenOperation) =>
+        private IReadyToRunMessageHandlerTestState<TMessage> MoveToReadyToRunMessageHandlerTestState(MessageHandlerTestOperation<TMessage> whenOperation) =>
             Test.MoveToState(this, new ReadyToRunMessageHandlerTestState<TMessage>(_test, _givenOperations, whenOperation));
     }
 }

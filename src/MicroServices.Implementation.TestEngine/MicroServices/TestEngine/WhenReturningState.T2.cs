@@ -22,7 +22,13 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             $"Configuring a query of type '{typeof(IQuery<TRequest, TResponse>).FriendlyName()}'...";
 
-        public IQueryTestRunner<TRequest, TResponse> IsExecutedBy<TQuery>(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) where TQuery : class, IQuery<TRequest, TResponse> =>
-            throw new NotImplementedException();
+        public IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TQuery>(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) where TQuery : class, IQuery<TRequest, TResponse> =>
+            MoveToReadyToRunQueryState(new QueryTestOperation2<TRequest, TResponse, TQuery>(configurator));
+
+        public IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedByQuery(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator, IQuery<TRequest, TResponse> query) =>
+            MoveToReadyToRunQueryState(new QueryTestOperation2<TRequest, TResponse>(configurator, query));
+
+        private IReadyToRunQueryTestState<TRequest, TResponse> MoveToReadyToRunQueryState(QueryTestOperation<TRequest, TResponse> whenOperation) =>
+            Test.MoveToState(this, new ReadyToRunQueryTestState<TRequest, TResponse>(_test, _givenOperations, whenOperation));
     }
 }
