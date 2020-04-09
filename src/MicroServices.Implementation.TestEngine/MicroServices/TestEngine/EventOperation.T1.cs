@@ -7,13 +7,13 @@ namespace Kingo.MicroServices.TestEngine
     {
         private readonly IMessageHandler<TMessage> _messageHandler;
 
-        public EventOperation(MessageHandlerTestOperation<TMessage> operation, IMessageHandler<TMessage> messageHandler) :
+        public EventOperation(IMessageHandler<TMessage> messageHandler, MessageHandlerTestOperation<TMessage> operation) :
             base(operation)
         {
             _messageHandler = messageHandler;
         }
 
-        public EventOperation(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) :
+        public EventOperation(IMessageHandler<TMessage> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) :
             base(configurator)
         {
             _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));

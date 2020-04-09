@@ -1,4 +1,5 @@
 ﻿using System;
+using static Kingo.MicroServices.TestEngine.MicroProcessorTestContext;
 
 namespace Kingo.MicroServices.TestEngine
 {
@@ -83,17 +84,23 @@ namespace Kingo.MicroServices.TestEngine
                 givenState._timeline.CommitToAbsoluteOrRelativeTime();
             }
 
+            public void IsExecutedBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+                IsExecutedBy<TMessageHandler>(ToConfigurator(message));
+
             public void IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
                 AddOperation(new CommandOperation<TMessage, TMessageHandler>(configurator));
 
-            public void IsExecutedByCommandHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-                AddOperation(new CommandOperation<TMessage>(configurator, messageHandler));
+            public void IsExecutedBy(IMessageHandler<TMessage> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
+                AddOperation(new CommandOperation<TMessage>(messageHandler, configurator));
+
+            public void IsHandledBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+                IsHandledBy<TMessageHandler>(ToConfigurator(message));
 
             public void IsHandledBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
                 AddOperation(new EventOperation<TMessage, TMessageHandler>(configurator));
 
-            public void IsHandledByEventHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-                AddOperation(new EventOperation<TMessage>(configurator, messageHandler));
+            public void IsHandledBy(IMessageHandler<TMessage> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
+                AddOperation(new EventOperation<TMessage>(messageHandler, configurator));
         }
 
         #endregion

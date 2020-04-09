@@ -182,13 +182,10 @@ namespace Kingo.MicroServices.TestEngine
             {
                 // By scheduling a message-operation, we force the timeline to commit to relative time.
                 // Hence, specifying a specific (absolute) time after it is not valid.
-                test.Given().Message<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                test.Given().Message<object>().IsExecutedBy((message, context) =>
                 {
                     // No operation.
-                });
+                }, new object());
 
                 test.Given().TimeIs(2020, 1, 1);
             });
@@ -238,7 +235,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsExecutedByCommandHandler(null, (message, context) => { });
+                test.Given().Message<object>().IsExecutedBy((message, context) => { }, null);
             });
         }
 
@@ -248,7 +245,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsExecutedByCommandHandler((operation, context) => { }, null);
+                test.Given().Message<object>().IsExecutedBy(null, (operation, context) => { });
             });
         }
 
@@ -268,7 +265,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsHandledByEventHandler(null, (message, context) => { });
+                test.Given().Message<object>().IsHandledBy((message, context) => { }, null);
             });
         }
 
@@ -278,7 +275,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsHandledByEventHandler((operation, context) => { }, null);
+                test.Given().Message<object>().IsHandledBy(null, (operation, context) => { });
             });
         }
 

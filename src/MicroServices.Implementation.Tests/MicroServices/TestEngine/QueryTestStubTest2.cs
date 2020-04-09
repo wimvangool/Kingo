@@ -84,15 +84,50 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        #region [====== When<...>().Returning<...>().IsExecutedBy(...) ======]
+        #region [====== When<...>().Returning<...>().IsExecutedByQuery(...) ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task WhenRequestIsExecutedBy_Throws_IfConfiguratorIsNull()
+        public async Task IsExecutedByQuery_Throws_IfConfiguratorIsNull()
         {
             await RunTestAsync(test =>
             {
                 test.When<object>().Returning<object>().IsExecutedByQuery(null, new NullQuery());
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task IsExecutedByQuery_Throws_IfQueryIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.When<object>().Returning<object>().IsExecutedByQuery((query, context) => { }, null);
+            });
+        }
+
+        [TestMethod]
+        public async Task IsExecutedByQuery_ReturnsExpectedState_IfConfiguratorAndQueryAreSpecified()
+        {
+            await RunTestAsync(test =>
+            {
+                var state = test.When<object>().Returning<object>().IsExecutedByQuery((query, context) => { }, new NullQuery());
+
+                Assert.IsNotNull(state);
+                Assert.AreEqual("Ready to process request of type 'Object' with query of type 'NullQuery'...", state.ToString());
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task IsExecutedByQuery_Throws_IfTestEngineIsAlreadyInReadyToRunState()
+        {
+            await RunTestAsync(test =>
+            {
+                var state = test.When<object>().Returning<object>();
+
+                state.IsExecutedByQuery((query, context) => { }, new NullQuery());
+                state.IsExecutedByQuery((query, context) => { }, new NullQuery());
             });
         }
 

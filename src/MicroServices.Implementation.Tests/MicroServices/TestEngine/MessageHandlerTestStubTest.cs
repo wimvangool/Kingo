@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -68,7 +70,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.When<object>().IsExecutedByCommandHandler(null, new NullHandler());
+                test.When<object>().IsExecutedBy(new NullHandler(), null);
             });
         }
 
@@ -78,7 +80,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.When<object>().IsExecutedByCommandHandler((operation, context) => { }, null);
+                test.When<object>().IsExecutedBy(null, (operation, context) => { });
             });
         }
 
@@ -87,7 +89,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.When<object>().IsExecutedByCommandHandler((operation, context) => { }, new NullHandler());
+                var state = test.When<object>().IsExecutedBy(new NullHandler(), new object());
 
                 Assert.IsNotNull(state);
                 Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
@@ -109,7 +111,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.When<object>().IsExecutedBy<NullHandler>((operation, context) => { });
+                var state = test.When<object>().IsExecutedBy<NullHandler>(new object());
 
                 Assert.IsNotNull(state);
                 Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
@@ -126,7 +128,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.When<object>().IsHandledByEventHandler(null, new NullHandler());
+                test.When<object>().IsHandledBy(new NullHandler(), null);
             });
         }
 
@@ -136,7 +138,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.When<object>().IsHandledByEventHandler((operation, context) => { }, null);
+                test.When<object>().IsHandledBy(null, (operation, context) => { });
             });
         }
 
@@ -145,7 +147,10 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                Assert.IsNotNull(test.When<object>().IsHandledByEventHandler((operation, context) => { }, new NullHandler()));
+                var state = test.When<object>().IsHandledBy(new NullHandler(), (operation, context) => { });
+
+                Assert.IsNotNull(state);
+                Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
             });
         }
 
@@ -164,7 +169,10 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                Assert.IsNotNull(test.When<object>().IsHandledBy<NullHandler>((operation, context) => { }));
+                var state = test.When<object>().IsHandledBy<NullHandler>((operation, context) => { });
+
+                Assert.IsNotNull(state);
+                Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
             });
         }
 
@@ -180,23 +188,17 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var errorMessage = Guid.NewGuid().ToString();
 
-                test.Given<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
-                {
+                test.Given<object>().IsExecutedBy((message, context) =>
+                { 
                     throw context.NewInternalServerErrorException(errorMessage);
-                });
+                }, new object());
 
                 try
                 {
-                    await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                    {
-                        operation.Message = new object();
-                    }, (message, context) =>
+                    await test.When<object>().IsExecutedBy((message, context) =>
                     {
                         throw context.NewBadRequestException();
-                    }).ThenOutputIs<BadRequestException>();
+                    }, new object()).ThenOutputIs<BadRequestException>();
                 }
                 catch (TestFailedException exception)
                 {
@@ -213,10 +215,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
-                {
-                    operation.Message = new object();
-                }).ThenOutputIs<BadRequestException>();
+                await test.When<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIs<BadRequestException>();
             });
         }
 
@@ -226,13 +225,11 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewInternalServerErrorException();
-                }).ThenOutputIs<BadRequestException>();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
             });
         }
 
@@ -241,13 +238,11 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
-                }).ThenOutputIs<BadRequestException>();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
             });
         }
 
@@ -256,13 +251,11 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewNotFoundException();
-                }).ThenOutputIs<BadRequestException>();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
             });
         }
 
@@ -272,13 +265,11 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
-                }).ThenOutputIs<BadRequestException>((message, exception, context) =>
+
+                }, new object()).ThenOutputIs<BadRequestException>((message, exception, context) =>
                 {
                     throw NewRandomException();
                 });
@@ -292,13 +283,11 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var inputMessage = new object();
 
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = inputMessage;
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
-                }).ThenOutputIs<BadRequestException>((message, exception, context) =>
+
+                }, inputMessage).ThenOutputIs<BadRequestException>((message, exception, context) =>
                 {
                     Assert.AreSame(inputMessage, message);
                 });
@@ -310,13 +299,11 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
-                }).ThenOutputIs<BadRequestException>();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
             }, true, true);
         }
 
@@ -332,20 +319,15 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var errorMessage = Guid.NewGuid().ToString();
 
-                test.Given<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                test.Given<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewInternalServerErrorException(errorMessage);
-                });
+
+                }, new object());
 
                 try
                 {
-                    await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
-                    {
-                        operation.Message = new object();
-                    }).ThenOutputIsMessageStream();
+                    await test.When<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream();
                 }
                 catch (TestFailedException exception)
                 {
@@ -362,13 +344,11 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = new object();
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     throw NewRandomException();
-                }).ThenOutputIsMessageStream();
+
+                }, new object()).ThenOutputIsMessageStream();
             });
         }
 
@@ -377,10 +357,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
-                {
-                    operation.Message = new object();
-                }).ThenOutputIsMessageStream();
+                await test.When<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream();
             });
         }
 
@@ -390,10 +367,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
-                {
-                    operation.Message = new object();
-                }).ThenOutputIsMessageStream((message, stream, context) =>
+                await test.When<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream((message, stream, context) =>
                 {
                     throw NewRandomException();
                 });
@@ -407,13 +381,11 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var inputMessage = new object();
 
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = inputMessage;
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     context.MessageBus.PublishEvent(new object());
-                }).ThenOutputIsMessageStream((message, stream, context) =>
+
+                }, inputMessage).ThenOutputIsMessageStream((message, stream, context) =>
                 {
                     Assert.AreSame(inputMessage, message);
                     Assert.AreEqual(1, stream.Count);
@@ -426,10 +398,8 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
-                {
-                    operation.Message = new object();
-                }).ThenOutputIsMessageStream();
+                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) => operation.Message = new object()).ThenOutputIsMessageStream();
+
             }, true, true);
         }
 
@@ -442,12 +412,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                var inputMessage = new object();
-
-                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) =>
-                {
-                    operation.Message = inputMessage;
-                }).ThenOutputIsEmptyStream();
+                await test.When<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsEmptyStream();
             });
         }
 
@@ -457,15 +422,10 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                var inputMessage = new object();
-
-                await test.When<object>().IsExecutedByCommandHandler((operation, context) =>
-                {
-                    operation.Message = inputMessage;
-                }, (message, context) =>
+                await test.When<object>().IsExecutedBy((message, context) =>
                 {
                     context.MessageBus.PublishEvent(new object());
-                }).ThenOutputIsEmptyStream();
+                }, new object()).ThenOutputIsEmptyStream();
             });
         }
 

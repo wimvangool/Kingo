@@ -16,6 +16,6 @@ namespace Kingo.MicroServices.TestEngine
             CreateOperation(context.Resolve<TMessageHandler>()).RunAsync(state, context);
 
         private CommandOperation<TMessage> CreateOperation(IMessageHandler<TMessage> messageHandler) =>
-            new CommandOperation<TMessage>(this, messageHandler);
+            new CommandOperation<TMessage>(messageHandler, this);
     }
 }

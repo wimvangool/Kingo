@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>Kingo.MicroServices.Contract.TestEngine</AssemblyName>
     <Description>Contains components to implement tests for the (validation-logic of) request-messages of a (Micro)Service.</Description>
     <PackageId>Kingo.MicroServices.Contract.TestEngine</PackageId>

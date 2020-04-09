@@ -214,6 +214,18 @@ namespace Kingo.MicroServices.TestEngine
             return new ArgumentException(message, nameof(operationId), innerException);
         }
 
-        #endregion                
+        #endregion
+
+        #region [====== ToConfigurator ======]
+
+        internal static Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> ToConfigurator<TMessage>(TMessage message)
+        {
+            return (operation, context) =>
+            {
+                operation.Message = message;
+            };
+        }
+
+        #endregion
     }
 }

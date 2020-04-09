@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Kingo.Reflection;
+using static Kingo.MicroServices.TestEngine.MicroProcessorTestContext;
 
 namespace Kingo.MicroServices.TestEngine
 {
@@ -22,17 +23,23 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             $"Configuring a message handler of type '{typeof(IMessageHandler<TMessage>).FriendlyName()}'...";
 
+        public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+            IsExecutedBy<TMessageHandler>(ToConfigurator(message));
+
         public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
             MoveToReadyToRunMessageHandlerTestState(new CommandOperation<TMessage, TMessageHandler>(configurator));
 
-        public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedByCommandHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-            MoveToReadyToRunMessageHandlerTestState(new CommandOperation<TMessage>(configurator, messageHandler));
+        public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy(IMessageHandler<TMessage> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
+            MoveToReadyToRunMessageHandlerTestState(new CommandOperation<TMessage>(messageHandler, configurator));
+
+        public IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+            IsHandledBy<TMessageHandler>(ToConfigurator(message));
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
             MoveToReadyToRunMessageHandlerTestState(new EventOperation<TMessage, TMessageHandler>(configurator));
 
-        public IReadyToRunMessageHandlerTestState<TMessage> IsHandledByEventHandler(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator, IMessageHandler<TMessage> messageHandler) =>
-            MoveToReadyToRunMessageHandlerTestState(new EventOperation<TMessage>(configurator, messageHandler));
+        public IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy(IMessageHandler<TMessage> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
+            MoveToReadyToRunMessageHandlerTestState(new EventOperation<TMessage>(messageHandler, configurator));
 
         private IReadyToRunMessageHandlerTestState<TMessage> MoveToReadyToRunMessageHandlerTestState(MessageHandlerTestOperation<TMessage> whenOperation) =>
             Test.MoveToState(this, new ReadyToRunMessageHandlerTestState<TMessage>(_test, _givenOperations, whenOperation));
