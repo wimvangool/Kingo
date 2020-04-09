@@ -24,7 +24,7 @@ namespace Kingo.MicroServices.TestEngine
             $"Configuring a message handler of type '{typeof(IMessageHandler<TMessage>).FriendlyName()}'...";
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
-            IsExecutedBy<TMessageHandler>(ToConfigurator(message));
+            IsExecutedBy<TMessageHandler>(ConfigureMessage(message));
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
             MoveToReadyToRunMessageHandlerTestState(new CommandOperation<TMessage, TMessageHandler>(configurator));
@@ -33,7 +33,7 @@ namespace Kingo.MicroServices.TestEngine
             MoveToReadyToRunMessageHandlerTestState(new CommandOperation<TMessage>(messageHandler, configurator));
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
-            IsHandledBy<TMessageHandler>(ToConfigurator(message));
+            IsHandledBy<TMessageHandler>(ConfigureMessage(message));
 
         public IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
             MoveToReadyToRunMessageHandlerTestState(new EventOperation<TMessage, TMessageHandler>(configurator));

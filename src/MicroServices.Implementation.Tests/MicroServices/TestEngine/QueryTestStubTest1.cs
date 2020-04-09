@@ -88,21 +88,11 @@ namespace Kingo.MicroServices.TestEngine
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task IsExecutedByQuery_Throws_IfConfiguratorIsNull()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenRequest().Returning<object>().IsExecutedByQuery(null, new NullQuery());
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public async Task IsExecutedByQuery_Throws_IfQueryIsNull()
         {
             await RunTestAsync(test =>
             {
-                test.WhenRequest().Returning<object>().IsExecutedByQuery((query, context) => { }, null);
+                test.WhenRequest().Returning<object>().IsExecutedBy(null);
             });
         }
 
@@ -111,7 +101,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenRequest().Returning<object>().IsExecutedByQuery((query, context) => { }, new NullQuery());
+                var state = test.WhenRequest().Returning<object>().IsExecutedBy(new NullQuery());
 
                 Assert.IsNotNull(state);
                 Assert.AreEqual("Ready to process request with query of type 'NullQuery'...", state.ToString());
@@ -126,8 +116,8 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var state = test.WhenRequest().Returning<object>();
 
-                state.IsExecutedByQuery((query, context) => { }, new NullQuery());
-                state.IsExecutedByQuery((query, context) => { }, new NullQuery());
+                state.IsExecutedBy(new NullQuery());
+                state.IsExecutedBy(new NullQuery());
             });
         }
 
@@ -135,34 +125,222 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== ThenOutputIs<...>() ======]
 
-        //[TestMethod]
-        //[ExpectedException(typeof(TestFailedException))]
-        //public async Task ThenOutputIsException_Throws_IfGivenOperationThrowsException()
-        //{
-        //    await RunTestAsync(async test =>
-        //    {
-        //        var errorMessage = Guid.NewGuid().ToString();
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfGivenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var errorMessage = Guid.NewGuid().ToString();
 
-        //        test.Given<object>().IsExecutedByCommandHandler((operation, context) =>
-        //        {
-        //            operation.Message = new object();
-        //        }, (message, context) =>
-        //        {
-        //            throw context.NewInternalServerErrorException(errorMessage);
-        //        });
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewInternalServerErrorException(errorMessage);
+                }, new object());
 
-        //        try
-        //        {
-        //            await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIs<BadRequestException>();
-        //        }
-        //        catch (TestFailedException exception)
-        //        {
-        //            Assert.IsInstanceOfType(exception.InnerException, typeof(InternalServerErrorException));
-        //            Assert.AreEqual(errorMessage, exception.InnerException.Message);
-        //            throw;
-        //        }
-        //    });
-        //}
+                try
+                {
+                    await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIs<BadRequestException>();
+                }
+                catch (TestFailedException exception)
+                {
+                    Assert.IsInstanceOfType(exception.InnerException, typeof(InternalServerErrorException));
+                    Assert.AreEqual(errorMessage, exception.InnerException.Message);
+                    throw;
+                }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfWhenOperationDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfWhenOperationThrowsExceptionOfDifferentType()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    throw context.NewInternalServerErrorException();
+
+                }).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfWhenOperationThrowsExceptionOfExpectedType_And_NoAssertMethodIsSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    throw context.NewBadRequestException();
+
+                }).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfWhenOperationThrowsExceptionOfDerivedType_And_NoAssertMethodIsSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    throw context.NewNotFoundException();
+
+                }).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfSpecifiedAssertMethodThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    throw context.NewBadRequestException();
+
+                }).ThenOutputIs<BadRequestException>((exception, context) =>
+                {
+                    throw NewRandomException();
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfSpecifiedAssertMethodDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    throw context.NewBadRequestException();
+
+                }).ThenOutputIs<BadRequestException>((exception, context) =>
+                {
+                    Assert.IsNotNull(exception);
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    throw context.NewBadRequestException();
+
+                }).ThenOutputIs<BadRequestException>();
+            }, true, true);
+        }
+
+        #endregion
+
+        #region [====== ThenOutputIsResponse ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsResponse_Throws_IfGivenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var errorMessage = Guid.NewGuid().ToString();
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewInternalServerErrorException(errorMessage);
+
+                }, new object());
+
+                try
+                {
+                    await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
+                }
+                catch (TestFailedException exception)
+                {
+                    Assert.IsInstanceOfType(exception.InnerException, typeof(InternalServerErrorException));
+                    Assert.AreEqual(errorMessage, exception.InnerException.Message);
+                    throw;
+                }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsResponse_Throws_IfWhenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    throw NewRandomException();
+
+                }).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsResponse_Succeeds_IfWhenOperationDoesNotThrowException_And_AssertMethodIsNotSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsResponse_Throws_IfAssertMethodThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse((response, context) =>
+                {
+                    throw NewRandomException();
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsResponse_Succeeds_IfAssertMethodDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var responseMessage = new object();
+
+                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                {
+                    return responseMessage;
+
+                }).ThenOutputIsResponse((response, context) =>
+                {
+                    Assert.AreSame(responseMessage, response);
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsResponse_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
+
+            }, true, true);
+        }
 
         #endregion
     }

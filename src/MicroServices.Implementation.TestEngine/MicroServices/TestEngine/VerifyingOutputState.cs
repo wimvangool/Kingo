@@ -6,10 +6,30 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal abstract class VerifyingOutputState : MicroProcessorTestState
     {
-        protected void MoveToEndState() =>
+        protected void VerifyThat(ITestOutputAssertMethod method)
+        {
+            try
+            {
+                method.Execute();
+            }
+            catch (TestFailedException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw NewOutputAssertionFailedException(exception);
+            }
+            finally
+            {
+                MoveToEndState();
+            }
+        }
+
+		private void MoveToEndState() =>
             Test.MoveToState(this, new NotReadyToConfigureState(Test));
 
-        protected static Exception NewOutputAssertionFailedException(Exception exception) =>
+        private static Exception NewOutputAssertionFailedException(Exception exception) =>
             new TestFailedException(exception.Message, exception);
     }
 }

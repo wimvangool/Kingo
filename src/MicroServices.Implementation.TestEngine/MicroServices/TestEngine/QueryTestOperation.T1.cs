@@ -15,7 +15,7 @@ namespace Kingo.MicroServices.TestEngine
 
         protected QueryTestOperation(Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator)
         {
-            _configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
+            _configurator = configurator;
         }
 
         public override string ToString() =>

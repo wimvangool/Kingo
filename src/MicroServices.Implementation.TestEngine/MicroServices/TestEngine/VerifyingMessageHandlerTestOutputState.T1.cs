@@ -12,7 +12,7 @@ namespace Kingo.MicroServices.TestEngine
         public VerifyingMessageHandlerTestOutputState(MicroProcessorTest test, MicroProcessorTestContext context, MicroProcessorOperationException exception)
         {
             _test = test;
-            _output = new ExceptionOutput<TMessage>(context, exception);
+            _output = new MessageHandlerExceptionOutput<TMessage>(context, exception);
         }
 
         public VerifyingMessageHandlerTestOutputState(MicroProcessorTest test, MicroProcessorTestContext context, MicroProcessorTestOperationId operationId)
@@ -24,44 +24,10 @@ namespace Kingo.MicroServices.TestEngine
         protected override MicroProcessorTest Test =>
             _test;
 
-        public void AssertOutputIsException<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod) where TException : MicroProcessorOperationException
-        {
-            try
-            {
-                _output.AssertOutputIsException(assertMethod);
-            }
-            catch (TestFailedException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw NewOutputAssertionFailedException(exception);
-            }
-            finally
-            {
-                MoveToEndState();
-            }
-        }
+        public void AssertOutputIsException<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod) where TException : MicroProcessorOperationException =>
+            VerifyThat(_output.IsException(assertMethod));
 
-        public void AssertOutputIsMessageStream(Action<TMessage, MessageStream, MicroProcessorTestContext> assertMethod)
-        {
-            try
-            {
-                _output.AssertOutputIsMessageStream(assertMethod);
-            }
-            catch (TestFailedException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw NewOutputAssertionFailedException(exception);
-            }
-            finally
-            {
-                MoveToEndState();
-            }
-        }
+        public void AssertOutputIsMessageStream(Action<TMessage, MessageStream, MicroProcessorTestContext> assertMethod) =>
+            VerifyThat(_output.IsMessageStream(assertMethod));
     }
 }

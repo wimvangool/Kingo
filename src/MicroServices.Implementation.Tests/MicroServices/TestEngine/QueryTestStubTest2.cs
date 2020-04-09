@@ -92,7 +92,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.When<object>().Returning<object>().IsExecutedByQuery(null, new NullQuery());
+                test.When<object>().Returning<object>().IsExecutedBy(null, new NullQuery());
             });
         }
 
@@ -102,7 +102,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.When<object>().Returning<object>().IsExecutedByQuery((query, context) => { }, null);
+                test.When<object>().Returning<object>().IsExecutedBy(null, (operation, context) => { });
             });
         }
 
@@ -111,7 +111,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.When<object>().Returning<object>().IsExecutedByQuery((query, context) => { }, new NullQuery());
+                var state = test.When<object>().Returning<object>().IsExecutedBy(new NullQuery(), (query, context) => { });
 
                 Assert.IsNotNull(state);
                 Assert.AreEqual("Ready to process request of type 'Object' with query of type 'NullQuery'...", state.ToString());
@@ -126,9 +126,233 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var state = test.When<object>().Returning<object>();
 
-                state.IsExecutedByQuery((query, context) => { }, new NullQuery());
-                state.IsExecutedByQuery((query, context) => { }, new NullQuery());
+                state.IsExecutedBy(new NullQuery(), (query, context) => { });
+                state.IsExecutedBy(new NullQuery(), (query, context) => { });
             });
+        }
+
+        #endregion
+
+        #region [====== ThenOutputIs<...>() ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfGivenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var errorMessage = Guid.NewGuid().ToString();
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewInternalServerErrorException(errorMessage);
+                }, new object());
+
+                try
+                {
+                    await test.When<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIs<BadRequestException>();
+                }
+                catch (TestFailedException exception)
+                {
+                    Assert.IsInstanceOfType(exception.InnerException, typeof(InternalServerErrorException));
+                    Assert.AreEqual(errorMessage, exception.InnerException.Message);
+                    throw;
+                }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfWhenOperationDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfWhenOperationThrowsExceptionOfDifferentType()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewInternalServerErrorException();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfWhenOperationThrowsExceptionOfExpectedType_And_NoAssertMethodIsSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewBadRequestException();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfWhenOperationThrowsExceptionOfDerivedType_And_NoAssertMethodIsSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewNotFoundException();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsException_Throws_IfSpecifiedAssertMethodThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewBadRequestException();
+
+                }, new object()).ThenOutputIs<BadRequestException>((request, exception, context) =>
+                {
+                    throw NewRandomException();
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfSpecifiedAssertMethodDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var inputMessage = new object();
+
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewBadRequestException();
+
+                }, inputMessage).ThenOutputIs<BadRequestException>((request, exception, context) =>
+                {
+                    Assert.AreSame(inputMessage, request);
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsException_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewBadRequestException();
+
+                }, new object()).ThenOutputIs<BadRequestException>();
+            }, true, true);
+        }
+
+        #endregion
+
+        #region [====== ThenOutputIsResponse ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsResponse_Throws_IfGivenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var errorMessage = Guid.NewGuid().ToString();
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    throw context.NewInternalServerErrorException(errorMessage);
+
+                }, new object());
+
+                try
+                {
+                    await test.When<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse();
+                }
+                catch (TestFailedException exception)
+                {
+                    Assert.IsInstanceOfType(exception.InnerException, typeof(InternalServerErrorException));
+                    Assert.AreEqual(errorMessage, exception.InnerException.Message);
+                    throw;
+                }
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsResponse_Throws_IfWhenOperationThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    throw NewRandomException();
+
+                }, new object()).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsResponse_Succeeds_IfWhenOperationDoesNotThrowException_And_AssertMethodIsNotSpecified()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task ThenOutputIsResponse_Throws_IfAssertMethodThrowsException()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse((message, response, context) =>
+                {
+                    throw NewRandomException();
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsResponse_Succeeds_IfAssertMethodDoesNotThrowException()
+        {
+            await RunTestAsync(async test =>
+            {
+                var inputMessage = new object();
+
+                await test.When<object>().Returning<object>().IsExecutedBy((message, context) =>
+                {
+                    return message;
+
+                }, inputMessage).ThenOutputIsResponse((request, response, context) =>
+                {
+                    Assert.AreSame(inputMessage, request);
+                    Assert.AreSame(inputMessage, response);
+                });
+            });
+        }
+
+        [TestMethod]
+        public async Task ThenOutputIsResponse_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
+        {
+            await RunTestAsync(async test =>
+            {
+                await test.When<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse();
+
+            }, true, true);
         }
 
         #endregion

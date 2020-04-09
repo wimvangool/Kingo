@@ -24,8 +24,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <summary>
         /// Schedules the (void) request to be executed by the specified <paramref name="query"/>.
         /// </summary>
-        /// <param name="configurator">Delegate that will be used to configure the operation.</param>
         /// <param name="query">Query that will execute the (void) request.</param>
+        /// <param name="configurator">Delegate that will be used to configure the operation.</param>
         /// <returns>The state that can be used to run the test and verify its output.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query" /> is <c>null</c>.
@@ -33,6 +33,6 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        IReadyToRunQueryTestState<TResponse> IsExecutedByQuery(Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator, IQuery<TResponse> query);
+        IReadyToRunQueryTestState<TResponse> IsExecutedBy(IQuery<TResponse> query, Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator = null);
     }
 }

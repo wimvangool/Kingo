@@ -25,7 +25,7 @@ namespace Kingo.MicroServices.TestEngine
         public IReadyToRunQueryTestState<TResponse> IsExecutedBy<TQuery>(Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator) where TQuery : class, IQuery<TResponse> =>
             MoveToReadyToRunQueryState(new QueryTestOperation1<TResponse, TQuery>(configurator));
 
-        public IReadyToRunQueryTestState<TResponse> IsExecutedByQuery(Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator, IQuery<TResponse> query) =>
+        public IReadyToRunQueryTestState<TResponse> IsExecutedBy(IQuery<TResponse> query, Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator) =>
             MoveToReadyToRunQueryState(new QueryTestOperation1<TResponse>(configurator, query));
 
         private IReadyToRunQueryTestState<TResponse> MoveToReadyToRunQueryState(QueryTestOperation<TResponse> whenOperation) =>

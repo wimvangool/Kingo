@@ -11,7 +11,19 @@ namespace Kingo.MicroServices.TestEngine
     public interface IWhenReturningState<TRequest, TResponse>
     {
         /// <summary>
-        /// Schedules the (void) request by a query or type <typeparamref name="TQuery" />.
+        /// Schedules the request to be executed by a query of type <typeparamref name="TQuery" />.
+        /// </summary>
+        /// <typeparam name="TQuery">The query that will execute the request.</typeparam>
+        /// <param name="request">Request to execute by the query.</param>
+        /// <returns>The state that can be used to run the test and verify its output.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// The test-engine is not in a state where it can perform this operation.
+        /// </exception>
+        IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TQuery>(TRequest request)
+            where TQuery : class, IQuery<TRequest, TResponse>;
+
+        /// <summary>
+        /// Schedules the request to be executed by a query of type <typeparamref name="TQuery" />.
         /// </summary>
         /// <typeparam name="TQuery">The query that will execute the request.</typeparam>
         /// <param name="configurator">Delegate that will be used to configure the operation.</param>
@@ -26,17 +38,17 @@ namespace Kingo.MicroServices.TestEngine
             where TQuery : class, IQuery<TRequest, TResponse>;
 
         /// <summary>
-        /// Schedules the (void) request to be executed by the specified <paramref name="query"/>.
+        /// Schedules the request to be executed by the specified <paramref name="query"/>.
         /// </summary>
-        /// <param name="configurator">Delegate that will be used to configure the operation.</param>
         /// <param name="query">Query that will execute the (void) request.</param>
+        /// <param name="configurator">Delegate that will be used to configure the operation.</param>
         /// <returns>The state that can be used to run the test and verify its output.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="configurator"/> or <paramref name="query" /> is <c>null</c>.
+        /// <paramref name="query" /> or <paramref name="configurator"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedByQuery(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator, IQuery<TRequest, TResponse> query);
+        IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy(IQuery<TRequest, TResponse> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator);
     }
 }

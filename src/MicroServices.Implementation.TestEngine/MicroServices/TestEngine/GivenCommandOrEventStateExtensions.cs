@@ -84,7 +84,7 @@ namespace Kingo.MicroServices.TestEngine
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
         public static void IsExecutedBy<TMessage>(this IGivenCommandOrEventState<TMessage> state, IMessageHandler<TMessage> messageHandler, TMessage message) =>
-            NotNull(state).IsExecutedBy(messageHandler, ToConfigurator(message));
+            NotNull(state).IsExecutedBy(messageHandler, ConfigureMessage(message));
 
         #endregion
 
@@ -163,7 +163,7 @@ namespace Kingo.MicroServices.TestEngine
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
         public static void IsHandledBy<TMessage>(this IGivenCommandOrEventState<TMessage> state, IMessageHandler<TMessage> messageHandler, TMessage message) =>
-            NotNull(state).IsHandledBy(messageHandler, ToConfigurator(message));
+            NotNull(state).IsHandledBy(messageHandler, ConfigureMessage(message));
 
         #endregion
 

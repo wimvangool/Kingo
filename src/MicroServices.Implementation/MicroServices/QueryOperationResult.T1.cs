@@ -13,10 +13,8 @@
 
         TResponse IMicroProcessorOperationResult<TResponse>.Value =>
             Output.Content;
-        
-        /// <summary>
-        /// The response that was returned by the query.
-        /// </summary>
+
+        /// <inheritdoc />
         public MessageEnvelope<TResponse> Output
         {
             get;

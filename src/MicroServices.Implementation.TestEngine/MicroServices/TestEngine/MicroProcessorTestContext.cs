@@ -12,39 +12,103 @@ namespace Kingo.MicroServices.TestEngine
     /// </summary>
     public sealed class MicroProcessorTestContext
     {
-        #region [====== MessageHandlerOperattionResult ======]
+        #region [====== TestOperationResult<TOutput> ======]
 
-        private sealed class MessageHandlerOperationResult
+        private abstract class TestOperationResult
         {
-            public MessageHandlerOperationResult(IMessageEnvelope inputMessage, MessageStream outputStream)
-            {
-                InputMessage = inputMessage;
-                OutputStream = outputStream;
-            }
-
-            public IMessageEnvelope InputMessage
+            public abstract IMessageEnvelope Input
             {
                 get;
             }
 
-            public MessageStream OutputStream
-            {
-                get;
-            }
+            protected virtual string FormatInput() =>
+                Format(Input);
 
-            public override string ToString() =>
-                $"{InputMessage.Content.GetType().FriendlyName()} --> {OutputStream.Count} message(s)";
+            protected static string Format(IMessageEnvelope message) =>
+                message.Content.GetType().FriendlyName();
         }
 
         #endregion
 
-        private readonly Dictionary<MicroProcessorTestOperationId, MessageHandlerOperationResult> _results;
+        #region [====== TestOperationResult<TOutput> ======]
+
+        private abstract class TestOperationResult<TOutput> : TestOperationResult
+        {
+            public abstract TOutput Output
+            {
+                get;
+            }
+
+            protected abstract string FormatOutput();
+
+            public override string ToString() =>
+                $"{FormatInput()} --> {FormatOutput()}";
+        }
+
+        #endregion
+
+        #region [====== MessageHandlerTestOperationResult ======]
+
+        private sealed class MessageHandlerTestOperationResult : TestOperationResult<MessageStream>
+        {
+            public MessageHandlerTestOperationResult(IMessageEnvelope input, MessageStream output)
+            {
+                Input = input;
+                Output = output;
+            }
+
+            public override IMessageEnvelope Input
+            {
+                get;
+            }
+
+            public override MessageStream Output
+            {
+                get;
+            }
+
+            protected override string FormatOutput() =>
+                $"{Output.Count} message(s)";
+        }
+
+        #endregion
+
+        #region [====== QueryTestOperationResult ======]
+
+        private sealed class QueryTestOperationResult<TResponse> : TestOperationResult<MessageEnvelope<TResponse>>
+        {
+            public QueryTestOperationResult(IMessageEnvelope input, MessageEnvelope<TResponse> output)
+            {
+                Input = input;
+                Output = output;
+            }
+
+            public override IMessageEnvelope Input
+            {
+                get;
+            }
+
+            public override MessageEnvelope<TResponse> Output
+            {
+                get;
+            }
+
+            protected override string FormatInput() =>
+                Input == null ? "Void" : base.FormatInput();
+
+            protected override string FormatOutput() =>
+                Format(Output);
+        }
+
+        #endregion
+
+        private readonly Dictionary<MicroProcessorTestOperationId, TestOperationResult> _results;
         private readonly MicroProcessorTest _test;
         private readonly IMicroProcessor _processor;        
 
         internal MicroProcessorTestContext(MicroProcessorTest test, IMicroProcessor processor)
         {                        
-            _results = new Dictionary<MicroProcessorTestOperationId, MessageHandlerOperationResult>();
+            _results = new Dictionary<MicroProcessorTestOperationId, TestOperationResult>();
             _test = test;
             _processor = processor;            
         }
@@ -87,7 +151,7 @@ namespace Kingo.MicroServices.TestEngine
 
             try
             {
-                configurator.Invoke(operation, this);
+                configurator?.Invoke(operation, this);
 
                 if (operation.Id.Equals(MicroProcessorTestOperationId.Empty))
                 {
@@ -134,15 +198,15 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== ServiceProvider ======]
 
-        internal TMessageHandler Resolve<TMessageHandler>()
+        internal TMessageHandlerOrQuery Resolve<TMessageHandlerOrQuery>()
         {
             try
             {
-                return ServiceProvider.GetRequiredService<TMessageHandler>();
+                return ServiceProvider.GetRequiredService<TMessageHandlerOrQuery>();
             }
             catch (Exception exception)
             {
-                throw NewCouldNotResolveMessageHandlerException(typeof(TMessageHandler), exception);
+                throw NewCouldNotResolveComponentException(typeof(TMessageHandlerOrQuery), exception);
             }
         }
 
@@ -152,9 +216,9 @@ namespace Kingo.MicroServices.TestEngine
         public IServiceProvider ServiceProvider =>
             _processor.ServiceProvider;
 
-        private static Exception NewCouldNotResolveMessageHandlerException(Type messageHandlerType, Exception exception)
+        private static Exception NewCouldNotResolveComponentException(Type messageHandlerType, Exception exception)
         {
-            var messageFormat = ExceptionMessages.MicroProcessorTestContext_CouldNotResolveMessageHandler;
+            var messageFormat = ExceptionMessages.MicroProcessorTestContext_CouldNotResolveComponent;
             var message = string.Format(messageFormat, messageHandlerType.FriendlyName());
             return new TestFailedException(message, exception);
         }
@@ -163,19 +227,26 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== SetResult ======]
 
-        internal MessageStream SetResult<TMessage>(MicroProcessorTestOperationId operationId, MessageHandlerOperationResult<TMessage> result)
-        {
-            var outputStream = new MessageStream(result.Output);
+        internal MicroProcessorTestOperationId SetResult<TMessage>(MicroProcessorTestOperationId operationId, MessageHandlerOperationResult<TMessage> result) =>
+            SetResult(operationId, new MessageHandlerTestOperationResult(result.Input, new MessageStream(result.Output)));
 
+        internal MicroProcessorTestOperationId SetResult<TResponse>(MicroProcessorTestOperationId operationId, QueryOperationResult<TResponse> result) =>
+            SetResult(operationId, new QueryTestOperationResult<TResponse>(null, result.Output));
+
+        internal MicroProcessorTestOperationId SetResult<TRequest, TResponse>(MicroProcessorTestOperationId operationId, QueryOperationResult<TRequest, TResponse> result) =>
+            SetResult(operationId, new QueryTestOperationResult<TResponse>(result.Input, result.Output));
+
+        private MicroProcessorTestOperationId SetResult(MicroProcessorTestOperationId operationId, TestOperationResult result)
+        {
             try
             {
-                _results.Add(operationId, new MessageHandlerOperationResult(result.Input, outputStream));
+                _results.Add(operationId, result);
             }
             catch (ArgumentException exception)
             {
                 throw NewOperationAlreadyExecutedException(operationId, exception);
             }
-            return outputStream;
+            return operationId;
         }
 
         private static Exception NewOperationAlreadyExecutedException(object test, Exception innerException)
@@ -190,12 +261,18 @@ namespace Kingo.MicroServices.TestEngine
         #region [====== GetResult ======]     
 
         internal MessageEnvelope<TMessage> GetInputMessage<TMessage>(MicroProcessorTestOperationId operationId) =>
-            (MessageEnvelope<TMessage>) GetResult(operationId).InputMessage;
+            (MessageEnvelope<TMessage>) GetOperationResult(operationId).Input;
 
         internal MessageStream GetOutputStream(MicroProcessorTestOperationId operationId) =>
-            GetResult(operationId).OutputStream;
+            GetOperationResult<MessageHandlerTestOperationResult>(operationId).Output;
 
-        private MessageHandlerOperationResult GetResult(MicroProcessorTestOperationId operationId)
+        internal MessageEnvelope<TResponse> GetResponse<TResponse>(MicroProcessorTestOperationId operationId) =>
+            GetOperationResult<QueryTestOperationResult<TResponse>>(operationId).Output;
+
+        private TOperationResult GetOperationResult<TOperationResult>(MicroProcessorTestOperationId operationId) where TOperationResult : TestOperationResult =>
+            (TOperationResult) GetOperationResult(operationId);
+
+        private TestOperationResult GetOperationResult(MicroProcessorTestOperationId operationId)
         {
             try
             {
@@ -218,11 +295,19 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== ToConfigurator ======]
 
-        internal static Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> ToConfigurator<TMessage>(TMessage message)
+        internal static Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> ConfigureMessage<TMessage>(TMessage message)
         {
             return (operation, context) =>
             {
                 operation.Message = message;
+            };
+        }
+
+        internal static Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> ConfigureRequest<TRequest>(TRequest request)
+        {
+            return (operation, context) =>
+            {
+                operation.Request = request;
             };
         }
 

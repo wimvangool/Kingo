@@ -135,8 +135,8 @@
   <data name="MicroProcessorTestContext_ConfigureOperationFailed" xml:space="preserve">
     <value>Test failed because an exception of type '{0}' was thrown while configuring an operation.</value>
   </data>
-  <data name="MicroProcessorTestContext_CouldNotResolveMessageHandler" xml:space="preserve">
-    <value>Could not resolve message-handler of type '{0}'. Please make sure all message-handers are registered in the service-collection.</value>
+  <data name="MicroProcessorTestContext_CouldNotResolveComponent" xml:space="preserve">
+    <value>Could not resolve component of type '{0}'. Please make sure all message-handers and queries are registered in the service-collection.</value>
   </data>
   <data name="MicroProcessorTestContext_MessageNotSet" xml:space="preserve">
     <value>Test failed because message of type '{0}' was not set by the configurator.</value>

@@ -6,7 +6,8 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices.TestEngine
 {
-    internal sealed class ReadyToRunMessageHandlerTestState<TMessage> : MicroProcessorTestState, IReadyToRunMessageHandlerTestState<TMessage>
+    internal sealed class ReadyToRunMessageHandlerTestState<TMessage> : ReadyToRunTestState<MessageHandlerTestOperation<TMessage>, VerifyingMessageHandlerTestOutputState<TMessage>>,
+                                                                        IReadyToRunMessageHandlerTestState<TMessage>
     {
         private readonly MicroProcessorTest _test;
         private readonly IEnumerable<MicroProcessorTestOperation> _givenOperations;
@@ -22,16 +23,19 @@ namespace Kingo.MicroServices.TestEngine
         protected override MicroProcessorTest Test =>
             _test;
 
+        protected override MessageHandlerTestOperation<TMessage> WhenOperation =>
+            _whenOperation;
+
         public override string ToString() =>
             $"Ready to process message of type '{typeof(TMessage).FriendlyName()}' with message handler of type '{_whenOperation.MessageHandlerType.FriendlyName()}'...";
 
         public async Task ThenOutputIs<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod = null) where TException : MicroProcessorOperationException =>
-            (await RunMessageHandlerTestAsync()).AssertOutputIsException(assertMethod);
+            (await RunTestAsync()).AssertOutputIsException(assertMethod);
 
         public async Task ThenOutputIsMessageStream(Action<TMessage, MessageStream, MicroProcessorTestContext> assertMethod = null) =>
-            (await RunMessageHandlerTestAsync()).AssertOutputIsMessageStream(assertMethod);
+            (await RunTestAsync()).AssertOutputIsMessageStream(assertMethod);
 
-        private async Task<VerifyingMessageHandlerTestOutputState<TMessage>> RunMessageHandlerTestAsync() =>
-            await Test.MoveToState(this, new RunningMessageHandlerTestState<TMessage>(_test, _givenOperations)).RunAsync(_whenOperation);
+        protected override RunningTestState<MessageHandlerTestOperation<TMessage>, VerifyingMessageHandlerTestOutputState<TMessage>> CreateRunningTestState() =>
+            new RunningMessageHandlerTestState<TMessage>(_test, _givenOperations);
     }
 }

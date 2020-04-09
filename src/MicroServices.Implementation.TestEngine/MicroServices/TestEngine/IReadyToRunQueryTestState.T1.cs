@@ -5,10 +5,10 @@ namespace Kingo.MicroServices.TestEngine
 {
     /// <summary>
     /// When implemented by a class, represents a state in which the test-engine is able to run a specific test
-    /// verifying the behavior of a certain <see cref="IQuery{TRequest}" /> operation.
+    /// verifying the behavior of a certain <see cref="IQuery{TResponse}" /> operation.
     /// </summary>
-    /// <typeparam name="TRequest">Type of the request executed by the query.</typeparam>
-    public interface IReadyToRunQueryTestState<out TRequest>
+    /// <typeparam name="TResponse">Type of the request executed by the query.</typeparam>
+    public interface IReadyToRunQueryTestState<out TResponse>
     {
         /// <summary>
         /// Runs the test and expects the operation to throw an exception of type <typeparamref name="TException" />.
@@ -24,7 +24,7 @@ namespace Kingo.MicroServices.TestEngine
         /// The operation did not throw the expected exception or the specified <paramref name="assertMethod" />
         /// failed on asserting the properties of the exception.
         /// </exception>
-        Task ThenOutputIs<TException>(Action<TRequest, TException, MicroProcessorTestContext> assertMethod = null)
+        Task ThenOutputIs<TException>(Action<TException, MicroProcessorTestContext> assertMethod = null)
             where TException : MicroProcessorOperationException;
 
         /// <summary>
@@ -41,6 +41,6 @@ namespace Kingo.MicroServices.TestEngine
         /// The operation threw an exception or the specified <paramref name="assertMethod" />
         /// failed on asserting the (properties of the) messages.
         /// </exception>
-        Task ThenOutputIsResponse(Action<TRequest, MicroProcessorTestContext> assertMethod = null);
+        Task ThenOutputIsResponse(Action<TResponse, MicroProcessorTestContext> assertMethod = null);
     }
 }

@@ -17,9 +17,6 @@ namespace Kingo.MicroServices.TestEngine
             _configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
         }
 
-        public override Type QueryType =>
-            throw new NotImplementedException();
-
         public override string ToString() =>
             $"{QueryType.FriendlyName()}.{nameof(IQuery<TRequest, TResponse>.ExecuteAsync)}({typeof(TRequest).FriendlyName()}, {nameof(QueryOperationContext)})";
 

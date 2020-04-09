@@ -6,13 +6,14 @@ using Kingo.Reflection;
 
 namespace Kingo.MicroServices.TestEngine
 {
-    internal sealed class ReadyToRunQueryTestState<TResponse> : MicroProcessorTestState, IReadyToRunQueryTestState<TResponse>
+    internal sealed class ReadyToRunQueryTestState<TResponse> : ReadyToRunTestState<QueryTestOperation<TResponse>, VerifyingQueryTestOutputState<TResponse>>,
+                                                                IReadyToRunQueryTestState<TResponse>
     {
         private readonly MicroProcessorTest _test;
         private readonly IEnumerable<MicroProcessorTestOperation> _givenOperations;
-        private readonly QueryTestOperation _whenOperation;
+        private readonly QueryTestOperation<TResponse> _whenOperation;
 
-        public ReadyToRunQueryTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> givenOperations, QueryTestOperation whenOperation)
+        public ReadyToRunQueryTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> givenOperations, QueryTestOperation<TResponse> whenOperation)
         {
             _test = test;
             _givenOperations = givenOperations;
@@ -22,13 +23,19 @@ namespace Kingo.MicroServices.TestEngine
         protected override MicroProcessorTest Test =>
             _test;
 
+        protected override QueryTestOperation<TResponse> WhenOperation =>
+            _whenOperation;
+
         public override string ToString() =>
             $"Ready to process request with query of type '{_whenOperation.QueryType.FriendlyName()}'...";
 
-        public Task ThenOutputIs<TException>(Action<TResponse, TException, MicroProcessorTestContext> assertMethod = null) where TException : MicroProcessorOperationException =>
-            throw new NotImplementedException();
+        public async Task ThenOutputIs<TException>(Action<TException, MicroProcessorTestContext> assertMethod = null) where TException : MicroProcessorOperationException =>
+            (await RunTestAsync()).AssertOutputIsException(assertMethod);
 
-        public Task ThenOutputIsResponse(Action<TResponse, MicroProcessorTestContext> assertMethod = null) =>
-            throw new NotImplementedException();
+        public async Task ThenOutputIsResponse(Action<TResponse, MicroProcessorTestContext> assertMethod = null) =>
+            (await RunTestAsync()).AssertOutputIsResponse(assertMethod);
+
+        protected override RunningTestState<QueryTestOperation<TResponse>, VerifyingQueryTestOutputState<TResponse>> CreateRunningTestState() =>
+            new RunningQueryTestState<TResponse>(_test, _givenOperations);
     }
 }

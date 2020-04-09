@@ -17,7 +17,7 @@ namespace Kingo.MicroServices
         internal MicroProcessorOperationContext(MicroProcessor processor, AsyncMethodOperationStackTrace stackTrace = null)
         {
             _processor = processor;
-            _user = processor.CreatePrincipal();
+            _user = processor.CurrentUser();
             _stackTrace = stackTrace ?? AsyncMethodOperationStackTrace.Empty;
             _queryProcessor = new QueryProcessor(this);
         }
@@ -25,7 +25,7 @@ namespace Kingo.MicroServices
         internal MicroProcessorOperationContext(MicroProcessorOperationContext context, IAsyncMethodOperation operation)
         {
             _processor = context._processor;
-            _user = context._user;
+            _user = context._user.Clone();
             _stackTrace = context._stackTrace.Push(operation);
             _queryProcessor = new QueryProcessor(this);
         }

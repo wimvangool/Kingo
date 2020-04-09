@@ -398,7 +398,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.When<object>().IsExecutedBy<NullHandler>((operation, context) => operation.Message = new object()).ThenOutputIsMessageStream();
+                await test.When<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream();
 
             }, true, true);
         }

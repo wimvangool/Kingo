@@ -27,7 +27,7 @@ namespace Kingo.MicroServices.TestEngine
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
         public static IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message) =>
-            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), ToConfigurator(message));
+            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), ConfigureMessage(message));
 
         /// <summary>
         /// Prepares the command to be executed by the specified <paramref name="messageHandler" />.
@@ -91,7 +91,7 @@ namespace Kingo.MicroServices.TestEngine
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
         public static IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, IMessageHandler<TMessage> messageHandler, TMessage message) =>
-            NotNull(state).IsExecutedBy(messageHandler, ToConfigurator(message));
+            NotNull(state).IsExecutedBy(messageHandler, ConfigureMessage(message));
 
         #endregion
 
@@ -175,7 +175,7 @@ namespace Kingo.MicroServices.TestEngine
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
         public static IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, IMessageHandler<TMessage> messageHandler, TMessage message) =>
-            NotNull(state).IsHandledBy(messageHandler, ToConfigurator(message));
+            NotNull(state).IsHandledBy(messageHandler, ConfigureMessage(message));
 
         #endregion
 

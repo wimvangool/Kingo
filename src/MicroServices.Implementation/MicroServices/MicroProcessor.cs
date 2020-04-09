@@ -105,25 +105,31 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== UsePrincipal ======]        
+        #region [====== Security ======]        
 
         /// <inheritdoc />
         public IDisposable AssignUser(IPrincipal user) =>
-            _principalContext.OverrideAsyncLocal(user ?? throw new ArgumentNullException(nameof(user)));
+            _principalContext.OverrideAsyncLocal(CreateClaimsPrincipal(user));
 
-        internal ClaimsPrincipal CreatePrincipal() =>
-            CreatePrincipal(_principalContext.Current);
+        internal ClaimsPrincipal CurrentUser() =>
+            CreateClaimsPrincipal(_principalContext.Current);
 
         /// <summary>
-        /// Creates and returns a <see cref="ClaimsPrincipal" /> based on the specified <paramref name="user"/>.
+        /// Creates and returns a <see cref="ClaimsPrincipal" /> based on the specified <paramref name="user"/>,
+        /// or a default principal if <paramref name="user"/> is <c>null</c>.
         /// </summary>
         /// <param name="user">The principal to convert to a <see cref="ClaimsPrincipal"/>.</param>
         /// <returns>A new <see cref="ClaimsPrincipal"/> based on the specified <paramref name="user"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="user"/> is <c>null</c>.
-        /// </exception>
-        protected virtual ClaimsPrincipal CreatePrincipal(IPrincipal user) =>
-            user == null ? new ClaimsPrincipal() : new ClaimsPrincipal(user);
+        protected virtual ClaimsPrincipal CreateClaimsPrincipal(IPrincipal user = null) =>
+            user == null ? CreateDefaultPrincipal() : new ClaimsPrincipal(user);
+
+        /// <summary>
+        /// Creates and returns a new <see cref="ClaimsPrincipal"/> that serves as the default user if
+        /// no explicit principal has been set using <see cref="AssignUser" />.
+        /// </summary>
+        /// <returns>A default principal.</returns>
+        protected virtual ClaimsPrincipal CreateDefaultPrincipal() =>
+            new ClaimsPrincipal(new ClaimsIdentity(Enumerable.Empty<Claim>(), "Basic"));
 
         #endregion
 

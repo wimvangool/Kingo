@@ -7,6 +7,30 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal sealed class ExceptionOutput
     {
+        #region [====== IsNoExceptionMethod ======]
+
+        private sealed class IsNoExceptionOutput : ITestOutputAssertMethod
+        {
+            private readonly ExceptionOutput _output;
+
+            public IsNoExceptionOutput(ExceptionOutput output)
+            {
+                _output = output;
+            }
+
+            public void Execute() =>
+                throw NewUnexpectedExceptionThrownException(_output._exception.GetType());
+
+            private static Exception NewUnexpectedExceptionThrownException(Type exceptionType)
+            {
+                var messageFormat = ExceptionMessages.MicroProcessorTest_ExceptionThrown;
+                var message = string.Format(messageFormat, exceptionType.FriendlyName());
+                return new TestFailedException(message);
+            }
+        }
+
+        #endregion
+
         private readonly MicroProcessorOperationException _exception;
 
         public ExceptionOutput(MicroProcessorOperationException exception)
@@ -17,17 +41,10 @@ namespace Kingo.MicroServices.TestEngine
         public MessageEnvelope<TMessage> GetInputMessage<TMessage>() =>
             _exception.OperationStackTrace.RootOperation.Message.CastTo<TMessage>();
 
-        #region [====== IsUnexpected ======]
+        #region [====== IsNoException ======]
 
-        public void IsUnexpectedException() =>
-            throw NewUnexpectedExceptionThrownException(_exception.GetType());
-
-        private static Exception NewUnexpectedExceptionThrownException(Type exceptionType)
-        {
-            var messageFormat = ExceptionMessages.MicroProcessorTest_ExceptionThrown;
-            var message = string.Format(messageFormat, exceptionType.FriendlyName());
-            return new TestFailedException(message);
-        }
+        public ITestOutputAssertMethod IsNoException() =>
+            new IsNoExceptionOutput(this);
 
         #endregion
 

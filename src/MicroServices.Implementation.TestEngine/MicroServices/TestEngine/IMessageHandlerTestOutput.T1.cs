@@ -6,8 +6,8 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal interface IMessageHandlerTestOutput<out TMessage>
     {
-        void AssertOutputIsException<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod) where TException : MicroProcessorOperationException;
+        ITestOutputAssertMethod IsException<TException>(Action<TMessage, TException, MicroProcessorTestContext> assertMethod) where TException : MicroProcessorOperationException;
 
-        void AssertOutputIsMessageStream(Action<TMessage, MessageStream, MicroProcessorTestContext> assertMethod);
+        ITestOutputAssertMethod IsMessageStream(Action<TMessage, MessageStream, MicroProcessorTestContext> assertMethod);
     }
 }

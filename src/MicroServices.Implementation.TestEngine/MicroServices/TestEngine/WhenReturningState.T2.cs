@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Kingo.Reflection;
+using static Kingo.MicroServices.TestEngine.MicroProcessorTestContext;
 
 namespace Kingo.MicroServices.TestEngine
 {
@@ -22,10 +23,13 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             $"Configuring a query of type '{typeof(IQuery<TRequest, TResponse>).FriendlyName()}'...";
 
+        public IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TQuery>(TRequest request) where TQuery : class, IQuery<TRequest, TResponse> =>
+            IsExecutedBy<TQuery>(ConfigureRequest(request));
+
         public IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TQuery>(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) where TQuery : class, IQuery<TRequest, TResponse> =>
             MoveToReadyToRunQueryState(new QueryTestOperation2<TRequest, TResponse, TQuery>(configurator));
 
-        public IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedByQuery(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator, IQuery<TRequest, TResponse> query) =>
+        public IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy(IQuery<TRequest, TResponse> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) =>
             MoveToReadyToRunQueryState(new QueryTestOperation2<TRequest, TResponse>(configurator, query));
 
         private IReadyToRunQueryTestState<TRequest, TResponse> MoveToReadyToRunQueryState(QueryTestOperation<TRequest, TResponse> whenOperation) =>

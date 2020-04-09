@@ -25,6 +25,6 @@ namespace Kingo.MicroServices.TestEngine
             _query.GetType();
 
         public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
-            throw new NotImplementedException();
+            state.ExecuteQuery(context, _query, CreateOperationInfo(context));
     }
 }

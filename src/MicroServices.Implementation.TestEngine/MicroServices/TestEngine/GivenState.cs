@@ -85,7 +85,7 @@ namespace Kingo.MicroServices.TestEngine
             }
 
             public void IsExecutedBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
-                IsExecutedBy<TMessageHandler>(ToConfigurator(message));
+                IsExecutedBy<TMessageHandler>(ConfigureMessage(message));
 
             public void IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
                 AddOperation(new CommandOperation<TMessage, TMessageHandler>(configurator));
@@ -94,7 +94,7 @@ namespace Kingo.MicroServices.TestEngine
                 AddOperation(new CommandOperation<TMessage>(messageHandler, configurator));
 
             public void IsHandledBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
-                IsHandledBy<TMessageHandler>(ToConfigurator(message));
+                IsHandledBy<TMessageHandler>(ConfigureMessage(message));
 
             public void IsHandledBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
                 AddOperation(new EventOperation<TMessage, TMessageHandler>(configurator));

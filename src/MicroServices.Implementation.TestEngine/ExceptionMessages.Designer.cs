@@ -205,11 +205,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not resolve message-handler of type &apos;{0}&apos;. Please make sure all message-handers are registered in the service-collection..
+        ///   Looks up a localized string similar to Could not resolve component of type &apos;{0}&apos;. Please make sure all message-handers and queries are registered in the service-collection..
         /// </summary>
-        internal static string MicroProcessorTestContext_CouldNotResolveMessageHandler {
+        internal static string MicroProcessorTestContext_CouldNotResolveComponent {
             get {
-                return ResourceManager.GetString("MicroProcessorTestContext_CouldNotResolveMessageHandler", resourceCulture);
+                return ResourceManager.GetString("MicroProcessorTestContext_CouldNotResolveComponent", resourceCulture);
             }
         }
         

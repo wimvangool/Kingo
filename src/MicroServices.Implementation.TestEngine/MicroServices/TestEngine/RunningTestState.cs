@@ -20,49 +20,7 @@ namespace Kingo.MicroServices.TestEngine
         protected override MicroProcessorTest Test =>
             _test;
 
-        #region [====== Time Operations ======]
-
-        public async Task<MicroProcessorTestOperationId> SetClockToSpecificTimeAsync(MicroProcessorTestContext context, DateTimeOffset value)
-        {
-            using (Clock.OverrideAsyncLocal(Clock.Current.SetToSpecificTime(value)))
-            {
-                await RunGivenOperationsAsync(context);
-            }
-            return MicroProcessorTestOperationId.Empty;
-        }
-
-        public async Task<MicroProcessorTestOperationId> ShiftClockBySpecificPeriodAsync(MicroProcessorTestContext context, TimeSpan value)
-        {
-            using (Clock.OverrideAsyncLocal(Clock.Current.Shift(value)))
-            {
-                await RunGivenOperationsAsync(context);
-            }
-            return MicroProcessorTestOperationId.Empty;
-        }
-
-        #endregion
-
-        #region [====== Command & Event Operations ======]
-
-        public async Task<MicroProcessorTestOperationId> ExecuteCommandAsync<TMessage>(MicroProcessorTestContext context, IMessageHandler<TMessage> messageHandler, MessageHandlerTestOperationInfo<TMessage> operation)
-        {
-            using (context.Processor.AssignUser(operation.User))
-            {
-                context.SetResult(operation.Id, await context.Processor.ExecuteCommandAsync(messageHandler, operation.Message));
-            }
-            return operation.Id;
-        }
-
-        public async Task<MicroProcessorTestOperationId> HandleEventAsync<TMessage>(MicroProcessorTestContext context, IMessageHandler<TMessage> messageHandler, MessageHandlerTestOperationInfo<TMessage> operation)
-        {
-            using (context.Processor.AssignUser(operation.User))
-            {
-                context.SetResult(operation.Id, await context.Processor.HandleEventAsync(messageHandler, operation.Message));
-            }
-            return operation.Id;
-        }
-
-        #endregion
+        #region [====== GivenOperations ======]
 
         protected async Task RunGivenOperationsAsync(MicroProcessorTestContext context)
         {
@@ -94,5 +52,69 @@ namespace Kingo.MicroServices.TestEngine
             var message = string.Format(messageFormat, operation, exception.GetType().FriendlyName());
             return new TestFailedException(message, exception);
         }
+
+        #endregion
+
+        #region [====== Time Operations ======]
+
+        public async Task<MicroProcessorTestOperationId> SetClockToSpecificTimeAsync(MicroProcessorTestContext context, DateTimeOffset value)
+        {
+            using (Clock.OverrideAsyncLocal(Clock.Current.SetToSpecificTime(value)))
+            {
+                await RunGivenOperationsAsync(context);
+            }
+            return MicroProcessorTestOperationId.Empty;
+        }
+
+        public async Task<MicroProcessorTestOperationId> ShiftClockBySpecificPeriodAsync(MicroProcessorTestContext context, TimeSpan value)
+        {
+            using (Clock.OverrideAsyncLocal(Clock.Current.Shift(value)))
+            {
+                await RunGivenOperationsAsync(context);
+            }
+            return MicroProcessorTestOperationId.Empty;
+        }
+
+        #endregion
+
+        #region [====== Command & Event Operations ======]
+
+        public async Task<MicroProcessorTestOperationId> ExecuteCommandAsync<TMessage>(MicroProcessorTestContext context, IMessageHandler<TMessage> messageHandler, MessageHandlerTestOperationInfo<TMessage> operation)
+        {
+            using (context.Processor.AssignUser(operation.User))
+            {
+                return context.SetResult(operation.Id, await context.Processor.ExecuteCommandAsync(messageHandler, operation.Message));
+            }
+        }
+
+        public async Task<MicroProcessorTestOperationId> HandleEventAsync<TMessage>(MicroProcessorTestContext context, IMessageHandler<TMessage> messageHandler, MessageHandlerTestOperationInfo<TMessage> operation)
+        {
+            using (context.Processor.AssignUser(operation.User))
+            {
+                return context.SetResult(operation.Id, await context.Processor.HandleEventAsync(messageHandler, operation.Message));
+            }
+        }
+
+        #endregion
+
+        #region [====== Query Operations ======]
+
+        public async Task<MicroProcessorTestOperationId> ExecuteQuery<TResponse>(MicroProcessorTestContext context, IQuery<TResponse> query, QueryTestOperationInfo operation)
+        {
+            using (context.Processor.AssignUser(operation.User))
+            {
+                return context.SetResult(operation.Id, await context.Processor.ExecuteQueryAsync(query));
+            }
+        }
+
+        public async Task<MicroProcessorTestOperationId> ExecuteQuery<TRequest, TResponse>(MicroProcessorTestContext context, IQuery<TRequest, TResponse> query, QueryTestOperationInfo<TRequest> operation)
+        {
+            using (context.Processor.AssignUser(operation.User))
+            {
+                return context.SetResult(operation.Id, await context.Processor.ExecuteQueryAsync(query, operation.Request));
+            }
+        }
+
+        #endregion
     }
 }
