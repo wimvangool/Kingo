@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.TestEngine
@@ -353,6 +354,165 @@ namespace Kingo.MicroServices.TestEngine
                 await test.When<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse();
 
             }, true, true);
+        }
+
+        #endregion
+
+        #region [====== Time ======]
+
+        [TestMethod]
+        public async Task Given_TimeIs_SetsTheTimeToTheSpecifiedTime_IfSpecifiedBeforeAllOperations()
+        {
+            await RunTestAsync(async test =>
+            {
+                var date = new DateTime(2020, 1, 1);
+
+                test.Given().TimeIs(date);
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+
+                }, new object());
+
+                await test.When<object>().Returning<object>().IsExecutedBy((request, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
+
+                }, new object()).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_TimeIs_SetsTheTimeToTheSpecifiedTime_IfSpecifiedBetweenOperations()
+        {
+            await RunTestAsync(async test =>
+            {
+                var dateOne = new DateTime(2020, 1, 1);
+                var dateTwo = new DateTime(2020, 1, 2);
+
+                test.Given().TimeIs(dateOne);
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    AssertSameDate(dateOne, context.Clock.LocalDate());
+
+                }, new object());
+
+                test.Given().TimeIs(dateTwo);
+
+                await test.When<object>().Returning<object>().IsExecutedBy((request, context) =>
+                {
+                    AssertSameDate(dateTwo, context.Clock.LocalDate());
+                    return request;
+
+                }, new object()).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_TimeHasPassed_IsIgnored_IfSpecifiedBeforeAllOperations_But_TimeSpanIsZero()
+        {
+            await RunTestAsync(async test =>
+            {
+                var date = Clock.SystemClock.LocalDate();
+
+                test.Given().TimeHasPassed(TimeSpan.Zero);
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+
+                }, new object());
+
+                await test.When<object>().Returning<object>().IsExecutedBy((request, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
+
+                }, new object()).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_TimeHasPassed_SimulatesThePassingOfTime_IfSpecifiedBeforeAllOperations_And_TimeSpanIsGreaterThanZero()
+        {
+            await RunTestAsync(async test =>
+            {
+                var offset = TimeSpan.FromDays(1);
+                var date = Clock.SystemClock.LocalDate().Add(offset);
+
+                test.Given().TimeHasPassed(offset);
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+
+                }, new object());
+
+                await test.When<object>().Returning<object>().IsExecutedBy((request, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
+
+                }, new object()).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_TimeHasPassed_IsIgnored_IfSpecifiedBetweenOperations_But_TimeSpanIsZero()
+        {
+            await RunTestAsync(async test =>
+            {
+                var offset = TimeSpan.FromDays(1);
+                var date = Clock.SystemClock.LocalDate().Add(offset);
+
+                test.Given().TimeHasPassed(offset);
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+
+                }, new object());
+
+                test.Given().TimeHasPassed(TimeSpan.Zero);
+
+                await test.When<object>().Returning<object>().IsExecutedBy((request, context) =>
+                {
+                    AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
+
+                }, new object()).ThenOutputIsResponse();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_TimeHasPassed_SimulatesThePassingOfTime_IfSpecifiedBetweenOperations_And_TimeSpanIsGreaterThanZero()
+        {
+            await RunTestAsync(async test =>
+            {
+                var offset = TimeSpan.FromDays(1);
+                var dateOne = Clock.SystemClock.LocalDate().Add(offset);
+                var dateTwo = dateOne.Add(offset);
+
+                test.Given().TimeHasPassed(offset);
+
+                test.Given<object>().IsExecutedBy((message, context) =>
+                {
+                    AssertSameDate(dateOne, context.Clock.LocalDate());
+
+                }, new object());
+
+                test.Given().TimeHasPassed(offset);
+
+                await test.When<object>().Returning<object>().IsExecutedBy((request, context) =>
+                {
+                    AssertSameDate(dateTwo, context.Clock.LocalDate());
+                    return request;
+
+                }, new object()).ThenOutputIsResponse();
+            });
         }
 
         #endregion

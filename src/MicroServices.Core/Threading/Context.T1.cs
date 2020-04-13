@@ -25,7 +25,7 @@ namespace Kingo.Threading
             }
 
             public override T Value =>
-             _newValue.Item1;
+                _newValue.Item1;
 
             internal override bool RestoreOldValue()
             {
@@ -52,7 +52,7 @@ namespace Kingo.Threading
             }
 
             public override T Value =>
-             _newValue.Item1;
+                _newValue.Item1;
 
             internal override bool RestoreOldValue()
             {
@@ -94,7 +94,7 @@ namespace Kingo.Threading
             }
 
             public override T Value =>
-             _newValue.Item1;
+                _newValue.Item1;
 
             internal override bool RestoreOldValue()
             {
@@ -134,8 +134,8 @@ namespace Kingo.Threading
         /// <summary>
         /// Initializes a new instance of the <see cref="Context{T}" /> class.
         /// </summary>
-        public Context()
-            : this(default) { }
+        public Context() :
+            this(default) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Context{T}" /> class.

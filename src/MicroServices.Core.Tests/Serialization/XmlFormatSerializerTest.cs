@@ -23,7 +23,7 @@ namespace Kingo.Serialization
         [ExpectedException(typeof(SerializationException))]
         public void Deserialize_Throws_IfValueTypeIsDerivedFromSpecifiedType()
         {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
+            var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);
             
             Serializer.Deserialize(serializedValue, typeof(object));

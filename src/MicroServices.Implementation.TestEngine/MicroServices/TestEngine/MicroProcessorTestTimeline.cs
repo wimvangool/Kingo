@@ -24,7 +24,7 @@ namespace Kingo.MicroServices.TestEngine
 
             public abstract State TimeIs(DateTimeOffset value);
 
-            public abstract State TimeHasPassed(TimeSpan value);
+            public abstract State TimeHasPassed(TimeSpan offset);
 
             public abstract MicroProcessorTestOperation CreateGivenOperation();
 
@@ -41,14 +41,17 @@ namespace Kingo.MicroServices.TestEngine
             public DefaultState(MicroProcessorTestTimeline timeline) :
                 base(timeline) { }
 
+            public override string ToString() =>
+                "Default Time";
+
             public override void CommitToAbsoluteOrRelativeTime() =>
                 MoveToState(new RelativeTimeState(Timeline));
 
             public override State TimeIs(DateTimeOffset value) =>
                 MoveToState(new AbsoluteTimeState(Timeline, value));
 
-            public override State TimeHasPassed(TimeSpan value) =>
-                MoveToState(new RelativeShiftedTimeState(Timeline, value));
+            public override State TimeHasPassed(TimeSpan offset) =>
+                MoveToState(new RelativeShiftedTimeState(Timeline, offset));
 
             public override MicroProcessorTestOperation CreateGivenOperation() =>
                 new NullOperation();
@@ -68,6 +71,9 @@ namespace Kingo.MicroServices.TestEngine
                 _valueUtc = value.ToUniversalTime();
             }
 
+            public override string ToString() =>
+                $"Absolute Time ({_valueUtc:O})";
+
             public override State TimeIs(DateTimeOffset value)
             {
                 var newState = new AbsoluteTimeState(Timeline, value);
@@ -78,8 +84,8 @@ namespace Kingo.MicroServices.TestEngine
                 return Timeline.MoveToState(this, newState);
             }
 
-            public override State TimeHasPassed(TimeSpan value) =>
-                MoveToState(new AbsoluteTimeState(Timeline, _valueUtc.Add(value)));
+            public override State TimeHasPassed(TimeSpan offset) =>
+                MoveToState(new AbsoluteTimeState(Timeline, _valueUtc.Add(offset)));
 
             public override MicroProcessorTestOperation CreateGivenOperation() =>
                 new TimeIsOperation(_valueUtc);
@@ -94,11 +100,17 @@ namespace Kingo.MicroServices.TestEngine
             public RelativeTimeState(MicroProcessorTestTimeline timeline) :
                 base(timeline) { }
 
+            public override string ToString() =>
+                ToString(TimeSpan.Zero);
+
+            protected static string ToString(TimeSpan offset) =>
+                $"Relative Time (+{offset:c})";
+
             public override State TimeIs(DateTimeOffset value) =>
                 throw NewSpecificTimeNotAllowedException(value);
 
-            public override State TimeHasPassed(TimeSpan value) =>
-                MoveToState(new RelativeShiftedTimeState(Timeline, value));
+            public override State TimeHasPassed(TimeSpan offset) =>
+                MoveToState(new RelativeShiftedTimeState(Timeline, offset));
 
             public override MicroProcessorTestOperation CreateGivenOperation() =>
                 new NullOperation();
@@ -110,19 +122,27 @@ namespace Kingo.MicroServices.TestEngine
 
         private sealed class RelativeShiftedTimeState : RelativeTimeState
         {
-            private readonly TimeSpan _value;
+            private readonly TimeSpan _offset;
+            private readonly TimeSpan _offsetTotal;
 
-            public RelativeShiftedTimeState(MicroProcessorTestTimeline timeline, TimeSpan value) :
+            public RelativeShiftedTimeState(MicroProcessorTestTimeline timeline, TimeSpan offset) :
+                this(timeline, offset, offset) { }
+
+            private RelativeShiftedTimeState(MicroProcessorTestTimeline timeline, TimeSpan offset, TimeSpan offsetTotal) :
                 base(timeline)
             {
-                _value = value;
+                _offset = offset;
+                _offsetTotal = offsetTotal;
             }
 
-            public override State TimeHasPassed(TimeSpan value) =>
-                MoveToState(new RelativeShiftedTimeState(Timeline, _value.Add(value)));
+            public override string ToString() =>
+                ToString(_offsetTotal);
+
+            public override State TimeHasPassed(TimeSpan offset) =>
+                MoveToState(new RelativeShiftedTimeState(Timeline, offset, _offsetTotal.Add(offset)));
 
             public override MicroProcessorTestOperation CreateGivenOperation() =>
-                new TimeHasPassedOperation(_value);
+                new TimeHasPassedOperation(_offset);
         }
 
         #endregion
@@ -134,23 +154,26 @@ namespace Kingo.MicroServices.TestEngine
             _state = new DefaultState(this);
         }
 
+        public override string ToString() =>
+            _state.ToString();
+
         public void CommitToAbsoluteOrRelativeTime() =>
             _state.CommitToAbsoluteOrRelativeTime();
 
         public MicroProcessorTestOperation CreateTimeIsOperation(DateTimeOffset value) =>
             CreateOperation(_state.TimeIs(value));
 
-        public MicroProcessorTestOperation CreateTimeHasPassedOperation(TimeSpan value)
+        public MicroProcessorTestOperation CreateTimeHasPassedOperation(TimeSpan offset)
         {
-            if (value < TimeSpan.Zero)
+            if (offset < TimeSpan.Zero)
             {
-                throw NewNegativeTimeSpanException(value);
+                throw NewNegativeTimeSpanException(offset);
             }
-            if (value == TimeSpan.Zero)
+            if (offset == TimeSpan.Zero)
             {
                 return new NullOperation();
             }
-            return CreateOperation(_state.TimeHasPassed(value));
+            return CreateOperation(_state.TimeHasPassed(offset));
         }
 
         private MicroProcessorTestOperation CreateOperation(State newState) =>

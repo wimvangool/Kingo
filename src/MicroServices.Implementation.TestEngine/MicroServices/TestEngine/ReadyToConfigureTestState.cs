@@ -20,7 +20,7 @@
             _test;
 
         public override string ToString() =>
-            $"Ready to configure test ({_givenOperations})";
+            $"Ready to configure test ({_givenOperations}) | {_timeline}";
 
         public override IGivenState Given() =>
             Test.MoveToState(this, new GivenState(_test, _timeline, _givenOperations));

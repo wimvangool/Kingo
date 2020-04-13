@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Clocks
 {
     [TestClass]
-    public sealed class DefaultClockTest
+    public sealed class SystemClockTest
     {
         [TestMethod]
         public void LocalDate_ReturnsDateInLocalTime()

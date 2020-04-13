@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 using Kingo.Reflection;
@@ -8,42 +9,69 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal abstract class RunningTestState : MicroProcessorTestState
     {
-        private readonly MicroProcessorTest _test;
-        private readonly Queue<MicroProcessorTestOperation> _operations;
+        #region [====== GivenOperation ======]
 
-        protected RunningTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> operations)
+        private sealed class GivenOperation : MicroProcessorTestOperation
+        {
+            private readonly MicroProcessorTestOperation _operation;
+
+            public GivenOperation(MicroProcessorTestOperation operation)
+            {
+                _operation = operation;
+            }
+
+            public override async Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context)
+            {
+                try
+                {
+                    return await _operation.RunAsync(state, nextOperations, context);
+                }
+                catch (TestFailedException)
+                {
+                    throw;
+                }
+                catch (Exception exception)
+                {
+                    throw NewOperationFailedException(_operation, exception);
+                }
+            }
+        }
+
+        #endregion
+
+        private readonly MicroProcessorTest _test;
+        private readonly IEnumerable<MicroProcessorTestOperation> _givenOperations;
+
+        protected RunningTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> givenOperations)
         {
             _test = test;
-            _operations = new Queue<MicroProcessorTestOperation>(operations);
+            _givenOperations = givenOperations;
         }
 
         protected override MicroProcessorTest Test =>
             _test;
 
-        #region [====== GivenOperations ======]
+        #region [====== RunOperationsAsync ======]
 
-        protected async Task RunGivenOperationsAsync(MicroProcessorTestContext context)
+        protected Task<MicroProcessorTestOperationId> RunOperationsAsync(MicroProcessorTestOperation whenOperation, MicroProcessorTestContext context) =>
+            RunOperationsAsync(CreateOperationQueue(_givenOperations, whenOperation), context);
+
+        private async Task<MicroProcessorTestOperationId> RunOperationsAsync(Queue<MicroProcessorTestOperation> operations, MicroProcessorTestContext context)
         {
-            while (_operations.Count > 0)
+            var operationId = MicroProcessorTestOperationId.Empty;
+
+            while (operations.Count > 0)
             {
-                await RunGivenOperationAsync(context, _operations.Dequeue());
+                operationId = await operations.Dequeue().RunAsync(this, operations, context);
             }
+            return operationId;
         }
 
-        private async Task RunGivenOperationAsync(MicroProcessorTestContext context, MicroProcessorTestOperation operation)
+        private static Queue<MicroProcessorTestOperation> CreateOperationQueue(IEnumerable<MicroProcessorTestOperation> givenOperations, MicroProcessorTestOperation whenOperation)
         {
-            try
-            {
-                await operation.RunAsync(this, context);
-            }
-            catch (TestFailedException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw NewOperationFailedException(operation, exception);
-            }
+            var operations = new Queue<MicroProcessorTestOperation>(givenOperations.Select(operation => new GivenOperation(operation)));
+            operations.Enqueue(whenOperation);
+            return operations;
         }
 
         protected static Exception NewOperationFailedException(MicroProcessorTestOperation operation, Exception exception)
@@ -57,24 +85,22 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== Time Operations ======]
 
-        public async Task<MicroProcessorTestOperationId> SetClockToSpecificTimeAsync(MicroProcessorTestContext context, DateTimeOffset value)
+        public async Task<MicroProcessorTestOperationId> SetClockToSpecificTimeAsync(DateTimeOffset value, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context)
         {
-            using (Clock.OverrideAsyncLocal(Clock.Current.SetToSpecificTime(value)))
+            using (context.Processor.AssignClock(clock => clock.SetToSpecificTime(value)))
             {
-                await RunGivenOperationsAsync(context);
+                return await RunOperationsAsync(nextOperations, context);
             }
-            return MicroProcessorTestOperationId.Empty;
         }
 
-        public async Task<MicroProcessorTestOperationId> ShiftClockBySpecificPeriodAsync(MicroProcessorTestContext context, TimeSpan value)
+        public async Task<MicroProcessorTestOperationId> ShiftClockBySpecificOffsetAsync(TimeSpan offset, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context)
         {
-            using (Clock.OverrideAsyncLocal(Clock.Current.Shift(value)))
+            using (context.Processor.AssignClock(clock => clock.Shift(offset)))
             {
-                await RunGivenOperationsAsync(context);
+                return await RunOperationsAsync(nextOperations, context);
             }
-            return MicroProcessorTestOperationId.Empty;
         }
-
+        
         #endregion
 
         #region [====== Command & Event Operations ======]

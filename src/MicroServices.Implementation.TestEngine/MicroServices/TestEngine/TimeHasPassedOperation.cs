@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 
@@ -6,17 +7,17 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal sealed class TimeHasPassedOperation : MicroProcessorTestOperation
     {
-        private readonly TimeSpan _value;
+        private readonly TimeSpan _offset;
 
-        public TimeHasPassedOperation(TimeSpan value)
+        public TimeHasPassedOperation(TimeSpan offset)
         {
-            _value = value;
+            _offset = offset;
         }
 
         public override string ToString() =>
-            $"Time += {_value}";
+            $"Time += {_offset}";
 
-        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
-            state.ShiftClockBySpecificPeriodAsync(context, _value);
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context) =>
+            state.ShiftClockBySpecificOffsetAsync(_offset, nextOperations, context);
     }
 }

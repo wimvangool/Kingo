@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 
@@ -16,7 +17,7 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             $"Time = {_value}";
 
-        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
-            state.SetClockToSpecificTimeAsync(context, _value);
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context) =>
+            state.SetClockToSpecificTimeAsync(_value, nextOperations, context);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using Kingo.Clocks;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
@@ -11,6 +12,7 @@ namespace Kingo.MicroServices
     {        
         private readonly MicroProcessor _processor;
         private readonly ClaimsPrincipal _user;
+        private readonly IClock _clock;
         private readonly AsyncMethodOperationStackTrace _stackTrace;
         private readonly IQueryProcessor _queryProcessor;
 
@@ -18,6 +20,7 @@ namespace Kingo.MicroServices
         {
             _processor = processor;
             _user = processor.CurrentUser();
+            _clock = processor.CurrentClock();
             _stackTrace = stackTrace ?? AsyncMethodOperationStackTrace.Empty;
             _queryProcessor = new QueryProcessor(this);
         }
@@ -26,6 +29,7 @@ namespace Kingo.MicroServices
         {
             _processor = context._processor;
             _user = context._user.Clone();
+            _clock = context._clock;
             _stackTrace = context._stackTrace.Push(operation);
             _queryProcessor = new QueryProcessor(this);
         }
@@ -36,6 +40,10 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public ClaimsPrincipal User =>
             _user;
+
+        /// <inheritdoc />
+        public IClock Clock =>
+            _clock;
 
         /// <inheritdoc />
         public IAsyncMethodOperationStackTrace StackTrace =>

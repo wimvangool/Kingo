@@ -24,7 +24,7 @@ namespace Kingo.MicroServices.TestEngine
         public override Type QueryType =>
             _query.GetType();
 
-        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context) =>
             state.ExecuteQuery(context, _query, CreateOperationInfo(context));
     }
 }

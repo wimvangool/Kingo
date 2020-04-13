@@ -31,7 +31,7 @@ namespace Kingo.Serialization
         [TestMethod]
         public void Serialize_ReturnsSerializedValue_IfInstanceIsInt32()
         {
-            AssertSerializedValue(Serializer.Serialize(Clock.Current.LocalDateAndTime().Millisecond));
+            AssertSerializedValue(Serializer.Serialize(Clock.SystemClock.LocalDateAndTime().Millisecond));
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace Kingo.Serialization
         [ExpectedException(typeof(SerializationException))]
         public void Deserialize_Throws_IfValueCannotBeDeserializedToSpecifiedType()
         {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
+            var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);
 
             Serializer.Deserialize(serializedValue, typeof(SomeCustomObject));
@@ -84,7 +84,7 @@ namespace Kingo.Serialization
         [TestMethod]
         public void Deserialize_ReturnsExpectedValue_IfValueTypeIsInt32()
         {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
+            var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);
             var deserializedValue = (int) Serializer.Deserialize(serializedValue, value.GetType());
 

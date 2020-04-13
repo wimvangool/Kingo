@@ -313,5 +313,12 @@ namespace Kingo.MicroServices.TestEngine
 
         protected static Exception NewRandomException() =>
             new Exception(Guid.NewGuid().ToString());
+
+        protected static void AssertSameDate(DateTimeOffset expectedDate, DateTimeOffset actualDate)
+        {
+            Assert.AreEqual(expectedDate.Year, actualDate.Year);
+            Assert.AreEqual(expectedDate.Month, actualDate.Month);
+            Assert.AreEqual(expectedDate.Day, actualDate.Day);
+        }
     }
 }

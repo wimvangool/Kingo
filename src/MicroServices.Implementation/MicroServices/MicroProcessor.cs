@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Clocks;
 using Kingo.MicroServices.Configuration;
 using Kingo.Reflection;
 using Kingo.Threading;
@@ -15,7 +16,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a basic implementation of a <see cref="IMicroProcessor" />.
     /// </summary>
-    public class MicroProcessor : IMicroProcessor
+    public class MicroProcessor : Disposable, IMicroProcessor
     {
         #region [====== ServiceScope ======]
 
@@ -66,6 +67,9 @@ namespace Kingo.MicroServices
                 
         private readonly Context<IMicroProcessorServiceProvider> _serviceProviderContext;
         private readonly Context<IPrincipal> _principalContext;
+        private readonly Context<IClock> _clockContext;
+
+        private readonly Lazy<IClock> _defaultClock;
         private readonly Lazy<IMicroProcessorOptions> _options;
 
         /// <summary>
@@ -78,12 +82,35 @@ namespace Kingo.MicroServices
         {                                    
             _serviceProviderContext = new Context<IMicroProcessorServiceProvider>(CreateServiceProvider(serviceProvider));
             _principalContext = new Context<IPrincipal>();
+            _clockContext = new Context<IClock>();
+
+            _defaultClock = new Lazy<IClock>(CreateDefaultClock);
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
         }
 
         /// <inheritdoc />
         public override string ToString() =>
             GetType().FriendlyName();
+
+        #region [====== Dispose ======]
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_defaultClock.IsValueCreated && _defaultClock.Value is IDisposable clock)
+                {
+                    clock.Dispose();
+                }
+                _clockContext.Dispose();
+                _principalContext.Dispose();
+                _serviceProviderContext.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion
 
         #region [====== Options ======]
 
@@ -105,7 +132,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Security ======]        
+        #region [====== Current User ======]        
 
         /// <inheritdoc />
         public IDisposable AssignUser(IPrincipal user) =>
@@ -130,6 +157,28 @@ namespace Kingo.MicroServices
         /// <returns>A default principal.</returns>
         protected virtual ClaimsPrincipal CreateDefaultPrincipal() =>
             new ClaimsPrincipal(new ClaimsIdentity(Enumerable.Empty<Claim>(), "Basic"));
+
+        #endregion
+
+        #region [====== Current Clock ======]
+
+        /// <inheritdoc />
+        public IDisposable AssignClock(Func<IClock, IClock> clockFactory) =>
+            AssignClock(clockFactory?.Invoke(CurrentClock()));
+
+        /// <inheritdoc />
+        public IDisposable AssignClock(IClock clock) =>
+            _clockContext.OverrideAsyncLocal(clock ?? throw new ArgumentNullException(nameof(clock)));
+
+        internal IClock CurrentClock() =>
+            _clockContext.Current ?? _defaultClock.Value;
+
+        /// <summary>
+        /// Creates and returns a <see cref="IClock"/> that serves as the default clock of this processor.
+        /// </summary>
+        /// <returns>A clock that serves as the default clock of this processor.</returns>
+        protected virtual IClock CreateDefaultClock() =>
+            HighResolutionClock.StartNew();
 
         #endregion
 
@@ -212,7 +261,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== ExecuteAsync (Operations) ======]
+        #region [====== ExecuteOperationAsync ======]
 
         /// <summary>
         /// Executes the specified (write) <paramref name="operation"/> and returns its result. If the operation

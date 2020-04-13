@@ -10,8 +10,8 @@ namespace Kingo.MicroServices.TestEngine
         where TOperation : MicroProcessorTestOperation
         where TOutputState : MicroProcessorTestState
     {
-        protected RunningTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> operations) :
-            base(test, operations) { }
+        protected RunningTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> givenOperations) :
+            base(test, givenOperations) { }
 
         public Task<TOutputState> RunAsync(TOperation operation) =>
             RunAsync(operation, Test.CreateTestContext());
@@ -20,11 +20,9 @@ namespace Kingo.MicroServices.TestEngine
         {
             using (context.Processor.ServiceProvider.CreateScope())
             {
-                await RunGivenOperationsAsync(context);
-
                 try
                 {
-                    return MoveToOutputState(context, await operation.RunAsync(this, context));
+                    return MoveToOutputState(context, await RunOperationsAsync(operation, context));
                 }
                 catch (MicroProcessorOperationException exception)
                 {

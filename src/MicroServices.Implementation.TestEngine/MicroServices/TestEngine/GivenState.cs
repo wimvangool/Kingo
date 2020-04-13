@@ -120,7 +120,7 @@ namespace Kingo.MicroServices.TestEngine
             _test;
 
         public override string ToString() =>
-            $"Scheduling new operation... ({_givenOperations})";
+            $"Scheduling new operation... ({_givenOperations}) | {_timeline}";
 
         public void TimeIs(DateTimeOffset value) =>
             AddGivenOperation(this, _timeline.CreateTimeIsOperation(value));
@@ -128,8 +128,8 @@ namespace Kingo.MicroServices.TestEngine
         public IGivenTimeHasPassedForState TimeHasPassedFor(int value) =>
             _test.MoveToState(this, new TimeHasPassedForState(this, value));
 
-        public void TimeHasPassed(TimeSpan value) =>
-            AddGivenOperation(this, _timeline.CreateTimeHasPassedOperation(value));
+        public void TimeHasPassed(TimeSpan offset) =>
+            AddGivenOperation(this, _timeline.CreateTimeHasPassedOperation(offset));
 
         private void AddGivenOperation(MicroProcessorTestState expectedState, MicroProcessorTestOperation givenOperation) =>
             _test.MoveToState(expectedState, new ReadyToConfigureTestState(_test, _timeline, _givenOperations.Enqueue(givenOperation)));

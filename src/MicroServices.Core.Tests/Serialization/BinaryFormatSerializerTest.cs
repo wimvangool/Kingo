@@ -21,7 +21,7 @@ namespace Kingo.Serialization
         [TestMethod]
         public void Deserialize_ReturnsExpectedValue_IfValueTypeIsDerivedFromSpecifiedType()
         {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
+            var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);
             var deserializedValue = Serializer.Deserialize(serializedValue, typeof(object));
 
@@ -31,7 +31,7 @@ namespace Kingo.Serialization
         [TestMethod]
         public void Deserialize_ReturnsExpectedValue_IfValueTypeCanBeConvertedToSpecifiedType()
         {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
+            var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);
             var deserializedValue = (string) Serializer.Deserialize(serializedValue, typeof(string));
 

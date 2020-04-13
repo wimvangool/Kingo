@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Clocks;
 
 namespace Kingo.MicroServices
 {
@@ -32,11 +33,36 @@ namespace Kingo.MicroServices
         /// returned scope is active.
         /// </summary>
         /// <param name="user">The principal to use.</param>
-        /// <returns>A scope that can be disposed when the principal can be reset to its previous value.</returns>
+        /// <returns>A scope that can be disposed when the user can be reset to its previous value.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="user"/> is <c>null</c>.
         /// </exception>
         IDisposable AssignUser(IPrincipal user);
+
+        /// <summary>
+        /// Configures the processor the use the clock that is returned by the specified <paramref name="clockFactory" />
+        /// for each operation as long as the scope is active.
+        /// </summary>
+        /// <param name="clockFactory">Delegate that will be used to obtain the new clock.</param>
+        /// <returns>A scope that can be disposed when the clock can be reset to its previous value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="clockFactory"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="clockFactory"/> returned <c>null</c>.
+        /// </exception>
+        IDisposable AssignClock(Func<IClock, IClock> clockFactory);
+
+        /// <summary>
+        /// Configures the processor the use the the specified <paramref name="clock" />
+        /// for each operation as long as the scope is active.
+        /// </summary>
+        /// <param name="clock">Clock that will be used by the processor as long as the scope is active.</param>
+        /// <returns>A scope that can be disposed when the clock can be reset to its previous value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="clock"/> is <c>null</c>.
+        /// </exception>
+        IDisposable AssignClock(IClock clock);
 
         /// <summary>
         /// Creates and returns a new <see cref="IMessageEnvelopeBuilder" /> that can be used to build new messages to process by this processor.

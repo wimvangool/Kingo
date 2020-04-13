@@ -44,16 +44,16 @@ namespace Kingo.MicroServices.TestEngine
         /// Moves the clock forward a specified period of time at the start of
         /// the next operation(s).
         /// </summary>
-        /// <param name="value">
+        /// <param name="offset">
         /// The period that the clock will be moved forward at the start of the next operation(s).
         /// </param>
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="value"/> is a negative <see cref="TimeSpan" />.
+        /// <paramref name="offset"/> is a negative <see cref="TimeSpan" />.
         /// </exception>
-        void TimeHasPassed(TimeSpan value);
+        void TimeHasPassed(TimeSpan offset);
 
         /// <summary>
         /// Prepares the specified <typeparamref name="TMessage"/> to be handled or executed by a

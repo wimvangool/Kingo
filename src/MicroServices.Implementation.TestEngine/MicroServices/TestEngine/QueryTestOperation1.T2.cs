@@ -14,8 +14,8 @@ namespace Kingo.MicroServices.TestEngine
         public override Type QueryType =>
             typeof(TQuery);
 
-        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
-            CreateOperation(context.Resolve<TQuery>()).RunAsync(state, context);
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context) =>
+            CreateOperation(context.Resolve<TQuery>()).RunAsync(state, nextOperations, context);
 
         private QueryTestOperation1<TResponse> CreateOperation(IQuery<TResponse> query) =>
             new QueryTestOperation1<TResponse>(this, query);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kingo.MicroServices.TestEngine
@@ -22,7 +23,7 @@ namespace Kingo.MicroServices.TestEngine
         public override Type MessageHandlerType =>
             _messageHandler.GetType();
 
-        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, MicroProcessorTestContext context) =>
+        public override Task<MicroProcessorTestOperationId> RunAsync(RunningTestState state, Queue<MicroProcessorTestOperation> nextOperations, MicroProcessorTestContext context) =>
             state.HandleEventAsync(context, _messageHandler, CreateOperationInfo(context));
     }
 }

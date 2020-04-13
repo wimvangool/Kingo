@@ -40,6 +40,7 @@ namespace Kingo.MicroServices
             bus ?? throw new ArgumentNullException(nameof(bus));
 
         private static DateTimeOffset CalculateDeliveryTimeUtc(TimeSpan delta) =>
-            Clock.Current.UtcDateAndTime().Add(delta);
+            //Clock.SystemClock.UtcDateAndTime().Add(delta);
+            throw new NotImplementedException();
     }
 }

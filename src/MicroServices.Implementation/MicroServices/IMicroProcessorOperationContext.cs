@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using Kingo.Clocks;
 
 namespace Kingo.MicroServices
 {
@@ -12,6 +13,14 @@ namespace Kingo.MicroServices
         /// Gets the user that is executing the current operation.
         /// </summary>
         ClaimsPrincipal User
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Get the clock that represents the current time for this operation.
+        /// </summary>
+        IClock Clock
         {
             get;
         }
