@@ -1,6 +1,6 @@
 ﻿namespace Kingo.MicroServices.TestEngine
 {
-    internal sealed class WhenBusinessLogicTestState : MicroProcessorTestState, IWhenBusinessLogicTestState
+    internal class WhenBusinessLogicTestState : MicroProcessorTestState, IWhenBusinessLogicTestState
     {
         private readonly MicroProcessorTest _test;
         private readonly MicroProcessorTestOperationQueue _givenOperations;
@@ -13,6 +13,9 @@
 
         protected override MicroProcessorTest Test =>
             _test;
+
+        protected MicroProcessorTestOperationQueue GivenOperations =>
+            _givenOperations;
 
         public IWhenCommandState<TCommand> Command<TCommand>() =>
             _test.MoveToState(this, new WhenCommandState<TCommand>(_test, _givenOperations));

@@ -6,7 +6,7 @@ namespace Kingo.MicroServices.TestEngine
     /// When implemented by a class, represents a state in which the test-engine prepares
     /// to execute a request.
     /// </summary>
-    public interface IWhenDataAccessTestState
+    public interface IWhenDataAccessTestState : IWhenBusinessLogicTestState
     {
         /// <summary>
         /// Schedules a (void) request to be executed or handled by a <see cref="IQuery{TResponse}"/>,
