@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,246 +6,133 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.TestEngine
 {
     [TestClass]
-    public sealed class MessageHandlerTestStubTest : MicroProcessorTestStubTest<MessageHandlerTestStub>
+    public sealed class DataAccessTestStubTest2 : DataAccessTestStubTest
     {
-        #region [====== CreateMicroProcessorTest ======]
-
-        protected override MessageHandlerTestStub CreateMicroProcessorTest() =>
-            new MessageHandlerTestStub();
-
-        #endregion
-
-        #region [====== WhenCommand<...>() ======]
+        #region [====== When().Request<...> ======]
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task WhenCommand_Throws_IfSetupWasNotCalled()
+        public async Task When_Throws_IfSetupWasNotCalled()
         {
-            await RunTestAsync(test => test.WhenCommand<object>(), false);
+            await RunTestAsync(test => test.When().Request<object>(), false);
         }
 
         [TestMethod]
-        public async Task WhenCommand_ReturnsWhenCommandState_IfTestEngineIsInReadyToConfigureState_And_NoGivenOperationsWereScheduled()
+        public async Task When_ReturnsWhenRequestState_IfTestEngineIsInReadyToConfigureState_And_NoGivenOperationsWereScheduled()
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenCommand<object>();
+                var state = test.When().Request<object>();
 
                 Assert.IsNotNull(state);
-                Assert.AreEqual("Configuring a command-handler of type 'IMessageHandler<Object>'...", state.ToString());
+                Assert.AreEqual("Configuring a query of type 'IQuery<TRequest, TResponse>'...", state.ToString());
             });
         }
 
         [TestMethod]
-        public async Task WhenCommand_ReturnsWhenCommandState_IfTestEngineIsInReadyToConfigureState_And_SomeGivenOperationsWereScheduled()
+        public async Task When_ReturnsWhenRequestState_IfTestEngineIsInReadyToConfigureState_And_SomeGivenOperationsWereScheduled()
         {
             await RunTestAsync(test =>
             {
                 test.Given().TimeIs(2020, 2, 5);
                 test.Given().Event<object>().IsHandledBy<NullHandler>((operation, context) => { });
 
-                Assert.IsNotNull(test.WhenCommand<object>());
+                Assert.IsNotNull(test.When().Request<object>());
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task WhenCommand_Throws_IfTestEngineIsInWhenCommandState()
+        public async Task When_Throws_IfTestEngineIsInWhenRequestState()
         {
             await RunTestAsync(test =>
             {
-                test.WhenCommand<object>();
-                test.WhenCommand<object>();
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public async Task WhenCommand_Throws_IfTestEngineIsInWhenEventState()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenEvent<object>();
-                test.WhenCommand<object>();
+                test.When().Request<object>();
+                test.When().Request<object>();
             });
         }
 
         #endregion
 
-        #region [====== WhenEvent<...>() ======]
+        #region [====== When().Request<...>().Returning<...>() ======]
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public async Task WhenEvent_Throws_IfSetupWasNotCalled()
-        {
-            await RunTestAsync(test => test.WhenEvent<object>(), false);
-        }
-
-        [TestMethod]
-        public async Task WhenEvent_ReturnsWhenEventState_IfTestEngineIsInReadyToConfigureState_And_NoGivenOperationsWereScheduled()
+        public async Task WhenReturning_ReturnsWhenReturningState_IfTestEngineIsInWhenRequestState()
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenEvent<object>();
+                var state = test.When().Request<object>().Returning<object>();
 
                 Assert.IsNotNull(state);
-                Assert.AreEqual("Configuring a event-handler of type 'IMessageHandler<Object>'...", state.ToString());
-            });
-        }
-
-        [TestMethod]
-        public async Task WhenEvent_ReturnsWhenEventState_IfTestEngineIsInReadyToConfigureState_And_SomeGivenOperationsWereScheduled()
-        {
-            await RunTestAsync(test =>
-            {
-                test.Given().TimeIs(2020, 2, 5);
-                test.Given().Event<object>().IsHandledBy<NullHandler>((operation, context) => { });
-
-                Assert.IsNotNull(test.WhenEvent<object>());
+                Assert.AreEqual("Configuring a query of type 'IQuery<Object, Object>'...", state.ToString());
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task WhenEvent_Throws_IfTestEngineIsInWhenCommandState()
+        public async Task WhenReturning_Throws_IfTestEngineIsNotInWhenRequestState()
         {
             await RunTestAsync(test =>
             {
-                test.WhenCommand<object>();
-                test.WhenEvent<object>();
+                var state = test.When().Request<object>();
+
+                state.Returning<object>();
+                state.Returning<object>();
+            });
+        }
+
+        #endregion
+
+        #region [====== When().Request<...>().Returning<...>().IsExecutedByQuery(...) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task IsExecutedByQuery_Throws_IfConfiguratorIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.When().Request<object>().Returning<object>().IsExecutedBy(null, new NullQuery());
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task IsExecutedByQuery_Throws_IfQueryIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.When().Request<object>().Returning<object>().IsExecutedBy(null, (operation, context) => { });
+            });
+        }
+
+        [TestMethod]
+        public async Task IsExecutedByQuery_ReturnsExpectedState_IfConfiguratorAndQueryAreSpecified()
+        {
+            await RunTestAsync(test =>
+            {
+                var state = test.When().Request<object>().Returning<object>().IsExecutedBy(new NullQuery(), (query, context) => { });
+
+                Assert.IsNotNull(state);
+                Assert.AreEqual("Ready to process request of type 'Object' with query of type 'NullQuery'...", state.ToString());
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task WhenEvent_Throws_IfTestEngineIsInWhenEventState()
+        public async Task IsExecutedByQuery_Throws_IfTestEngineIsAlreadyInReadyToRunState()
         {
             await RunTestAsync(test =>
             {
-                test.WhenEvent<object>();
-                test.WhenEvent<object>();
+                var state = test.When().Request<object>().Returning<object>();
+
+                state.IsExecutedBy(new NullQuery(), (query, context) => { });
+                state.IsExecutedBy(new NullQuery(), (query, context) => { });
             });
         }
 
         #endregion
 
-        #region [====== WhenCommand<...>().IsExecutedBy<...>() ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task WhenIsExecutedByCommandHandler_Throws_IfConfiguratorIsNull()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenCommand<object>().IsExecutedBy(new NullHandler(), null);
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task WhenIsExecutedByCommandHandler_Throws_IfMessageHandlerIsNull()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenCommand<object>().IsExecutedBy(null, (operation, context) => { });
-            });
-        }
-
-        [TestMethod]
-        public async Task WhenIsExecutedByCommandHandler_ReturnsReadyToRunMessageHandlerTestState_IfTestEngineIsInWhenCommandOrEventState()
-        {
-            await RunTestAsync(test =>
-            {
-                var state = test.WhenCommand<object>().IsExecutedBy(new NullHandler(), new object());
-
-                Assert.IsNotNull(state);
-                Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task WhenIsExecutedBy_Throws_IfConfiguratorIsNull()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenCommand<object>().IsExecutedBy<NullHandler>(null);
-            });
-        }
-
-        [TestMethod]
-        public async Task WhenIsExecutedBy_ReturnsReadyToRunMessageHandlerTestState_IfTestEngineIsInWhenCommandOrEventState()
-        {
-            await RunTestAsync(test =>
-            {
-                var state = test.WhenCommand<object>().IsExecutedBy<NullHandler>(new object());
-
-                Assert.IsNotNull(state);
-                Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
-            });
-        }
-
-        #endregion
-
-        #region [====== WhenEvent<...>().IsHandledBy<...>() ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task WhenIsHandledByEventHandler_Throws_IfConfiguratorIsNull()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenEvent<object>().IsHandledBy(new NullHandler(), null);
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task WhenIsHandledByEventHandler_Throws_IfMessageHandlerIsNull()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenEvent<object>().IsHandledBy(null, (operation, context) => { });
-            });
-        }
-
-        [TestMethod]
-        public async Task WhenIsHandledByEventHandler_ReturnsReadyToRunMessageHandlerTestState_IfTestEngineIsInWhenEventOrEventState()
-        {
-            await RunTestAsync(test =>
-            {
-                var state = test.WhenEvent<object>().IsHandledBy(new NullHandler(), (operation, context) => { });
-
-                Assert.IsNotNull(state);
-                Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task WhenIsHandledBy_Throws_IfConfiguratorIsNull()
-        {
-            await RunTestAsync(test =>
-            {
-                test.WhenEvent<object>().IsHandledBy<NullHandler>(null);
-            });
-        }
-
-        [TestMethod]
-        public async Task WhenIsHandledBy_ReturnsReadyToRunMessageHandlerTestState_IfTestEngineIsInWhenEventOrEventState()
-        {
-            await RunTestAsync(test =>
-            {
-                var state = test.WhenEvent<object>().IsHandledBy<NullHandler>((operation, context) => { });
-
-                Assert.IsNotNull(state);
-                Assert.AreEqual("Ready to process message of type 'Object' with message handler of type 'NullHandler'...", state.ToString());
-            });
-        }
-
-        #endregion
-
-        #region [====== ThenOutputIsException(...) ======]
+        #region [====== ThenOutputIs<...>() ======]
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
@@ -258,16 +143,13 @@ namespace Kingo.MicroServices.TestEngine
                 var errorMessage = Guid.NewGuid().ToString();
 
                 test.Given().Command<object>().IsExecutedBy((message, context) =>
-                { 
+                {
                     throw context.NewInternalServerErrorException(errorMessage);
                 }, new object());
 
                 try
                 {
-                    await test.WhenCommand<object>().IsExecutedBy((message, context) =>
-                    {
-                        throw context.NewBadRequestException();
-                    }, new object()).ThenOutputIs<BadRequestException>();
+                    await test.When().Request<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIs<BadRequestException>();
                 }
                 catch (TestFailedException exception)
                 {
@@ -284,7 +166,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIs<BadRequestException>();
+                await test.When().Request<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIs<BadRequestException>();
             });
         }
 
@@ -294,7 +176,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewInternalServerErrorException();
 
@@ -307,7 +189,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
 
@@ -320,7 +202,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewNotFoundException();
 
@@ -334,11 +216,11 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
 
-                }, new object()).ThenOutputIs<BadRequestException>((message, exception, context) =>
+                }, new object()).ThenOutputIs<BadRequestException>((request, exception, context) =>
                 {
                     throw NewRandomException();
                 });
@@ -352,13 +234,13 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var inputMessage = new object();
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
 
-                }, inputMessage).ThenOutputIs<BadRequestException>((message, exception, context) =>
+                }, inputMessage).ThenOutputIs<BadRequestException>((request, exception, context) =>
                 {
-                    Assert.AreSame(inputMessage, message);
+                    Assert.AreSame(inputMessage, request);
                 });
             });
         }
@@ -368,7 +250,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewBadRequestException();
 
@@ -378,11 +260,11 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        #region [====== ThenOutputIsMessageStream ======]
+        #region [====== ThenOutputIsResponse ======]
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task ThenOutputIsMessageStream_Throws_IfGivenOperationThrowsException()
+        public async Task ThenOutputIsResponse_Throws_IfGivenOperationThrowsException()
         {
             await RunTestAsync(async test =>
             {
@@ -396,7 +278,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 try
                 {
-                    await test.WhenCommand<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream();
+                    await test.When().Request<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse();
                 }
                 catch (TestFailedException exception)
                 {
@@ -409,34 +291,34 @@ namespace Kingo.MicroServices.TestEngine
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task ThenOutputIsMessageStream_Throws_IfWhenOperationThrowsException()
+        public async Task ThenOutputIsResponse_Throws_IfWhenOperationThrowsException()
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
                     throw NewRandomException();
 
-                }, new object()).ThenOutputIsMessageStream();
+                }, new object()).ThenOutputIsResponse();
             });
         }
 
         [TestMethod]
-        public async Task ThenOutputIsMessageStream_Succeeds_IfWhenOperationDoesNotThrowException_And_AssertMethodIsNotSpecified()
+        public async Task ThenOutputIsResponse_Succeeds_IfWhenOperationDoesNotThrowException_And_AssertMethodIsNotSpecified()
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream();
+                await test.When().Request<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse();
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(TestFailedException))]
-        public async Task ThenOutputIsMessageStream_Throws_IfAssertMethodThrowsException()
+        public async Task ThenOutputIsResponse_Throws_IfAssertMethodThrowsException()
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream((message, stream, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse((message, response, context) =>
                 {
                     throw NewRandomException();
                 });
@@ -444,58 +326,32 @@ namespace Kingo.MicroServices.TestEngine
         }
 
         [TestMethod]
-        public async Task ThenOutputIsMessageStream_Succeeds_IfAssertMethodDoesNotThrowException()
+        public async Task ThenOutputIsResponse_Succeeds_IfAssertMethodDoesNotThrowException()
         {
             await RunTestAsync(async test =>
             {
                 var inputMessage = new object();
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((message, context) =>
                 {
-                    context.MessageBus.PublishEvent(new object());
+                    return message;
 
-                }, inputMessage).ThenOutputIsMessageStream((message, stream, context) =>
+                }, inputMessage).ThenOutputIsResponse((request, response, context) =>
                 {
-                    Assert.AreSame(inputMessage, message);
-                    Assert.AreEqual(1, stream.Count);
+                    Assert.AreSame(inputMessage, request);
+                    Assert.AreSame(inputMessage, response);
                 });
             });
         }
 
         [TestMethod]
-        public async Task ThenOutputIsMessageStream_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
+        public async Task ThenOutputIsResponse_Succeeds_IfVerificationSucceeds_And_TearDownIsExecutedAfterwards()
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenCommand<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsMessageStream();
+                await test.When().Request<object>().Returning<object>().IsExecutedBy<NullQuery>(new object()).ThenOutputIsResponse();
 
             }, true, true);
-        }
-
-        #endregion
-
-        #region [====== ThenOutputIsEmptyStream ======]
-
-        [TestMethod]
-        public async Task ThenOutputIsEmptyStream_Succeeds_IfOperationProducesEmptyStream()
-        {
-            await RunTestAsync(async test =>
-            {
-                await test.WhenCommand<object>().IsExecutedBy<NullHandler>(new object()).ThenOutputIsEmptyStream();
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TestFailedException))]
-        public async Task ThenOutputIsEmptyStream_Throws_IfOperationProducesEmptyStream()
-        {
-            await RunTestAsync(async test =>
-            {
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
-                {
-                    context.MessageBus.PublishEvent(new object());
-                }, new object()).ThenOutputIsEmptyStream();
-            });
         }
 
         #endregion
@@ -517,11 +373,12 @@ namespace Kingo.MicroServices.TestEngine
 
                 }, new object());
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((request, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
 
-                }, new object()).ThenOutputIsEmptyStream();
+                }, new object()).ThenOutputIsResponse();
             });
         }
 
@@ -543,11 +400,12 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeIs(dateTwo);
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((request, context) =>
                 {
                     AssertSameDate(dateTwo, context.Clock.LocalDate());
+                    return request;
 
-                }, new object()).ThenOutputIsEmptyStream();
+                }, new object()).ThenOutputIsResponse();
             });
         }
 
@@ -566,11 +424,12 @@ namespace Kingo.MicroServices.TestEngine
 
                 }, new object());
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((request, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
 
-                }, new object()).ThenOutputIsEmptyStream();
+                }, new object()).ThenOutputIsResponse();
             });
         }
 
@@ -590,11 +449,12 @@ namespace Kingo.MicroServices.TestEngine
 
                 }, new object());
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((request, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
 
-                }, new object()).ThenOutputIsEmptyStream();
+                }, new object()).ThenOutputIsResponse();
             });
         }
 
@@ -616,11 +476,12 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(TimeSpan.Zero);
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((request, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
+                    return request;
 
-                }, new object()).ThenOutputIsEmptyStream();
+                }, new object()).ThenOutputIsResponse();
             });
         }
 
@@ -643,11 +504,12 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(offset);
 
-                await test.WhenCommand<object>().IsExecutedBy((message, context) =>
+                await test.When().Request<object>().Returning<object>().IsExecutedBy((request, context) =>
                 {
                     AssertSameDate(dateTwo, context.Clock.LocalDate());
+                    return request;
 
-                }, new object()).ThenOutputIsEmptyStream();
+                }, new object()).ThenOutputIsResponse();
             });
         }
 

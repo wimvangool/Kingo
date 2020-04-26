@@ -1,21 +1,17 @@
-﻿using System;
-using Kingo.MicroServices.Configuration;
+﻿using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.TestEngine
 {
-    public sealed class MessageHandlerTestStub : MessageHandlerTest, IMicroProcessorTestStub
+    public sealed class DataAccessTestStub : DataAccessTest, IMicroProcessorTestStub
     {
         #region [====== IMicroProcessorTestStub ======]
 
         public new IGivenState Given() =>
             base.Given();
 
-        public new IWhenCommandState<TCommand> WhenCommand<TCommand>() =>
-            base.WhenCommand<TCommand>();
-
-        public new IWhenEventState<TEvent> WhenEvent<TEvent>() =>
-            base.WhenEvent<TEvent>();
+        public new IWhenDataAccessTestState When() =>
+            base.When();
 
         #endregion
 
@@ -23,7 +19,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             return services.AddMicroProcessor(processor =>
             {
-                processor.MessageHandlers.Add<NullHandler>();
+                processor.Queries.Add<NullQuery>();
             });
         }
     }

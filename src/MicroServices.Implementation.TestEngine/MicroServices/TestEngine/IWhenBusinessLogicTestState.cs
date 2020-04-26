@@ -3,9 +3,10 @@
 namespace Kingo.MicroServices.TestEngine
 {
     /// <summary>
-    /// Serves as a base-class for all tests that verify the behavior of a message handler.
+    /// When implemented by a class, represents a state in which the test-engine prepares
+    /// to execute a command or handle an event.
     /// </summary>
-    public abstract class MessageHandlerTest : MicroProcessorTest
+    public interface IWhenBusinessLogicTestState
     {
         /// <summary>
         /// Schedules a specific command to be executed by a <see cref="IMessageHandler{TMessage}"/>,
@@ -19,8 +20,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        protected IWhenCommandState<TCommand> WhenCommand<TCommand>() =>
-            State.WhenCommand<TCommand>();
+        IWhenCommandState<TCommand> Command<TCommand>();
 
         /// <summary>
         /// Schedules a specific event to be handled by a <see cref="IMessageHandler{TMessage}"/>,
@@ -34,7 +34,6 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        protected IWhenEventState<TEvent> WhenEvent<TEvent>() =>
-            State.WhenEvent<TEvent>();
+        IWhenEventState<TEvent> Event<TEvent>();
     }
 }

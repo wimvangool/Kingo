@@ -23,18 +23,12 @@
             $"Ready to configure test ({_givenOperations}) | {_timeline}";
 
         public override IGivenState Given() =>
-            Test.MoveToState(this, new GivenState(_test, _timeline, _givenOperations));
+            _test.MoveToState(this, new GivenState(_test, _timeline, _givenOperations));
 
-        public override IWhenCommandState<TCommand> WhenCommand<TCommand>() =>
-            Test.MoveToState(this, new WhenCommandState<TCommand>(_test, _givenOperations));
+        public override IWhenBusinessLogicTestState WhenBusinessLogicTest() =>
+            _test.MoveToState(this, new WhenBusinessLogicTestState(_test, _givenOperations));
 
-        public override IWhenEventState<TEvent> WhenEvent<TEvent>() =>
-            Test.MoveToState(this, new WhenEventState<TEvent>(_test, _givenOperations));
-
-        public override IWhenRequestState WhenRequest() =>
-            Test.MoveToState(this, new WhenRequestState(_test, _givenOperations));
-
-        public override IWhenRequestState<TRequest> WhenRequest<TRequest>() =>
-            Test.MoveToState(this, new WhenRequestState<TRequest>(_test, _givenOperations));
+        public override IWhenDataAccessTestState WhenDataAccessTest() =>
+            _test.MoveToState(this, new WhenDataAccessTestState(_test, _givenOperations));
     }
 }

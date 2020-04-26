@@ -1,6 +1,5 @@
 ﻿using System;
 using Kingo.Reflection;
-using Kingo.Threading;
 
 namespace Kingo.Clocks
 {

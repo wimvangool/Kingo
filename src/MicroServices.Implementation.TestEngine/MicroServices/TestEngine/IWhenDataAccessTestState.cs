@@ -3,9 +3,10 @@
 namespace Kingo.MicroServices.TestEngine
 {
     /// <summary>
-    /// Serves as a base-class for all tests that verify the behavior of a query.
+    /// When implemented by a class, represents a state in which the test-engine prepares
+    /// to execute a request.
     /// </summary>
-    public abstract class QueryTest : MicroProcessorTest
+    public interface IWhenDataAccessTestState
     {
         /// <summary>
         /// Schedules a (void) request to be executed or handled by a <see cref="IQuery{TResponse}"/>,
@@ -17,8 +18,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        protected IWhenRequestState WhenRequest() =>
-            State.WhenRequest();
+        IWhenRequestState Request();
 
         /// <summary>
         /// Schedules a request to be executed or handled by a <see cref="IQuery{TRequest, TResponse}"/>,
@@ -31,7 +31,6 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        protected IWhenRequestState<TRequest> When<TRequest>() =>
-            State.WhenRequest<TRequest>();
+        IWhenRequestState<TRequest> Request<TRequest>();
     }
 }

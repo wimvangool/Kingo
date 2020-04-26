@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.TestEngine
 {
     [TestClass]
-    public sealed class QueryTestStubTest1 : QueryTestStubTest
+    public sealed class DataAccessTestStubTest1 : DataAccessTestStubTest
     {
         #region [====== WhenRequest ======]
 
@@ -16,7 +14,7 @@ namespace Kingo.MicroServices.TestEngine
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task WhenRequest_Throws_IfSetupWasNotCalled()
         {
-            await RunTestAsync(test => test.WhenRequest(), false);
+            await RunTestAsync(test => test.When().Request(), false);
         }
 
         [TestMethod]
@@ -24,7 +22,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenRequest();
+                var state = test.When().Request();
 
                 Assert.IsNotNull(state);
                 Assert.AreEqual("Configuring a query of type 'IQuery<TResponse>'...", state.ToString());
@@ -39,7 +37,7 @@ namespace Kingo.MicroServices.TestEngine
                 test.Given().TimeIs(2020, 2, 5);
                 test.Given().Event<object>().IsHandledBy<NullHandler>((operation, context) => { });
 
-                Assert.IsNotNull(test.WhenRequest());
+                Assert.IsNotNull(test.When().Request());
             });
         }
 
@@ -49,21 +47,21 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.WhenRequest();
-                test.WhenRequest();
+                test.When().Request();
+                test.When().Request();
             });
         }
 
         #endregion
 
-        #region [====== WhenRequest().Returning<...>() ======]
+        #region [====== When().Request().Returning<...>() ======]
 
         [TestMethod]
         public async Task WhenReturning_ReturnsWhenReturningState_IfTestEngineIsInWhenRequestState()
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenRequest().Returning<object>();
+                var state = test.When().Request().Returning<object>();
 
                 Assert.IsNotNull(state);
                 Assert.AreEqual("Configuring a query of type 'IQuery<Object>'...", state.ToString());
@@ -76,7 +74,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenRequest();
+                var state = test.When().Request();
 
                 state.Returning<object>();
                 state.Returning<object>();
@@ -85,7 +83,7 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        #region [====== WhenRequest().Returning<...>().IsExecutedByQuery(...) ======]
+        #region [====== When().Request().Returning<...>().IsExecutedByQuery(...) ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -93,7 +91,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.WhenRequest().Returning<object>().IsExecutedBy(null);
+                test.When().Request().Returning<object>().IsExecutedBy(null);
             });
         }
 
@@ -102,7 +100,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenRequest().Returning<object>().IsExecutedBy(new NullQuery());
+                var state = test.When().Request().Returning<object>().IsExecutedBy(new NullQuery());
 
                 Assert.IsNotNull(state);
                 Assert.AreEqual("Ready to process request with query of type 'NullQuery'...", state.ToString());
@@ -115,7 +113,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                var state = test.WhenRequest().Returning<object>();
+                var state = test.When().Request().Returning<object>();
 
                 state.IsExecutedBy(new NullQuery());
                 state.IsExecutedBy(new NullQuery());
@@ -141,7 +139,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 try
                 {
-                    await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIs<BadRequestException>();
+                    await test.When().Request().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIs<BadRequestException>();
                 }
                 catch (TestFailedException exception)
                 {
@@ -158,7 +156,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIs<BadRequestException>();
+                await test.When().Request().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIs<BadRequestException>();
             });
         }
 
@@ -168,7 +166,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     throw context.NewInternalServerErrorException();
 
@@ -181,7 +179,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     throw context.NewBadRequestException();
 
@@ -194,7 +192,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     throw context.NewNotFoundException();
 
@@ -208,7 +206,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     throw context.NewBadRequestException();
 
@@ -224,7 +222,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     throw context.NewBadRequestException();
 
@@ -240,7 +238,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     throw context.NewBadRequestException();
 
@@ -268,7 +266,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 try
                 {
-                    await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
+                    await test.When().Request().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
                 }
                 catch (TestFailedException exception)
                 {
@@ -285,7 +283,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     throw NewRandomException();
 
@@ -298,7 +296,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
+                await test.When().Request().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
             });
         }
 
@@ -308,7 +306,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse((response, context) =>
+                await test.When().Request().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse((response, context) =>
                 {
                     throw NewRandomException();
                 });
@@ -322,7 +320,7 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var responseMessage = new object();
 
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     return responseMessage;
 
@@ -338,7 +336,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(async test =>
             {
-                await test.WhenRequest().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
+                await test.When().Request().Returning<object>().IsExecutedBy<NullQuery>().ThenOutputIsResponse();
 
             }, true, true);
         }
@@ -362,7 +360,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 }, new object());
 
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
                     return new object();
@@ -389,7 +387,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeIs(dateTwo);
 
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     AssertSameDate(dateTwo, context.Clock.LocalDate());
                     return new object();
@@ -413,7 +411,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 }, new object());
 
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
                     return new object();
@@ -438,7 +436,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 }, new object());
 
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
                     return new object();
@@ -465,7 +463,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(TimeSpan.Zero);
 
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
                     return new object();
@@ -493,7 +491,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(offset);
 
-                await test.WhenRequest().Returning<object>().IsExecutedBy(context =>
+                await test.When().Request().Returning<object>().IsExecutedBy(context =>
                 {
                     AssertSameDate(dateTwo, context.Clock.LocalDate());
                     return new object();
