@@ -106,21 +106,6 @@ namespace Kingo.MicroServices.TestEngine
         #region [====== Given ======]
 
         /// <summary>
-        /// Prepares the specified <typeparamref name="TMessage"/> to be handled or executed by a
-        /// <see cref="IMessageHandler{TMessage}" /> during the setup-phase of a test.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-        /// <returns>
-        /// A <see cref="IGivenCommandOrEventState{TMessage}"/> that can be used to configure which
-        /// <see cref="IMessageHandler{TMessage}"/> to use when handling or executing the specified message.
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// The test-engine is not in a state where it can perform this operation.
-        /// </exception>
-        protected IGivenCommandOrEventState<TMessage> Given<TMessage>() =>
-            Given().Message<TMessage>();
-
-        /// <summary>
         /// Returns the <see cref="IGivenState" /> that can be used to setup a test.
         /// </summary>
         /// <returns>The <see cref="IGivenState"/> of the current test.</returns>

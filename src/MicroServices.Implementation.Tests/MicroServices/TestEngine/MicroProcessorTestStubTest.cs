@@ -44,7 +44,7 @@ namespace Kingo.MicroServices.TestEngine
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>();
+                test.Given().Command<object>();
                 test.Given();
             });
         }
@@ -134,7 +134,7 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var givenState = test.Given();
 
-                givenState.Message<object>();
+                givenState.Command<object>();
                 givenState.TimeHasPassed(TimeSpan.FromTicks(1));
             });
         }
@@ -182,7 +182,7 @@ namespace Kingo.MicroServices.TestEngine
             {
                 // By scheduling a message-operation, we force the timeline to commit to relative time.
                 // Hence, specifying a specific (absolute) time after it is not valid.
-                test.Given().Message<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     // No operation.
                 }, new object());
@@ -210,72 +210,221 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var givenState = test.Given();
 
-                givenState.Message<object>();
+                givenState.Command<object>();
                 givenState.TimeHasPassed(TimeSpan.FromTicks(1));
             });
         }
 
         #endregion
 
-        #region [====== Given().Message<...>(...) ======]
+        #region [====== Given().Command<...>(...) ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task Given_Message_IsExecutedBy_Throws_IfConfiguratorIsNull()
+        public async Task Given_Command_IsExecutedBy_Throws_IfConfiguratorIsNull()
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsExecutedBy<NullHandler>(null);
+                test.Given().Command<object>().IsExecutedBy<NullHandler>(null);
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task Given_Message_IsExecutedByCommandHandler_Throws_IfConfiguratorIsNull()
+        public async Task Given_Command_IsExecutedByCommandHandler_Throws_IfConfiguratorIsNull()
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsExecutedBy((message, context) => { }, null);
+                test.Given().Command<object>().IsExecutedBy((message, context) => { }, null);
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task Given_Message_IsExecutedByCommandHandler_Throws_IfMessageHandlerIsNull()
+        public async Task Given_Command_IsExecutedByCommandHandler_Throws_IfMessageHandlerIsNull()
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsExecutedBy(null, (operation, context) => { });
+                test.Given().Command<object>().IsExecutedBy(null, (operation, context) => { });
+            });
+        }
+
+        #endregion
+
+        #region [====== Given().Event<...>(...) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task Given_Event_IsHandledBy_Throws_IfConfiguratorIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.Given().Event<object>().IsHandledBy<NullHandler>(null);
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task Given_Message_IsHandledBy_Throws_IfConfiguratorIsNull()
+        public async Task Given_Event_IsHandledByCommandHandler_Throws_IfConfiguratorIsNull()
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsHandledBy<NullHandler>(null);
+                test.Given().Event<object>().IsHandledBy((message, context) => { }, null);
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task Given_Message_IsHandledByCommandHandler_Throws_IfConfiguratorIsNull()
+        public async Task Given_Event_IsHandledByCommandHandler_Throws_IfMessageHandlerIsNull()
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsHandledBy((message, context) => { }, null);
+                test.Given().Event<object>().IsHandledBy(null, (operation, context) => { });
+            });
+        }
+
+        #endregion
+
+        #region [====== Given().Request().Returning<...>().IsExecutedBy<...>() ======]
+
+        [TestMethod]
+        public async Task Given_Request_ReturnsGivenRequestState_IfTestEngineIsInReadyToConfigureState()
+        {
+            await RunTestAsync(test =>
+            {
+                Assert.IsNotNull(test.Given().Request());
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task Given_Request_Throws_IfTestEngineIsNotInReadyToConfigureTestState()
+        {
+            await RunTestAsync(test =>
+            {
+                var state = test.Given();
+
+                state.Request();
+                state.Request();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_ReturningResponse1_ReturnsGivenResponseState_IfTestEngineIsInGivenRequestOfTypeState()
+        {
+            await RunTestAsync(test =>
+            {
+                Assert.IsNotNull(test.Given().Request().Returning<object>());
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task Given_ReturningResponse1_Throws_IfTestEngineIsNotInGivenRequestOfTypeState()
+        {
+            await RunTestAsync(test =>
+            {
+                var state = test.Given().Request();
+
+                state.Returning<object>();
+                state.Returning<object>();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_Request_IsExecutedBy_SchedulesRequestOperation_IfConfiguratorIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.Given().Request().Returning<object>().IsExecutedBy<NullQuery>();
             });
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task Given_Message_IsHandledByCommandHandler_Throws_IfMessageHandlerIsNull()
+        public async Task Given_Request_IsExecutedByQuery_Throws_IfQueryIsNull()
         {
             await RunTestAsync(test =>
             {
-                test.Given().Message<object>().IsHandledBy(null, (operation, context) => { });
+                test.Given().Request().Returning<object>().IsExecutedBy(null);
+            });
+        }
+
+        #endregion
+
+        #region [====== Given().Request<...>().Returning<...>().IsExecutedBy<...>() ======]
+
+        [TestMethod]
+        public async Task Given_RequestOfType_ReturnsGivenRequestState_IfTestEngineIsInReadyToConfigureState()
+        {
+            await RunTestAsync(test =>
+            {
+                Assert.IsNotNull(test.Given().Request<object>());
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task Given_RequestOfType_Throws_IfTestEngineIsNotInReadyToConfigureTestState()
+        {
+            await RunTestAsync(test =>
+            {
+                var state = test.Given();
+                
+                state.Request<object>();
+                state.Request<object>();
+            });
+        }
+
+        [TestMethod]
+        public async Task Given_ReturningResponse2_ReturnsGivenResponseState_IfTestEngineIsInGivenRequestOfTypeState()
+        {
+            await RunTestAsync(test =>
+            {
+                Assert.IsNotNull(test.Given().Request<object>().Returning<object>());
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task Given_ReturningResponse2_Throws_IfTestEngineIsNotInGivenRequestOfTypeState()
+        {
+            await RunTestAsync(test =>
+            {
+                var state = test.Given().Request<object>();
+                    
+                state.Returning<object>();
+                state.Returning<object>();
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task Given_RequestOfType_IsExecutedBy_Throws_IfConfiguratorIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.Given().Request<object>().Returning<object>().IsExecutedBy<NullQuery>(null);
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task Given_RequestOfType_IsExecutedByQuery_Throws_IfConfiguratorIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.Given().Request<object>().Returning<object>().IsExecutedBy((message, context) => message, null);
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task Given_RequestOfType_IsExecutedByQuery_Throws_IfQueryIsNull()
+        {
+            await RunTestAsync(test =>
+            {
+                test.Given().Request<object>().Returning<object>().IsExecutedBy(null, (operation, context) => { });
             });
         }
 

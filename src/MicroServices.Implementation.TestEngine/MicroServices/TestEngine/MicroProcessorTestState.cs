@@ -26,8 +26,11 @@ namespace Kingo.MicroServices.TestEngine
         public virtual IGivenState Given() =>
             throw NewInvalidOperationException(nameof(Given));
 
-        public virtual IWhenCommandOrEventState<TMessage> WhenCommandOrEvent<TMessage>() =>
-            throw NewInvalidOperationException(nameof(WhenCommandOrEvent));
+        public virtual IWhenCommandState<TCommand> WhenCommand<TCommand>() =>
+            throw NewInvalidOperationException(nameof(WhenCommand));
+
+        public virtual IWhenEventState<TEvent> WhenEvent<TEvent>() =>
+            throw NewInvalidOperationException(nameof(WhenEvent));
 
         public virtual IWhenRequestState WhenRequest() =>
             throw NewInvalidOperationException(nameof(WhenRequest));

@@ -7,9 +7,9 @@ using static Kingo.MicroServices.TestEngine.MicroProcessorTestContext;
 namespace Kingo.MicroServices.TestEngine
 {
     /// <summary>
-    /// Contains extension methods for instances of type <see cref="IWhenCommandOrEventState{TMessage}" />.
+    /// Contains extension methods for instances of type <see cref="IWhenCommandState{TMessage}" /> and <see cref="IWhenEventState{TEvent}" />.
     /// </summary>
-    public static class WhenCommandOrEventStateExtensions
+    public static class WhenMessageStateExtensions
     {
         #region [====== IsExecutedBy ======]
 
@@ -26,8 +26,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message) =>
-            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), ConfigureMessage(message));
+        public static IReadyToRunMessageHandlerTestState<TCommand> IsExecutedBy<TCommand>(this IWhenCommandState<TCommand> state, Action<TCommand, IMessageHandlerOperationContext> messageHandler, TCommand message) =>
+            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), ConfigureMessage(message));
 
         /// <summary>
         /// Prepares the command to be executed by the specified <paramref name="messageHandler" />.
@@ -42,8 +42,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Action<TMessage, IMessageHandlerOperationContext> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
-            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configurator);
+        public static IReadyToRunMessageHandlerTestState<TCommand> IsExecutedBy<TCommand>(this IWhenCommandState<TCommand> state, Action<TCommand, IMessageHandlerOperationContext> messageHandler, Action<MessageHandlerTestOperationInfo<TCommand>, MicroProcessorTestContext> configurator) =>
+            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), configurator);
 
         /// <summary>
         /// Prepares the command to be executed by the specified <paramref name="messageHandler" />.
@@ -58,8 +58,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
-            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
+        public static IReadyToRunMessageHandlerTestState<TCommand> IsExecutedBy<TCommand>(this IWhenCommandState<TCommand> state, Func<TCommand, IMessageHandlerOperationContext, Task> messageHandler, TCommand message) =>
+            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message);
 
         /// <summary>
         /// Prepares the command to be executed by the specified <paramref name="messageHandler" />.
@@ -74,8 +74,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
-            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configurator);
+        public static IReadyToRunMessageHandlerTestState<TCommand> IsExecutedBy<TCommand>(this IWhenCommandState<TCommand> state, Func<TCommand, IMessageHandlerOperationContext, Task> messageHandler, Action<MessageHandlerTestOperationInfo<TCommand>, MicroProcessorTestContext> configurator) =>
+            NotNull(state).IsExecutedBy(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), configurator);
 
         /// <summary>
         /// Prepares the command to be executed by the specified <paramref name="messageHandler" />.
@@ -90,7 +90,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsExecutedBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, IMessageHandler<TMessage> messageHandler, TMessage message) =>
+        public static IReadyToRunMessageHandlerTestState<TCommand> IsExecutedBy<TCommand>(this IWhenCommandState<TCommand> state, IMessageHandler<TCommand> messageHandler, TCommand message) =>
             NotNull(state).IsExecutedBy(messageHandler, ConfigureMessage(message));
 
         #endregion
@@ -110,8 +110,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message) =>
-            NotNull(state).IsHandledBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
+        public static IReadyToRunMessageHandlerTestState<TEvent> IsHandledBy<TEvent>(this IWhenEventState<TEvent> state, Action<TEvent, IMessageHandlerOperationContext> messageHandler, TEvent message) =>
+            NotNull(state).IsHandledBy(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message);
 
         /// <summary>
         /// Prepares the event to be handled by the specified <paramref name="messageHandler" />.
@@ -126,8 +126,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Action<TMessage, IMessageHandlerOperationContext> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
-            NotNull(state).IsHandledBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configurator);
+        public static IReadyToRunMessageHandlerTestState<TEvent> IsHandledBy<TEvent>(this IWhenEventState<TEvent> state, Action<TEvent, IMessageHandlerOperationContext> messageHandler, Action<MessageHandlerTestOperationInfo<TEvent>, MicroProcessorTestContext> configurator) =>
+            NotNull(state).IsHandledBy(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), configurator);
 
         /// <summary>
         /// Prepares the event to be handled by the specified <paramref name="messageHandler" />.
@@ -142,8 +142,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message) =>
-            NotNull(state).IsHandledBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), message);
+        public static IReadyToRunMessageHandlerTestState<TEvent> IsHandledBy<TEvent>(this IWhenEventState<TEvent> state, Func<TEvent, IMessageHandlerOperationContext, Task> messageHandler, TEvent message) =>
+            NotNull(state).IsHandledBy(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message);
 
         /// <summary>
         /// Prepares the event to be handled by the specified <paramref name="messageHandler" />.
@@ -158,8 +158,8 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
-            NotNull(state).IsHandledBy(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configurator);
+        public static IReadyToRunMessageHandlerTestState<TEvent> IsHandledBy<TEvent>(this IWhenEventState<TEvent> state, Func<TEvent, IMessageHandlerOperationContext, Task> messageHandler, Action<MessageHandlerTestOperationInfo<TEvent>, MicroProcessorTestContext> configurator) =>
+            NotNull(state).IsHandledBy(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), configurator);
 
         /// <summary>
         /// Prepares the event to be handled by the specified <paramref name="messageHandler" />.
@@ -174,12 +174,12 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunMessageHandlerTestState<TMessage> IsHandledBy<TMessage>(this IWhenCommandOrEventState<TMessage> state, IMessageHandler<TMessage> messageHandler, TMessage message) =>
+        public static IReadyToRunMessageHandlerTestState<TEvent> IsHandledBy<TEvent>(this IWhenEventState<TEvent> state, IMessageHandler<TEvent> messageHandler, TEvent message) =>
             NotNull(state).IsHandledBy(messageHandler, ConfigureMessage(message));
 
         #endregion
 
-        private static IWhenCommandOrEventState<TMessage> NotNull<TMessage>(IWhenCommandOrEventState<TMessage> state) =>
+        private static TState NotNull<TState>(TState state) where TState : class =>
             state ?? throw new ArgumentNullException(nameof(state));
     }
 }

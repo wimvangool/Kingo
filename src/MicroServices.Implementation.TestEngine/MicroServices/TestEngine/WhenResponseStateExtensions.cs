@@ -7,9 +7,9 @@ using static Kingo.MicroServices.TestEngine.MicroProcessorTestContext;
 namespace Kingo.MicroServices.TestEngine
 {
     /// <summary>
-    /// Contains extension methods for instances of type <see cref="IWhenCommandOrEventState{TMessage}" />.
+    /// Contains extension methods for instances of type <see cref="IWhenCommandState{TMessage}" />.
     /// </summary>
-    public static class WhenReturningStateExtensions
+    public static class WhenResponseStateExtensions
     {
         #region [====== IsExecutedByQuery (1) ======]
 
@@ -26,7 +26,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunQueryTestState<TResponse> IsExecutedBy<TResponse>(this IWhenReturningState<TResponse> state, Func<IQueryOperationContext, TResponse> query, Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator = null) =>
+        public static IReadyToRunQueryTestState<TResponse> IsExecutedBy<TResponse>(this IWhenResponseState<TResponse> state, Func<IQueryOperationContext, TResponse> query, Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator = null) =>
             NotNull(state).IsExecutedBy(QueryDecorator<TResponse>.Decorate(query), configurator);
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunQueryTestState<TResponse> IsExecutedBy<TResponse>(this IWhenReturningState<TResponse> state, Func<IQueryOperationContext, Task<TResponse>> query, Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator = null) =>
+        public static IReadyToRunQueryTestState<TResponse> IsExecutedBy<TResponse>(this IWhenResponseState<TResponse> state, Func<IQueryOperationContext, Task<TResponse>> query, Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator = null) =>
             NotNull(state).IsExecutedBy(QueryDecorator<TResponse>.Decorate(query), configurator);
 
         #endregion
@@ -62,7 +62,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenReturningState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, TResponse> query, TRequest request) =>
+        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenResponseState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, TResponse> query, TRequest request) =>
             state.IsExecutedBy(query, ConfigureRequest(request));
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenReturningState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, TResponse> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) =>
+        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenResponseState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, TResponse> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) =>
             NotNull(state).IsExecutedBy(QueryDecorator<TRequest, TResponse>.Decorate(query), configurator);
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenReturningState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest request) =>
+        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenResponseState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest request) =>
             state.IsExecutedBy(query, ConfigureRequest(request));
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenReturningState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, Task<TResponse>> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) =>
+        public static IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TRequest, TResponse>(this IWhenResponseState<TRequest, TResponse> state, Func<TRequest, IQueryOperationContext, Task<TResponse>> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) =>
             NotNull(state).IsExecutedBy(QueryDecorator<TRequest, TResponse>.Decorate(query), configurator);
 
         #endregion

@@ -25,8 +25,11 @@
         public override IGivenState Given() =>
             Test.MoveToState(this, new GivenState(_test, _timeline, _givenOperations));
 
-        public override IWhenCommandOrEventState<TMessage> WhenCommandOrEvent<TMessage>() =>
-            Test.MoveToState(this, new WhenCommandOrEventState<TMessage>(_test, _givenOperations));
+        public override IWhenCommandState<TCommand> WhenCommand<TCommand>() =>
+            Test.MoveToState(this, new WhenCommandState<TCommand>(_test, _givenOperations));
+
+        public override IWhenEventState<TEvent> WhenEvent<TEvent>() =>
+            Test.MoveToState(this, new WhenEventState<TEvent>(_test, _givenOperations));
 
         public override IWhenRequestState WhenRequest() =>
             Test.MoveToState(this, new WhenRequestState(_test, _givenOperations));

@@ -6,12 +6,12 @@ using static Kingo.MicroServices.TestEngine.MicroProcessorTestContext;
 
 namespace Kingo.MicroServices.TestEngine
 {
-    internal sealed class WhenReturningState<TRequest, TResponse> : MicroProcessorTestState, IWhenReturningState<TRequest, TResponse>
+    internal sealed class WhenResponseState<TRequest, TResponse> : MicroProcessorTestState, IWhenResponseState<TRequest, TResponse>
     {
         private readonly MicroProcessorTest _test;
         private readonly MicroProcessorTestOperationQueue _givenOperations;
 
-        public WhenReturningState(MicroProcessorTest test, MicroProcessorTestOperationQueue givenOperations)
+        public WhenResponseState(MicroProcessorTest test, MicroProcessorTestOperationQueue givenOperations)
         {
             _test = test;
             _givenOperations = givenOperations;

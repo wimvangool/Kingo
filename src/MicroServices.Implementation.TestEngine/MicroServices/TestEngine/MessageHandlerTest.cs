@@ -8,10 +8,10 @@ namespace Kingo.MicroServices.TestEngine
     public abstract class MessageHandlerTest : MicroProcessorTest
     {
         /// <summary>
-        /// Schedules a specific type of message to be executed or handled by a <see cref="IMessageHandler{TMessage}"/>,
+        /// Schedules a specific command to be executed by a <see cref="IMessageHandler{TMessage}"/>,
         /// of which the behavior will be recorded and verified.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
+        /// <typeparam name="TCommand">Type of the message to handle.</typeparam>
         /// <returns>
         /// The state that can be used to specify the <see cref="IMessageHandler{TMessage}"/> that will be used
         /// to execute or handle the message.
@@ -19,7 +19,22 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        protected IWhenCommandOrEventState<TMessage> When<TMessage>() =>
-            State.WhenCommandOrEvent<TMessage>();
+        protected IWhenCommandState<TCommand> WhenCommand<TCommand>() =>
+            State.WhenCommand<TCommand>();
+
+        /// <summary>
+        /// Schedules a specific event to be handled by a <see cref="IMessageHandler{TMessage}"/>,
+        /// of which the behavior will be recorded and verified.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the message to handle.</typeparam>
+        /// <returns>
+        /// The state that can be used to specify the <see cref="IMessageHandler{TMessage}"/> that will be used
+        /// to execute or handle the message.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// The test-engine is not in a state where it can perform this operation.
+        /// </exception>
+        protected IWhenEventState<TEvent> WhenEvent<TEvent>() =>
+            State.WhenEvent<TEvent>();
     }
 }

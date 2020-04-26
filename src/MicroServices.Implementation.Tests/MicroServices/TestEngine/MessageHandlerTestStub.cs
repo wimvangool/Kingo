@@ -11,11 +11,11 @@ namespace Kingo.MicroServices.TestEngine
         public new IGivenState Given() =>
             base.Given();
 
-        public new IGivenCommandOrEventState<TMessage> Given<TMessage>() =>
-            base.Given<TMessage>();
+        public new IWhenCommandState<TCommand> WhenCommand<TCommand>() =>
+            base.WhenCommand<TCommand>();
 
-        public new IWhenCommandOrEventState<TMessage> When<TMessage>() =>
-            base.When<TMessage>();
+        public new IWhenEventState<TEvent> WhenEvent<TEvent>() =>
+            base.WhenEvent<TEvent>();
 
         #endregion
 

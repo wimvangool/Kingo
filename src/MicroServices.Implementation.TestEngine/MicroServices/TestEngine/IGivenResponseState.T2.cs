@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Kingo.MicroServices.TestEngine
 {
@@ -8,7 +10,7 @@ namespace Kingo.MicroServices.TestEngine
     /// </summary>
     /// <typeparam name="TRequest">Type of the request executed by the query.</typeparam>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public interface IWhenReturningState<TRequest, TResponse>
+    public interface IGivenResponseState<TRequest, TResponse>
     {
         /// <summary>
         /// Schedules the request to be executed by a query of type <typeparamref name="TQuery" />.
@@ -19,7 +21,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TQuery>(TRequest request)
+        void IsExecutedBy<TQuery>(TRequest request)
             where TQuery : class, IQuery<TRequest, TResponse>;
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy<TQuery>(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator)
+        void IsExecutedBy<TQuery>(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator)
             where TQuery : class, IQuery<TRequest, TResponse>;
 
         /// <summary>
@@ -49,6 +51,6 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="InvalidOperationException">
         /// The test-engine is not in a state where it can perform this operation.
         /// </exception>
-        IReadyToRunQueryTestState<TRequest, TResponse> IsExecutedBy(IQuery<TRequest, TResponse> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator);
+        void IsExecutedBy(IQuery<TRequest, TResponse> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator);
     }
 }

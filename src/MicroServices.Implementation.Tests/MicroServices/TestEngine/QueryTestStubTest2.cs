@@ -37,7 +37,7 @@ namespace Kingo.MicroServices.TestEngine
             await RunTestAsync(test =>
             {
                 test.Given().TimeIs(2020, 2, 5);
-                test.Given<object>().IsHandledBy<NullHandler>((operation, context) => { });
+                test.Given().Event<object>().IsHandledBy<NullHandler>((operation, context) => { });
 
                 Assert.IsNotNull(test.When<object>());
             });
@@ -144,7 +144,7 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var errorMessage = Guid.NewGuid().ToString();
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewInternalServerErrorException(errorMessage);
                 }, new object());
@@ -272,7 +272,7 @@ namespace Kingo.MicroServices.TestEngine
             {
                 var errorMessage = Guid.NewGuid().ToString();
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     throw context.NewInternalServerErrorException(errorMessage);
 
@@ -369,7 +369,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeIs(date);
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
 
@@ -394,7 +394,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeIs(dateOne);
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     AssertSameDate(dateOne, context.Clock.LocalDate());
 
@@ -420,7 +420,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(TimeSpan.Zero);
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
 
@@ -445,7 +445,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(offset);
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
 
@@ -470,7 +470,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(offset);
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     AssertSameDate(date, context.Clock.LocalDate());
 
@@ -498,7 +498,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 test.Given().TimeHasPassed(offset);
 
-                test.Given<object>().IsExecutedBy((message, context) =>
+                test.Given().Command<object>().IsExecutedBy((message, context) =>
                 {
                     AssertSameDate(dateOne, context.Clock.LocalDate());
 

@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             $"Configuring a query of type '{typeof(IQuery<>).FriendlyName()}'...";
 
-        public IWhenReturningState<TResponse> Returning<TResponse>() =>
-            _test.MoveToState(this, new WhenReturningState<TResponse>(_test, _givenOperations));
+        public IWhenResponseState<TResponse> Returning<TResponse>() =>
+            _test.MoveToState(this, new WhenResponseState<TResponse>(_test, _givenOperations));
     }
 }

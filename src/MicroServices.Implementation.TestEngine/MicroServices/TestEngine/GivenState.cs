@@ -19,6 +19,9 @@ namespace Kingo.MicroServices.TestEngine
             protected override MicroProcessorTest Test =>
                 _givenState._test;
 
+            protected GivenState GivenState =>
+                _givenState;
+
             public override string ToString() =>
                 _givenState.ToString();
 
@@ -69,11 +72,11 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        #region [====== MessageState<TMessage> ======]
+        #region [====== MessageState ======]
 
-        private sealed class MessageState<TMessage> : GivenTimeOrMessageState, IGivenCommandOrEventState<TMessage>
+        private abstract class MessageState : GivenTimeOrMessageState
         {
-            public MessageState(GivenState givenState) : base(givenState)
+            protected MessageState(GivenState givenState) : base(givenState)
             {
                 // Whenever a new message-operation is scheduled, the timeline must commit to
                 // absolute or relative time, because this can no longer change after a message-operation
@@ -83,24 +86,99 @@ namespace Kingo.MicroServices.TestEngine
                 // can result in weird behavior (i.e. going backwards in time).
                 givenState._timeline.CommitToAbsoluteOrRelativeTime();
             }
+        }
 
-            public void IsExecutedBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
+        #endregion
+
+        #region [====== CommandState<TCommand> ======]
+
+        private sealed class CommandState<TCommand> : MessageState, IGivenCommandState<TCommand>
+        {
+            public CommandState(GivenState givenState) : base(givenState) { }
+
+            public void IsExecutedBy<TMessageHandler>(TCommand message) where TMessageHandler : class, IMessageHandler<TCommand> =>
                 IsExecutedBy<TMessageHandler>(ConfigureMessage(message));
 
-            public void IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
-                AddOperation(new CommandOperation<TMessage, TMessageHandler>(configurator));
+            public void IsExecutedBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TCommand>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TCommand> =>
+                AddOperation(new CommandOperation<TCommand, TMessageHandler>(configurator));
 
-            public void IsExecutedBy(IMessageHandler<TMessage> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
-                AddOperation(new CommandOperation<TMessage>(messageHandler, configurator));
+            public void IsExecutedBy(IMessageHandler<TCommand> messageHandler, Action<MessageHandlerTestOperationInfo<TCommand>, MicroProcessorTestContext> configurator) =>
+                AddOperation(new CommandOperation<TCommand>(messageHandler, configurator));
+        }
 
-            public void IsHandledBy<TMessageHandler>(TMessage message) where TMessageHandler : class, IMessageHandler<TMessage> =>
-                IsHandledBy<TMessageHandler>(ConfigureMessage(message));
+        #endregion
 
-            public void IsHandledBy<TMessageHandler>(Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) where TMessageHandler : class, IMessageHandler<TMessage> =>
-                AddOperation(new EventOperation<TMessage, TMessageHandler>(configurator));
+        #region [====== EventState<TEvent> ======]
 
-            public void IsHandledBy(IMessageHandler<TMessage> messageHandler, Action<MessageHandlerTestOperationInfo<TMessage>, MicroProcessorTestContext> configurator) =>
-                AddOperation(new EventOperation<TMessage>(messageHandler, configurator));
+        private sealed class EventState<TEvent> : MessageState, IGivenEventState<TEvent>
+        {
+            public EventState(GivenState givenState) : base(givenState) { }
+
+            public void IsHandledBy<TEventHandler>(TEvent message) where TEventHandler : class, IMessageHandler<TEvent> =>
+                IsHandledBy<TEventHandler>(ConfigureMessage(message));
+
+            public void IsHandledBy<TEventHandler>(Action<MessageHandlerTestOperationInfo<TEvent>, MicroProcessorTestContext> configurator) where TEventHandler : class, IMessageHandler<TEvent> =>
+                AddOperation(new EventOperation<TEvent, TEventHandler>(configurator));
+
+            public void IsHandledBy(IMessageHandler<TEvent> messageHandler, Action<MessageHandlerTestOperationInfo<TEvent>, MicroProcessorTestContext> configurator) =>
+                AddOperation(new EventOperation<TEvent>(messageHandler, configurator));
+        }
+
+        #endregion
+
+        #region [====== RequestState<TRequest> ======]
+
+        private sealed class RequestState : MessageState, IGivenRequestState
+        {
+            public RequestState(GivenState givenState) : base(givenState) { }
+
+            public IGivenResponseState<TResponse> Returning<TResponse>() =>
+                Test.MoveToState(this, new ResponseState<TResponse>(GivenState));
+        }
+
+        #endregion
+
+        #region [====== RequestState<TRequest> ======]
+
+        private sealed class RequestState<TRequest> : MessageState, IGivenRequestState<TRequest>
+        {
+            public RequestState(GivenState givenState) : base(givenState) { }
+
+            public IGivenResponseState<TRequest, TResponse> Returning<TResponse>() =>
+                Test.MoveToState(this, new ResponseState<TRequest, TResponse>(GivenState));
+        }
+
+        #endregion
+
+        #region [====== ResponseState<TResponse> ======]
+
+        private sealed class ResponseState<TResponse> : MessageState, IGivenResponseState<TResponse>
+        {
+            public ResponseState(GivenState givenState) : base(givenState) { }
+
+            public void IsExecutedBy<TQuery>(Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator = null) where TQuery : class, IQuery<TResponse> =>
+                AddOperation(new QueryTestOperation1<TResponse, TQuery>(configurator));
+
+            public void IsExecutedBy(IQuery<TResponse> query, Action<QueryTestOperationInfo, MicroProcessorTestContext> configurator = null) =>
+                AddOperation(new QueryTestOperation1<TResponse>(configurator, query));
+        }
+
+        #endregion
+
+        #region [====== ResponseState<TRequest, TResponse> ======]
+
+        private sealed class ResponseState<TRequest, TResponse> : MessageState, IGivenResponseState<TRequest, TResponse>
+        {
+            public ResponseState(GivenState givenState) : base(givenState) { }
+
+            public void IsExecutedBy<TQuery>(TRequest request) where TQuery : class, IQuery<TRequest, TResponse> =>
+                IsExecutedBy<TQuery>(ConfigureRequest(request));
+
+            public void IsExecutedBy<TQuery>(Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) where TQuery : class, IQuery<TRequest, TResponse> =>
+                AddOperation(new QueryTestOperation2<TRequest, TResponse, TQuery>(configurator));
+
+            public void IsExecutedBy(IQuery<TRequest, TResponse> query, Action<QueryTestOperationInfo<TRequest>, MicroProcessorTestContext> configurator) =>
+                AddOperation(new QueryTestOperation2<TRequest, TResponse>(configurator, query));
         }
 
         #endregion
@@ -122,6 +200,8 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             $"Scheduling new operation... ({_givenOperations}) | {_timeline}";
 
+        #region [====== Time ======]
+
         public void TimeIs(DateTimeOffset value) =>
             AddGivenOperation(this, _timeline.CreateTimeIsOperation(value));
 
@@ -134,7 +214,26 @@ namespace Kingo.MicroServices.TestEngine
         private void AddGivenOperation(MicroProcessorTestState expectedState, MicroProcessorTestOperation givenOperation) =>
             _test.MoveToState(expectedState, new ReadyToConfigureTestState(_test, _timeline, _givenOperations.Enqueue(givenOperation)));
 
-        public IGivenCommandOrEventState<TMessage> Message<TMessage>() =>
-            _test.MoveToState(this, new MessageState<TMessage>(this));
+        #endregion
+
+        #region [====== Commands & Events ======]
+
+        public IGivenCommandState<TCommand> Command<TCommand>() =>
+            _test.MoveToState(this, new CommandState<TCommand>(this));
+
+        public IGivenEventState<TEvent> Event<TEvent>() =>
+            _test.MoveToState(this, new EventState<TEvent>(this));
+
+        #endregion
+
+        #region [====== Requests ======]
+
+        public IGivenRequestState Request() =>
+            _test.MoveToState(this, new RequestState(this));
+
+        public IGivenRequestState<TRequest> Request<TRequest>() =>
+            _test.MoveToState(this, new RequestState<TRequest>(this));
+
+        #endregion
     }
 }

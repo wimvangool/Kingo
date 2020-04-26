@@ -9,7 +9,5 @@ namespace Kingo.MicroServices.TestEngine
         Task TearDownAsync();
 
         IGivenState Given();
-
-        IGivenCommandOrEventState<TMessage> Given<TMessage>();
     }
 }
