@@ -120,9 +120,6 @@
   <data name="AsyncMethodOperationStackTrace_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
-  <data name="EndpointAttribute_InvalidMessageKindSpecified" xml:space="preserve">
-    <value>Invalid MessageKind ({0}) specified. Endpoints only support commands and events.</value>
-  </data>
   <data name="EndpointNameFormat_IllegalCharacter" xml:space="preserve">
     <value>Name '{0}' contains illegal character '{1}' encountered at index '{2}'.</value>
   </data>
@@ -149,6 +146,9 @@
   </data>
   <data name="MicroProcessorComponent_TypeNotSupported" xml:space="preserve">
     <value>Cannot use instance of type '{0}' as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported.</value>
+  </data>
+  <data name="MicroProcessorEndpoint_UnuspportedMessageKind" xml:space="preserve">
+    <value>The resolved message-kind ({0}) is not supported for endpoints. Make sure the message-type's ({1}) message-kind is correctly configured by use of the {2} or through the {3}-options when configuring the processor.</value>
   </data>
   <data name="MicroProcessorOperation_InternalServerError" xml:space="preserve">
     <value>A unexpected exception occurred. See inner exception for details.</value>

@@ -21,9 +21,9 @@ namespace Kingo.MicroServices
             from method in factory.CreateMicroServiceBusEndpoints(processor)
             select method;
 
-        public IEnumerable<HandleAsyncMethod<TEvent>> CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider, bool isScheduledEvent) =>
+        public IEnumerable<HandleAsyncMethod<TEvent>> CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider) =>
             from factory in _methodFactories
-            from method in factory.CreateInternalEventBusEndpointsFor<TEvent>(serviceProvider, isScheduledEvent)
+            from method in factory.CreateInternalEventBusEndpointsFor<TEvent>(serviceProvider)
             select method;
     }
 }

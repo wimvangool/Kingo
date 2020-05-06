@@ -1,11 +1,84 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
     internal sealed class MicroServiceBusEndpoint<TMessage> : MicroServiceBusEndpoint
     {
+        #region [====== MessageHandlerOperationFactory ======]
+
+        private abstract class MessageHandlerOperationFactory
+        {
+            protected abstract MicroServiceBusEndpoint<TMessage> Endpoint
+            {
+                get;
+            }
+
+            public abstract MessageKind MessageKind
+            {
+                get;
+            }
+
+            public MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token) =>
+                CreateOperation(message, token, CreateMethod());
+
+            protected abstract MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method);
+
+            private HandleAsyncMethod<TMessage> CreateMethod() =>
+                new HandleAsyncMethod<TMessage>(new MessageHandlerResolver(Endpoint._processor, Endpoint.MessageHandler), Endpoint);
+        }
+
+        #endregion
+
+        #region [====== CommandHandlerOperationFactory ======]
+
+        private sealed class CommandHandlerOperationFactory : MessageHandlerOperationFactory
+        {
+            private readonly MicroServiceBusEndpoint<TMessage> _endpoint;
+
+            public CommandHandlerOperationFactory(MicroServiceBusEndpoint<TMessage> endpoint)
+            {
+                _endpoint = endpoint;
+            }
+
+            public override MessageKind MessageKind =>
+                MessageKind.Command;
+
+            protected override MicroServiceBusEndpoint<TMessage> Endpoint =>
+                _endpoint;
+
+            protected override MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method) =>
+                new CommandHandlerOperation<TMessage>(Endpoint._processor, method, message, token);
+        }
+
+        #endregion
+
+        #region [====== EventHandlerOperationFactory ======]
+
+        private sealed class EventHandlerOperationFactory : MessageHandlerOperationFactory
+        {
+            private readonly MicroServiceBusEndpoint<TMessage> _endpoint;
+
+            public EventHandlerOperationFactory(MicroServiceBusEndpoint<TMessage> endpoint)
+            {
+                _endpoint = endpoint;
+            }
+
+            public override MessageKind MessageKind =>
+                MessageKind.Event;
+
+            protected override MicroServiceBusEndpoint<TMessage> Endpoint =>
+                _endpoint;
+
+            protected override MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method) =>
+                new EventHandlerOperation<TMessage>(Endpoint._processor, method, message, token);
+        }
+
+        #endregion
+
         #region [====== MessageHandlerResolver ======]
 
         private sealed class MessageHandlerResolver : IMessageHandler<TMessage>
@@ -29,55 +102,64 @@ namespace Kingo.MicroServices
         #endregion        
 
         private readonly MicroProcessor _processor;
-        private readonly MessageKind _messageKind;
+        private readonly MessageHandlerOperationFactory _operationFactory;
 
         public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, MicroServiceBusEndpointAttribute attribute) : base(method)
         {            
             _processor = processor;
-            _messageKind = attribute.DetermineMessageKind(processor.Options.Endpoints.MessageKindResolver, typeof(TMessage));
+            _operationFactory = CreateOperationFactory(processor.MessageFactory.ResolveMessageKind(typeof(TMessage)));
         }
 
-        public override string ServiceName =>
+        public override string Name =>
             _processor.Options.Endpoints.ServiceName;
 
         public override MessageKind MessageKind =>
-            _messageKind;
+            _operationFactory.MessageKind;
 
-        public override Task<IMessageHandlerOperationResult> InvokeAsync(IMessageEnvelope message, CancellationToken? token = null)
+        #region [====== InvokeAsync ======]
+
+        public override Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null)
         {
-            if (message.IsOfType<TMessage>(out var typedMessage))
+            if (message.TryConvertTo<TMessage>(out var typedMessage))
             {
                 return InvokeAsync(typedMessage, token);
             }
             return Task.FromResult<IMessageHandlerOperationResult>(MessageHandlerOperationResult.Empty);
         }
 
-        private async Task<IMessageHandlerOperationResult> InvokeAsync(MessageEnvelope<TMessage> message, CancellationToken? token)
+        private async Task<IMessageHandlerOperationResult> InvokeAsync(Message<TMessage> message, CancellationToken? token)
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
             // the infrastructure does not create a scope upon receiving a new message.
             using (_processor.ServiceProvider.CreateScope())
             {
-                return await _processor.ExecuteWriteOperationAsync(CreateOperation(message, token));
+                return await _processor.ExecuteWriteOperationAsync(_operationFactory.CreateOperation(message, token));
             }
         }
 
-        private MessageHandlerOperation<TMessage> CreateOperation(MessageEnvelope<TMessage> message, CancellationToken? token) =>
-            CreateOperation(message, token, CreateMethod());
+        #endregion
 
-        private MessageHandlerOperation<TMessage> CreateOperation(MessageEnvelope<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method)
+        #region [====== CreateOperationFactory ======]
+
+        private MessageHandlerOperationFactory CreateOperationFactory(MessageKind messageKind)
         {
-            switch (MessageKind)
+            switch (messageKind)
             {
                 case MessageKind.Command:
-                    return new CommandHandlerOperation<TMessage>(_processor, method, message, token);
+                    return new CommandHandlerOperationFactory(this);
                 case MessageKind.Event:
-                    return new EventHandlerOperation<TMessage>(_processor, method, message, token);
+                    return new EventHandlerOperationFactory(this);
             }
-            throw MicroServiceBusEndpointAttribute.NewInvalidMessageKindSpecifiedException(MessageKind);
-        }        
+            throw NewInvalidMessageKindSpecifiedException(messageKind);
+        }
 
-        private HandleAsyncMethod<TMessage> CreateMethod() =>
-            new HandleAsyncMethod<TMessage>(new MessageHandlerResolver(_processor, MessageHandler), this);        
+        private static Exception NewInvalidMessageKindSpecifiedException(MessageKind messageKind)
+        {
+            var messageFormat = ExceptionMessages.MicroProcessorEndpoint_UnuspportedMessageKind;
+            var message = string.Format(messageFormat, messageKind, typeof(TMessage).FriendlyName(), nameof(MessageAttribute), nameof(IMicroProcessorOptions.Messages));
+            return new InvalidOperationException(message);
+        }
+
+        #endregion
     }
 }

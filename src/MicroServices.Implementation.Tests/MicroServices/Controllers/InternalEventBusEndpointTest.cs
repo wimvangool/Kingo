@@ -18,7 +18,7 @@ namespace Kingo.MicroServices.Controllers
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
-                context.MessageBus.PublishEvent(new object(), DateTimeOffset.Now);
+                context.MessageBus.Publish(new object(), DateTimeOffset.Now);
             }, new object());
 
             Assert.AreEqual(1, result.MessageHandlerCount);
@@ -34,23 +34,7 @@ namespace Kingo.MicroServices.Controllers
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
             {
-                context.MessageBus.PublishEvent(new object());
-            }, new object());
-
-            Assert.AreEqual(2, result.MessageHandlerCount);
-        }
-
-        [TestMethod]
-        public async Task HandleAsync_HandlesEvent_IfEventIsScheduled_And_EndpointAcceptsScheduledEvents()
-        {
-            ProcessorBuilder.MessageHandlers.AddInstance<object>((message, context) =>
-            {
-                Assert.AreEqual(2, context.StackTrace.Count);
-            }, true);
-
-            var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
-            {
-                context.MessageBus.PublishEvent(new object(), DateTimeOffset.Now);
+                context.MessageBus.Publish(new object());
             }, new object());
 
             Assert.AreEqual(2, result.MessageHandlerCount);

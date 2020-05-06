@@ -6,10 +6,10 @@ using System.Linq;
 namespace Kingo.MicroServices.DataAnnotations
 {
     /// <summary>
-    /// Represents a piece of data that can be validated.
+    /// Represents a data-contract that can be validated.
     /// </summary>
     [Serializable]    
-    public abstract class ValidatableObject : IValidatableObject
+    public abstract class ValidatableObject : DataContract, IValidatableObject
     {        
         #region [====== Validate ======]
 

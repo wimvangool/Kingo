@@ -204,6 +204,7 @@ namespace Kingo.MicroServices.TestEngine
         #endregion
 
         private static MessageStream CreateEventStream(params object[] events) =>
-            new MessageStream(events.Select(@event => @event.ToEvent()));
+            //new MessageStream(events.Select(@event => @event.ToEvent()));
+            throw new NotImplementedException();
     }
 }

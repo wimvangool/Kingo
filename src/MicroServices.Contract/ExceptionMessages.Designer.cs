@@ -79,11 +79,38 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified MessageKind ({0}) is not valid..
+        ///   Looks up a localized string similar to Could not convert message-content of type &apos;{0}&apos; to instance of type &apos;{1}&apos;..
         /// </summary>
-        internal static string MessageKindExtensions_MessageKindNotSupported {
+        internal static string Message_IsValidCast {
             get {
-                return ResourceManager.GetString("MessageKindExtensions_MessageKindNotSupported", resourceCulture);
+                return ResourceManager.GetString("Message_IsValidCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another mapping for the specified message-type ({0}) already exists..
+        /// </summary>
+        internal static string MessageFactoryBuilder_MappingForMessageTypeAlreadyExists {
+            get {
+                return ResourceManager.GetString("MessageFactoryBuilder_MappingForMessageTypeAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MessageId-property &apos;{0}&apos; has multiple candidates on message of type &apos;{1}&apos;: {2}. Please make sure the type-hierarchy contains only a single public property with this name..
+        /// </summary>
+        internal static string MessageIdFormatter_PropertyIsAmbiguous {
+            get {
+                return ResourceManager.GetString("MessageIdFormatter_PropertyIsAmbiguous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MessageId-property &apos;{0}&apos; was not found on message of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string MessageIdFormatter_PropertyNotFound {
+            get {
+                return ResourceManager.GetString("MessageIdFormatter_PropertyNotFound", resourceCulture);
             }
         }
     }

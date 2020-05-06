@@ -8,7 +8,7 @@ namespace Kingo.MicroServices.Controllers
     {
         #region [====== MicroServiceBusEndpointStub ======]
 
-        [MicroServiceBusEndpointName("SomeHandler")]
+        //[MicroServiceBusEndpointName("SomeHandler")]
         private class HandlerWithSpecificName<TMessage> : BasicEndpointHandler<TMessage> { }
 
         private sealed class AlphaCommand { }
@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class DeltaResponse { }
 
-        [MicroServiceBusEndpointName("SomeCommand")]
+        //[MicroServiceBusEndpointName("SomeCommand")]
         private sealed class CommandWithSpecificName { }
 
         #endregion

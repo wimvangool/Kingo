@@ -8,7 +8,7 @@
         /// <summary>
         /// The response of the query.
         /// </summary>
-        MessageEnvelope<TResponse> Output
+        Message<TResponse> Output
         {
             get;
         }

@@ -6,15 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.Configuration
 {
-    internal sealed class MicroProcessorBuilder<TProcessor> : IMicroProcessorBuilder
-        where TProcessor : MicroProcessor
+    internal sealed class MicroProcessorBuilder<TProcessor> : IMicroProcessorBuilder where TProcessor : MicroProcessor
     {
         private readonly MicroProcessorOptions _options;
         private readonly MessageHandlerCollection _messageHandlers;
         private readonly QueryCollection _queries;
         private readonly RepositoryCollection _repositories;
-        private readonly MicroServiceBusControllerCollection _microServiceBusControllers;
-        private readonly MessageIdFactoryCollection _messageIdFactory;
+        //private readonly MicroServiceBusControllerCollection _microServiceBusControllers;
         private readonly List<MicroProcessorComponentCollection> _components;
 
         public MicroProcessorBuilder()
@@ -23,8 +21,7 @@ namespace Kingo.MicroServices.Configuration
             _messageHandlers = new MessageHandlerCollection();
             _queries = new QueryCollection();
             _repositories = new RepositoryCollection();
-            _microServiceBusControllers = new MicroServiceBusControllerCollection();
-            _messageIdFactory = new MessageIdFactoryCollection();
+            //_microServiceBusControllers = new MicroServiceBusControllerCollection();
             _components = new List<MicroProcessorComponentCollection>();
         }
 
@@ -33,6 +30,9 @@ namespace Kingo.MicroServices.Configuration
             get => _options.UnitOfWorkMode;
             set => _options.UnitOfWorkMode = value;
         }
+
+        public MessageFactoryBuilder Messages =>
+            _options.Messages;
 
         public MicroProcessorEndpointOptions Endpoints =>
             _options.Endpoints;
@@ -46,11 +46,8 @@ namespace Kingo.MicroServices.Configuration
         public RepositoryCollection Repositories =>
             _repositories;
 
-        public MicroServiceBusControllerCollection MicroServiceBusControllers =>
-            _microServiceBusControllers;
-
-        public MessageIdFactoryCollection MessageIdFactories =>
-            _messageIdFactory;
+        //public MicroServiceBusControllerCollection MicroServiceBusControllers =>
+        //    _microServiceBusControllers;
 
         public void Add(MicroProcessorComponentCollection components) =>
             _components.Add(components ?? throw new ArgumentNullException(nameof(components)));
@@ -92,8 +89,7 @@ namespace Kingo.MicroServices.Configuration
             yield return _messageHandlers;
             yield return _queries;
             yield return _repositories;
-            yield return _microServiceBusControllers;
-            yield return _messageIdFactory;
+            //yield return _microServiceBusControllers;
 
             foreach (var collection in _components)
             {

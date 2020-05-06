@@ -17,6 +17,15 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
+        /// Gets the <see cref="MessageFactoryBuilder"/> that will be used by the processor
+        /// to create and/or validate messages that are processed and produced by the processor.
+        /// </summary>
+        MessageFactoryBuilder Messages
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the options for the endpoints.
         /// </summary>
         MicroProcessorEndpointOptions Endpoints

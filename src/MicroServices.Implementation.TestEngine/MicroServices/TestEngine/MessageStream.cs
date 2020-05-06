@@ -9,9 +9,9 @@ namespace Kingo.MicroServices.TestEngine
     /// <summary>
     /// Represents a set of messages that were produced by a <see cref="IMicroProcessor"/> as a result of running a test.
     /// </summary>
-    public sealed class MessageStream : ReadOnlyList<MessageToDispatch>
+    public sealed class MessageStream : ReadOnlyList<IMessage>
     {
-        private readonly MessageToDispatch[] _messages;
+        private readonly IMessage[] _messages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageStream" /> class.
@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messages"/> is <c>null</c>.
         /// </exception>
-        public MessageStream(IEnumerable<MessageToDispatch> messages)
+        public MessageStream(IEnumerable<IMessage> messages)
         {
             _messages = messages.ToArray();
         }
@@ -31,10 +31,10 @@ namespace Kingo.MicroServices.TestEngine
         public override string ToString() =>
             ToString(this);
 
-        internal static string ToString(IReadOnlyCollection<IMessageToDispatch> messages) =>
+        internal static string ToString(IReadOnlyCollection<IMessage> messages) =>
             $"[{messages.Count}]" + ToTypeList(messages);
 
-        private static string ToTypeList(IReadOnlyCollection<IMessageToDispatch> messages) =>
+        private static string ToTypeList(IReadOnlyCollection<IMessage> messages) =>
             messages.Count == 0 ? string.Empty : " { " + ToTypeList(messages.Select(message => message.Content.GetType()), 3) + " }";
 
         private static string ToTypeList(IEnumerable<Type> messageTypes, int maxItems)
@@ -54,7 +54,7 @@ namespace Kingo.MicroServices.TestEngine
         #region [====== ReadOnlyList ======]
 
         /// <inheritdoc />
-        public override MessageToDispatch this[int index] =>
+        public override IMessage this[int index] =>
             _messages[index];
 
         /// <inheritdoc />
@@ -62,7 +62,7 @@ namespace Kingo.MicroServices.TestEngine
             _messages.Length;
 
         /// <inheritdoc />
-        public override IEnumerator<MessageToDispatch> GetEnumerator() =>
+        public override IEnumerator<IMessage> GetEnumerator() =>
             _messages.AsEnumerable().GetEnumerator();
 
         #endregion
@@ -112,7 +112,7 @@ namespace Kingo.MicroServices.TestEngine
         /// This stream does not contain a message at the specified <paramref name="index"/> or the
         /// specified <paramref name="assertion"/> threw an exception.
         /// </exception>
-        public void AssertMessage<TMessage>(Action<MessageToDispatch<TMessage>> assertion, int index = 0) =>
+        public void AssertMessage<TMessage>(Action<Message<TMessage>> assertion, int index = 0) =>
             GetMessages<TMessage>().AssertMessage(assertion, index);
 
         #endregion
@@ -134,7 +134,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="TestFailedException">
         /// The requested message identified by the specified <paramref name="index"/> was not found.
         /// </exception>
-        public MessageToDispatch<TMessage> GetMessage<TMessage>(int index = 0) =>
+        public Message<TMessage> GetMessage<TMessage>(int index = 0) =>
             GetMessages<TMessage>().GetMessage(index);
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> is negative.
         /// </exception>
-        public bool TryGetMessage<TMessage>(int index, out MessageToDispatch<TMessage> message) =>
+        public bool TryGetMessage<TMessage>(int index, out Message<TMessage> message) =>
             GetMessages<TMessage>().TryGetMessage(index, out message);
 
         /// <summary>
@@ -165,11 +165,11 @@ namespace Kingo.MicroServices.TestEngine
         public MessageStream<TMessage> GetMessages<TMessage>() =>
             new MessageStream<TMessage>(GetMessagesOfType<TMessage>());
 
-        private IEnumerable<MessageToDispatch<TMessage>> GetMessagesOfType<TMessage>()
+        private IEnumerable<Message<TMessage>> GetMessagesOfType<TMessage>()
         {
             foreach (var message in _messages)
             {
-                if (message.IsOfType<TMessage>(out var messageOfRequestedType))
+                if (message.TryConvertTo<TMessage>(out var messageOfRequestedType))
                 {
                     yield return messageOfRequestedType;
                 }

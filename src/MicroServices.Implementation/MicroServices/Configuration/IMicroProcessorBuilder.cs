@@ -33,22 +33,6 @@ namespace Kingo.MicroServices.Configuration
         }
 
         /// <summary>
-        /// Returns the collection of service-bus controllers that are to be used by the processor.
-        /// </summary>
-        MicroServiceBusControllerCollection MicroServiceBusControllers
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Returns the collection of message-id factories that are to be used by the processor.
-        /// </summary>
-        MessageIdFactoryCollection MessageIdFactories
-        {
-            get;
-        }
-
-        /// <summary>
         /// Adds the specified <paramref name="components"/> to be registered and used by the <see cref="IMicroProcessor" />.
         /// </summary>
         /// <param name="components">The components to add.</param>

@@ -69,7 +69,7 @@ namespace Kingo.MicroServices
         private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, object>> _MessageHandlerFactories =
             new ConcurrentDictionary<MessageHandlerInterface, Func<object, object>>();        
 
-        IEnumerable<HandleAsyncMethod<TEvent>> IHandleAsyncMethodFactory.CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider, bool isScheduledEvent)
+        IEnumerable<HandleAsyncMethod<TEvent>> IHandleAsyncMethodFactory.CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider)
         {
             // This LINQ construct first selects all message handler interface definitions that are compatible with
             // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -81,19 +81,21 @@ namespace Kingo.MicroServices
             //   implementation.
             foreach (var @interface in Interfaces.Where(@interface => @interface.MessageType.IsAssignableFrom(typeof(TEvent))))
             {
-                if (IsInternalEventBusEndpoint(@interface, out var attribute))
+                if (IsInternalServiceBusEndpoint(@interface))
                 {
-                    if (isScheduledEvent && !attribute.AcceptScheduledEvents)
-                    {
-                        continue;
-                    }
                     yield return CreateHandleAsyncMethod<TEvent>(@interface, serviceProvider);
                 }
             }
         }
 
-        internal virtual bool IsInternalEventBusEndpoint(MessageHandlerInterface @interface, out InternalEventBusEndpointAttribute attribute) =>
-            @interface.CreateMethod(this).MethodInfo.TryGetAttributeOfType(out attribute);
+        internal virtual bool IsInternalServiceBusEndpoint(MessageHandlerInterface @interface)
+        {
+            if (@interface.CreateMethod(this).MethodInfo.TryGetAttributeOfType<MicroServiceBusEndpointAttribute>(out var attribute))
+            {
+                return attribute.Types.HasFlag(MicroServiceBusEndpointTypes.Internal);
+            }
+            return false;
+        }
 
         private HandleAsyncMethod<TMessage> CreateHandleAsyncMethod<TMessage>(MessageHandlerInterface @interface, IServiceProvider serviceProvider) =>
             new HandleAsyncMethod<TMessage>(CreateMessageHandler<TMessage>(@interface, serviceProvider), this, @interface);

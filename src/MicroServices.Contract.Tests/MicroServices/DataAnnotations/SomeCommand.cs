@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kingo.MicroServices.DataAnnotations
 {    
-    public sealed class SomeCommand : RequestMessage
+    public sealed class SomeCommand : ValidatableObject
     {        
         [Required]        
         public string PropertyA

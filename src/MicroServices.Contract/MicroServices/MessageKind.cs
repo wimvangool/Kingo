@@ -6,9 +6,9 @@
     public enum MessageKind
     {
         /// <summary>
-        /// Indicates the kind is yet to be specified.
+        /// Indicates the kind is unknown/undefined.
         /// </summary>
-        Unspecified,
+        Undefined,
 
         /// <summary>
         /// Represents a command.
@@ -23,11 +23,11 @@
         /// <summary>
         /// Represents the request-message of a query.
         /// </summary>
-        QueryRequest,
+        Request,
 
         /// <summary>
         /// Represents the response-message of a query.
         /// </summary>
-        QueryResponse
+        Response
     }
 }

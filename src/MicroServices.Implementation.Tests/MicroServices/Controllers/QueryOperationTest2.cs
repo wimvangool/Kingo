@@ -66,11 +66,11 @@ namespace Kingo.MicroServices.Controllers
             Assert.AreSame(request, result.Input.Content);
             Assert.AreSame(request, result.Output.Content);
 
-            Assert.AreEqual(36, result.Input.MessageId.Length);
+            Assert.AreEqual(36, result.Input.Id.Length);
             Assert.IsNull(result.Input.CorrelationId);
 
-            Assert.AreEqual(36, result.Output.MessageId.Length);
-            Assert.AreEqual(result.Input.MessageId, result.Output.CorrelationId);
+            Assert.AreEqual(36, result.Output.Id.Length);
+            Assert.AreEqual(result.Input.Id, result.Output.CorrelationId);
         }
 
         #endregion
@@ -93,7 +93,7 @@ namespace Kingo.MicroServices.Controllers
 
                 Assert.IsNotNull(operation.Message);
                 Assert.AreSame(message, operation.Message.Content);
-                Assert.AreEqual(MessageKind.QueryRequest, operation.Message.Kind);
+                Assert.AreEqual(MessageKind.Request, operation.Message.Kind);
 
                 Assert.IsNotNull(operation.Method.MessageParameterInfo);
                 Assert.AreSame(typeof(object), operation.Method.MessageParameterInfo.ParameterType);

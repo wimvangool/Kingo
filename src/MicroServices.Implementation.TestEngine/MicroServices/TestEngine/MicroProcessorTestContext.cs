@@ -14,7 +14,7 @@ namespace Kingo.MicroServices.TestEngine
 
         private abstract class TestOperationResult
         {
-            public abstract IMessageEnvelope Input
+            public abstract IMessage Input
             {
                 get;
             }
@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.TestEngine
             protected virtual string FormatInput() =>
                 Format(Input);
 
-            protected static string Format(IMessageEnvelope message) =>
+            protected static string Format(IMessage message) =>
                 message.Content.GetType().FriendlyName();
         }
 
@@ -49,13 +49,13 @@ namespace Kingo.MicroServices.TestEngine
 
         private sealed class MessageHandlerTestOperationResult : TestOperationResult<MessageStream>
         {
-            public MessageHandlerTestOperationResult(IMessageEnvelope input, MessageStream output)
+            public MessageHandlerTestOperationResult(IMessage input, MessageStream output)
             {
                 Input = input;
                 Output = output;
             }
 
-            public override IMessageEnvelope Input
+            public override IMessage Input
             {
                 get;
             }
@@ -73,20 +73,20 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== QueryTestOperationResult ======]
 
-        private sealed class QueryTestOperationResult<TResponse> : TestOperationResult<MessageEnvelope<TResponse>>
+        private sealed class QueryTestOperationResult<TResponse> : TestOperationResult<Message<TResponse>>
         {
-            public QueryTestOperationResult(IMessageEnvelope input, MessageEnvelope<TResponse> output)
+            public QueryTestOperationResult(IMessage input, Message<TResponse> output)
             {
                 Input = input;
                 Output = output;
             }
 
-            public override IMessageEnvelope Input
+            public override IMessage Input
             {
                 get;
             }
 
-            public override MessageEnvelope<TResponse> Output
+            public override Message<TResponse> Output
             {
                 get;
             }
@@ -258,13 +258,13 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== GetResult ======]     
 
-        internal MessageEnvelope<TMessage> GetInputMessage<TMessage>(MicroProcessorTestOperationId operationId) =>
-            (MessageEnvelope<TMessage>) GetOperationResult(operationId).Input;
+        internal Message<TMessage> GetInputMessage<TMessage>(MicroProcessorTestOperationId operationId) =>
+            (Message<TMessage>) GetOperationResult(operationId).Input;
 
         internal MessageStream GetOutputStream(MicroProcessorTestOperationId operationId) =>
             GetOperationResult<MessageHandlerTestOperationResult>(operationId).Output;
 
-        internal MessageEnvelope<TResponse> GetResponse<TResponse>(MicroProcessorTestOperationId operationId) =>
+        internal Message<TResponse> GetResponse<TResponse>(MicroProcessorTestOperationId operationId) =>
             GetOperationResult<QueryTestOperationResult<TResponse>>(operationId).Output;
 
         private TOperationResult GetOperationResult<TOperationResult>(MicroProcessorTestOperationId operationId) where TOperationResult : TestOperationResult =>

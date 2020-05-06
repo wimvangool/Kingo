@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.TestEngine
             public void Execute() =>
                 Execute(_output._output.GetInputMessage<TMessage>(), _output._output.IsExceptionOfType<TException>());
 
-            private void Execute(MessageEnvelope<TMessage> message, TException exception) =>
+            private void Execute(Message<TMessage> message, TException exception) =>
                 _assertMethod?.Invoke(message.Content, exception, _output._context);
         }
 

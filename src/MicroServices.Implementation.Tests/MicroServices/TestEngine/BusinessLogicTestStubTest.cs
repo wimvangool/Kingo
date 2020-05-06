@@ -450,7 +450,7 @@ namespace Kingo.MicroServices.TestEngine
 
                 await test.When().Command<object>().IsExecutedBy((message, context) =>
                 {
-                    context.MessageBus.PublishEvent(new object());
+                    context.MessageBus.Publish(new object());
 
                 }, inputMessage).ThenOutputIsMessageStream((message, stream, context) =>
                 {
@@ -491,7 +491,7 @@ namespace Kingo.MicroServices.TestEngine
             {
                 await test.When().Command<object>().IsExecutedBy((message, context) =>
                 {
-                    context.MessageBus.PublishEvent(new object());
+                    context.MessageBus.Publish(new object());
                 }, new object()).ThenOutputIsEmptyStream();
             });
         }

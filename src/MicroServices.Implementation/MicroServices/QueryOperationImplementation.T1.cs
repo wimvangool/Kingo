@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -21,7 +22,7 @@ namespace Kingo.MicroServices
                 _context = context.PushOperation(this);
             }
 
-            public override IMessageToProcess Message =>
+            public override IMessage Message =>
                 _operation.Message;
 
             public override CancellationToken Token =>
@@ -42,8 +43,8 @@ namespace Kingo.MicroServices
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
                 new QueryOperationResult<TResponse>(await ExecuteMethodAsync().ConfigureAwait(false));
 
-            private async Task<MessageEnvelope<TResponse>> ExecuteMethodAsync() =>
-                Context.Processor.CreateMessageFactory().Wrap(await _method.ExecuteAsync(_context).ConfigureAwait(false));
+            private async Task<Message<TResponse>> ExecuteMethodAsync() =>
+                Context.Processor.MessageFactory.CreateMessage(await _method.ExecuteAsync(_context).ConfigureAwait(false));
         }
 
         #endregion
@@ -53,16 +54,16 @@ namespace Kingo.MicroServices
         public QueryOperationImplementation(MicroProcessor processor, IQuery<TResponse> query, CancellationToken? token) :
             base(processor, token)
         {
-            _query = query ?? throw new ArgumentNullException(nameof(query));
+            _query = IsNotNull(query);
         }
 
         public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TResponse> query, CancellationToken? token) :
             base(context, token)
         {
-            _query = query ?? throw new ArgumentNullException(nameof(query));
+            _query = IsNotNull(query);
         }
 
-        public override IMessageToProcess Message =>
+        public override IMessage Message =>
             null;
 
         protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) =>

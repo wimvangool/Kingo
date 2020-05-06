@@ -6,7 +6,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents the result of a <see cref="IMessageHandler{TMessage}"/> operation executed by a <see cref="IMicroProcessor" />.
     /// </summary>
-    public abstract class MessageHandlerOperationResult : IMicroProcessorOperationResult<IReadOnlyList<MessageToDispatch>>, IMessageHandlerOperationResult
+    public abstract class MessageHandlerOperationResult : IMicroProcessorOperationResult<IReadOnlyList<IMessage>>, IMessageHandlerOperationResult
     {
         #region [====== EmptyResult ======]
 
@@ -14,10 +14,10 @@ namespace Kingo.MicroServices
         {
             public EmptyResult()
             {
-                Output = new MessageToDispatch[0];
+                Output = new IMessage[0];
             }
 
-            public override IReadOnlyList<MessageToDispatch> Output
+            public override IReadOnlyList<IMessage> Output
             {
                 get;
             }
@@ -28,7 +28,7 @@ namespace Kingo.MicroServices
             internal override MessageHandlerOperationResult Append(MessageHandlerOperationResult result) =>
                 result;
 
-            internal override MessageHandlerOperationResult Commit(IMessageEnvelope correlatedMessage) =>
+            internal override MessageHandlerOperationResult Commit(IMessage correlatedMessage) =>
                 this;
         }
 
@@ -39,11 +39,11 @@ namespace Kingo.MicroServices
         /// </summary>
         public static readonly MessageHandlerOperationResult Empty = new EmptyResult();
 
-        IReadOnlyList<MessageToDispatch> IMicroProcessorOperationResult<IReadOnlyList<MessageToDispatch>>.Value =>
+        IReadOnlyList<IMessage> IMicroProcessorOperationResult<IReadOnlyList<IMessage>>.Value =>
             Output;
 
         /// <inheritdoc />
-        public abstract IReadOnlyList<MessageToDispatch> Output
+        public abstract IReadOnlyList<IMessage> Output
         {
             get;
         }
@@ -65,10 +65,10 @@ namespace Kingo.MicroServices
             return new MessageListResult(messages, messageHandlerCount);
         }
 
-        internal virtual MessageHandlerOperationResult Commit(IMessageEnvelope correlatedMessage) =>
+        internal virtual MessageHandlerOperationResult Commit(IMessage correlatedMessage) =>
             new MessageListResult(Output.Select(message => message.CorrelateWith(correlatedMessage)), MessageHandlerCount);
 
-        internal MessageHandlerOperationResult<TMessage> WithInput<TMessage>(MessageEnvelope<TMessage> input) =>
+        internal MessageHandlerOperationResult<TMessage> WithInput<TMessage>(Message<TMessage> input) =>
             new MessageHandlerOperationResult<TMessage>(this, input);
     }
 }

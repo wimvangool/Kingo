@@ -60,7 +60,7 @@ namespace Kingo.MicroServices.Controllers
             var command = new object();
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.PublishEvent(message);
+                context.MessageBus.Publish(message);
             }, command);
 
             Assert.IsNotNull(result);
@@ -79,12 +79,12 @@ namespace Kingo.MicroServices.Controllers
             // Handles Event A.
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.PublishEvent(eventB);
+                context.MessageBus.Publish(eventB);
             });
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.PublishEvent(eventA);
+                context.MessageBus.Publish(eventA);
             }, command);
 
             Assert.IsNotNull(result);
@@ -106,24 +106,24 @@ namespace Kingo.MicroServices.Controllers
             // Handles Event A.
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.PublishEvent(eventB);
+                context.MessageBus.Publish(eventB);
             });
 
             // Handles Event B.
             ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
             {
-                context.MessageBus.PublishEvent(eventC);
+                context.MessageBus.Publish(eventC);
             });
 
             // Handles Event B.
             ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
             {
-                context.MessageBus.PublishEvent(eventD);
+                context.MessageBus.Publish(eventD);
             });
 
             var result = await HandleMessageAsync((message, context) =>
             {
-                context.MessageBus.PublishEvent(eventA);
+                context.MessageBus.Publish(eventA);
             }, command);
 
             Assert.IsNotNull(result);
@@ -154,7 +154,7 @@ namespace Kingo.MicroServices.Controllers
                 AssertStackTrace(context.StackTrace, 2, message, MessageKind.Event);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.PublishEvent(eventB);
+                context.MessageBus.Publish(eventB);
 
                 AssertEventBus(context.MessageBus, 1);
             });
@@ -165,7 +165,7 @@ namespace Kingo.MicroServices.Controllers
                 AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.PublishEvent(eventC);
+                context.MessageBus.Publish(eventC);
 
                 AssertEventBus(context.MessageBus, 1);
             });
@@ -176,7 +176,7 @@ namespace Kingo.MicroServices.Controllers
                 AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.PublishEvent(eventD);
+                context.MessageBus.Publish(eventD);
 
                 AssertEventBus(context.MessageBus, 1);
             });
@@ -186,7 +186,7 @@ namespace Kingo.MicroServices.Controllers
                 AssertStackTrace(context.StackTrace, 1, message, MessageKind);
                 AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.PublishEvent(eventA);
+                context.MessageBus.Publish(eventA);
 
                 AssertEventBus(context.MessageBus, 1);
             }, command);
@@ -562,8 +562,7 @@ namespace Kingo.MicroServices.Controllers
 
         private abstract class MessageHandlerBase : IMessageHandler<int>, IMessageHandler<object>
         {
-            [InternalEventBusEndpoint]
-            [MicroServiceBusEndpoint]
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.All)]
             public Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
                 try
@@ -572,12 +571,11 @@ namespace Kingo.MicroServices.Controllers
                 }
                 finally
                 {
-                    context.MessageBus.PublishEvent(string.Empty);
+                    context.MessageBus.Publish(string.Empty);
                 }
             }
 
-            [InternalEventBusEndpoint]
-            [MicroServiceBusEndpoint]
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.All)]
             public Task HandleAsync(object message, IMessageHandlerOperationContext context)
             {
                 try

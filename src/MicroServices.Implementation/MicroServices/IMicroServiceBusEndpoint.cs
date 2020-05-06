@@ -11,9 +11,17 @@ namespace Kingo.MicroServices
     public interface IMicroServiceBusEndpoint
     {
         /// <summary>
-        /// Returns the name of the service this endpoint is part of.
+        /// Indicates what kind of message is processed by this endpoint.
         /// </summary>
-        string ServiceName
+        MessageKind MessageKind
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Returns the name of this endpoint.
+        /// </summary>
+        string Name
         {
             get;
         }
@@ -51,14 +59,6 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Indicates whether this endpoint handles a command or an event.
-        /// </summary>
-        MessageKind MessageKind
-        {
-            get;
-        }
-
-        /// <summary>
         /// Invokes the method of the associated message handler with the specified <paramref name="message" />
         /// and returns its result.
         /// </summary>
@@ -72,6 +72,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<IMessageHandlerOperationResult> InvokeAsync(IMessageEnvelope message, CancellationToken? token = null);
+        Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null);
     }
 }

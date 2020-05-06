@@ -10,7 +10,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Returns all messages in the order they were (scheduled to be) sent or published.
         /// </summary>
-        IReadOnlyList<MessageToDispatch> Output
+        IReadOnlyList<IMessage> Output
         {
             get;
         }

@@ -17,10 +17,10 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="componentType"/> is <c>null</c>.
         /// </exception>
-        public MicroProcessorOperationStackItem(Type componentType, IMessageEnvelope message = null)
+        public MicroProcessorOperationStackItem(Type componentType, IMessage message = null)
         {
             ComponentType = componentType ?? throw new ArgumentNullException(nameof(componentType));
-            Message = message == null ? null : new MessageEnvelope(message);
+            Message = message;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// The message that was being processed.
         /// </summary>
-        public MessageEnvelope Message
+        public IMessage Message
         {
             get;
         }

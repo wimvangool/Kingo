@@ -6,7 +6,6 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Clocks;
-using Kingo.MicroServices.Configuration;
 using Kingo.Reflection;
 using Kingo.Threading;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a basic implementation of a <see cref="IMicroProcessor" />.
     /// </summary>
+    [MicroProcessorComponent(ServiceLifetime.Singleton)]
     public class MicroProcessor : Disposable, IMicroProcessor
     {
         #region [====== ServiceScope ======]
@@ -70,7 +70,9 @@ namespace Kingo.MicroServices
         private readonly Context<IClock> _clockContext;
 
         private readonly Lazy<IClock> _defaultClock;
+        private readonly Lazy<IMessageFactory> _messageFactory;
         private readonly Lazy<IMicroProcessorOptions> _options;
+        private readonly Lazy<IMicroServiceBus> _microServiceBus;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
@@ -85,7 +87,9 @@ namespace Kingo.MicroServices
             _clockContext = new Context<IClock>();
 
             _defaultClock = new Lazy<IClock>(CreateDefaultClock);
+            _messageFactory = new Lazy<IMessageFactory>(CreateMessageFactory, true);
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
+            _microServiceBus = new Lazy<IMicroServiceBus>(CreateMicroServiceBus, true);
         }
 
         /// <inheritdoc />
@@ -112,10 +116,17 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Options ======]
+        #region [====== MessageFactory ======]
 
-        string IMicroProcessor.ServiceName =>
-            Options.Endpoints.ServiceName;
+        internal IMessageFactory MessageFactory =>
+            _messageFactory.Value;
+
+        private IMessageFactory CreateMessageFactory() =>
+            Options.Messages.BuildMessageFactory();
+
+        #endregion
+
+        #region [====== Options ======]
 
         internal IMicroProcessorOptions Options =>
             _options.Value;
@@ -196,25 +207,41 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== MessageBuilder ======]
-
-        /// <inheritdoc />
-        public IMessageEnvelopeBuilder CreateMessageEnvelopeBuilder() =>
-            CreateMessageFactory().ToBuilder();
-
-        internal MessageEnvelopeFactory CreateMessageFactory() =>
-            new MessageEnvelopeFactory(ServiceProvider.GetRequiredService<IMessageIdFactory>());
-
-        #endregion
-
         #region [====== MicroServiceBus ======]        
 
+        private sealed class MicroServiceBusRelay : IMicroServiceBus
+        {
+            private readonly IMicroServiceBus[] _microServiceBusCollection;
+
+            public MicroServiceBusRelay(IEnumerable<IMicroServiceBus> microServiceBusCollection)
+            {
+                _microServiceBusCollection = microServiceBusCollection.ToArray();
+            }
+
+            public Task SendAsync(IEnumerable<IMessage> messages) =>
+                DispatchAsync(messages.ToArray());
+
+            private async Task DispatchAsync(IMessage[] messages)
+            {
+                foreach (var microServiceBus in _microServiceBusCollection)
+                {
+                    await microServiceBus.SendAsync(messages);
+                }
+            }
+        }
+
         /// <summary>
-        /// Resolves the <see cref="IMicroServiceBus"/> that is used to publish all produced commands and events.
+        /// Represents the <see cref="IMicroServiceBus"/> that that is used by this processor to publish all produced commands and events.
+        /// </summary>
+        protected IMicroServiceBus MicroServiceBus =>
+            _microServiceBus.Value;
+
+        /// <summary>
+        /// Creates and returns the <see cref="IMicroServiceBus"/> that is used by this processor to publish all produced commands and events.
         /// </summary>
         /// <returns>A resolved <see cref="IMicroServiceBus"/>.</returns>
-        protected virtual IMicroServiceBus ResolveMicroServiceBus() =>
-            MicroServiceBus.ResolveMicroServiceBus(this);
+        protected virtual IMicroServiceBus CreateMicroServiceBus() =>
+            new MicroServiceBusRelay(ServiceProvider.GetServices<IMicroServiceBus>());
 
         /// <inheritdoc />
         public virtual IEnumerable<IMicroServiceBusEndpoint> CreateMicroServiceBusEndpoints()
@@ -229,23 +256,29 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== ExecuteAsync ======]                  
+        #region [====== Commands ======]                  
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
-            ExecuteCommandAsync(messageHandler, CreateMessageFactory().Wrap(message), token);
+            ExecuteCommandAsync(messageHandler, MessageFactory.CreateMessage(message), token);
 
-        /// <inheritdoc />
-        public async Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, MessageEnvelope<TCommand> message, CancellationToken? token = null) =>
+        private async Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, Message<TCommand> message, CancellationToken? token = null) =>
             (await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
+
+        #endregion
+
+        #region [====== Events ======]
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
-            HandleEventAsync(messageHandler, CreateMessageFactory().Wrap(message), token);
+            HandleEventAsync(messageHandler, MessageFactory.CreateMessage(message), token);
 
-        /// <inheritdoc />
-        public async Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, MessageEnvelope<TEvent> message, CancellationToken? token = null) =>
+        private async Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, Message<TEvent> message, CancellationToken? token = null) =>
             (await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
+
+        #endregion
+
+        #region [====== Requests ======]
 
         /// <inheritdoc />
         public async Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
@@ -253,10 +286,9 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
-            ExecuteQueryAsync(query, CreateMessageFactory().Wrap(message), token);
+            ExecuteQueryAsync(query, MessageFactory.CreateMessage(message), token);
 
-        /// <inheritdoc />
-        public async Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token = null) =>
+        private async Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token = null) =>
             (await ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token)).ConfigureAwait(false)).WithInput(message);
 
         #endregion
@@ -274,7 +306,7 @@ namespace Kingo.MicroServices
             var result = await ExecuteOperationAsync(operation).ConfigureAwait(false);
             if (result.Output.Count > 0)
             {
-                await ResolveMicroServiceBus().DispatchAsync(result.Output).ConfigureAwait(false);
+                await MicroServiceBus.SendAsync(result.Output).ConfigureAwait(false);
             }
             return result;
         }

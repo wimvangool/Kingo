@@ -7,7 +7,7 @@
     /// <typeparam name="TResponse">Type of the returned response message.</typeparam>
     public sealed class QueryOperationResult<TRequest, TResponse> : QueryOperationResult<TResponse>
     {
-        internal QueryOperationResult(MessageEnvelope<TResponse> output, MessageEnvelope<TRequest> input) :
+        internal QueryOperationResult(Message<TResponse> output, Message<TRequest> input) :
             base(output)
         {
             Input = input;
@@ -18,7 +18,7 @@
         /// <summary>
         /// The request-message of the query.
         /// </summary>
-        public MessageEnvelope<TRequest> Input
+        public Message<TRequest> Input
         {
             get;
         }

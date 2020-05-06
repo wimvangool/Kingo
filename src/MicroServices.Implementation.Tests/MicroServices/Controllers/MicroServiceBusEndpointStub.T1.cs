@@ -9,19 +9,19 @@ namespace Kingo.MicroServices.Controllers
     {
         public MicroServiceBusEndpointStub(string serviceName, IEndpointMessageHandler<TMessage> handler)
         {
-            ServiceName = serviceName;
+            Name = serviceName;
             MessageHandlerType = handler.GetType();
             MethodInfo = MessageHandlerType.GetInterfaceMap(typeof(IEndpointMessageHandler<TMessage>)).TargetMethods[0];
             MessageParameterInfo = MethodInfo.GetParameters()[0];
         }
 
-        public string ServiceName
+        public string Name
         {
             get;
         }
 
         public MessageKind MessageKind =>
-            MessageKind.Unspecified;
+            MessageKind.Undefined;
 
         public Type MessageHandlerType
         {
@@ -41,7 +41,7 @@ namespace Kingo.MicroServices.Controllers
         public ParameterInfo ContextParameterInfo =>
             null;
 
-        public Task<IMessageHandlerOperationResult> InvokeAsync(IMessageEnvelope message, CancellationToken? token = null) =>
+        public Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null) =>
             throw new NotSupportedException();
     }
 }

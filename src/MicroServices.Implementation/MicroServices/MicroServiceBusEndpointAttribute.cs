@@ -1,4 +1,5 @@
 ﻿using System;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -12,45 +13,31 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroServiceBusEndpointAttribute" /> class.
         /// </summary>
-        public MicroServiceBusEndpointAttribute() :
-            this(MessageKind.Unspecified) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicroServiceBusEndpointAttribute" /> class.
-        /// </summary>
-        /// <param name="messageKind">If specified, indicates what kind of message is handled by this endpoint.</param>
-        public MicroServiceBusEndpointAttribute(MessageKind messageKind)
+        /// <param name="types">Indicates whether this endpoint is an internal endpoint, external endpoint or both.</param>
+        /// <param name="name">Represents the name of this endpoint.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        public MicroServiceBusEndpointAttribute(MicroServiceBusEndpointTypes types, string name = "[handler].[message]")
         {
-            MessageKind = messageKind;
+            Types = types;
+            Name = IsNotNull(name, nameof(name));
         }
 
         /// <summary>
-        /// Gets or sets the message kind of the message that is handled by this endpoint.
+        /// Indicates whether this endpoint is an internal endpoint, external endpoint or both.
         /// </summary>
-        public MessageKind MessageKind
+        public MicroServiceBusEndpointTypes Types
         {
             get;
         }
 
-        internal MessageKind DetermineMessageKind(IMessageKindResolver resolver, Type messageType)
+        /// <summary>
+        /// Represents the name of the endpoint.
+        /// </summary>
+        public string Name
         {
-            switch (MessageKind)
-            {
-                case MessageKind.Unspecified:
-                    return resolver.ResolveMessageKind(messageType);
-                case MessageKind.Command:
-                    return MessageKind.Command;
-                case MessageKind.Event:
-                    return MessageKind.Event;
-            }
-            throw NewInvalidMessageKindSpecifiedException(MessageKind);
-        }
-
-        internal static Exception NewInvalidMessageKindSpecifiedException(MessageKind messageKind)
-        {
-            var messageFormat = ExceptionMessages.EndpointAttribute_InvalidMessageKindSpecified;
-            var message = string.Format(messageFormat, messageKind);
-            return new InvalidOperationException(message);
+            get;
         }
     }
 }

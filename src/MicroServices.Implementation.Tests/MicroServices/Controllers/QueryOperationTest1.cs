@@ -44,7 +44,7 @@ namespace Kingo.MicroServices.Controllers
             Assert.IsNotNull(result);
             Assert.AreSame(response, result.Output.Content);
 
-            Assert.AreEqual(36, result.Output.MessageId.Length);
+            Assert.AreEqual(36, result.Output.Id.Length);
             Assert.IsNull(result.Output.CorrelationId);
         }
 

@@ -26,7 +26,7 @@ namespace Kingo.MicroServices
             public override HandleAsyncMethod Method =>
                 _method;
 
-            public override IMessageToProcess Message =>
+            public override IMessage Message =>
                 _operation._message;
 
             public override MessageHandlerOperationContext Context =>
@@ -48,16 +48,12 @@ namespace Kingo.MicroServices
         #endregion
 
         private readonly MessageHandlerOperationContext _context;
-        private readonly MessageToProcess<TMessage> _message;
-        private readonly bool _isScheduledEvent;
+        private readonly Message<TMessage> _message;
 
-        private MessageHandlerOperation(MessageHandlerOperationContext context, MessageToDispatch<TMessage> message) :
-            this(context, message.ToProcess(), context.StackTrace.CurrentOperation.Token)
-        {
-            _isScheduledEvent = message.DeliveryTimeUtc.HasValue;
-        }
+        private MessageHandlerOperation(MessageHandlerOperationContext context, Message<TMessage> message) :
+            this(context, message, context.StackTrace.CurrentOperation.Token) { }
 
-        protected MessageHandlerOperation(MessageHandlerOperationContext context, MessageToProcess<TMessage> message, CancellationToken? token) :
+        protected MessageHandlerOperation(MessageHandlerOperationContext context, Message<TMessage> message, CancellationToken? token) :
             base(token)
         {
             _context = context;
@@ -67,10 +63,10 @@ namespace Kingo.MicroServices
         internal MicroProcessor Processor =>
             _context.Processor;
 
-        internal override Task<MessageHandlerOperationResult> HandleAsync<TEvent>(MessageToDispatch<TEvent> message, MessageHandlerOperationContext context) =>
+        internal override Task<MessageHandlerOperationResult> HandleAsync<TEvent>(Message<TEvent> message, MessageHandlerOperationContext context) =>
             new MessageHandlerOperation<TEvent>(context, message).ExecuteAsync();
 
-        public override IMessageToProcess Message =>
+        public override IMessage Message =>
             _message;
 
         public override MicroProcessorOperationKind Kind =>
@@ -124,7 +120,7 @@ namespace Kingo.MicroServices
             catch (OperationCanceledException exception)
             {
                 // OperationCanceledExceptions are treated as InternalServerErrors, even if the operation was
-                // deliberately cancelled, because this typically happens because an upstream timeout has occurred.
+                // deliberately cancelled, because this typically happens when an upstream timeout has occurred.
                 if (exception.CancellationToken == Token)
                 {
                     throw operation.Context.NewGatewayTimeoutException(ExceptionMessages.MicroProcessorOperation_OperationCancelled, exception);
@@ -149,7 +145,7 @@ namespace Kingo.MicroServices
             }
         }
 
-        private async Task<MessageHandlerOperationResult> HandleAsync(IEnumerable<MessageToDispatch> messages, MessageHandlerOperationContext context)
+        private async Task<MessageHandlerOperationResult> HandleAsync(IEnumerable<IMessage> messages, MessageHandlerOperationContext context)
         {
             var result = MessageHandlerOperationResult.Empty;
 
@@ -171,7 +167,7 @@ namespace Kingo.MicroServices
             var methodFactory = Processor.ServiceProvider.GetService<IHandleAsyncMethodFactory>();
             if (methodFactory != null)
             {
-                foreach (var method in methodFactory.CreateInternalEventBusEndpointsFor<TMessage>(Processor.ServiceProvider, _isScheduledEvent))
+                foreach (var method in methodFactory.CreateInternalEventBusEndpointsFor<TMessage>(Processor.ServiceProvider))
                 {
                     yield return CreateMethodOperation(method, context);
                 }

@@ -93,7 +93,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 throw new ArgumentNullException(nameof(endpoint));
             }
-            var serviceName = ResolveServiceName(endpoint.ServiceName);
+            var serviceName = ResolveServiceName(endpoint.Name);
             var handlerName = ResolveHandlerName(endpoint.MessageHandlerType);
             var messageName = ResolveMessageName(endpoint.MessageParameterInfo.ParameterType);
 
@@ -147,13 +147,14 @@ namespace Kingo.MicroServices.Controllers
 
         private static bool TryGetNameFromAttribute(Type type, out string name)
         {
-            if (type.TryGetAttributeOfType<MicroServiceBusEndpointNameAttribute>(out var attribute))
-            {
-                name = attribute.Name;
-                return true;
-            }
-            name = null;
-            return false;
+            //if (type.TryGetAttributeOfType<MicroServiceBusEndpointNameAttribute>(out var attribute))
+            //{
+            //    name = attribute.Name;
+            //    return true;
+            //}
+            //name = null;
+            //return false;
+            throw new NotImplementedException();
         }
 
         private static string NameOf(Type type) =>

@@ -123,7 +123,16 @@
   <data name="DataContractExtensions_InvalidCast" xml:space="preserve">
     <value>Updating instance of type '{0}' to its latest version failed: could not convert latest version of type '{1}' to instance of type '{2}'.</value>
   </data>
-  <data name="MessageKindExtensions_MessageKindNotSupported" xml:space="preserve">
-    <value>The specified MessageKind ({0}) is not valid.</value>
+  <data name="MessageFactoryBuilder_MappingForMessageTypeAlreadyExists" xml:space="preserve">
+    <value>Another mapping for the specified message-type ({0}) already exists.</value>
+  </data>
+  <data name="MessageIdFormatter_PropertyIsAmbiguous" xml:space="preserve">
+    <value>MessageId-property '{0}' has multiple candidates on message of type '{1}': {2}. Please make sure the type-hierarchy contains only a single public property with this name.</value>
+  </data>
+  <data name="MessageIdFormatter_PropertyNotFound" xml:space="preserve">
+    <value>MessageId-property '{0}' was not found on message of type '{1}'.</value>
+  </data>
+  <data name="Message_IsValidCast" xml:space="preserve">
+    <value>Could not convert message-content of type '{0}' to instance of type '{1}'.</value>
   </data>
 </root>

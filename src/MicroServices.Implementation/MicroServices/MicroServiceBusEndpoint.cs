@@ -13,17 +13,17 @@ namespace Kingo.MicroServices
         Type IMicroServiceBusEndpoint.MessageHandlerType =>
             MessageHandler.Type;
 
-        public abstract string ServiceName
-        {
-            get;
-        }
-
         public abstract MessageKind MessageKind
         {
             get;
         }
 
-        public abstract Task<IMessageHandlerOperationResult> InvokeAsync(IMessageEnvelope message, CancellationToken? token = null);
+        public abstract string Name
+        {
+            get;
+        }
+
+        public abstract Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null);
 
         public override string ToString() =>
             $"{MessageHandler.Type.FriendlyName()}.{MethodInfo.Name}([{MessageKind}] {MessageParameterInfo.ParameterType.FriendlyName()}, ...)";

@@ -10,11 +10,11 @@ namespace Kingo.MicroServices.TestEngine
     /// Represents a set of messages of a specific type <typeparamref name="TMessage" />
     /// that were produced by a <see cref="IMicroProcessor"/> as a result of running a test.
     /// </summary>
-    public sealed class MessageStream<TMessage> : ReadOnlyList<MessageToDispatch<TMessage>>
+    public sealed class MessageStream<TMessage> : ReadOnlyList<Message<TMessage>>
     {
-        private readonly MessageToDispatch<TMessage>[] _messages;
+        private readonly Message<TMessage>[] _messages;
 
-        internal MessageStream(IEnumerable<MessageToDispatch<TMessage>> messages)
+        internal MessageStream(IEnumerable<Message<TMessage>> messages)
         {
             _messages = messages.ToArray();
         }
@@ -34,11 +34,11 @@ namespace Kingo.MicroServices.TestEngine
             _messages.Length;
 
         /// <inheritdoc />
-        public override MessageToDispatch<TMessage> this[int index] =>
+        public override Message<TMessage> this[int index] =>
             _messages[index];
 
         /// <inheritdoc />
-        public override IEnumerator<MessageToDispatch<TMessage>> GetEnumerator() =>
+        public override IEnumerator<Message<TMessage>> GetEnumerator() =>
             _messages.AsEnumerable().GetEnumerator();
 
         #endregion
@@ -86,7 +86,7 @@ namespace Kingo.MicroServices.TestEngine
         /// This stream does not contain a message at the specified <paramref name="index"/> or the
         /// specified <paramref name="assertion"/> threw an exception.
         /// </exception>
-        public void AssertMessage(Action<MessageToDispatch<TMessage>> assertion, int index = 0) =>
+        public void AssertMessage(Action<Message<TMessage>> assertion, int index = 0) =>
             NotNull(assertion).Invoke(GetMessage(index));
 
         private static TDelegate NotNull<TDelegate>(TDelegate assertion) where TDelegate : class =>
@@ -109,7 +109,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="TestFailedException">
         /// The requested message identified by the specified <paramref name="index"/> was not found.
         /// </exception>
-        public MessageToDispatch<TMessage> GetMessage(int index = 0)
+        public Message<TMessage> GetMessage(int index = 0)
         {
             if (index < 0)
             {
@@ -139,7 +139,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> is negative.
         /// </exception>
-        public bool TryGetMessage(int index, out MessageToDispatch<TMessage> message)
+        public bool TryGetMessage(int index, out Message<TMessage> message)
         {
             if (index < 0)
             {

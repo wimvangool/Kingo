@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -21,7 +22,7 @@ namespace Kingo.MicroServices
                 _context = context.PushOperation(this);
             }
 
-            public override IMessageToProcess Message =>
+            public override IMessage Message =>
                 _operation.Message;
 
             public override CancellationToken Token =>
@@ -42,34 +43,32 @@ namespace Kingo.MicroServices
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
                 new QueryOperationResult<TResponse>(await ExecuteMethodAsync().ConfigureAwait(false));
 
-            private async Task<MessageEnvelope<TResponse>> ExecuteMethodAsync()
-            {
-                var messageBuilder = Context.Processor.CreateMessageEnvelopeBuilder();
-                messageBuilder.CorrelationId = Message.MessageId;
-                return messageBuilder.Wrap(await _method.ExecuteAsync(_operation._message.Content, _context).ConfigureAwait(false));
-            }
+            private async Task<Message<TResponse>> ExecuteMethodAsync() =>
+                Context.Processor.MessageFactory
+                    .CreateMessage(await _method.ExecuteAsync(_operation._message.Content, _context).ConfigureAwait(false))
+                    .CorrelateWith(Message);
         }
 
         #endregion
         
         private readonly IQuery<TRequest, TResponse> _query;
-        private readonly MessageToProcess<TRequest> _message;
+        private readonly Message<TRequest> _message;
 
-        public QueryOperationImplementation(MicroProcessor processor, IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token) :
+        public QueryOperationImplementation(MicroProcessor processor, IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token) :
             base(processor, token)
-        {                                  
-            _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = message?.ToProcess(MessageKind.QueryRequest) ?? throw new ArgumentNullException(nameof(message));
+        {
+            _query = IsNotNull(query, nameof(query));
+            _message = IsNotNull(message, nameof(message));
         }
 
-        public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TRequest, TResponse> query, MessageEnvelope<TRequest> message, CancellationToken? token) :
+        public QueryOperationImplementation(MicroProcessorOperationContext context, IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token) :
             base(context, token)
         {
-            _query = query ?? throw new ArgumentNullException(nameof(query));
-            _message = message.ToProcess(MessageKind.QueryRequest);
+            _query = IsNotNull(query, nameof(query));
+            _message = IsNotNull(message, nameof(message));
         }
 
-        public override IMessageToProcess Message =>
+        public override IMessage Message =>
             _message;
 
         protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) => 

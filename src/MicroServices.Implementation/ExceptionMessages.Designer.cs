@@ -70,15 +70,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid MessageKind ({0}) specified. Endpoints only support commands and events..
-        /// </summary>
-        internal static string EndpointAttribute_InvalidMessageKindSpecified {
-            get {
-                return ResourceManager.GetString("EndpointAttribute_InvalidMessageKindSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name &apos;{0}&apos; contains illegal character &apos;{1}&apos; encountered at index &apos;{2}&apos;..
         /// </summary>
         internal static string EndpointNameFormat_IllegalCharacter {
@@ -156,6 +147,15 @@ namespace Kingo {
         internal static string MicroProcessorComponentInterface_InterfaceMethodNotFound {
             get {
                 return ResourceManager.GetString("MicroProcessorComponentInterface_InterfaceMethodNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The resolved message-kind ({0}) is not supported for endpoints. Make sure the message-type&apos;s ({1}) message-kind is correctly configured by use of the {2} or through the {3}-options when configuring the processor..
+        /// </summary>
+        internal static string MicroProcessorEndpoint_UnuspportedMessageKind {
+            get {
+                return ResourceManager.GetString("MicroProcessorEndpoint_UnuspportedMessageKind", resourceCulture);
             }
         }
         

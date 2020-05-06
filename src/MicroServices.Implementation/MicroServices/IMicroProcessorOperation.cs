@@ -11,7 +11,7 @@ namespace Kingo.MicroServices
         /// Returns the message that is being handled or executed. Returns <c>null</c>
         /// if this operation refers to the execution of a <see cref="IQuery{TResponse}"/>.        
         /// </summary>
-        IMessageToProcess Message
+        IMessage Message
         {
             get;
         }  

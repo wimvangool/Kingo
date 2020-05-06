@@ -22,8 +22,8 @@ namespace Kingo.MicroServices.Controllers
 
             public async Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
-                context.MessageBus.PublishEvent(await _constantProvider.GetConstantAsync(context));
-                context.MessageBus.PublishEvent(await _multiplier.MultiplyByTwoAsync(message, context));
+                context.MessageBus.Publish(await _constantProvider.GetConstantAsync(context));
+                context.MessageBus.Publish(await _multiplier.MultiplyByTwoAsync(message, context));
             }                
         }
 

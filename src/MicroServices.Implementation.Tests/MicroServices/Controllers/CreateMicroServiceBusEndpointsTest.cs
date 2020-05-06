@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class MessageHandler2 : IMessageHandler<object>
         {
-            [MicroServiceBusEndpoint]
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.External)]
             public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
@@ -30,11 +30,11 @@ namespace Kingo.MicroServices.Controllers
             public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
 
-            [MicroServiceBusEndpoint]
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.External)]
             public Task HandleAsync(int message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
 
-            [MicroServiceBusEndpoint]
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.External)]
             public Task HandleAsync(string message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
@@ -48,6 +48,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsEmptyCollection_IfMethodHasNoEndpointAttribute()
         {
+            ProcessorBuilder.Messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             ProcessorBuilder.MessageHandlers.Add<MessageHandler1>();            
 
             Assert.AreEqual(0, CreateProcessor().CreateMicroServiceBusEndpoints().Count());
@@ -56,6 +57,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsOneEndpoint_IfMethodHasEndpointAttribute()
         {
+            ProcessorBuilder.Messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             ProcessorBuilder.MessageHandlers.Add<MessageHandler2>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
@@ -67,6 +69,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMethodsHaveEndpointAttribute()
         {
+            ProcessorBuilder.Messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             ProcessorBuilder.MessageHandlers.Add<MessageHandler3>();            
 
             var endpoints = CreateProcessor().CreateMicroServiceBusEndpoints().ToArray();
@@ -81,6 +84,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMessageHandlersHaveEndpointAttribute()
         {
+            ProcessorBuilder.Messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             ProcessorBuilder.MessageHandlers.Add<MessageHandler2>();
             ProcessorBuilder.MessageHandlers.Add<MessageHandler3>();            
 
@@ -95,6 +99,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsExpectedEndpoints_IfMessageHandlerWasAddedAsSingleton()
         {
+            ProcessorBuilder.Messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             ProcessorBuilder.MessageHandlers.AddInstance(new MessageHandler2());
             ProcessorBuilder.MessageHandlers.AddInstance(new MessageHandler3());          
 
@@ -108,79 +113,62 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== MessageKind ======]
+        #region [====== MessageKinds ======]
 
-        private sealed class RequestHandler : IMessageHandler<object>
+        private sealed class UndefinedMessageHandler : IMessageHandler<object>
         {
-            [MicroServiceBusEndpoint(MessageKind.QueryRequest)]
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.External)]
             public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
-        private sealed class UnknownMessageKindHandler : IMessageHandler<object>
-        {
-            [MicroServiceBusEndpoint((MessageKind) (-1))]
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
-                Task.CompletedTask;
-        }
+        private sealed class SomeRequest { }
 
-        private sealed class ExplicitEventHandler : IMessageHandler<object>
+        private sealed class SomeRequestHandler : IMessageHandler<SomeRequest>
         {
-            [MicroServiceBusEndpoint(MessageKind.Event)]
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
-                Task.CompletedTask;
-        }
-
-        private sealed class ImplicitEventHandler : IMessageHandler<object>
-        {
-            [MicroServiceBusEndpoint]
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
-                Task.CompletedTask;
-        }
-
-        private sealed class ExplicitCommandHandler : IMessageHandler<object>
-        {
-            [MicroServiceBusEndpoint(MessageKind.Command)]
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
-                Task.CompletedTask;
-        }
-
-        private sealed class ImplicitCommandHandler : IMessageHandler<SomeCommand>
-        {
-            [MicroServiceBusEndpoint]
-            public Task HandleAsync(SomeCommand message, IMessageHandlerOperationContext context) =>
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.External)]
+            public Task HandleAsync(SomeRequest message, IMessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class SomeCommand { }
 
-        private sealed class MessageKindResolver : IMessageKindResolver
+        private sealed class SomeCommandHandler : IMessageHandler<SomeCommand>
         {
-            private readonly MessageKind _messageKind;
-
-            public MessageKindResolver(MessageKind messageKind)
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.External)]
+            public Task HandleAsync(SomeCommand message, IMessageHandlerOperationContext context)
             {
-                _messageKind = messageKind;
+                context.MessageBus.Publish(string.Empty);
+                return Task.CompletedTask;
             }
+        }
 
-            public MessageKind ResolveMessageKind(Type messageType) =>
-                _messageKind;
+        private sealed class SomeEvent { }
+
+        private sealed class SomeEventHandler : IMessageHandler<SomeEvent>
+        {
+            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.External)]
+            public Task HandleAsync(SomeEvent message, IMessageHandlerOperationContext context)
+            {
+                context.MessageBus.Publish(string.Empty);
+                return Task.CompletedTask;
+            }
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsSetToRequest()
+        public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsUndefined()
         {
-            ProcessorBuilder.MessageHandlers.Add<RequestHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<UndefinedMessageHandler>();
 
             CreateProcessor().CreateMicroServiceBusEndpoints().Single().IgnoreValue();
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsSetToUnknownValue()
+        public void CreateMicroServiceBusEndpoints_Throws_IfMessageKindIsRequest()
         {
-            ProcessorBuilder.MessageHandlers.Add<UnknownMessageKindHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<SomeRequestHandler>();            
 
             CreateProcessor().CreateMicroServiceBusEndpoints().Single().IgnoreValue();
         }
@@ -188,7 +176,7 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsEventHandler_IfMessageKindIsEvent()
         {
-            ProcessorBuilder.MessageHandlers.Add<ExplicitEventHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<SomeEventHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
@@ -196,71 +184,24 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public void CreateMicroServiceBusEndpoints_ReturnsUnspecifiedHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeDoesNotEndWithCommand()
-        {
-            ProcessorBuilder.MessageHandlers.Add<ImplicitEventHandler>();            
-
-            var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
-
-            Assert.AreEqual(MessageKind.Unspecified, endpoint.MessageKind);
-        }
-
-        [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsCommandHandler_IfMessageKindIsCommand()
         {
-            ProcessorBuilder.MessageHandlers.Add<ExplicitCommandHandler>();            
+            ProcessorBuilder.MessageHandlers.Add<SomeCommandHandler>();            
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
 
             Assert.AreEqual(MessageKind.Command, endpoint.MessageKind);
-        }
-
-        [TestMethod]
-        public void CreateMicroServiceBusEndpoints_ReturnsCommandHandler_IfMessageKindIsUnspecified_And_NameOfMessageTypeEndsWithCommand()
-        {
-            ProcessorBuilder.MessageHandlers.Add<ImplicitCommandHandler>();            
-
-            var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
-
-            Assert.AreEqual(MessageKind.Command, endpoint.MessageKind);
-        }
-
-        [TestMethod]
-        public void CreateMicroServiceBusEndpoints_ReturnsCustomMessageKind_IfCustomMessageKindResolver_ReturnsUnknownMessageKind()
-        {
-            var messageKind = (MessageKind) (-1);
-
-            ProcessorBuilder.Endpoints.MessageKindResolver = new MessageKindResolver(messageKind);
-            ProcessorBuilder.MessageHandlers.Add<ImplicitCommandHandler>();            
-
-            var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
-
-            Assert.AreEqual(messageKind, endpoint.MessageKind);
         }
 
         #endregion
 
+        #region [====== Name ======]
+
+
+
+        #endregion
+
         #region [====== InvokeAsync ======]
-
-        private sealed class SomeCommandHandler : IMessageHandler<int>
-        {            
-            [MicroServiceBusEndpoint(MessageKind.Command)]
-            public Task HandleAsync(int message, IMessageHandlerOperationContext context)
-            {
-                context.MessageBus.PublishEvent(string.Empty);
-                return Task.CompletedTask;
-            }
-        }
-
-        private sealed class SomeEventHandler : IMessageHandler<int>
-        {
-            [MicroServiceBusEndpoint(MessageKind.Event)]
-            public Task HandleAsync(int message, IMessageHandlerOperationContext context)
-            {
-                context.MessageBus.PublishEvent(string.Empty);
-                return Task.CompletedTask;
-            }
-        }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -291,7 +232,7 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.MessageHandlers.AddInstance(new SomeCommandHandler());
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.PublishEvent(new object());
+                context.MessageBus.Publish(new object());
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
@@ -383,7 +324,7 @@ namespace Kingo.MicroServices.Controllers
             ProcessorBuilder.MessageHandlers.AddInstance(new SomeEventHandler());
             ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
             {
-                context.MessageBus.PublishEvent(new object());
+                context.MessageBus.Publish(new object());
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();

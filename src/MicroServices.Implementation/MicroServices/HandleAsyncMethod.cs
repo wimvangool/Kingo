@@ -77,7 +77,7 @@ namespace Kingo.MicroServices
 
         internal bool TryCreateMicroServiceBusEndpoint(MicroProcessor processor, out MicroServiceBusEndpoint endpoint)
         {
-            if (MethodInfo.TryGetAttributeOfType(out MicroServiceBusEndpointAttribute attribute))
+            if (MethodInfo.TryGetAttributeOfType(out MicroServiceBusEndpointAttribute attribute) && attribute.Types.HasFlag(MicroServiceBusEndpointTypes.External))
             {
                 endpoint = CreateEndpoint(processor, attribute);
                 return true;

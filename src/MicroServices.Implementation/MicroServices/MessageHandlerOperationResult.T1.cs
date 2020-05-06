@@ -10,9 +10,9 @@ namespace Kingo.MicroServices
     public sealed class MessageHandlerOperationResult<TMessage> : IMessageHandlerOperationResult
     {
         private readonly IMessageHandlerOperationResult _result;
-        private readonly MessageEnvelope<TMessage> _input;
+        private readonly Message<TMessage> _input;
 
-        internal MessageHandlerOperationResult(IMessageHandlerOperationResult result, MessageEnvelope<TMessage> input)
+        internal MessageHandlerOperationResult(IMessageHandlerOperationResult result, Message<TMessage> input)
         {
             _result = result;
             _input = input;
@@ -21,11 +21,11 @@ namespace Kingo.MicroServices
         /// <summary>
         /// The command or event that was processed.
         /// </summary>
-        public MessageEnvelope<TMessage> Input =>
+        public Message<TMessage> Input =>
             _input;
 
         /// <inheritdoc />
-        public IReadOnlyList<MessageToDispatch> Output =>
+        public IReadOnlyList<IMessage> Output =>
             _result.Output;
 
         /// <inheritdoc />
