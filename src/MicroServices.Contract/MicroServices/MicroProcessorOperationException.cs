@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -35,7 +36,7 @@ namespace Kingo.MicroServices
         internal MicroProcessorOperationException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {
-            OperationStackTrace = (MicroProcessorOperationStackTrace)info.GetValue(nameof(OperationStackTrace), typeof(MicroProcessorOperationStackTrace));
+            OperationStackTrace = (MicroProcessorOperationStackTrace) info.GetValue(nameof(OperationStackTrace), typeof(MicroProcessorOperationStackTrace));
         }
 
         /// <inheritdoc />
@@ -64,5 +65,9 @@ namespace Kingo.MicroServices
         {
             get;            
         }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"{GetType().FriendlyName()} ({ErrorCode}: {Message})";
     }
 }

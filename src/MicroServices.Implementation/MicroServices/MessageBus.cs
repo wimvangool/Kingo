@@ -8,18 +8,18 @@ namespace Kingo.MicroServices
 {   
     internal sealed class MessageBus : IMessageBus
     {
-        private readonly IMessageFactory _messageFactory;
-        private readonly List<IMessage> _messages;
+        private readonly MessageFactory _messageFactory;
+        private readonly List<Message<object>> _messages;
         private readonly IClock _clock;
 
-        public MessageBus(IMessageFactory messageFactory, IClock clock)
+        public MessageBus(MessageFactory messageFactory, IClock clock)
         {
             _messageFactory = messageFactory;
-            _messages = new List<IMessage>();
+            _messages = new List<Message<object>>();
             _clock = clock;
         }
 
-        #region [====== IReadOnlyList<MessageToDispatch> ======]
+        #region [====== IReadOnlyList<IMessage> ======]
 
         public int Count =>
             _messages.Count;
@@ -71,6 +71,13 @@ namespace Kingo.MicroServices
         public void Publish(object @event, DateTimeOffset? deliveryTime = null) =>
             //_messages.Add(_messageFactory.Wrap(@event).ToDispatch(MessageKind.Event, deliveryTime));
             throw new NotImplementedException();
+
+        #endregion
+
+        #region [====== ToResult ======]
+
+        public MessageBusResult ToResult() =>
+            new MessageBusResult(_messages);
 
         #endregion
     }

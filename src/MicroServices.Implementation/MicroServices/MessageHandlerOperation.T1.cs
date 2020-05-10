@@ -40,15 +40,15 @@ namespace Kingo.MicroServices
 
             public override async Task<MessageHandlerOperationResult> ExecuteAsync()
             {
-                await _method.HandleAsync(_operation._message.Content, _context).ConfigureAwait(false);
-                return new MessageBusResult(_context.MessageBus);
+                await _method.HandleAsync(_operation.MessageContent(), _context).ConfigureAwait(false);
+                return _context.MessageBusResult();
             }
         }
 
         #endregion
 
         private readonly MessageHandlerOperationContext _context;
-        private readonly Message<TMessage> _message;
+        private Message<TMessage> _message;
 
         private MessageHandlerOperation(MessageHandlerOperationContext context, Message<TMessage> message) :
             this(context, message, context.StackTrace.CurrentOperation.Token) { }
@@ -68,6 +68,9 @@ namespace Kingo.MicroServices
 
         public override IMessage Message =>
             _message;
+
+        private TMessage MessageContent() =>
+            Processor.Validate(ref _message);
 
         public override MicroProcessorOperationKind Kind =>
             MicroProcessorOperationKind.BranchOperation;
@@ -92,13 +95,13 @@ namespace Kingo.MicroServices
                 // After the operation has been executed, its result is committed, which means no more messages
                 // can be added/produced by the operation and all messages are automatically correlated to the
                 // current message.
-                var result = Commit(await operation.ExecuteAsync().ConfigureAwait(false), operation);
-                if (result.Output.Count > 0)
+                var result = Commit(await operation.ExecuteAsync().ConfigureAwait(false), operation.Message);
+                if (result.Messages.Count > 0)
                 {
                     // Every operation potentially yields a new stream of messages, which is immediately handled by the processor
                     // inside the current context. The processor uses a depth-first approach, which means that each message and its resulting
                     // sub-tree of events are handled before the next event in the stream.
-                    return result.Append(await HandleAsync(result.Output, operation.Context).ConfigureAwait(false));
+                    return result.Append(await HandleAsync(result.Messages, operation.Context).ConfigureAwait(false));
                 }
                 return result;
             }
@@ -109,13 +112,11 @@ namespace Kingo.MicroServices
                 // to properly handle the exception.
                 throw;
             }
-            catch (MessageHandlerOperationException exception)
+            catch (InternalOperationException exception)
             {
-                // When a MessageHandlerOperationException was thrown, we wrap it into a new exception that
-                // also stores the current stack-trace. Later, in the root-operation, this exception
-                // can then be converted to the appropriate BadRequestException or InternalServerErrorException,
-                // based on the specific operation type.
-                throw exception.AssignStackTrace(operation.Context.CaptureOperationStackTrace());
+                // When a InternalOperationException was thrown, the processor converts it into the appropriate
+                // MicroProcessorOperationException, depending on the cause and current stack-trace.
+                throw exception.ToMicroProcessorOperationException(operation.Context.CaptureOperationStackTrace());
             }
             catch (OperationCanceledException exception)
             {
@@ -133,11 +134,11 @@ namespace Kingo.MicroServices
             }
         }
 
-        private MessageHandlerOperationResult Commit(MessageHandlerOperationResult result, IMicroProcessorOperation operation)
+        private MessageHandlerOperationResult Commit(MessageHandlerOperationResult result, IMessage message)
         {
             try
             {
-                return result.Commit(operation.Message);
+                return result.Commit(message);
             }
             finally
             {
@@ -145,7 +146,7 @@ namespace Kingo.MicroServices
             }
         }
 
-        private async Task<MessageHandlerOperationResult> HandleAsync(IEnumerable<IMessage> messages, MessageHandlerOperationContext context)
+        private async Task<MessageHandlerOperationResult> HandleAsync(IEnumerable<Message<object>> messages, MessageHandlerOperationContext context)
         {
             var result = MessageHandlerOperationResult.Empty;
 

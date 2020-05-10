@@ -31,18 +31,5 @@ namespace Kingo.MicroServices
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
         Task<TResponse> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message);
-
-        /// <summary>
-        /// Executes the specified <paramref name="query"/> and returns its result.
-        /// </summary>
-        /// <typeparam name="TRequest">Type of the request of the query.</typeparam>
-        /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
-        /// <param name="query">The query to execute.</param>
-        /// <param name="message">Message that carries the parameters of the query.</param>
-        /// <returns>The response of the query.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        Task<TResponse> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, Message<TRequest> message);
     }
 }

@@ -73,9 +73,9 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== QueryTestOperationResult ======]
 
-        private sealed class QueryTestOperationResult<TResponse> : TestOperationResult<Message<TResponse>>
+        private sealed class QueryTestOperationResult<TResponse> : TestOperationResult<IMessage<TResponse>>
         {
-            public QueryTestOperationResult(IMessage input, Message<TResponse> output)
+            public QueryTestOperationResult(IMessage input, IMessage<TResponse> output)
             {
                 Input = input;
                 Output = output;
@@ -86,7 +86,7 @@ namespace Kingo.MicroServices.TestEngine
                 get;
             }
 
-            public override Message<TResponse> Output
+            public override IMessage<TResponse> Output
             {
                 get;
             }
@@ -258,13 +258,13 @@ namespace Kingo.MicroServices.TestEngine
 
         #region [====== GetResult ======]     
 
-        internal Message<TMessage> GetInputMessage<TMessage>(MicroProcessorTestOperationId operationId) =>
-            (Message<TMessage>) GetOperationResult(operationId).Input;
+        internal IMessage<TMessage> GetInputMessage<TMessage>(MicroProcessorTestOperationId operationId) =>
+            (IMessage<TMessage>) GetOperationResult(operationId).Input;
 
         internal MessageStream GetOutputStream(MicroProcessorTestOperationId operationId) =>
             GetOperationResult<MessageHandlerTestOperationResult>(operationId).Output;
 
-        internal Message<TResponse> GetResponse<TResponse>(MicroProcessorTestOperationId operationId) =>
+        internal IMessage<TResponse> GetResponse<TResponse>(MicroProcessorTestOperationId operationId) =>
             GetOperationResult<QueryTestOperationResult<TResponse>>(operationId).Output;
 
         private TOperationResult GetOperationResult<TOperationResult>(MicroProcessorTestOperationId operationId) where TOperationResult : TestOperationResult =>

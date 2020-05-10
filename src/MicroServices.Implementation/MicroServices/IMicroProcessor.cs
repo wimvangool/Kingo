@@ -12,6 +12,8 @@ namespace Kingo.MicroServices
     /// </summary>
     public interface IMicroProcessor
     {
+        #region [====== Controller Features ======]
+
         /// <summary>
         /// Returns the service provider the processor uses to resolve its dependencies.
         /// </summary>
@@ -62,7 +64,9 @@ namespace Kingo.MicroServices
         /// <returns>A collection of endpoints.</returns>
         IEnumerable<IMicroServiceBusEndpoint> CreateMicroServiceBusEndpoints();
 
-        #region [====== Commands & Events ======]
+        #endregion
+
+        #region [====== Commands ======]
 
         /// <summary>
         /// Executes a command with a specified <paramref name="messageHandler"/>.
@@ -70,6 +74,86 @@ namespace Kingo.MicroServices
         /// <typeparam name="TCommand">Type of the command.</typeparam>
         /// <param name="messageHandler">The message handler that will handle the command.</param>
         /// <param name="message">The command to handle.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>        
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Action<TCommand, IMessageHandlerOperationContext> messageHandler, TCommand message) =>
+            ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes a command with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the command.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the command.</param>
+        /// <param name="message">The command to handle.</param>
+        /// <param name="messageHeader">Header of the message.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>        
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Action<TCommand, IMessageHandlerOperationContext> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteCommandAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, messageHeader, token);
+
+        /// <summary>
+        /// Executes a command with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the command.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the command.</param>
+        /// <param name="message">The command to handle.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>         
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Func<TCommand, IMessageHandlerOperationContext, Task> messageHandler, TCommand message) =>
+            ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes a command with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the command.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the command.</param>
+        /// <param name="message">The command to handle.</param>
+        /// <param name="messageHeader">Header of the message.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>         
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Func<TCommand, IMessageHandlerOperationContext, Task> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteCommandAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, messageHeader, token);
+
+        /// <summary>
+        /// Executes a command with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the command.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the command.</param>
+        /// <param name="message">The command to handle.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>       
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message) =>
+            ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes a command with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the command.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the command.</param>
+        /// <param name="message">The command to handle.</param>
+        /// <param name="messageHeader">Header of the message.</param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
         /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
@@ -77,7 +161,11 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null);
+
+        #endregion
+
+        #region [====== Events ======]
 
         /// <summary>
         /// Handles an event with a specified <paramref name="messageHandler"/>.
@@ -85,6 +173,86 @@ namespace Kingo.MicroServices
         /// <typeparam name="TEvent">Type of the event.</typeparam>
         /// <param name="messageHandler">The message handler that will handle the event.</param>
         /// <param name="message">The event to handle.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>        
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Action<TEvent, IMessageHandlerOperationContext> messageHandler, TEvent message) =>
+            HandleEventAsync(messageHandler, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <param name="messageHeader">Header of the message.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>        
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Action<TEvent, IMessageHandlerOperationContext> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            HandleEventAsync(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message, messageHeader, token);
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>         
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Func<TEvent, IMessageHandlerOperationContext, Task> messageHandler, TEvent message) =>
+            HandleEventAsync(messageHandler, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <param name="messageHeader">Header of the message.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>         
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Func<TEvent, IMessageHandlerOperationContext, Task> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            HandleEventAsync(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message, messageHeader, token);
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>       
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message) =>
+            HandleEventAsync(messageHandler, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Handles an event with a specified <paramref name="messageHandler"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="messageHandler">The message handler that will handle the event.</param>
+        /// <param name="message">The event to handle.</param>
+        /// <param name="messageHeader">Header of the message.</param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
         /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
@@ -92,11 +260,37 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>       
-        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null);
 
         #endregion
 
-        #region [====== Queries ======]
+        #region [====== Queries (Without Request) ======]
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>   
+        /// <param name="query">The query to execute.</param>               
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>          
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>        
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<IQueryOperationContext, TResponse> query, CancellationToken? token = null) =>
+            ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam> 
+        /// <param name="query">The query to execute.</param>               
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>          
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>        
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<IQueryOperationContext, Task<TResponse>> query, CancellationToken? token = null) =>
+            ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
@@ -110,6 +304,24 @@ namespace Kingo.MicroServices
         /// </exception>         
         Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
 
+        #endregion
+
+        #region [====== Queries (With Request) ======]
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>
+        /// <param name="query">The query to execute.</param>
+        /// <param name="message">Message containing the parameters of this query.</param>/
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>          
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, TResponse> query, TRequest message) =>
+            ExecuteQueryAsync(query, message, MessageHeader.Unspecified);
+
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
@@ -117,12 +329,73 @@ namespace Kingo.MicroServices
         /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>
         /// <param name="query">The query to execute.</param>
         /// <param name="message">Message containing the parameters of this query.</param>
+        /// <param name="messageHeader">Header of the message.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>          
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, TResponse> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteQueryAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, messageHeader, token);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>
+        /// <param name="query">The query to execute.</param>
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>        
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest message) =>
+            ExecuteQueryAsync(query, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>
+        /// <param name="query">The query to execute.</param>
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <param name="messageHeader">Header of the message.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>        
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteQueryAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, messageHeader, token);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>
+        /// <param name="query">The query to execute.</param>
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>         
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message) =>
+            ExecuteQueryAsync(query, message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>
+        /// <param name="query">The query to execute.</param>
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <param name="messageHeader">Header of the message.</param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null);
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null);
 
         #endregion
     }

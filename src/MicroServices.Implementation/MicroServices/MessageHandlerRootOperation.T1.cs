@@ -39,23 +39,15 @@ namespace Kingo.MicroServices
                 // to properly handle the exception.
                 throw;
             }
-            catch (MessageHandlerOperationException exception)
+            catch (InternalOperationException exception)
             {
-                throw NewMicroProcessorOperationException(exception.AssignStackTrace(operation.Context.CaptureOperationStackTrace()));
-            }
-            catch (MessageHandlerOperationException.WithStackTrace exception)
-            {
-                throw NewMicroProcessorOperationException(exception);
+                throw exception.ToMicroProcessorOperationException(operation.Context.CaptureOperationStackTrace());
             }
             catch (Exception exception)
             {
                 throw operation.Context.NewInternalServerErrorException(ExceptionMessages.MicroProcessorOperation_InternalServerError, exception);
             }
         }
-
-        // Depending on whether this operation is executing a command or handling an event,
-        // the exception is converted to the appropriate MicroProcessorOperationException.
-        protected abstract MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException.WithStackTrace exception);        
 
         protected override IEnumerable<HandleAsyncMethodOperation> CreateMethodOperations(MessageHandlerOperationContext context)
         {

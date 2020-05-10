@@ -73,8 +73,20 @@ namespace Kingo.MicroServices
 
         private static readonly ConcurrentDictionary<Type, MessageAttribute> _Attributes = new ConcurrentDictionary<Type, MessageAttribute>();
 
-        internal static bool TryGetMessageAttribute(Type contentType, bool inherit, out MessageAttribute attribute) =>
-            (attribute = _Attributes.GetOrAdd(contentType, type => GetMessageAttribute(type, inherit))) != null;
+        /// <summary>
+        /// Attempts to obtain the <see cref="MessageAttribute" /> declared on the specified <paramref name="contentType"/>.
+        /// </summary>
+        /// <param name="contentType">Type of the content of a message.</param>
+        /// <param name="inherit">Indicates if inherited attributes may also be returned.</param>
+        /// <param name="attribute">
+        /// If an attribute was declared, this parameter will be set to the attribute that was found; otherwise <c>null</c>.
+        /// </param>
+        /// <returns><c>true</c> if an attribute was declared; otherwise <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="contentType"/> is <c>null</c>.
+        /// </exception>
+        public static bool TryGetMessageAttribute(Type contentType, bool inherit, out MessageAttribute attribute) =>
+            (attribute = _Attributes.GetOrAdd(IsNotNull(contentType, nameof(contentType)), type => GetMessageAttribute(type, inherit))) != null;
 
         private static MessageAttribute GetMessageAttribute(Type contentType, bool inherit) =>
             contentType.GetCustomAttributes(typeof(MessageAttribute), inherit).Cast<MessageAttribute>().SingleOrDefault();

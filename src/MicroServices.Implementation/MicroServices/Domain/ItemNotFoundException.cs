@@ -7,10 +7,9 @@ namespace Kingo.MicroServices.Domain
     /// was unable to retrieve an item from the data store.
     /// </summary>
     [Serializable]
-    public sealed class ItemNotFoundException : MessageHandlerOperationException
+    public sealed class ItemNotFoundException : InternalOperationException
     {
-        internal ItemNotFoundException(string message, object id) :
-            base(message)
+        internal ItemNotFoundException(string message, object id) : base(message)
         {
             Id = id;
         }
@@ -22,5 +21,9 @@ namespace Kingo.MicroServices.Domain
         {
             get;
         }
+
+        /// <inheritdoc />
+        protected override bool IsBadRequest(MicroProcessorOperationStackTrace operationStackTrace) =>
+            throw new NotImplementedException();
     }
 }

@@ -1,0 +1,163 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Text;
+using static Kingo.Ensure;
+
+namespace Kingo.MicroServices
+{
+    internal sealed class MessageFactory : IMessageKindResolver, IMessageIdGenerator
+    {
+        private readonly Dictionary<MessageDirection, MessageValidationOptions> _messageValidationOptions;
+        private readonly IMessageKindResolver _messageKindResolver;
+        private readonly IMessageIdGenerator _messageIdGenerator;
+
+        public MessageFactory(IDictionary<MessageDirection, MessageValidationOptions> messageValidationOptions, IMessageKindResolver messageKindResolver, IMessageIdGenerator messageIdGenerator)
+        {
+            _messageValidationOptions = new Dictionary<MessageDirection, MessageValidationOptions>(messageValidationOptions);
+            _messageKindResolver = messageKindResolver;
+            _messageIdGenerator = messageIdGenerator;
+        }
+
+        public Message<TContent> CreateCommand<TContent>(MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
+            CreateMessage(MessageKind.Command, direction, header, content, deliveryTime);
+
+        public Message<TContent> CreateEvent<TContent>(MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
+            CreateMessage(MessageKind.Event, direction, header, content, deliveryTime);
+
+        public Message<TContent> CreateRequest<TContent>(MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
+            CreateMessage(MessageKind.Request, direction, header, content, deliveryTime);
+
+        public Message<TContent> CreateResponse<TContent>(MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
+            CreateMessage(MessageKind.Response, direction, header, content, deliveryTime);
+
+        public Message<TContent> CreateMessage<TContent>(MessageKind kind, MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
+            CreateMessageFromContent(IsValid(kind), IsValid(direction), header, content).DeliverAt(deliveryTime).ConvertTo<TContent>();
+
+        private Message<object> CreateMessageFromContent(MessageKind kind, MessageDirection direction, MessageHeader header, object content) =>
+            _MessageFactoryDelegates.GetOrAdd(IsNotNull(content, nameof(content)).GetType(), CreateMessageFactoryDelegate).Invoke(this, kind, direction, header, content);
+
+        private Message<object> CreateMessageValidator(MessageKind kind, MessageDirection direction, MessageHeader header, object content)
+        {
+            var message = CreateMessageImplementation(direction, header, content);
+            var messageValidationOptions = ResolveValidationOptions(direction);
+            return new MessageValidator<object>(message, kind, messageValidationOptions);
+        }
+
+        private Message<object> CreateMessageImplementation(MessageDirection direction, MessageHeader header, object content)
+        {
+            var messageKind = _messageKindResolver.ResolveMessageKind(content);
+            var messageHeader = header.WithId(this, content);
+            return new MessageImplementation<object>(messageKind, direction, messageHeader, content);
+        }
+
+        public MessageKind ResolveMessageKind(Type contentType) =>
+            _messageKindResolver.ResolveMessageKind(contentType);
+
+        public string GenerateMessageId(object content) =>
+            _messageIdGenerator.GenerateMessageId(content);
+
+        private MessageValidationOptions ResolveValidationOptions(MessageDirection direction)
+        {
+            if (_messageValidationOptions.TryGetValue(direction, out var validationOptions))
+            {
+                return validationOptions;
+            }
+            return MessageValidationOptions.None;
+        }
+
+        private static MessageKind IsValid(MessageKind kind)
+        {
+            if (IsEqualToAny(kind, MessageKind.Command, MessageKind.Event, MessageKind.Request, MessageKind.Response))
+            {
+                return kind;
+            }
+            throw NewInvalidKindException(kind);
+        }
+
+        private static MessageDirection IsValid(MessageDirection direction)
+        {
+            if (IsEqualToAny(direction, MessageDirection.Input, MessageDirection.Internal, MessageDirection.Output))
+            {
+                return direction;
+            }
+            throw NewInvalidDirectionException(direction);
+        }
+
+        private static bool IsEqualToAny<TValue>(TValue value, params TValue[] values) where TValue : struct =>
+            values.Any(expectedValue => expectedValue.Equals(value));
+
+        private static Exception NewInvalidKindException(MessageKind kind)
+        {
+            var messageFormat = ExceptionMessages.MessageFactory_InvalidMessageKind;
+            var message = string.Format(messageFormat, kind);
+            return new ArgumentOutOfRangeException(nameof(kind), message);
+        }
+
+        private static Exception NewInvalidDirectionException(MessageDirection direction)
+        {
+            var messageFormat = ExceptionMessages.MessageFactory_InvalidMessageDirection;
+            var message = string.Format(messageFormat, direction);
+            return new ArgumentOutOfRangeException(nameof(direction), message);
+        }
+
+        #region [====== MessageFactoryDelegates ======]
+
+        private static readonly ConcurrentDictionary<Type, Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>> _MessageFactoryDelegates =
+            new ConcurrentDictionary<Type, Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>>();
+
+        private static Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>> CreateMessageFactoryDelegate(Type contentType)
+        {
+            var messageFactoryParameter = Expression.Parameter(typeof(MessageFactory), "messageFactory");
+            var messageKindParameter = Expression.Parameter(typeof(MessageKind), "kind");
+            var messageDirectionParameter = Expression.Parameter(typeof(MessageDirection), "direction");
+            var messageHeaderParameter = Expression.Parameter(typeof(MessageHeader), "header");
+            var contentParameter = Expression.Parameter(typeof(object), "content");
+
+            var contentExpression = Expression.Convert(contentParameter, contentType);
+            var createMessageMethodInvocation = Expression.Call(
+                messageFactoryParameter,
+                CreateMessageMethod,
+                messageKindParameter,
+                messageDirectionParameter,
+                messageHeaderParameter,
+                contentExpression);
+
+            return CreateLambdaExpression(
+                createMessageMethodInvocation, 
+                messageFactoryParameter,
+                messageKindParameter,
+                messageDirectionParameter,
+                messageHeaderParameter,
+                contentParameter).Compile();
+        }
+
+        private static Expression<Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>> CreateLambdaExpression(Expression body, params ParameterExpression[] parameters) =>
+            Expression.Lambda<Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>>(body, parameters);
+
+        #endregion
+
+        #region [====== CreateMessageMethodDefinition ======]
+
+        private static readonly Lazy<MethodInfo> _CreateMessageMethod = new Lazy<MethodInfo>(GetCreateMessageMethod, true);
+
+        private static MethodInfo CreateMessageMethod =>
+            _CreateMessageMethod.Value;
+
+        private static MethodInfo GetCreateMessageMethod()
+        {
+            var methods =
+                from method in typeof(MessageFactory).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                where method.Name == nameof(CreateMessageValidator)
+                select method;
+
+            return methods.Single();
+        }
+
+        #endregion
+    }
+}

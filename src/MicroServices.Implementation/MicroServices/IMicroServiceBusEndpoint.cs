@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// When implemented by a class, represents an endpoint that handles a specific command or event.
+    /// When implemented by a class, represents an endpoint that can process messages that are received from a <see cref="IMicroServiceBus" />.
     /// </summary>
     public interface IMicroServiceBusEndpoint
     {
@@ -51,7 +51,7 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Returns the <see cref="ParameterInfo" /> that represents the context that is supplied to the method.
+        /// Returns the <see cref="ParameterInfo" /> that represents the context of the operation.
         /// </summary>
         ParameterInfo ContextParameterInfo
         {
@@ -63,6 +63,7 @@ namespace Kingo.MicroServices
         /// and returns its result.
         /// </summary>
         /// <param name="message">The message to handle.</param>
+        /// <param name="messageHeader">Header of the message.</param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
         /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
@@ -72,6 +73,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null);
+        Task<IMessageHandlerOperationResult> InvokeAsync(object message, MessageHeader messageHeader, CancellationToken? token = null);
     }
 }

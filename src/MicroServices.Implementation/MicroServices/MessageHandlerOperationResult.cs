@@ -12,15 +12,15 @@ namespace Kingo.MicroServices
 
         private sealed class EmptyResult : MessageHandlerOperationResult
         {
+            private readonly Message<object>[] _messages;
+
             public EmptyResult()
             {
-                Output = new IMessage[0];
+                _messages = new Message<object>[0];
             }
 
-            public override IReadOnlyList<IMessage> Output
-            {
-                get;
-            }
+            internal override IReadOnlyList<Message<object>> Messages =>
+                _messages;
 
             public override int MessageHandlerCount =>
                 0;
@@ -28,7 +28,7 @@ namespace Kingo.MicroServices
             internal override MessageHandlerOperationResult Append(MessageHandlerOperationResult result) =>
                 result;
 
-            internal override MessageHandlerOperationResult Commit(IMessage correlatedMessage) =>
+            internal override MessageHandlerOperationResult Commit(IMessage message) =>
                 this;
         }
 
@@ -43,7 +43,10 @@ namespace Kingo.MicroServices
             Output;
 
         /// <inheritdoc />
-        public abstract IReadOnlyList<IMessage> Output
+        public IReadOnlyList<IMessage> Output =>
+            Messages;
+
+        internal abstract IReadOnlyList<Message<object>> Messages
         {
             get;
         }
@@ -60,15 +63,15 @@ namespace Kingo.MicroServices
 
         internal virtual MessageHandlerOperationResult Append(MessageHandlerOperationResult result)
         {
-            var messages = Output.Concat(result.Output);
+            var messages = Messages.Concat(result.Messages);
             var messageHandlerCount = MessageHandlerCount + result.MessageHandlerCount;
             return new MessageListResult(messages, messageHandlerCount);
         }
 
-        internal virtual MessageHandlerOperationResult Commit(IMessage correlatedMessage) =>
-            new MessageListResult(Output.Select(message => message.CorrelateWith(correlatedMessage)), MessageHandlerCount);
+        internal virtual MessageHandlerOperationResult Commit(IMessage message) =>
+            new MessageListResult(Messages.Select(outputMessage => outputMessage.CorrelateWith(message)), MessageHandlerCount);
 
-        internal MessageHandlerOperationResult<TMessage> WithInput<TMessage>(Message<TMessage> input) =>
+        internal MessageHandlerOperationResult<TMessage> WithInput<TMessage>(IMessage<TMessage> input) =>
             new MessageHandlerOperationResult<TMessage>(this, input);
     }
 }

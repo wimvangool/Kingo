@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace Kingo.MicroServices
 {
@@ -22,6 +23,7 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">The cause of this exception.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public DataContractUpdateFailedException(string message, Exception innerException) :
             base(message, innerException) { }
 

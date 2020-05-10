@@ -43,16 +43,17 @@ namespace Kingo.MicroServices
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
                 new QueryOperationResult<TResponse>(await ExecuteMethodAsync().ConfigureAwait(false));
 
-            private async Task<Message<TResponse>> ExecuteMethodAsync() =>
-                Context.Processor.MessageFactory
-                    .CreateMessage(await _method.ExecuteAsync(_operation._message.Content, _context).ConfigureAwait(false))
-                    .CorrelateWith(Message);
+            private async Task<IMessage<TResponse>> ExecuteMethodAsync() =>
+                CreateResponseMessage(await _method.ExecuteAsync(_operation.MessageContent(), _context).ConfigureAwait(false));
+
+            private IMessage<TResponse> CreateResponseMessage(TResponse response) =>
+                Context.Processor.MessageFactory.CreateResponse(MessageDirection.Output, MessageHeader.Unspecified, response).CorrelateWith(Message);
         }
 
         #endregion
         
         private readonly IQuery<TRequest, TResponse> _query;
-        private readonly Message<TRequest> _message;
+        private Message<TRequest> _message;
 
         public QueryOperationImplementation(MicroProcessor processor, IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token) :
             base(processor, token)
@@ -71,7 +72,10 @@ namespace Kingo.MicroServices
         public override IMessage Message =>
             _message;
 
-        protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) => 
+        private TRequest MessageContent() =>
+            Processor.Validate(ref _message);
+
+        internal override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) => 
             new MethodOperation(this, context);        
     }
 }

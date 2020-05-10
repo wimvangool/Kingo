@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.TestEngine
             public void Execute() =>
                 Execute(_output._context.GetResponse<TResponse>(_output._operationId));
 
-            private void Execute(Message<TResponse> response) =>
+            private void Execute(IMessage<TResponse> response) =>
                 _assertMethod?.Invoke(response.Content, _output._context);
         }
 

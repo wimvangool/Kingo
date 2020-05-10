@@ -7,12 +7,20 @@ namespace Kingo.MicroServices
     /// </summary>
     public interface IMessage
     {
-        #region [====== Kind ======]
+        #region [====== Kind & Direction ======]
 
         /// <summary>
         /// Indicates what kind of message this is.
         /// </summary>
         MessageKind Kind
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Indicates what the direction of this message is.
+        /// </summary>
+        MessageDirection Direction
         {
             get;
         }
@@ -38,17 +46,6 @@ namespace Kingo.MicroServices
             get;
         }
 
-        /// <summary>
-        /// Correlates this message with the specified <paramref name="message"/> by setting the <see cref="CorrelationId"/>
-        /// of this message to the <see cref="Id"/> of the specified <paramref name="message"/>.
-        /// </summary>
-        /// <param name="message">Another message.</param>
-        /// <returns>A new message with the updated <see cref="CorrelationId"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message" /> is <c>null</c>.
-        /// </exception>
-        IMessage CorrelateWith(IMessage message);
-
         #endregion
 
         #region [====== DeliveryTime ======]
@@ -61,16 +58,9 @@ namespace Kingo.MicroServices
             get;
         }
 
-        /// <summary>
-        /// Schedules this message to be delivered at the specified <see cref="deliveryTime"/>.
-        /// </summary>
-        /// <param name="deliveryTime">The desired delivery time.</param>
-        /// <returns>This message with the specified <paramref name="deliveryTime"/>.</returns>
-        IMessage DeliverAt(DateTimeOffset deliveryTime);
-
         #endregion
 
-        #region [====== Content & Conversion ======]
+        #region [====== Content ======]
 
         /// <summary>
         /// Returns the contents/payload of the message.
@@ -81,25 +71,25 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Converts this message to an instance of type <see cref="Message{TMessage}"/>.
+        /// Converts this message to an instance of type <see cref="IMessage{TContent}"/>.
         /// </summary>
-        /// <typeparam name="TContent">Type of the content of the message.</typeparam>
+        /// <typeparam name="TContent">(Expected) type of the content of this message.</typeparam>
         /// <returns>The converted message.</returns>
         /// <exception cref="InvalidCastException">
-        /// The <see cref="Content"/> of this message is not an instance of type <typeparamref name="TContent"/>.
+        /// The <see cref="Content"/> of this message could not be converted to the specified type.
         /// </exception>
-        Message<TContent> ConvertTo<TContent>();
+        IMessage<TContent> ConvertTo<TContent>();
 
         /// <summary>
-        /// Attempts to convert this message to an instance of type <see cref="Message{TMessage}"/>.
+        /// Attempts to convert this message to an instance of type <see cref="IMessage{TContent}"/>.
         /// </summary>
-        /// <typeparam name="TContent">Type of the content of the message.</typeparam>
+        /// <typeparam name="TContent">(Expected) type of the content of this message.</typeparam>
         /// <param name="message">
-        /// If the conversion succeeds, this parameter will be set to the converted value;
-        /// otherwise it will be set to <c>null</c>.
+        /// If the conversion succeeds, this parameter will refer to the converted message;
+        /// otherwise it will be <c>null</c>.
         /// </param>
-        /// <returns><c>true</c> if the conversion succeeds, otherwise <c>false</c>.</returns>
-        bool TryConvertTo<TContent>(out Message<TContent> message);
+        /// <returns><c>true</c> if the conversion succeeds; otherwise <c>false</c>.</returns>
+        bool TryConvertTo<TContent>(out IMessage<TContent> message);
 
         #endregion
     }

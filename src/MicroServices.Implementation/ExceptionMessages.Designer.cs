@@ -97,6 +97,42 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not convert message with content of type &apos;{0}&apos; to a message with content of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Message_ConversionFailed {
+            get {
+                return ResourceManager.GetString("Message_ConversionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified direction &apos;{0}&apos; is not valid..
+        /// </summary>
+        internal static string MessageFactory_InvalidMessageDirection {
+            get {
+                return ResourceManager.GetString("MessageFactory_InvalidMessageDirection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified kind &apos;{0}&apos; is not valid..
+        /// </summary>
+        internal static string MessageFactory_InvalidMessageKind {
+            get {
+                return ResourceManager.GetString("MessageFactory_InvalidMessageKind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another mapping for the specified message-type ({0}) already exists..
+        /// </summary>
+        internal static string MessageFactoryBuilder_MappingForMessageTypeAlreadyExists {
+            get {
+                return ResourceManager.GetString("MessageFactoryBuilder_MappingForMessageTypeAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not resolve message handler of type &apos;{0}&apos;..
         /// </summary>
         internal static string MessageHandlerClass_CouldNotResolveMessageHandler {
@@ -106,11 +142,38 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot set the CorrelationId of a message ({0}) when the Id of the message has not been specified..
+        /// </summary>
+        internal static string MessageHeader_IdNotSpecified {
+            get {
+                return ResourceManager.GetString("MessageHeader_IdNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot generate message-id for message of type &apos;{0}&apos; because multiple factories were configured for this message-type: {1}..
         /// </summary>
         internal static string MessageIdFactory_MultipleFactoriesAddedForSameMessageType {
             get {
                 return ResourceManager.GetString("MessageIdFactory_MultipleFactoriesAddedForSameMessageType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MessageId-property &apos;{0}&apos; has multiple candidates on message of type &apos;{1}&apos;: {2}. Please make sure the type-hierarchy contains only a single public property with this name..
+        /// </summary>
+        internal static string MessageIdFormatter_PropertyIsAmbiguous {
+            get {
+                return ResourceManager.GetString("MessageIdFormatter_PropertyIsAmbiguous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MessageId-property &apos;{0}&apos; was not found on message of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string MessageIdFormatter_PropertyNotFound {
+            get {
+                return ResourceManager.GetString("MessageIdFormatter_PropertyNotFound", resourceCulture);
             }
         }
         

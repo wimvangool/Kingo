@@ -112,7 +112,7 @@ namespace Kingo.MicroServices.TestEngine
         /// This stream does not contain a message at the specified <paramref name="index"/> or the
         /// specified <paramref name="assertion"/> threw an exception.
         /// </exception>
-        public void AssertMessage<TMessage>(Action<Message<TMessage>> assertion, int index = 0) =>
+        public void AssertMessage<TMessage>(Action<IMessage<TMessage>> assertion, int index = 0) =>
             GetMessages<TMessage>().AssertMessage(assertion, index);
 
         #endregion
@@ -134,7 +134,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="TestFailedException">
         /// The requested message identified by the specified <paramref name="index"/> was not found.
         /// </exception>
-        public Message<TMessage> GetMessage<TMessage>(int index = 0) =>
+        public IMessage<TMessage> GetMessage<TMessage>(int index = 0) =>
             GetMessages<TMessage>().GetMessage(index);
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Kingo.MicroServices.TestEngine
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> is negative.
         /// </exception>
-        public bool TryGetMessage<TMessage>(int index, out Message<TMessage> message) =>
+        public bool TryGetMessage<TMessage>(int index, out IMessage<TMessage> message) =>
             GetMessages<TMessage>().TryGetMessage(index, out message);
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Kingo.MicroServices.TestEngine
         public MessageStream<TMessage> GetMessages<TMessage>() =>
             new MessageStream<TMessage>(GetMessagesOfType<TMessage>());
 
-        private IEnumerable<Message<TMessage>> GetMessagesOfType<TMessage>()
+        private IEnumerable<IMessage<TMessage>> GetMessagesOfType<TMessage>()
         {
             foreach (var message in _messages)
             {

@@ -5,17 +5,17 @@ namespace Kingo.MicroServices
 {
     internal sealed class MessageListResult : MessageHandlerOperationResult
     {
-        private readonly IMessage[] _output;
+        private readonly Message<object>[] _messages;
         private readonly int _messageHandlerCount;
 
-        public MessageListResult(IEnumerable<IMessage> output, int messageHandlerCount)
+        public MessageListResult(IEnumerable<Message<object>> messages, int messageHandlerCount)
         {
-            _output = output.ToArray();
+            _messages = messages.ToArray();
             _messageHandlerCount = messageHandlerCount;
         }
 
-        public override IReadOnlyList<IMessage> Output =>
-            _output;
+        internal override IReadOnlyList<Message<object>> Messages => 
+            _messages;
 
         public override int MessageHandlerCount =>
             _messageHandlerCount;

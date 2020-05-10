@@ -118,13 +118,14 @@ namespace Kingo.MicroServices
 
         #region [====== InvokeAsync ======]
 
-        public override Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null)
+        public override Task<IMessageHandlerOperationResult> InvokeAsync(object message, MessageHeader messageHeader, CancellationToken? token = null)
         {
-            if (message.TryConvertTo<TMessage>(out var typedMessage))
-            {
-                return InvokeAsync(typedMessage, token);
-            }
-            return Task.FromResult<IMessageHandlerOperationResult>(MessageHandlerOperationResult.Empty);
+            //if (message.TryConvertTo<TMessage>(out var typedMessage))
+            //{
+            //    return InvokeAsync(typedMessage, token);
+            //}
+            //return Task.FromResult<IMessageHandlerOperationResult>(MessageHandlerOperationResult.Empty);
+            throw new NotImplementedException();
         }
 
         private async Task<IMessageHandlerOperationResult> InvokeAsync(Message<TMessage> message, CancellationToken? token)

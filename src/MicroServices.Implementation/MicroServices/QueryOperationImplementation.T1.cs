@@ -43,8 +43,11 @@ namespace Kingo.MicroServices
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
                 new QueryOperationResult<TResponse>(await ExecuteMethodAsync().ConfigureAwait(false));
 
-            private async Task<Message<TResponse>> ExecuteMethodAsync() =>
-                Context.Processor.MessageFactory.CreateMessage(await _method.ExecuteAsync(_context).ConfigureAwait(false));
+            private async Task<IMessage<TResponse>> ExecuteMethodAsync() =>
+                CreateResponseMessage(await _method.ExecuteAsync(_context).ConfigureAwait(false));
+
+            private IMessage<TResponse> CreateResponseMessage(TResponse response) =>
+                Context.Processor.MessageFactory.CreateResponse(MessageDirection.Output, MessageHeader.Unspecified, response);
         }
 
         #endregion
@@ -66,7 +69,7 @@ namespace Kingo.MicroServices
         public override IMessage Message =>
             null;
 
-        protected override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) =>
+        internal override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) =>
             new MethodOperation(this, context);
     }
 }

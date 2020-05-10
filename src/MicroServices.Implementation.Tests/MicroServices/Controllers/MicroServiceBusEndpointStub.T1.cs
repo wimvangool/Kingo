@@ -41,7 +41,7 @@ namespace Kingo.MicroServices.Controllers
         public ParameterInfo ContextParameterInfo =>
             null;
 
-        public Task<IMessageHandlerOperationResult> InvokeAsync(IMessage message, CancellationToken? token = null) =>
+        public Task<IMessageHandlerOperationResult> InvokeAsync(object message, MessageHeader messageHeader, CancellationToken? token = null) =>
             throw new NotSupportedException();
     }
 }

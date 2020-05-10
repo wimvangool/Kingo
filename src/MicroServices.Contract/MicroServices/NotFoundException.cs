@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace Kingo.MicroServices
 {
@@ -27,6 +28,7 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected NotFoundException(SerializationInfo info, StreamingContext context) :
             base(info, context) { }
 

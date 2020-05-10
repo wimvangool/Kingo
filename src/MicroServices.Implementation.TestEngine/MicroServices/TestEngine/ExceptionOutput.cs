@@ -36,7 +36,7 @@ namespace Kingo.MicroServices.TestEngine
             _exception = exception;
         }
 
-        public Message<TMessage> GetInputMessage<TMessage>() =>
+        public IMessage<TMessage> GetInputMessage<TMessage>() =>
             _exception.OperationStackTrace.RootOperation.Message.ConvertTo<TMessage>();
 
         #region [====== IsNoException ======]

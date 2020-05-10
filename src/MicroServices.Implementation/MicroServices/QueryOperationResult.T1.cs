@@ -6,7 +6,7 @@
     /// <typeparam name="TResponse">Type of the returned response message.</typeparam>
     public class QueryOperationResult<TResponse> : IMicroProcessorOperationResult<TResponse>, IQueryOperationResult<TResponse>
     {        
-        internal QueryOperationResult(Message<TResponse> output)
+        internal QueryOperationResult(IMessage<TResponse> output)
         {
             Output = output;
         }
@@ -15,7 +15,7 @@
             Output.Content;
 
         /// <inheritdoc />
-        public Message<TResponse> Output
+        public IMessage<TResponse> Output
         {
             get;
         }
@@ -24,7 +24,7 @@
         public override string ToString() =>
             Output == null ? "null" : Output.Content.ToString();
 
-        internal QueryOperationResult<TRequest, TResponse> WithInput<TRequest>(Message<TRequest> input) =>
+        internal QueryOperationResult<TRequest, TResponse> WithInput<TRequest>(IMessage<TRequest> input) =>
             new QueryOperationResult<TRequest, TResponse>(Output, input);
     }
 }

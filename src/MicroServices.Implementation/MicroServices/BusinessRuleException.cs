@@ -7,7 +7,7 @@ namespace Kingo.MicroServices
     /// This type of exception is thrown when an attempted operation is not allowed by the application logic.
     /// </summary>    
     [Serializable]
-    public class BusinessRuleException : MessageHandlerOperationException
+    public class BusinessRuleException : InternalOperationException
     {                
         /// <summary>
         /// Initializes a new instance of the <see cref="BusinessRuleException" /> class.
@@ -26,7 +26,11 @@ namespace Kingo.MicroServices
             base(info, context) { }
 
         /// <inheritdoc />
-        public override BadRequestException ToBadRequestException(MicroProcessorOperationStackTrace operationStackTrace, string message) =>
-            new UnprocessableEntityException(operationStackTrace, message, this);
+        protected override bool IsBadRequest(MicroProcessorOperationStackTrace operationStackTrace) =>
+            throw new NotImplementedException();
+
+        /// <inheritdoc />
+        protected override BadRequestException ToBadRequestException(MicroProcessorOperationStackTrace operationStackTrace) =>
+            new UnprocessableEntityException(operationStackTrace, Message, this);
     }
 }

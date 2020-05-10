@@ -25,10 +25,5 @@ namespace Kingo.MicroServices
                 throw new InternalServerErrorException(exception.OperationStackTrace, exception.Message, exception);
             }
         }
-
-        // When a MessageHandlerOperationException was thrown while handling an event, it is regarded as an InternalServerError, because
-        // processing an event can never result in a BadRequestException.
-        protected override MicroProcessorOperationException NewMicroProcessorOperationException(MessageHandlerOperationException.WithStackTrace exception) =>
-            exception.ToInternalServerErrorException(exception.Message);
     }
 }

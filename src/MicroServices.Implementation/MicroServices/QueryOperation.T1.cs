@@ -91,11 +91,6 @@ namespace Kingo.MicroServices
             return CreateMethodOperation(context);
         }
 
-        /// <summary>
-        /// Creates and returns a new <see cref="ExecuteAsyncMethodOperation{TResponse}"/> for the query that is to be executed.
-        /// </summary>
-        /// <param name="context">Context of the operation.</param>
-        /// <returns>A new operation that is ready to be executed.</returns>
-        protected abstract ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context);
+        internal abstract ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context);
     }
 }

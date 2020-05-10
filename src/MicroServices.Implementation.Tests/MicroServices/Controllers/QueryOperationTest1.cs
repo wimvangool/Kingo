@@ -14,7 +14,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync<object>(null);
+            await CreateProcessor().ExecuteQueryAsync(null as IQuery<object>);
         }
 
         [TestMethod]

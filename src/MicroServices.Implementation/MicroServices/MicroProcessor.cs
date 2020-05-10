@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using Kingo.Clocks;
 using Kingo.Reflection;
 using Kingo.Threading;
@@ -70,7 +71,7 @@ namespace Kingo.MicroServices
         private readonly Context<IClock> _clockContext;
 
         private readonly Lazy<IClock> _defaultClock;
-        private readonly Lazy<IMessageFactory> _messageFactory;
+        private readonly Lazy<MessageFactory> _messageFactory;
         private readonly Lazy<IMicroProcessorOptions> _options;
         private readonly Lazy<IMicroServiceBus> _microServiceBus;
 
@@ -87,7 +88,7 @@ namespace Kingo.MicroServices
             _clockContext = new Context<IClock>();
 
             _defaultClock = new Lazy<IClock>(CreateDefaultClock);
-            _messageFactory = new Lazy<IMessageFactory>(CreateMessageFactory, true);
+            _messageFactory = new Lazy<MessageFactory>(CreateMessageFactory, true);
             _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
             _microServiceBus = new Lazy<IMicroServiceBus>(CreateMicroServiceBus, true);
         }
@@ -118,10 +119,10 @@ namespace Kingo.MicroServices
 
         #region [====== MessageFactory ======]
 
-        internal IMessageFactory MessageFactory =>
+        internal MessageFactory MessageFactory =>
             _messageFactory.Value;
 
-        private IMessageFactory CreateMessageFactory() =>
+        private MessageFactory CreateMessageFactory() =>
             Options.Messages.BuildMessageFactory();
 
         #endregion
@@ -219,9 +220,9 @@ namespace Kingo.MicroServices
             }
 
             public Task SendAsync(IEnumerable<IMessage> messages) =>
-                DispatchAsync(messages.ToArray());
+                SendAsync(messages.ToArray());
 
-            private async Task DispatchAsync(IMessage[] messages)
+            private async Task SendAsync(IMessage[] messages)
             {
                 foreach (var microServiceBus in _microServiceBusCollection)
                 {
@@ -259,22 +260,28 @@ namespace Kingo.MicroServices
         #region [====== Commands ======]                  
 
         /// <inheritdoc />
-        public Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
-            ExecuteCommandAsync(messageHandler, MessageFactory.CreateMessage(message), token);
+        public Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteCommandAsync(messageHandler, CreateCommand(message, messageHeader), token);
 
         private async Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, Message<TCommand> message, CancellationToken? token = null) =>
             (await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
+
+        private Message<TCommand> CreateCommand<TCommand>(TCommand message, MessageHeader messageHeader) =>
+            MessageFactory.CreateCommand(MessageDirection.Input, messageHeader, message);
 
         #endregion
 
         #region [====== Events ======]
 
         /// <inheritdoc />
-        public Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, CancellationToken? token = null) =>
-            HandleEventAsync(messageHandler, MessageFactory.CreateMessage(message), token);
+        public Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            HandleEventAsync(messageHandler, CreateEvent(message, messageHeader), token);
 
         private async Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, Message<TEvent> message, CancellationToken? token = null) =>
             (await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
+
+        private Message<TEvent> CreateEvent<TEvent>(TEvent message, MessageHeader messageHeader) =>
+            MessageFactory.CreateEvent(MessageDirection.Input, messageHeader, message);
 
         #endregion
 
@@ -285,11 +292,14 @@ namespace Kingo.MicroServices
             await ExecuteReadOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token)).ConfigureAwait(false);
 
         /// <inheritdoc />
-        public Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
-            ExecuteQueryAsync(query, MessageFactory.CreateMessage(message), token);
+        public Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteQueryAsync(query, CreateRequest(message, messageHeader), token);
 
         private async Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token = null) =>
             (await ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token)).ConfigureAwait(false)).WithInput(message);
+
+        private Message<TRequest> CreateRequest<TRequest>(TRequest message, MessageHeader messageHeader) =>
+            MessageFactory.CreateRequest(MessageDirection.Input, messageHeader, message);
 
         #endregion
 
@@ -328,6 +338,9 @@ namespace Kingo.MicroServices
         /// <returns>The result of the operation.</returns>
         protected virtual Task<TResult> ExecuteOperationAsync<TResult>(MicroProcessorOperation<TResult> operation) =>
             operation.ExecuteAsync();
+
+        internal TContent Validate<TContent>(ref Message<TContent> message) =>
+            Interlocked.Exchange(ref message, message.Validate(ServiceProvider)).Content;
 
         #endregion        
     }

@@ -30,6 +30,9 @@
         public IMessageBus MessageBus =>
             _messageBus;
 
+        internal MessageBusResult MessageBusResult() =>
+            _messageBus.ToResult();
+
         internal MessageHandlerOperationContext PushOperation(HandleAsyncMethodOperation operation) =>
             new MessageHandlerOperationContext(this, operation);        
     }

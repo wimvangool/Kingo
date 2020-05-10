@@ -129,11 +129,32 @@
   <data name="EndpointNameFormat_UnknownPlaceholderName" xml:space="preserve">
     <value>Unknown placeholder specified: '{0}'.</value>
   </data>
+  <data name="MessageFactoryBuilder_MappingForMessageTypeAlreadyExists" xml:space="preserve">
+    <value>Another mapping for the specified message-type ({0}) already exists.</value>
+  </data>
+  <data name="MessageFactory_InvalidMessageDirection" xml:space="preserve">
+    <value>The specified direction '{0}' is not valid.</value>
+  </data>
+  <data name="MessageFactory_InvalidMessageKind" xml:space="preserve">
+    <value>The specified kind '{0}' is not valid.</value>
+  </data>
   <data name="MessageHandlerClass_CouldNotResolveMessageHandler" xml:space="preserve">
     <value>Could not resolve message handler of type '{0}'.</value>
   </data>
+  <data name="MessageHeader_IdNotSpecified" xml:space="preserve">
+    <value>Cannot set the CorrelationId of a message ({0}) when the Id of the message has not been specified.</value>
+  </data>
   <data name="MessageIdFactory_MultipleFactoriesAddedForSameMessageType" xml:space="preserve">
     <value>Cannot generate message-id for message of type '{0}' because multiple factories were configured for this message-type: {1}.</value>
+  </data>
+  <data name="MessageIdFormatter_PropertyIsAmbiguous" xml:space="preserve">
+    <value>MessageId-property '{0}' has multiple candidates on message of type '{1}': {2}. Please make sure the type-hierarchy contains only a single public property with this name.</value>
+  </data>
+  <data name="MessageIdFormatter_PropertyNotFound" xml:space="preserve">
+    <value>MessageId-property '{0}' was not found on message of type '{1}'.</value>
+  </data>
+  <data name="Message_ConversionFailed" xml:space="preserve">
+    <value>Could not convert message with content of type '{0}' to a message with content of type '{1}'.</value>
   </data>
   <data name="MicroProcessorBuilder_InvalidProcessorType" xml:space="preserve">
     <value>Type '{0}' cannot be used as a MicroProcessor. Please provider a non-abstract, non-generic MicroProcessor-type.</value>

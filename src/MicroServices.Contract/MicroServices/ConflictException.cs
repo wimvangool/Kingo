@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// This exception is thrown by a <see cref="IMicroProcessor" /> when a command or query failed because a concurrency
-    /// exception occurred while saving all changes. This type semantically maps to HTTP response code <c>409</c> (conflict).
+    /// This exception is thrown by a processor when an operation failed because a concurrency
+    /// exception. This type semantically maps to HTTP response code <c>409</c> (conflict).
     /// </summary>
     [Serializable]
     public class ConflictException : BadRequestException
@@ -27,6 +28,7 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected ConflictException(SerializationInfo info, StreamingContext context) :
             base(info, context) { }
 

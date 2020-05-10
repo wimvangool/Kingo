@@ -58,13 +58,13 @@ namespace Kingo.MicroServices.Controllers
             MessageKind.Command;
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.ExecuteCommandAsync(messageHandler, message, token);
+            processor.ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified, token);
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.ExecuteCommandAsync(messageHandler, message, token);
+            processor.ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified, token);
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.ExecuteCommandAsync(messageHandler, message, token);
+            processor.ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified, token);
 
         #endregion
     }

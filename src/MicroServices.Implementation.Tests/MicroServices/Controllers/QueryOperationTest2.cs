@@ -14,7 +14,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync<object, object>(null, new object());
+            await CreateProcessor().ExecuteQueryAsync(null as IQuery<object, object>, new object());
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     tokenSource.Cancel();
                     return message;
-                }, new object(), tokenSource.Token);
+                }, new object(), MessageHeader.Unspecified, tokenSource.Token);
             }
             catch (GatewayTimeoutException exception)
             {
@@ -159,7 +159,7 @@ namespace Kingo.MicroServices.Controllers
                 await CreateProcessor().ExecuteQueryAsync<object, object>((message, context) =>
                 {
                     throw exceptionToThrow;
-                }, new object(), tokenSource.Token);
+                }, new object(), MessageHeader.Unspecified, tokenSource.Token);
             }
             catch (InternalServerErrorException exception)
             {

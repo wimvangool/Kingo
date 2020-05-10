@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Kingo.Reflection;
 using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents a builder for new <see cref="IMessageFactory" /> instances.
+    /// Represents a builder for new <see cref="MessageFactory" /> instances.
     /// </summary>
     public sealed class MessageFactoryBuilder
     {
+        private readonly Dictionary<MessageDirection, MessageValidationOptions> _messageValidationOptions;
         private readonly Dictionary<Type, MessageAttribute> _attributes;
 
         /// <summary>
@@ -19,17 +21,12 @@ namespace Kingo.MicroServices
         public MessageFactoryBuilder()
         {
             _attributes = new Dictionary<Type, MessageAttribute>();
-            _messageValidationOptions = MessageValidationOptions.Default;
+            _messageValidationOptions = new Dictionary<MessageDirection, MessageValidationOptions>();
             _messageKindResolver = new DefaultMessageKindResolver();
             _messageIdGenerator = new DefaultMessageIdGenerator();
         }
 
-        /// <summary>
-        /// Creates and returns a new <see cref="IMessageFactory" /> that can be used to create
-        /// new <see cref="IMessage" />-instances from specific message-content instances.
-        /// </summary>
-        /// <returns>A new <see cref="IMessageFactory"/>.</returns>
-        public IMessageFactory BuildMessageFactory()
+        internal MessageFactory BuildMessageFactory()
         {
             var messageKindResolver = new MessageKindResolver(_attributes, _messageKindResolver);
             var messageIdGenerator = new MessageIdGenerator(_attributes, _messageIdGenerator);
@@ -42,16 +39,14 @@ namespace Kingo.MicroServices
 
         #region [====== MessageValidationOptions ======]
 
-        private MessageValidationOptions _messageValidationOptions;
-
         /// <summary>
-        /// Gets or sets the <see cref="MessageValidationOptions" /> that should be applied to the <see cref="IMessageFactory" />.
+        /// Configures the processor to use the specified <paramref name="validationOptions"/> for messages that
+        /// flow in the specified <paramref name="direction" />.
         /// </summary>
-        public MessageValidationOptions MessageValidationOptions
-        {
-            get => _messageValidationOptions;
-            set => _messageValidationOptions = value;
-        }
+        /// <param name="direction">The direction of the messages.</param>
+        /// <param name="validationOptions">The options to apply.</param>
+        public void Validate(MessageDirection direction, MessageValidationOptions validationOptions) =>
+            _messageValidationOptions[direction] = validationOptions;
 
         #endregion
 
@@ -61,7 +56,7 @@ namespace Kingo.MicroServices
 
         /// <summary>
         /// Gets or sets the <see cref="IMessageKindResolver" /> that will be used by the
-        /// <see cref="IMessageFactory" /> to resolve the <see cref="MessageKind" /> of a message
+        /// <see cref="MessageFactory" /> to resolve the <see cref="MessageKind" /> of a message
         /// for which the message-kind has not been explicitly specified.
         /// </summary>
         public IMessageKindResolver MessageKindResolver
@@ -78,7 +73,7 @@ namespace Kingo.MicroServices
 
         /// <summary>
         /// Gets or sets the <see cref="IMessageIdGenerator" /> that will be used by the
-        /// <see cref="IMessageFactory" /> to generate a new message-id for a message
+        /// <see cref="MessageFactory" /> to generate a new message-id for a message
         /// for which no explicit <see cref="MessageAttribute.MessageIdFormat"/> has been
         /// specified.
         /// </summary>

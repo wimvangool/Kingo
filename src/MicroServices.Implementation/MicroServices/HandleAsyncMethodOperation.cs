@@ -1,8 +1,7 @@
 ﻿namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents an operation of a <see cref="IMicroProcessor"/> where a message is being handled
-    /// by a message handler.
+    /// Represents an operation of a <see cref="IMicroProcessor"/> where a message is being handled by a message handler.
     /// </summary>
     public abstract class HandleAsyncMethodOperation : MicroProcessorOperation<MessageHandlerOperationResult>, IAsyncMethodOperation<MessageHandlerOperationResult>
     {

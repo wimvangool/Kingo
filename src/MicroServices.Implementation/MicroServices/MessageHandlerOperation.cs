@@ -29,18 +29,18 @@ namespace Kingo.MicroServices
 
         private abstract class HandleAsyncMethod
         {
-            public abstract Task<MessageHandlerOperationResult> InvokeAsync(MessageHandlerOperation operation, IMessage message, MessageHandlerOperationContext context);
+            public abstract Task<MessageHandlerOperationResult> InvokeAsync(MessageHandlerOperation operation, Message<object> message, MessageHandlerOperationContext context);
         }
 
         private sealed class HandleAsyncMethod<TMessage> : HandleAsyncMethod
         {
-            public override Task<MessageHandlerOperationResult> InvokeAsync(MessageHandlerOperation operation, IMessage message, MessageHandlerOperationContext context) =>
+            public override Task<MessageHandlerOperationResult> InvokeAsync(MessageHandlerOperation operation, Message<object> message, MessageHandlerOperationContext context) =>
                 operation.HandleAsync(message.ConvertTo<TMessage>(), context);
         }
 
         private static readonly ConcurrentDictionary<Type, HandleAsyncMethod> _HandleAsyncMethods = new ConcurrentDictionary<Type, HandleAsyncMethod>();
 
-        internal Task<MessageHandlerOperationResult> HandleAsync(IMessage message, MessageHandlerOperationContext context) =>
+        internal Task<MessageHandlerOperationResult> HandleAsync(Message<object> message, MessageHandlerOperationContext context) =>
             _HandleAsyncMethods.GetOrAdd(message.Content.GetType(), CreateHandleAsyncMethod).InvokeAsync(this, message, context);
 
         private static HandleAsyncMethod CreateHandleAsyncMethod(Type messageType)

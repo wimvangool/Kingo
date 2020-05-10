@@ -19,10 +19,10 @@ namespace Kingo.MicroServices
             ExecuteOperationAsync(new QueryOperationImplementation<TResponse>(_context, query, Token));
 
         public Task<TResponse> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message) =>
-            ExecuteQueryAsync(query, _context.Processor.MessageFactory.CreateMessage(message));
+            ExecuteQueryAsync(query, _context.Processor.MessageFactory.CreateRequest(MessageDirection.Internal, MessageHeader.Unspecified, message));
 
-        public Task<TResponse> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, Message<TRequest> message) =>
-            ExecuteOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(_context, query, message, Token));
+        private Task<TResponse> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, Message<TRequest> message) =>
+            ExecuteOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(_context, query, message.CorrelateWith(_context.StackTrace.CurrentOperation.Message), Token));
 
         private static async Task<TResponse> ExecuteOperationAsync<TResponse>(QueryOperation<TResponse> operation) =>
             GetResponse(await operation.ExecuteAsync());
