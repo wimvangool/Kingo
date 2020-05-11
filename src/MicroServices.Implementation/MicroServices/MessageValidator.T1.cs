@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Kingo.MicroServices.DataAnnotations;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -24,6 +27,9 @@ namespace Kingo.MicroServices
 
         public override MessageDirection Direction =>
             _message.Direction;
+
+        public override Message<TContent> CommitToKind(MessageKind kind) =>
+            new MessageValidator<TContent>(_message.CommitToKind(kind), _expectedKind, _validationOptions);
 
         #endregion
 
@@ -70,8 +76,62 @@ namespace Kingo.MicroServices
 
         #region [====== Validation ======]
 
-        public override Message<TContent> Validate(IServiceProvider serviceProvider) =>
-            throw new NotImplementedException();
+        public override Message<TContent> Validate(IServiceProvider serviceProvider)
+        {
+            var message = ValidateKind(_message, _expectedKind, _validationOptions.HasFlag(MessageValidationOptions.BlockUndefined));
+            if (message.MustBeValidated(_validationOptions))
+            {
+                return ValidateContent(message, serviceProvider);
+            }
+            return message;
+        }
+
+        private static Message<TContent> ValidateKind(Message<TContent> message, MessageKind expectedKind, bool blockUndefined)
+        {
+            if (message.Kind == expectedKind)
+            {
+                return message;
+            }
+            if (message.Kind == MessageKind.Undefined)
+            {
+                if (blockUndefined)
+                {
+                    throw NewUndefinedMessagesBlockedException(message);
+                }
+                return message.CommitToKind(expectedKind);
+            }
+            throw NewMessageKindMismatchException(message, expectedKind);
+        }
+
+        private static Message<TContent> ValidateContent(Message<TContent> message, IServiceProvider serviceProvider)
+        {
+            if (message.Content.IsNotValid(out var validationErrors, serviceProvider))
+            {
+                throw NewContentNotValidException(message, validationErrors);
+            }
+            return message;
+        }
+
+        private static Exception NewUndefinedMessagesBlockedException(IMessage<TContent> invalidMessage)
+        {
+            var messageFormat = ExceptionMessages.Message_UndefinedMessagesBlocked;
+            var message = string.Format(messageFormat, invalidMessage.Content.GetType().FriendlyName(), MessageKind.Undefined, invalidMessage.Direction);
+            return new MessageValidationFailedException(invalidMessage, Enumerable.Empty<ValidationResult>(), message);
+        }
+
+        private static Exception NewMessageKindMismatchException(IMessage<TContent> invalidMessage, MessageKind expectedKind)
+        {
+            var messageFormat = ExceptionMessages.Message_MessageKindMismatch;
+            var message = string.Format(messageFormat, invalidMessage.Content.GetType().FriendlyName(), invalidMessage.Kind, expectedKind);
+            return new MessageValidationFailedException(invalidMessage, Enumerable.Empty<ValidationResult>(), message);
+        }
+
+        private static Exception NewContentNotValidException(IMessage<TContent> invalidMessage, ICollection<ValidationResult> validationErrors)
+        {
+            var messageFormat = ExceptionMessages.Message_ContentNotValid;
+            var message = string.Format(messageFormat, invalidMessage.Content.GetType().FriendlyName(), validationErrors.Count);
+            return new MessageValidationFailedException(invalidMessage, validationErrors, message);
+        }
 
         #endregion
     }

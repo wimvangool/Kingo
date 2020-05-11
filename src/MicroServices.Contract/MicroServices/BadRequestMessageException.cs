@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using System.Text;
 using static Kingo.Ensure;
 
 namespace Kingo.MicroServices

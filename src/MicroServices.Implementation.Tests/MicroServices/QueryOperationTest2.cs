@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     [TestClass]
     public sealed class QueryOperationTest2 : MicroProcessorTest<MicroProcessor>
@@ -179,7 +179,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InternalServerErrorException), AllowDerivedTypes = true)]
         public async Task ExecuteQueryAsync_ThrowsExpectedException_IfOperationThrowsMessageHandlerOperationException()
         {
-            var exceptionToThrow = new BusinessRuleException();
+            var exceptionToThrow = new BusinessRuleViolationException();
 
             try
             {
@@ -202,7 +202,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(BadRequestException))]
         public async Task ExecuteQueryAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
         {
-            var exceptionToThrow = new BadRequestException(null, null);
+            var exceptionToThrow = new BadRequestException(MicroProcessorOperationStackTrace.Empty);
 
             try
             {
@@ -223,7 +223,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task ExecuteQueryAsync_ThrowsExpectedException_IfOperationThrowsInternalServerErrorException()
         {
-            var exceptionToThrow = new InternalServerErrorException(null, null);
+            var exceptionToThrow = new InternalServerErrorException(MicroProcessorOperationStackTrace.Empty);
 
             try
             {

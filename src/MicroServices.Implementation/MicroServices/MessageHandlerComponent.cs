@@ -13,7 +13,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represent a component that implements one or more variations of the <see cref="IMessageHandler{TMessage}"/> interface.
     /// </summary>
-    public abstract class MessageHandlerComponent : MicroProcessorComponent, IHandleAsyncMethodFactory, IReadOnlyCollection<HandleAsyncMethod>
+    public abstract class MessageHandlerComponent : MicroProcessorComponent, IMessageBusEndpointFactory, IReadOnlyCollection<HandleAsyncMethod>
     {
         private readonly MessageHandlerInterface[] _interfaces;
 
@@ -36,9 +36,9 @@ namespace Kingo.MicroServices
         public override string ToString() =>
             $"{Type.FriendlyName()} ({MicroProcessorComponentInterface.ToString(_interfaces)}";
 
-        #region [====== IHandleAsyncMethodFactory.CreateMicroServiceBusEndpoints(MicroProcessor) ======]
+        #region [====== CreateMicroServiceBusEndpoints(MicroProcessor) ======]
 
-        IEnumerable<MicroServiceBusEndpoint> IHandleAsyncMethodFactory.CreateMicroServiceBusEndpoints(MicroProcessor processor)
+        IEnumerable<MicroServiceBusEndpoint> IMessageBusEndpointFactory.CreateMicroServiceBusEndpoints(MicroProcessor processor)
         {
             foreach (var method in Methods())
             {
@@ -64,12 +64,12 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== IHandleAsyncMethodFactory.CreateMethodsFor<TMessage> ======]
+        #region [====== CreateInternalEventBusEndpoints ======]
 
         private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, object>> _MessageHandlerFactories =
             new ConcurrentDictionary<MessageHandlerInterface, Func<object, object>>();        
 
-        IEnumerable<HandleAsyncMethod<TEvent>> IHandleAsyncMethodFactory.CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider)
+        IEnumerable<HandleAsyncMethod<TEvent>> IMessageBusEndpointFactory.CreateInternalEventBusEndpoints<TEvent>(IServiceProvider serviceProvider)
         {
             // This LINQ construct first selects all message handler interface definitions that are compatible with
             // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -90,9 +90,9 @@ namespace Kingo.MicroServices
 
         internal virtual bool IsInternalServiceBusEndpoint(MessageHandlerInterface @interface)
         {
-            if (@interface.CreateMethod(this).MethodInfo.TryGetAttributeOfType<MicroServiceBusEndpointAttribute>(out var attribute))
+            if (@interface.CreateMethod(this).MethodInfo.TryGetAttributeOfType<MessageBusEndpointAttribute>(out var attribute))
             {
-                return attribute.Types.HasFlag(MicroServiceBusEndpointTypes.Internal);
+                return attribute.Types.HasFlag(MessageBusTypes.InternalEventBus);
             }
             return false;
         }

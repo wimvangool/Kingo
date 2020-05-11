@@ -129,6 +129,9 @@
   <data name="EndpointNameFormat_UnknownPlaceholderName" xml:space="preserve">
     <value>Unknown placeholder specified: '{0}'.</value>
   </data>
+  <data name="MessageBus_NegativeDelayNotAllowed" xml:space="preserve">
+    <value>The specified delay ({0}) is not allowed to be negative.</value>
+  </data>
   <data name="MessageFactoryBuilder_MappingForMessageTypeAlreadyExists" xml:space="preserve">
     <value>Another mapping for the specified message-type ({0}) already exists.</value>
   </data>
@@ -153,8 +156,17 @@
   <data name="MessageIdFormatter_PropertyNotFound" xml:space="preserve">
     <value>MessageId-property '{0}' was not found on message of type '{1}'.</value>
   </data>
+  <data name="Message_ContentNotValid" xml:space="preserve">
+    <value>Message with content of type '{0}' is not valid because its content has violated some validation-constraints ({1}).</value>
+  </data>
   <data name="Message_ConversionFailed" xml:space="preserve">
-    <value>Could not convert message with content of type '{0}' to a message with content of type '{1}'.</value>
+    <value>Message with content of type '{0}' could not be converted to a message with content of type '{1}'.</value>
+  </data>
+  <data name="Message_MessageKindMismatch" xml:space="preserve">
+    <value>Message with content of type '{0}' is not valid because its MessageKind ({1}) does not match the expected MessageKind ({2}).</value>
+  </data>
+  <data name="Message_UndefinedMessagesBlocked" xml:space="preserve">
+    <value>Message with content of type '{0}' is not valid because its MessageKind is {1} and the processor has been configured to block these kinds of messages with direction '{2}'. Please specify the MessageKind of type '{0}' at the processor's configuration, or change the configuration to allow the processor to process these kinds of messages.</value>
   </data>
   <data name="MicroProcessorBuilder_InvalidProcessorType" xml:space="preserve">
     <value>Type '{0}' cannot be used as a MicroProcessor. Please provider a non-abstract, non-generic MicroProcessor-type.</value>

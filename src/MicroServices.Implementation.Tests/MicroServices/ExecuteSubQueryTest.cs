@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     [TestClass]
     public sealed class ExecuteSubQueryTest : MicroProcessorTest<MicroProcessor>

@@ -3,18 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Kingo.Clocks;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {   
     internal sealed class MessageBus : IMessageBus
     {
         private readonly MessageFactory _messageFactory;
+        private readonly IServiceProvider _serviceProvider;
         private readonly List<Message<object>> _messages;
         private readonly IClock _clock;
 
-        public MessageBus(MessageFactory messageFactory, IClock clock)
+        public MessageBus(MessageFactory messageFactory, IServiceProvider serviceProvider, IClock clock)
         {
             _messageFactory = messageFactory;
+            _serviceProvider = serviceProvider;
             _messages = new List<Message<object>>();
             _clock = clock;
         }
@@ -48,29 +51,38 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Send ======]
+        #region [====== Send & Publish ======]
 
-        public void Send(object command, TimeSpan delay)
-        {
-            throw new NotImplementedException();
-        }
+        public void Send(object command, TimeSpan delay) =>
+            Send(command, ToDeliveryTime(delay));
 
         public void Send(object command, DateTimeOffset? deliveryTime = null) =>
-            //_messages.Add(_messageFactory.Wrap(command).ToDispatch(MessageKind.Command, deliveryTime));
-            throw new NotImplementedException();
+            Add(IsNotNull(command, nameof(command)), MessageKind.Command, deliveryTime);
 
-        #endregion
-
-        #region [====== Publish ======]
-
-        public void Publish(object @event, TimeSpan delay)
-        {
-            throw new NotImplementedException();
-        }
+        public void Publish(object @event, TimeSpan delay) =>
+            Publish(@event, ToDeliveryTime(delay));
 
         public void Publish(object @event, DateTimeOffset? deliveryTime = null) =>
-            //_messages.Add(_messageFactory.Wrap(@event).ToDispatch(MessageKind.Event, deliveryTime));
-            throw new NotImplementedException();
+            Add(IsNotNull(@event, nameof(@event)), MessageKind.Event, deliveryTime);
+
+        private void Add(object content, MessageKind kind, DateTimeOffset? deliveryTime) =>
+            _messages.Add(_messageFactory.CreateMessage(kind, MessageDirection.Output, MessageHeader.Unspecified, content, deliveryTime).Validate(_serviceProvider));
+
+        private DateTimeOffset ToDeliveryTime(TimeSpan delay)
+        {
+            if (delay < TimeSpan.Zero)
+            {
+                throw NewNegativeDelayNotAllowedException(delay);
+            }
+            return _clock.UtcDateAndTime().Add(delay);
+        }
+
+        private static Exception NewNegativeDelayNotAllowedException(in TimeSpan delay)
+        {
+            var messageFormat = ExceptionMessages.MessageBus_NegativeDelayNotAllowed;
+            var message = string.Format(messageFormat, delay);
+            return new ArgumentOutOfRangeException(nameof(delay), message);
+        }
 
         #endregion
 

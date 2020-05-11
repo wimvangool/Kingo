@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents (the envelope of) a message, carrying its payload and metadata.

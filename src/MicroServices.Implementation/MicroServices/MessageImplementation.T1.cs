@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Kingo.MicroServices
 {
@@ -30,6 +28,9 @@ namespace Kingo.MicroServices
         public override MessageDirection Direction =>
             _direction;
 
+        public override Message<TContent> CommitToKind(MessageKind kind) =>
+            new MessageImplementation<TContent>(kind, _direction, _header, _content, _deliveryTimeUtc);
+
         #endregion
 
         #region [====== Id & Correlation ======]
@@ -41,7 +42,7 @@ namespace Kingo.MicroServices
             _header.CorrelationId;
 
         public override Message<TContent> CorrelateWith(IMessage message) =>
-            new MessageImplementation<TContent>(_kind, _direction, _header.WithCorrelationId(message.CorrelationId), _content, _deliveryTimeUtc);
+            new MessageImplementation<TContent>(_kind, _direction, _header.WithCorrelationId(message.Id), _content, _deliveryTimeUtc);
 
         #endregion
 

@@ -97,11 +97,47 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not convert message with content of type &apos;{0}&apos; to a message with content of type &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Message with content of type &apos;{0}&apos; is not valid because its content has violated some validation-constraints ({1})..
+        /// </summary>
+        internal static string Message_ContentNotValid {
+            get {
+                return ResourceManager.GetString("Message_ContentNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message with content of type &apos;{0}&apos; could not be converted to a message with content of type &apos;{1}&apos;..
         /// </summary>
         internal static string Message_ConversionFailed {
             get {
                 return ResourceManager.GetString("Message_ConversionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message with content of type &apos;{0}&apos; is not valid because its MessageKind ({1}) does not match the expected MessageKind ({2})..
+        /// </summary>
+        internal static string Message_MessageKindMismatch {
+            get {
+                return ResourceManager.GetString("Message_MessageKindMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message with content of type &apos;{0}&apos; is not valid because its MessageKind is {1} and the processor has been configured to block these kinds of messages with direction &apos;{2}&apos;. Please specify the MessageKind of type &apos;{0}&apos; at the processor&apos;s configuration, or change the configuration to allow the processor to process these kinds of messages..
+        /// </summary>
+        internal static string Message_UndefinedMessagesBlocked {
+            get {
+                return ResourceManager.GetString("Message_UndefinedMessagesBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified delay ({0}) is not allowed to be negative..
+        /// </summary>
+        internal static string MessageBus_NegativeDelayNotAllowed {
+            get {
+                return ResourceManager.GetString("MessageBus_NegativeDelayNotAllowed", resourceCulture);
             }
         }
         

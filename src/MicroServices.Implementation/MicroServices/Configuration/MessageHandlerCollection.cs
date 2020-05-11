@@ -117,8 +117,8 @@ namespace Kingo.MicroServices.Configuration
         // When building the factory, we filter out all types that have also been registered as an instance.
         // If we don't do this, resolving a specific MessageHandler is undeterministic. As such, we simply
         // decide that types that were added as instance hide any regular type-registrations.
-        private IHandleAsyncMethodFactory BuildMethodFactory() =>
-            new HandleAsyncMethodFactory(_instances.Concat(MessageHandlerTypes));
+        private IMessageBusEndpointFactory BuildMethodFactory() =>
+            new MessageBusEndpointFactory(_instances.Concat(MessageHandlerTypes));
 
         private IEnumerable<MessageHandlerComponent> MessageHandlerTypes =>
             this.OfType<MessageHandlerType>().Where(IsNotRegisteredAsInstance);

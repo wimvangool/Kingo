@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using Kingo.Clocks;
 using Kingo.Reflection;
 using Kingo.Threading;
@@ -16,7 +15,6 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a basic implementation of a <see cref="IMicroProcessor" />.
     /// </summary>
-    [MicroProcessorComponent(ServiceLifetime.Singleton)]
     public class MicroProcessor : Disposable, IMicroProcessor
     {
         #region [====== ServiceScope ======]
@@ -117,13 +115,19 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== MessageFactory ======]
+        #region [====== Messages ======]
 
         internal MessageFactory MessageFactory =>
             _messageFactory.Value;
 
         private MessageFactory CreateMessageFactory() =>
             Options.Messages.BuildMessageFactory();
+
+        internal MessageBus CreateMessageBus(IClock clock) =>
+            new MessageBus(MessageFactory, ServiceProvider, clock);
+
+        internal TContent Validate<TContent>(ref Message<TContent> message) =>
+            Interlocked.Exchange(ref message, message.Validate(ServiceProvider)).Content;
 
         #endregion
 
@@ -247,7 +251,7 @@ namespace Kingo.MicroServices
         /// <inheritdoc />
         public virtual IEnumerable<IMicroServiceBusEndpoint> CreateMicroServiceBusEndpoints()
         {
-            var methodFactory = ServiceProvider.GetService<IHandleAsyncMethodFactory>();
+            var methodFactory = ServiceProvider.GetService<IMessageBusEndpointFactory>();
             if (methodFactory == null)
             {
                 return Enumerable.Empty<IMicroServiceBusEndpoint>();
@@ -338,9 +342,6 @@ namespace Kingo.MicroServices
         /// <returns>The result of the operation.</returns>
         protected virtual Task<TResult> ExecuteOperationAsync<TResult>(MicroProcessorOperation<TResult> operation) =>
             operation.ExecuteAsync();
-
-        internal TContent Validate<TContent>(ref Message<TContent> message) =>
-            Interlocked.Exchange(ref message, message.Validate(ServiceProvider)).Content;
 
         #endregion        
     }

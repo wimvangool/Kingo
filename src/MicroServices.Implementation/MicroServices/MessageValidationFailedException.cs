@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using System.Text;
 using Kingo.Collections.Generic;
 using Kingo.Reflection;
 using static Kingo.Ensure;
@@ -77,6 +76,12 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         protected override bool IsBadRequest(MicroProcessorOperationStackTrace operationStackTrace) =>
-            throw new NotImplementedException();
+            IsBadRequest(operationStackTrace.CurrentOperation);
+
+        private static bool IsBadRequest(MicroProcessorOperationStackItem operation) =>
+            IsBadRequest(operation.Message);
+
+        private static bool IsBadRequest(IMessage message) =>
+            message == null || message.Kind == MessageKind.Request || message.Kind == MessageKind.Command;
     }
 }

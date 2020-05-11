@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
 using static Kingo.Ensure;
 
 namespace Kingo.MicroServices

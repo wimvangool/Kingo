@@ -3,18 +3,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class EventHandlerOperationTest : MessageHandlerOperationTest
+    public sealed class CommandHandlerOperationTest : MessageHandlerOperationTest
     {
         #region [====== Exception Handling ======]
 
         [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException), AllowDerivedTypes = true)]
+        [ExpectedException(typeof(BadRequestException), AllowDerivedTypes = true)]
         public override async Task HandleMessageAsync_ThrowsExpectedException_IfOperationThrowsMessageHandlerOperationException()
         {
-            var exceptionToThrow = new BusinessRuleException();
+            var exceptionToThrow = new BusinessRuleViolationException();
 
             try
             {
@@ -23,7 +23,7 @@ namespace Kingo.MicroServices.Controllers
                     throw exceptionToThrow;
                 }, new object());
             }
-            catch (InternalServerErrorException exception)
+            catch (BadRequestException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception.InnerException);
                 throw;
@@ -31,10 +31,10 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
+        [ExpectedException(typeof(BadRequestException))]
         public override async Task HandleMessageAsync_ThrowsExpectedException_IfOperationThrowsBadRequestException()
         {
-            var exceptionToThrow = new BadRequestException(null, null);
+            var exceptionToThrow = new BadRequestException(MicroProcessorOperationStackTrace.Empty);
 
             try
             {
@@ -43,9 +43,9 @@ namespace Kingo.MicroServices.Controllers
                     throw exceptionToThrow;
                 }, new object());
             }
-            catch (InternalServerErrorException exception)
+            catch (BadRequestException exception)
             {
-                Assert.AreSame(exceptionToThrow, exception.InnerException);
+                Assert.AreSame(exceptionToThrow, exception);
                 throw;
             }
         }
@@ -55,16 +55,16 @@ namespace Kingo.MicroServices.Controllers
         #region [====== HandleMessageAsync ======]
 
         protected override MessageKind MessageKind =>
-            MessageKind.Event;
+            MessageKind.Command;
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.HandleEventAsync(messageHandler, message, MessageHeader.Unspecified, token);
+            processor.ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified, token);
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.HandleEventAsync(messageHandler, message, MessageHeader.Unspecified, token);
+            processor.ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified, token);
 
         protected override Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
-            processor.HandleEventAsync(messageHandler, message, MessageHeader.Unspecified, token);
+            processor.ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified, token);
 
         #endregion
     }

@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Kingo.MicroServices
 {        
-    internal sealed class HandleAsyncMethodFactory : IHandleAsyncMethodFactory
+    internal sealed class MessageBusEndpointFactory : IMessageBusEndpointFactory
     {                        
-        private readonly IHandleAsyncMethodFactory[] _methodFactories;        
+        private readonly IMessageBusEndpointFactory[] _methodFactories;        
               
-        public HandleAsyncMethodFactory(IEnumerable<IHandleAsyncMethodFactory> methodFactories)
+        public MessageBusEndpointFactory(IEnumerable<IMessageBusEndpointFactory> methodFactories)
         {
             _methodFactories = methodFactories.ToArray();            
         }                
@@ -21,9 +21,9 @@ namespace Kingo.MicroServices
             from method in factory.CreateMicroServiceBusEndpoints(processor)
             select method;
 
-        public IEnumerable<HandleAsyncMethod<TEvent>> CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider) =>
+        public IEnumerable<HandleAsyncMethod<TEvent>> CreateInternalEventBusEndpoints<TEvent>(IServiceProvider serviceProvider) =>
             from factory in _methodFactories
-            from method in factory.CreateInternalEventBusEndpointsFor<TEvent>(serviceProvider)
+            from method in factory.CreateInternalEventBusEndpoints<TEvent>(serviceProvider)
             select method;
     }
 }

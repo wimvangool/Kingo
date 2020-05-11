@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Kingo.MicroServices
@@ -33,7 +32,7 @@ namespace Kingo.MicroServices
         {
             if (Id == null)
             {
-                return $"<{nameof(Unspecified)}>";
+                return nameof(Unspecified);
             }
             var header = new StringBuilder($"{nameof(Id)} = {Id}");
 

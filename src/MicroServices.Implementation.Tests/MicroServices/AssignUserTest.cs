@@ -5,7 +5,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     [TestClass]
     public sealed class AssignUserTest : MicroProcessorTest<MicroProcessor>
@@ -19,12 +19,11 @@ namespace Kingo.MicroServices.Controllers
         }        
 
         [TestMethod]
-        public async Task User_HasNoIdentity_IfNoUserIsSpecificallyAssignedToRequest()
+        public async Task User_HasDefaultIdentity_IfNoUserIsSpecificallyAssignedToRequest()
         {
             await _processor.ExecuteCommandAsync((message, context) =>
             {
-                Assert.IsNotNull(context.User);
-                Assert.IsNull(context.User.Identity);
+                AssertIsDefaultUser(context.User);
             }, new object());
         }
 
@@ -79,9 +78,18 @@ namespace Kingo.MicroServices.Controllers
 
             await _processor.ExecuteCommandAsync((message, context) =>
             {
-                Assert.IsNotNull(context.User);
-                Assert.IsNull(context.User.Identity);
+                AssertIsDefaultUser(context.User);
             }, new object());
-        }        
+        }     
+        
+        private static void AssertIsDefaultUser(ClaimsPrincipal user)
+        {
+            Assert.IsNotNull(user);
+            Assert.IsNotNull(user.Identity);
+            Assert.IsTrue(user.Identity.IsAuthenticated);
+            Assert.AreEqual("Basic", user.Identity.AuthenticationType);
+            Assert.IsNull(user.Identity.Name);
+            Assert.AreEqual(0, user.Claims.Count());
+        }
     }
 }

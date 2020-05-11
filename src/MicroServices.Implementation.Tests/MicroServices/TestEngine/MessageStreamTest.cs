@@ -203,8 +203,12 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
+        private static readonly MessageFactory _MessageFactory = new MessageFactoryBuilder().BuildMessageFactory();
+
         private static MessageStream CreateEventStream(params object[] events) =>
-            //new MessageStream(events.Select(@event => @event.ToEvent()));
-            throw new NotImplementedException();
+            new MessageStream(events.Select(CreateEvent));
+
+        private static Message<object> CreateEvent(object @event) =>
+            _MessageFactory.CreateEvent(MessageDirection.Output, MessageHeader.Unspecified, @event);
     }
 }

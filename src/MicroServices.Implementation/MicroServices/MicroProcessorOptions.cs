@@ -5,6 +5,7 @@
         private MicroProcessorOptions(MicroProcessorOptions options)
         {
             UnitOfWorkMode = options.UnitOfWorkMode;
+            Messages = options.Messages;
             Endpoints = options.Endpoints.Copy();
         }
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     [TestClass]
     public abstract class MessageHandlerOperationTest : MicroProcessorTest<MicroProcessor>
@@ -311,7 +311,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
 
-            var exceptionToThrow = new InternalServerErrorException(null, null);
+            var exceptionToThrow = new InternalServerErrorException(MicroProcessorOperationStackTrace.Empty);
             var changeTrackerA = new ChangeTrackerSpy(true);
             var changeTrackerB = new ChangeTrackerSpy(true, exceptionToThrow);
             var changeTrackerC = new ChangeTrackerSpy(true);
@@ -402,7 +402,7 @@ namespace Kingo.MicroServices.Controllers
         {
             ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
 
-            var exceptionToThrow = new InternalServerErrorException(null, null);
+            var exceptionToThrow = new InternalServerErrorException(MicroProcessorOperationStackTrace.Empty, null);
             var changeTrackerA = new ChangeTrackerSpy(true);
             var changeTrackerB = new ChangeTrackerSpy(true, exceptionToThrow);
             var changeTrackerC = new ChangeTrackerSpy(true);
@@ -516,7 +516,7 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task HandleMessageAsync_ThrowsExpectedException_IfOperationThrowsInternalServerErrorException()
         {
-            var exceptionToThrow = new InternalServerErrorException(null, null);
+            var exceptionToThrow = new InternalServerErrorException(MicroProcessorOperationStackTrace.Empty);
 
             try
             {
@@ -562,7 +562,7 @@ namespace Kingo.MicroServices.Controllers
 
         private abstract class MessageHandlerBase : IMessageHandler<int>, IMessageHandler<object>
         {
-            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.All)]
+            [MessageBusEndpoint(MessageBusTypes.All)]
             public Task HandleAsync(int message, IMessageHandlerOperationContext context)
             {
                 try
@@ -575,7 +575,7 @@ namespace Kingo.MicroServices.Controllers
                 }
             }
 
-            [MicroServiceBusEndpoint(MicroServiceBusEndpointTypes.All)]
+            [MessageBusEndpoint(MessageBusTypes.All)]
             public Task HandleAsync(object message, IMessageHandlerOperationContext context)
             {
                 try

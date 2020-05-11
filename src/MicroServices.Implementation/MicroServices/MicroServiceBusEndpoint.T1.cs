@@ -103,15 +103,17 @@ namespace Kingo.MicroServices
 
         private readonly MicroProcessor _processor;
         private readonly MessageHandlerOperationFactory _operationFactory;
+        private readonly MessageBusEndpointAttribute _attribute;
 
-        public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, MicroServiceBusEndpointAttribute attribute) : base(method)
+        public MicroServiceBusEndpoint(HandleAsyncMethod method, MicroProcessor processor, MessageBusEndpointAttribute attribute) : base(method)
         {            
             _processor = processor;
             _operationFactory = CreateOperationFactory(processor.MessageFactory.ResolveMessageKind(typeof(TMessage)));
+            _attribute = attribute;
         }
 
         public override string Name =>
-            _processor.Options.Endpoints.ServiceName;
+            _attribute.NameFormat.FormatName(_processor.Options.Endpoints.ServiceName, MessageHandler.Type, MessageParameterInfo.ParameterType);
 
         public override MessageKind MessageKind =>
             _operationFactory.MessageKind;

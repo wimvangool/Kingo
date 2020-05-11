@@ -72,12 +72,12 @@ namespace Kingo.MicroServices
 
         #region [====== TryCreateEndpoint ======]
 
-        private static readonly ConcurrentDictionary<Type, Func<HandleAsyncMethod, MicroProcessor, MicroServiceBusEndpointAttribute, MicroServiceBusEndpoint>> _EndpointConstructors =
-            new ConcurrentDictionary<Type, Func<HandleAsyncMethod, MicroProcessor, MicroServiceBusEndpointAttribute, MicroServiceBusEndpoint>>();
+        private static readonly ConcurrentDictionary<Type, Func<HandleAsyncMethod, MicroProcessor, MessageBusEndpointAttribute, MicroServiceBusEndpoint>> _EndpointConstructors =
+            new ConcurrentDictionary<Type, Func<HandleAsyncMethod, MicroProcessor, MessageBusEndpointAttribute, MicroServiceBusEndpoint>>();
 
         internal bool TryCreateMicroServiceBusEndpoint(MicroProcessor processor, out MicroServiceBusEndpoint endpoint)
         {
-            if (MethodInfo.TryGetAttributeOfType(out MicroServiceBusEndpointAttribute attribute) && attribute.Types.HasFlag(MicroServiceBusEndpointTypes.External))
+            if (MethodInfo.TryGetAttributeOfType(out MessageBusEndpointAttribute attribute) && attribute.Types.HasFlag(MessageBusTypes.MicroServiceBus))
             {
                 endpoint = CreateEndpoint(processor, attribute);
                 return true;
@@ -86,22 +86,22 @@ namespace Kingo.MicroServices
             return false;
         }
 
-        private MicroServiceBusEndpoint CreateEndpoint(MicroProcessor processor, MicroServiceBusEndpointAttribute attribute) =>
+        private MicroServiceBusEndpoint CreateEndpoint(MicroProcessor processor, MessageBusEndpointAttribute attribute) =>
             _EndpointConstructors.GetOrAdd(MessageParameterInfo.ParameterType, CreateEndpointConstructor).Invoke(this, processor, attribute);
 
-        private static Func<HandleAsyncMethod, MicroProcessor, MicroServiceBusEndpointAttribute, MicroServiceBusEndpoint> CreateEndpointConstructor(Type messageType)
+        private static Func<HandleAsyncMethod, MicroProcessor, MessageBusEndpointAttribute, MicroServiceBusEndpoint> CreateEndpointConstructor(Type messageType)
         {
             var methodParameter = Expression.Parameter(typeof(HandleAsyncMethod), "method");
             var processorParameter = Expression.Parameter(typeof(MicroProcessor), "processor");
-            var attributeParameter = Expression.Parameter(typeof(MicroServiceBusEndpointAttribute), "attribute");
+            var attributeParameter = Expression.Parameter(typeof(MessageBusEndpointAttribute), "attribute");
 
             var endpointTypeDefinition = typeof(MicroServiceBusEndpoint<>);
             var endpointType = endpointTypeDefinition.MakeGenericType(messageType);
-            var endpointConstructorParameters = new [] { typeof(HandleAsyncMethod), typeof(MicroProcessor), typeof(MicroServiceBusEndpointAttribute) };
+            var endpointConstructorParameters = new [] { typeof(HandleAsyncMethod), typeof(MicroProcessor), typeof(MessageBusEndpointAttribute) };
             var endpointConstructor = endpointType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, endpointConstructorParameters, null);
                         
             var newEndpointExpression = Expression.New(endpointConstructor, methodParameter, processorParameter, attributeParameter);
-            var createEndpointMethodExpression = Expression.Lambda<Func<HandleAsyncMethod, MicroProcessor, MicroServiceBusEndpointAttribute, MicroServiceBusEndpoint>>(
+            var createEndpointMethodExpression = Expression.Lambda<Func<HandleAsyncMethod, MicroProcessor, MessageBusEndpointAttribute, MicroServiceBusEndpoint>>(
                 newEndpointExpression,
                 methodParameter,
                 processorParameter,

@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
-using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -36,10 +30,7 @@ namespace Kingo.MicroServices
             CreateMessage(MessageKind.Response, direction, header, content, deliveryTime);
 
         public Message<TContent> CreateMessage<TContent>(MessageKind kind, MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
-            CreateMessageFromContent(IsValid(kind), IsValid(direction), header, content).DeliverAt(deliveryTime).ConvertTo<TContent>();
-
-        private Message<object> CreateMessageFromContent(MessageKind kind, MessageDirection direction, MessageHeader header, object content) =>
-            _MessageFactoryDelegates.GetOrAdd(IsNotNull(content, nameof(content)).GetType(), CreateMessageFactoryDelegate).Invoke(this, kind, direction, header, content);
+            CreateMessageValidator(IsValid(kind), IsValid(direction), header, content).DeliverAt(deliveryTime).ConvertTo<TContent>();
 
         private Message<object> CreateMessageValidator(MessageKind kind, MessageDirection direction, MessageHeader header, object content)
         {
@@ -104,60 +95,5 @@ namespace Kingo.MicroServices
             var message = string.Format(messageFormat, direction);
             return new ArgumentOutOfRangeException(nameof(direction), message);
         }
-
-        #region [====== MessageFactoryDelegates ======]
-
-        private static readonly ConcurrentDictionary<Type, Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>> _MessageFactoryDelegates =
-            new ConcurrentDictionary<Type, Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>>();
-
-        private static Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>> CreateMessageFactoryDelegate(Type contentType)
-        {
-            var messageFactoryParameter = Expression.Parameter(typeof(MessageFactory), "messageFactory");
-            var messageKindParameter = Expression.Parameter(typeof(MessageKind), "kind");
-            var messageDirectionParameter = Expression.Parameter(typeof(MessageDirection), "direction");
-            var messageHeaderParameter = Expression.Parameter(typeof(MessageHeader), "header");
-            var contentParameter = Expression.Parameter(typeof(object), "content");
-
-            var contentExpression = Expression.Convert(contentParameter, contentType);
-            var createMessageMethodInvocation = Expression.Call(
-                messageFactoryParameter,
-                CreateMessageMethod,
-                messageKindParameter,
-                messageDirectionParameter,
-                messageHeaderParameter,
-                contentExpression);
-
-            return CreateLambdaExpression(
-                createMessageMethodInvocation, 
-                messageFactoryParameter,
-                messageKindParameter,
-                messageDirectionParameter,
-                messageHeaderParameter,
-                contentParameter).Compile();
-        }
-
-        private static Expression<Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>> CreateLambdaExpression(Expression body, params ParameterExpression[] parameters) =>
-            Expression.Lambda<Func<MessageFactory, MessageKind, MessageDirection, MessageHeader, object, Message<object>>>(body, parameters);
-
-        #endregion
-
-        #region [====== CreateMessageMethodDefinition ======]
-
-        private static readonly Lazy<MethodInfo> _CreateMessageMethod = new Lazy<MethodInfo>(GetCreateMessageMethod, true);
-
-        private static MethodInfo CreateMessageMethod =>
-            _CreateMessageMethod.Value;
-
-        private static MethodInfo GetCreateMessageMethod()
-        {
-            var methods =
-                from method in typeof(MessageFactory).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-                where method.Name == nameof(CreateMessageValidator)
-                select method;
-
-            return methods.Single();
-        }
-
-        #endregion
     }
 }

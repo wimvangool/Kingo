@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
@@ -106,7 +105,7 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(ArgumentNullException))]
         public void CreateMessage_Throws_IfContentIsNull()
         {
-            CreateMessage(null);
+            CreateMessage(null as object);
         }
 
         [TestMethod]
@@ -247,7 +246,7 @@ namespace Kingo.MicroServices
         {
             _builder.Add<MessageB>(MessageKind.Request, "({0}-{1})", nameof(MessageA.PropertyA), nameof(MessageB.PropertyB));
 
-            var message = CreateMessage(new MessageB(10, 20));
+            var message = CreateMessage(new MessageB(10, 20), MessageKind.Request);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageB>));
             Assert.AreEqual(MessageKind.Request, message.Kind);
@@ -301,11 +300,72 @@ namespace Kingo.MicroServices
 
         #region [====== CreateMessage (Content Validation) ======]
 
-        
+        private sealed class SomeCommand
+        {
+            public SomeCommand(string id)
+            {
+                Id = id;
+            }
+
+            [Required(AllowEmptyStrings = true)]
+            public string Id
+            {
+                get;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MessageValidationFailedException))]
+        public void Validate_Throws_IfMessageKindDoesNotMatchExpectedMessageKind()
+        {
+            _builder.Add<object>(MessageKind.Command);
+
+            CreateMessage(new object(), MessageKind.Event);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MessageValidationFailedException))]
+        public void Validate_Throws_IfMessageKindIsUndefined_And_UndefinedMessagesAreBlocked()
+        {
+            _builder.Validate(MessageDirection.Input, MessageValidationOptions.BlockUndefined);
+
+            CreateMessage(new object());
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedMessage_IfMessageKindIsUndefined_But_UndefinedMessagesAreAccepted()
+        {
+            var message = CreateMessage(new object());
+
+            Assert.AreEqual(MessageKind.Command, message.Kind);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MessageValidationFailedException))]
+        public void Validate_Throws_IfMessageMustBeValidated_And_MessageContentIsNotValid()
+        {
+            _builder.Validate(MessageDirection.Input, MessageValidationOptions.Commands);
+
+            CreateMessage(new SomeCommand(null));
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedMessage_IfMessageMustNotBeValidated_And_MessageContentIsNotValid()
+        {
+            CreateMessage(new SomeCommand(null));
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedMessage_IfMessageMustBeValidated_But_MessageContentIsValid()
+        {
+            _builder.Validate(MessageDirection.Input, MessageValidationOptions.Commands);
+
+            CreateMessage(new SomeCommand(string.Empty));
+        }
 
         #endregion
 
-        private IMessage CreateMessage(object content, MessageKind kind = MessageKind.Command, MessageDirection direction = MessageDirection.Input, DateTimeOffset? deliveryTime = null) =>
+        private IMessage CreateMessage<TContent>(TContent content, MessageKind kind = MessageKind.Command, MessageDirection direction = MessageDirection.Input, DateTimeOffset? deliveryTime = null) =>
             _builder.BuildMessageFactory().CreateMessage(kind, direction, MessageHeader.Unspecified, content, deliveryTime).Validate(null);
     }
 }

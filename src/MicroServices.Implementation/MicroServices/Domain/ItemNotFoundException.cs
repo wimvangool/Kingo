@@ -24,6 +24,6 @@ namespace Kingo.MicroServices.Domain
 
         /// <inheritdoc />
         protected override bool IsBadRequest(MicroProcessorOperationStackTrace operationStackTrace) =>
-            throw new NotImplementedException();
+            BusinessRuleViolationException.IsCommandOperationStackTrace(operationStackTrace);
     }
 }

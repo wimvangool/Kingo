@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Kingo.Reflection;
+using static Kingo.Ensure;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents a specific format for the name of an endpoint.
     /// </summary>
-    public sealed class EndpointNameFormat : IEndpointNameResolver
+    public sealed class MicroServiceBusEndpointNameFormat
     {
         #region [====== Segments ======]
 
@@ -79,83 +80,37 @@ namespace Kingo.MicroServices.Controllers
 
         private readonly Segment[] _segments;
 
-        private EndpointNameFormat(IEnumerable<Segment> segments)
+        private MicroServiceBusEndpointNameFormat(IEnumerable<Segment> segments)
         {
             _segments = segments.ToArray();
         }
 
-        #region [====== ResolveName ======]
+        #region [====== FormatName ======]
 
-        /// <inheritdoc />
-        public string ResolveName(IMicroServiceBusEndpoint endpoint)
-        {
-            if (endpoint == null)
-            {
-                throw new ArgumentNullException(nameof(endpoint));
-            }
-            var serviceName = ResolveServiceName(endpoint.Name);
-            var handlerName = ResolveHandlerName(endpoint.MessageHandlerType);
-            var messageName = ResolveMessageName(endpoint.MessageParameterInfo.ParameterType);
+        /// <summary>
+        /// Formats the name of an endpoint based on the current format and specified parts.
+        /// </summary>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <param name="messageHandlerType">Type of the message-handler that contains the endpoint.</param>
+        /// <param name="messageType">Type of the message received by the endpoint.</param>
+        /// <returns>The full name of the endpoint.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="serviceName"/>, <paramref name="messageHandlerType"/> or <paramref name="messageType"/> is <c>null</c>.
+        /// </exception>
+        public string FormatName(string serviceName, Type messageHandlerType, Type messageType) =>
+            FormatName(ResolveServiceName(serviceName), ResolveHandlerName(messageHandlerType), ResolveMessageName(messageType));
 
-            return ToString(segment => segment.Format(serviceName, handlerName, messageName));
-        }
+        private string FormatName(string serviceName, string handlerName, string messageName) =>
+            ToString(segment => segment.Format(serviceName, handlerName, messageName));
 
         private static string ResolveServiceName(string serviceName) =>
-            serviceName.RemovePostfix("Service");
+            IsNotNull(serviceName, nameof(serviceName));
 
-        private static string ResolveHandlerName(Type messageHandlerType)
-        {
-            if (TryGetNameFromAttribute(messageHandlerType, out var name))
-            {
-                return name;
-            }
-            return ResolveHandlerName(NameOf(messageHandlerType));
-        }
+        private static string ResolveHandlerName(Type messageHandlerType) =>
+            NameOf(IsNotNull(messageHandlerType, nameof(messageHandlerType)));
 
-        private static string ResolveHandlerName(string messageHandlerName) =>
-            messageHandlerName.RemovePostfix("Handler");
-
-        private static string ResolveMessageName(Type messageType)
-        {
-            if (TryGetNameFromAttribute(messageType, out var name))
-            {
-                return name;
-            }
-            return ResolveMessageName(NameOf(messageType));
-        }
-
-        private static string ResolveMessageName(string messageName)
-        {
-            if (messageName.TryRemovePostfix("Command", out var commandName))
-            {
-                return commandName;
-            }
-            if (messageName.TryRemovePostfix("Event", out var eventName))
-            {
-                return eventName;
-            }
-            if (messageName.TryRemovePostfix("Request", out var requestName))
-            {
-                return requestName;
-            }
-            if (messageName.TryRemovePostfix("Response", out var responseName))
-            {
-                return responseName;
-            }
-            return messageName;
-        }
-
-        private static bool TryGetNameFromAttribute(Type type, out string name)
-        {
-            //if (type.TryGetAttributeOfType<MicroServiceBusEndpointNameAttribute>(out var attribute))
-            //{
-            //    name = attribute.Name;
-            //    return true;
-            //}
-            //name = null;
-            //return false;
-            throw new NotImplementedException();
-        }
+        private static string ResolveMessageName(Type messageType) =>
+            NameOf(IsNotNull(messageType, nameof(messageType)));
 
         private static string NameOf(Type type) =>
             type.FriendlyName(false, false);
@@ -172,21 +127,21 @@ namespace Kingo.MicroServices.Controllers
             string.Join(string.Empty, _segments.Select(selector));
 
         /// <summary>
-        /// Parses the specified <paramref name="format"/> and returns a new <see cref="EndpointNameFormat"/> that
+        /// Parses the specified <paramref name="format"/> and returns a new <see cref="MicroServiceBusEndpointNameFormat"/> that
         /// can be used to resolve the name of a <see cref="IMicroServiceBusEndpoint" />. The format can
         /// contain the placeholders [service], [handler] and [message], which will be used to insert the name of
         /// the service, message handler or message respectively.
         /// </summary>
         /// <param name="format">The format to parse.</param>
-        /// <returns>A new <see cref="EndpointNameFormat"/>.</returns>
+        /// <returns>A new <see cref="MicroServiceBusEndpointNameFormat"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="format"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="FormatException">
         /// <paramref name="format"/> is not a valid name-format.
         /// </exception>
-        public static EndpointNameFormat Parse(string format) =>
-            new EndpointNameFormat(ParseSegments(format));
+        public static MicroServiceBusEndpointNameFormat Parse(string format) =>
+            new MicroServiceBusEndpointNameFormat(ParseSegments(format));
 
         private const char _BracketOpen = '[';
         private const char _BracketClose = ']';

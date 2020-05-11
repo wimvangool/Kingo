@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Schema;
-using System.Xml.Xsl;
-using Kingo.MicroServices.DataAnnotations;
 using Kingo.Reflection;
-using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -26,6 +20,8 @@ namespace Kingo.MicroServices
         {
             get;
         }
+
+        public abstract Message<TContent> CommitToKind(MessageKind kind);
 
         #endregion
 
@@ -103,6 +99,23 @@ namespace Kingo.MicroServices
         #region [====== Validation ======]
 
         public abstract Message<TContent> Validate(IServiceProvider serviceProvider);
+
+        public bool MustBeValidated(MessageValidationOptions options)
+        {
+            switch (Kind)
+            {
+                case MessageKind.Command:
+                    return options.HasFlag(MessageValidationOptions.Commands);
+                case MessageKind.Event:
+                    return options.HasFlag(MessageValidationOptions.Events);
+                case MessageKind.Request:
+                    return options.HasFlag(MessageValidationOptions.Requests);
+                case MessageKind.Response:
+                    return options.HasFlag(MessageValidationOptions.Responses);
+                default:
+                    return false;
+            }
+        }
 
         #endregion
     }

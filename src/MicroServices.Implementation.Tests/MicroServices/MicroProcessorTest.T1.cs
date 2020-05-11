@@ -5,7 +5,7 @@ using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices
 {    
     public class MicroProcessorTest<TProcessor>
         where TProcessor : MicroProcessor
@@ -59,10 +59,8 @@ namespace Kingo.MicroServices.Controllers
         // - IMicroProcessor + TProcessor
         // - MicroProcessorOptions
         // - IHandleAsyncMethodFactory
-        // - IMicroServiceBus
         // - IInstanceCollector
-        // - IMessageIdFactory
         protected virtual int DefaultServiceCount =>
-            7;              
+            5;              
     }
 }

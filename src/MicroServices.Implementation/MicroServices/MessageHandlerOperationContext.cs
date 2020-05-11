@@ -12,14 +12,14 @@
             base(processor)
         {                        
             _unitOfWork = unitOfWork;
-            _messageBus = new MessageBus(processor.MessageFactory, Clock);
+            _messageBus = processor.CreateMessageBus(Clock);
         }
 
         private MessageHandlerOperationContext(MessageHandlerOperationContext context, IAsyncMethodOperation operation) :
             base(context, operation)
         {                        
             _unitOfWork = context._unitOfWork;
-            _messageBus = new MessageBus(context.Processor.MessageFactory, Clock);
+            _messageBus = context.Processor.CreateMessageBus(Clock);
         }
 
         /// <inheritdoc />

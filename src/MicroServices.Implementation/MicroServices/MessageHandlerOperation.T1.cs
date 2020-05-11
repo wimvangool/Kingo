@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -150,12 +151,15 @@ namespace Kingo.MicroServices
         {
             var result = MessageHandlerOperationResult.Empty;
 
-            foreach (var message in messages)
+            foreach (var message in messages.Where(IsUnscheduledEvent))
             {
                 result = result.Append(await HandleAsync(message, context).ConfigureAwait(false));
             }
             return result;
         }
+
+        private static bool IsUnscheduledEvent(IMessage message) =>
+            message.Kind == MessageKind.Event && message.DeliveryTimeUtc == null;
 
         private IEnumerable<HandleAsyncMethodOperation> CreateMethodOperationPipelines(MessageHandlerOperationContext context)
         {
@@ -165,10 +169,10 @@ namespace Kingo.MicroServices
 
         protected virtual IEnumerable<HandleAsyncMethodOperation> CreateMethodOperations(MessageHandlerOperationContext context)
         {
-            var methodFactory = Processor.ServiceProvider.GetService<IHandleAsyncMethodFactory>();
+            var methodFactory = Processor.ServiceProvider.GetService<IMessageBusEndpointFactory>();
             if (methodFactory != null)
             {
-                foreach (var method in methodFactory.CreateInternalEventBusEndpointsFor<TMessage>(Processor.ServiceProvider))
+                foreach (var method in methodFactory.CreateInternalEventBusEndpoints<TMessage>(Processor.ServiceProvider))
                 {
                     yield return CreateMethodOperation(method, context);
                 }

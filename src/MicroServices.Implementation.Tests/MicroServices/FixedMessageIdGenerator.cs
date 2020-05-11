@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     public sealed class FixedMessageIdGenerator : IMessageIdGenerator
     {

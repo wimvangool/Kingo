@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Kingo.MicroServices
 {    
-    internal interface IHandleAsyncMethodFactory
+    internal interface IMessageBusEndpointFactory
     {
         IEnumerable<MicroServiceBusEndpoint> CreateMicroServiceBusEndpoints(MicroProcessor processor);
 
-        IEnumerable<HandleAsyncMethod<TEvent>> CreateInternalEventBusEndpointsFor<TEvent>(IServiceProvider serviceProvider);        
+        IEnumerable<HandleAsyncMethod<TEvent>> CreateInternalEventBusEndpoints<TEvent>(IServiceProvider serviceProvider);        
     }
 }
