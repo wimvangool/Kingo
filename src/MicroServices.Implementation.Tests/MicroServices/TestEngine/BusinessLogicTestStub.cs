@@ -1,4 +1,4 @@
-﻿using Kingo.MicroServices.Configuration;
+﻿using Kingo.MicroServices.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.TestEngine
@@ -19,7 +19,10 @@ namespace Kingo.MicroServices.TestEngine
         {
             return services.AddMicroProcessor(processor =>
             {
-                processor.MessageHandlers.Add<NullHandler>();
+                processor.ConfigureMessageHandlers(messageHandlers =>
+                {
+                    messageHandlers.Add<NullHandler>();
+                });
             });
         }
     }

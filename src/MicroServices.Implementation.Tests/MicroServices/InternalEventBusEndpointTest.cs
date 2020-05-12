@@ -11,9 +11,12 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_DoesNotHandleMessage_IfMessageIsCommand()
         {
-            ProcessorBuilder.MessageHandlers.AddInstance<object>((message, context) =>
+            Processor.ConfigureMessageHandlers(messageHandlers =>
             {
-                Fail(message);
+                messageHandlers.AddInstance<object>((message, context) =>
+                {
+                    Fail(message);
+                });
             });
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
@@ -28,9 +31,12 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_DoesNotHandleMessage_IfMessageIsEvent_But_EventIsScheduled()
         {
-            ProcessorBuilder.MessageHandlers.AddInstance<object>((message, context) =>
+            Processor.ConfigureMessageHandlers(messageHandlers =>
             {
-                Fail(message);
+                messageHandlers.AddInstance<object>((message, context) =>
+                {
+                    Fail(message);
+                });
             });
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>
@@ -44,9 +50,12 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_HandlesMessages_IfMessageIsEvent_And_EventIsNotScheduled()
         {
-            ProcessorBuilder.MessageHandlers.AddInstance<object>((message, context) =>
+            Processor.ConfigureMessageHandlers(messageHandlers =>
             {
-                Assert.AreEqual(2, context.StackTrace.Count);
+                messageHandlers.AddInstance<object>((message, context) =>
+                {
+                    Assert.AreEqual(2, context.StackTrace.Count);
+                });
             });
 
             var result = await CreateProcessor().ExecuteCommandAsync((message, context) =>

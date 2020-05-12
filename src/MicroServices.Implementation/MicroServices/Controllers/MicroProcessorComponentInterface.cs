@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Kingo.Reflection;
 
-namespace Kingo.MicroServices.Configuration
+namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// When implemented, represents a specific variant of the <see cref="IMessageHandler{TMessage}"/>, <see cref="IQuery{TResponse}"/>

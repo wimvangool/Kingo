@@ -181,7 +181,7 @@
     <value>Cannot use instance of type '{0}' as a MicroProcessorComponent. Only non-abstract classes without generic parameters are supported.</value>
   </data>
   <data name="MicroProcessorEndpoint_UnuspportedMessageKind" xml:space="preserve">
-    <value>The resolved message-kind ({0}) is not supported for endpoints. Make sure the message-type's ({1}) message-kind is correctly configured by use of the {2} or through the {3}-options when configuring the processor.</value>
+    <value>The resolved message-kind ({0}) is not supported for endpoints. Make sure the message-type's ({1}) message-kind is correctly configured by use of the {2} or through by configuring the processor's {3}.</value>
   </data>
   <data name="MicroProcessorOperation_InternalServerError" xml:space="preserve">
     <value>A unexpected exception occurred. See inner exception for details.</value>
@@ -203,6 +203,9 @@
   </data>
   <data name="MicroServiceBusController_CannotSendCommands" xml:space="preserve">
     <value>Controller of type '{0}' cannot send the specified command(s) because it has not been (fully) started yet.</value>
+  </data>
+  <data name="MicroServiceBusEndpoint_MessageNotOfSupportedType" xml:space="preserve">
+    <value>Message of type '{0}' is not supported by endpoint '{1}'. This endpoint only supports messages that can be converted to an instance of type '{2}'.</value>
   </data>
   <data name="MicroServiceBus_CircularDependencyDetected" xml:space="preserve">
     <value>Cannot publish the specified event(s) inside the constructor of a type that is registered as a '{0}'-type, because this causes a circular reference.</value>

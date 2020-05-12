@@ -4,17 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices.Configuration
+namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// Represents a collection of message handler instances and types.
     /// </summary>
     public sealed class MessageHandlerCollection : MicroProcessorComponentCollection
     {
+        internal static readonly string Key = Guid.NewGuid().ToString();
+
         private readonly List<MessageHandlerComponent> _instances;
         private readonly IServiceCollection _instanceCollection;
 
-        internal MessageHandlerCollection()
+        public MessageHandlerCollection()
         {
             _instances = new List<MessageHandlerComponent>();
             _instanceCollection = new ServiceCollection();
@@ -111,13 +113,13 @@ namespace Kingo.MicroServices.Configuration
             {
                 services.Add(service);
             }
-            return services.AddSingleton(BuildMethodFactory());
+            return services.AddSingleton(BuildMessageBusEndpointFactory());
         }
 
         // When building the factory, we filter out all types that have also been registered as an instance.
         // If we don't do this, resolving a specific MessageHandler is undeterministic. As such, we simply
         // decide that types that were added as instance hide any regular type-registrations.
-        private IMessageBusEndpointFactory BuildMethodFactory() =>
+        private IMessageBusEndpointFactory BuildMessageBusEndpointFactory() =>
             new MessageBusEndpointFactory(_instances.Concat(MessageHandlerTypes));
 
         private IEnumerable<MessageHandlerComponent> MessageHandlerTypes =>

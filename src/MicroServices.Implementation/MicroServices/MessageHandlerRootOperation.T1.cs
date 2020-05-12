@@ -11,7 +11,7 @@ namespace Kingo.MicroServices
         private readonly IUnitOfWork _unitOfWork;
 
         protected MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, Message<TMessage> message, CancellationToken? token) :
-            this(processor, method, message, token, UnitOfWork.InMode(processor.Options.UnitOfWorkMode)) { }
+            this(processor, method, message, token, UnitOfWork.InMode(processor.Settings.UnitOfWorkMode)) { }
             
         private MessageHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TMessage> method, Message<TMessage> message, CancellationToken? token, IUnitOfWork unitOfWork) :
             base(new MessageHandlerOperationContext(processor, unitOfWork), message, token)

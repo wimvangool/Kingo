@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices.Configuration
+namespace Kingo.MicroServices.Controllers
 {    
     [TestClass]
-    public sealed class AddQueriesTest : MicroProcessorTest<MicroProcessor>
+    public sealed class ConfigureQueriesTest : MicroProcessorTest<MicroProcessor>
     {
         #region [====== QueryTypes ======]        
 
@@ -72,16 +72,22 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void Add_AddsNoQueries_IfThereAreNoQueryTypesToAdd()
         {
-            ProcessorBuilder.Queries.Add(typeof(object), typeof(int));
-            ProcessorBuilder.Queries.Add(typeof(AbstractQuery), typeof(GenericQuery<>));
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(object), typeof(int));
+                queries.Add(typeof(AbstractQuery), typeof(GenericQuery<>));
+            });
 
             Assert.AreEqual(DefaultServiceCount, BuildServiceCollection().Count);
         }        
 
         [TestMethod]
         public void Add_AddsExpectedQuery_IfQueryIsClosedGenericType()
-        {                        
-            ProcessorBuilder.Queries.Add(typeof(GenericQuery<object>));
+        {
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(GenericQuery<object>));
+            });
 
             var provider = BuildServiceProvider();
 
@@ -91,8 +97,11 @@ namespace Kingo.MicroServices.Configuration
 
         [TestMethod]
         public void Add_AddsExpectedQuery_IfQueryIsRegularTypeWithoutRequest()
-        {            
-            ProcessorBuilder.Queries.Add(typeof(Query1));
+        {
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(Query1));
+            });
 
             var provider = BuildServiceProvider();
 
@@ -102,8 +111,11 @@ namespace Kingo.MicroServices.Configuration
 
         [TestMethod]
         public void Add_AddsExpectedQuery_IfQueryIsRegularTypeWithRequest()
-        {            
-            ProcessorBuilder.Queries.Add(typeof(Query2));
+        {
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(Query2));
+            });
 
             var provider = BuildServiceProvider();
 
@@ -113,8 +125,11 @@ namespace Kingo.MicroServices.Configuration
 
         [TestMethod]
         public void Add_AddsExpectedQuery_IfQueryImplementsMultipleInterfaces()
-        {            
-            ProcessorBuilder.Queries.Add(typeof(Query3));
+        {
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(Query3));
+            });
 
             var provider = BuildServiceProvider();
 
@@ -126,7 +141,10 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void Add_AddsExpectedQueries_IfMultipleQueriesImplementTheSameInterface()
         {
-            ProcessorBuilder.Queries.Add(typeof(Query1), typeof(Query3));
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(Query1), typeof(Query3));
+            });
 
             var provider = BuildServiceProvider();
 
@@ -144,7 +162,10 @@ namespace Kingo.MicroServices.Configuration
         [ExpectedException(typeof(InvalidOperationException))]
         public void BuildServiceProvider_Throws_IfQueryHasInvalidLifetime()
         {
-            ProcessorBuilder.Queries.Add(typeof(InvalidLifetimeQuery));
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(InvalidLifetimeQuery));
+            });
 
             BuildServiceProvider();
         }
@@ -152,7 +173,10 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void Add_AddsTransientQuery_IfQueryHasTransientLifetime()
         {
-            ProcessorBuilder.Queries.Add(typeof(Query1));
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(Query1));
+            });
 
             var provider = BuildServiceProvider();
             var queryA = provider.GetRequiredService<Query1>();
@@ -174,7 +198,10 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void Add_AddsScopedQuery_IfQueryHasScopedLifetime()
         {
-            ProcessorBuilder.Queries.Add(typeof(ScopedQuery));
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(ScopedQuery));
+            });
 
             var provider = BuildServiceProvider();
             var queryA = provider.GetRequiredService<ScopedQuery>();
@@ -196,7 +223,10 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void Add_AddsSingletonQuery_IfQueryHasSingletonLifetime()
         {
-            ProcessorBuilder.Queries.Add(typeof(SingletonQuery));
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add(typeof(SingletonQuery));
+            });
 
             var provider = BuildServiceProvider();
             var queryA = provider.GetRequiredService<SingletonQuery>();

@@ -70,7 +70,7 @@ namespace Kingo.MicroServices
 
         private readonly Lazy<IClock> _defaultClock;
         private readonly Lazy<MessageFactory> _messageFactory;
-        private readonly Lazy<IMicroProcessorOptions> _options;
+        private readonly Lazy<MicroProcessorSettings> _settings;
         private readonly Lazy<IMicroServiceBus> _microServiceBus;
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace Kingo.MicroServices
             _clockContext = new Context<IClock>();
 
             _defaultClock = new Lazy<IClock>(CreateDefaultClock);
-            _messageFactory = new Lazy<MessageFactory>(CreateMessageFactory, true);
-            _options = new Lazy<IMicroProcessorOptions>(ResolveOptions, true);
-            _microServiceBus = new Lazy<IMicroServiceBus>(CreateMicroServiceBus, true);
+            _messageFactory = new Lazy<MessageFactory>(ResolveMessageFactory, true);
+            _settings = new Lazy<MicroProcessorSettings>(ResolveSettings, true);
+            _microServiceBus = new Lazy<IMicroServiceBus>(ResolveMicroServiceBus, true);
         }
 
         /// <inheritdoc />
@@ -115,40 +115,44 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Messages ======]
+        #region [====== ServiceProvider ======]    
+
+        /// <inheritdoc />
+        public virtual IMicroProcessorServiceProvider ServiceProvider =>
+            _serviceProviderContext.Current;
+
+        private IMicroProcessorServiceProvider CreateServiceProvider(IServiceProvider serviceProvider) =>
+            new MicroProcessorServiceProvider(this, serviceProvider ?? CreateDefaultServiceProvider());
+
+        private static IServiceProvider CreateDefaultServiceProvider() =>
+            new ServiceCollection().BuildServiceProvider(true);
+
+        #endregion
+
+        #region [====== Settings ======]
+
+        internal MicroProcessorSettings Settings =>
+            _settings.Value;
+
+        private MicroProcessorSettings ResolveSettings() =>
+            ServiceProvider.GetService<MicroProcessorSettings>() ?? MicroProcessorSettings.DefaultSettings();
+
+        #endregion
+
+        #region [====== MessageFactory ======]
 
         internal MessageFactory MessageFactory =>
             _messageFactory.Value;
 
-        private MessageFactory CreateMessageFactory() =>
-            Options.Messages.BuildMessageFactory();
+        private MessageFactory ResolveMessageFactory() =>
+            ServiceProvider.GetService<MessageFactory>() ?? DefaultMessageFactory();
 
-        internal MessageBus CreateMessageBus(IClock clock) =>
-            new MessageBus(MessageFactory, ServiceProvider, clock);
-
-        internal TContent Validate<TContent>(ref Message<TContent> message) =>
-            Interlocked.Exchange(ref message, message.Validate(ServiceProvider)).Content;
+        private static MessageFactory DefaultMessageFactory() =>
+            new MessageFactoryBuilder().BuildMessageFactory();
 
         #endregion
 
-        #region [====== Options ======]
-
-        internal IMicroProcessorOptions Options =>
-            _options.Value;
-
-        private IMicroProcessorOptions ResolveOptions()
-        {
-            var options = ServiceProvider.GetService<MicroProcessorOptions>();
-            if (options == null)
-            {
-                return new MicroProcessorOptions();
-            }
-            return options;
-        }
-
-        #endregion
-
-        #region [====== Current User ======]        
+        #region [====== User ======]        
 
         /// <inheritdoc />
         public IDisposable AssignUser(IPrincipal user) =>
@@ -176,7 +180,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Current Clock ======]
+        #region [====== Clock ======]
 
         /// <inheritdoc />
         public IDisposable AssignClock(Func<IClock, IClock> clockFactory) =>
@@ -195,20 +199,6 @@ namespace Kingo.MicroServices
         /// <returns>A clock that serves as the default clock of this processor.</returns>
         protected virtual IClock CreateDefaultClock() =>
             HighResolutionClock.StartNew();
-
-        #endregion
-
-        #region [====== ServiceProvider ======]    
-
-        /// <inheritdoc />
-        public virtual IMicroProcessorServiceProvider ServiceProvider =>
-            _serviceProviderContext.Current;
-
-        private IMicroProcessorServiceProvider CreateServiceProvider(IServiceProvider serviceProvider) =>
-            new MicroProcessorServiceProvider(this, serviceProvider ?? CreateDefaultServiceProvider());
-
-        private static IServiceProvider CreateDefaultServiceProvider() =>
-            new ServiceCollection().BuildServiceProvider(true);
 
         #endregion
 
@@ -245,7 +235,7 @@ namespace Kingo.MicroServices
         /// Creates and returns the <see cref="IMicroServiceBus"/> that is used by this processor to publish all produced commands and events.
         /// </summary>
         /// <returns>A resolved <see cref="IMicroServiceBus"/>.</returns>
-        protected virtual IMicroServiceBus CreateMicroServiceBus() =>
+        protected virtual IMicroServiceBus ResolveMicroServiceBus() =>
             new MicroServiceBusRelay(ServiceProvider.GetServices<IMicroServiceBus>());
 
         /// <inheritdoc />

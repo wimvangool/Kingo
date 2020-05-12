@@ -250,7 +250,7 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The resolved message-kind ({0}) is not supported for endpoints. Make sure the message-type&apos;s ({1}) message-kind is correctly configured by use of the {2} or through the {3}-options when configuring the processor..
+        ///   Looks up a localized string similar to The resolved message-kind ({0}) is not supported for endpoints. Make sure the message-type&apos;s ({1}) message-kind is correctly configured by use of the {2} or through by configuring the processor&apos;s {3}..
         /// </summary>
         internal static string MicroProcessorEndpoint_UnuspportedMessageKind {
             get {
@@ -327,6 +327,15 @@ namespace Kingo {
         internal static string MicroServiceBusController_CannotSendCommands {
             get {
                 return ResourceManager.GetString("MicroServiceBusController_CannotSendCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not supported by endpoint &apos;{1}&apos;. This endpoint only supports messages that can be converted to an instance of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string MicroServiceBusEndpoint_MessageNotOfSupportedType {
+            get {
+                return ResourceManager.GetString("MicroServiceBusEndpoint_MessageNotOfSupportedType", resourceCulture);
             }
         }
         

@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.MicroServices.Configuration;
+using Kingo.MicroServices.Controllers;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -20,7 +20,7 @@ namespace Kingo.MicroServices
         /// <exception cref="FormatException">
         /// <paramref name="nameFormat"/> is not a valid name-format.
         /// </exception>
-        public MessageBusEndpointAttribute(MessageBusTypes types, string nameFormat = "[handler].[message]")
+        public MessageBusEndpointAttribute(MessageBusTypes types, string nameFormat = "[service].[handler].[message]")
         {
             Types = types;
             NameFormat = MicroServiceBusEndpointNameFormat.Parse(nameFormat);

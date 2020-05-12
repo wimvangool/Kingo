@@ -59,10 +59,27 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Invokes the method of the associated message handler with the specified <paramref name="message" />
-        /// and returns its result.
+        /// Processes the specified <paramref name="message"/> and returns the result.
         /// </summary>
-        /// <param name="message">The message to handle.</param>
+        /// <param name="message">The message to process.</param>
+        /// <returns>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// If the specified <paramref name="message"/>  is not supported by this endpoint, it is ignored and an empty
+        /// result will be returned.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="message"/> is not an instance of a type that is supported by this endpoint.
+        /// </exception>
+        Task<IMessageHandlerOperationResult> ProcessAsync(object message) =>
+            ProcessAsync(message, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Processes the specified <paramref name="message"/> and returns the result.
+        /// </summary>
+        /// <param name="message">The message to process.</param>
         /// <param name="messageHeader">Header of the message.</param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
@@ -72,7 +89,10 @@ namespace Kingo.MicroServices
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task<IMessageHandlerOperationResult> InvokeAsync(object message, MessageHeader messageHeader, CancellationToken? token = null);
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="message"/> is not an instance of a type that is supported by this endpoint.
+        /// </exception>
+        Task<IMessageHandlerOperationResult> ProcessAsync(object message, MessageHeader messageHeader, CancellationToken? token = null);
     }
 }

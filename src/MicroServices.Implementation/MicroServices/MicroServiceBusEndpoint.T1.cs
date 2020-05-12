@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -113,24 +114,24 @@ namespace Kingo.MicroServices
         }
 
         public override string Name =>
-            _attribute.NameFormat.FormatName(_processor.Options.Endpoints.ServiceName, MessageHandler.Type, MessageParameterInfo.ParameterType);
+            _attribute.NameFormat.FormatName(_processor.Settings.ServiceName, MessageHandler.Type, MessageParameterInfo.ParameterType);
 
         public override MessageKind MessageKind =>
             _operationFactory.MessageKind;
 
         #region [====== InvokeAsync ======]
 
-        public override Task<IMessageHandlerOperationResult> InvokeAsync(object message, MessageHeader messageHeader, CancellationToken? token = null)
+        public override Task<IMessageHandlerOperationResult> ProcessAsync(object message, MessageHeader messageHeader, CancellationToken? token = null)
         {
-            //if (message.TryConvertTo<TMessage>(out var typedMessage))
-            //{
-            //    return InvokeAsync(typedMessage, token);
-            //}
-            //return Task.FromResult<IMessageHandlerOperationResult>(MessageHandlerOperationResult.Empty);
-            throw new NotImplementedException();
+            var messageToProcess = _processor.MessageFactory.CreateMessage(MessageKind, MessageDirection.Input, messageHeader, IsNotNull(message, nameof(message)));
+            if (messageToProcess.TryConvertTo<TMessage>(out var messageOfSupportedType))
+            {
+                return ProcessAsync(messageOfSupportedType, token);
+            }
+            throw NewMessageNotOfSupportedTypeException(Name, typeof(TMessage), message);
         }
 
-        private async Task<IMessageHandlerOperationResult> InvokeAsync(Message<TMessage> message, CancellationToken? token)
+        private async Task<IMessageHandlerOperationResult> ProcessAsync(Message<TMessage> message, CancellationToken? token)
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
             // the infrastructure does not create a scope upon receiving a new message.
@@ -138,6 +139,13 @@ namespace Kingo.MicroServices
             {
                 return await _processor.ExecuteWriteOperationAsync(_operationFactory.CreateOperation(message, token));
             }
+        }
+
+        private static Exception NewMessageNotOfSupportedTypeException(string endpointName, Type endpointMessageType, object message)
+        {
+            var errorMessageFormat = ExceptionMessages.MicroServiceBusEndpoint_MessageNotOfSupportedType;
+            var errorMessage = string.Format(errorMessageFormat, message.GetType().FriendlyName(), endpointName, endpointMessageType.FriendlyName());
+            return new ArgumentException(errorMessage, nameof(message));
         }
 
         #endregion
@@ -159,7 +167,7 @@ namespace Kingo.MicroServices
         private static Exception NewInvalidMessageKindSpecifiedException(MessageKind messageKind)
         {
             var messageFormat = ExceptionMessages.MicroProcessorEndpoint_UnuspportedMessageKind;
-            var message = string.Format(messageFormat, messageKind, typeof(TMessage).FriendlyName(), nameof(MessageAttribute), nameof(IMicroProcessorOptions.Messages));
+            var message = string.Format(messageFormat, messageKind, typeof(TMessage).FriendlyName(), nameof(MessageAttribute), nameof(MessageFactory));
             return new InvalidOperationException(message);
         }
 

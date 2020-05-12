@@ -1,5 +1,5 @@
 ﻿using System;
-using Kingo.MicroServices.Configuration;
+using Kingo.MicroServices.Controllers;
 
 namespace Kingo.MicroServices
 {

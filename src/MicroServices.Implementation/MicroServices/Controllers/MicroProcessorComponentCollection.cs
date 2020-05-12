@@ -8,7 +8,7 @@ using Kingo.Collections.Generic;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices.Configuration
+namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// Serves as a base-class for collections of specific <see cref="MicroProcessorComponent" /> types

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kingo.MicroServices.Configuration;
+using Kingo.MicroServices.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -30,18 +30,18 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly MicroProcessorBuilder<TProcessor> _builder;
+        private readonly MicroProcessorBuilder<TProcessor> _processor;
         private readonly IServiceCollection _services;
 
         public MicroProcessorTest()
         {
-            _builder = new MicroProcessorBuilder<TProcessor>();
+            _processor = new MicroProcessorBuilder<TProcessor>();
             _services = new ServiceCollection();
             _services.AddSingleton<IInstanceCollector, InstanceCollector>();
         }
 
-        public IMicroProcessorBuilder ProcessorBuilder =>
-            _builder;        
+        public IMicroProcessorBuilder Processor =>
+            _processor;        
 
         public IMicroProcessor CreateProcessor() =>
             BuildServiceProvider().GetRequiredService<IMicroProcessor>();
@@ -50,15 +50,15 @@ namespace Kingo.MicroServices
             BuildServiceCollection().BuildServiceProvider();
 
         public IServiceCollection BuildServiceCollection() =>
-            _builder.BuildServiceCollection(_services);
+            _processor.BuildServiceCollection(_services);
 
         // The default service count specifies how many services are registered by default
         // in the service collection. This number can be used to verify whether or not
         // the appropriate services from a test were registered or not.
         // The default services are:
         // - IMicroProcessor + TProcessor
-        // - MicroProcessorOptions
-        // - IHandleAsyncMethodFactory
+        // - MicroProcessorSettings
+        // - MessageHandlerFactory
         // - IInstanceCollector
         protected virtual int DefaultServiceCount =>
             5;              

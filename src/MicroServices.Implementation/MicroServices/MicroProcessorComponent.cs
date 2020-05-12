@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kingo.MicroServices.Configuration;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 

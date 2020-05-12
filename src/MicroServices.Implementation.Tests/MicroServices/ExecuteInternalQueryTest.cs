@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class ExecuteSubQueryTest : MicroProcessorTest<MicroProcessor>
+    public sealed class ExecuteInternalQueryTest : MicroProcessorTest<MicroProcessor>
     {
         #region [====== MessageHandler & Query Types ======]
 
@@ -91,9 +91,15 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task ExecuteCommandAsync_ExecutesSubQueryAsExpected()
         {
-            ProcessorBuilder.MessageHandlers.Add<CommandHandler>();
-            ProcessorBuilder.Queries.Add<ConstantProviderQuery>();
-            ProcessorBuilder.Queries.Add<MultiplierQuery>();
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.Add<CommandHandler>();
+            });
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add<ConstantProviderQuery>();
+                queries.Add<MultiplierQuery>();
+            });
 
             var processor = CreateProcessor();
             var messageHandler = processor.ServiceProvider.GetRequiredService<CommandHandler>();
@@ -108,9 +114,12 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task ExecuteQueryAsync_ExecutesSubQueryAsExpected()
         {
-            ProcessorBuilder.Queries.Add<QueryWithSubQueries>();
-            ProcessorBuilder.Queries.Add<ConstantProviderQuery>();
-            ProcessorBuilder.Queries.Add<MultiplierQuery>();
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add<QueryWithSubQueries>();
+                queries.Add<ConstantProviderQuery>();
+                queries.Add<MultiplierQuery>();
+            });
 
             var processor = CreateProcessor();
             var query = processor.ServiceProvider.GetRequiredService<QueryWithSubQueries>();

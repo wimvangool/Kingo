@@ -77,9 +77,12 @@ namespace Kingo.MicroServices
             var eventB = new object();
 
             // Handles Event A.
-            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
+            Processor.ConfigureMessageHandlers(messageHandlers =>
             {
-                context.MessageBus.Publish(eventB);
+                messageHandlers.AddInstance<string>((message, context) =>
+                {
+                    context.MessageBus.Publish(eventB);
+                });
             });
 
             var result = await HandleMessageAsync((message, context) =>
@@ -104,21 +107,24 @@ namespace Kingo.MicroServices
             var eventD = new object();
 
             // Handles Event A.
-            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
+            Processor.ConfigureMessageHandlers(messageHandlers =>
             {
-                context.MessageBus.Publish(eventB);
-            });
+                messageHandlers.AddInstance<string>((message, context) =>
+                {
+                    context.MessageBus.Publish(eventB);
+                });
 
-            // Handles Event B.
-            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
-            {
-                context.MessageBus.Publish(eventC);
-            });
+                // Handles Event B.
+                messageHandlers.AddInstance<int>((message, context) =>
+                {
+                    context.MessageBus.Publish(eventC);
+                });
 
-            // Handles Event B.
-            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
-            {
-                context.MessageBus.Publish(eventD);
+                // Handles Event B.
+                messageHandlers.AddInstance<int>((message, context) =>
+                {
+                    context.MessageBus.Publish(eventD);
+                });
             });
 
             var result = await HandleMessageAsync((message, context) =>
@@ -149,36 +155,39 @@ namespace Kingo.MicroServices
             var eventD = new object();
 
             // Handles Event A.
-            ProcessorBuilder.MessageHandlers.AddInstance<string>((message, context) =>
+            Processor.ConfigureMessageHandlers(messageHandlers =>
             {
-                AssertStackTrace(context.StackTrace, 2, message, MessageKind.Event);
-                AssertEventBus(context.MessageBus, 0);
+                messageHandlers.AddInstance<string>((message, context) =>
+                {
+                    AssertStackTrace(context.StackTrace, 2, message, MessageKind.Event);
+                    AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.Publish(eventB);
+                    context.MessageBus.Publish(eventB);
 
-                AssertEventBus(context.MessageBus, 1);
-            });
+                    AssertEventBus(context.MessageBus, 1);
+                });
 
-            // Handles Event B.
-            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
-            {
-                AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
-                AssertEventBus(context.MessageBus, 0);
+                // Handles Event B.
+                messageHandlers.AddInstance<int>((message, context) =>
+                {
+                    AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
+                    AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.Publish(eventC);
+                    context.MessageBus.Publish(eventC);
 
-                AssertEventBus(context.MessageBus, 1);
-            });
+                    AssertEventBus(context.MessageBus, 1);
+                });
 
-            // Handles Event B.
-            ProcessorBuilder.MessageHandlers.AddInstance<int>((message, context) =>
-            {
-                AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
-                AssertEventBus(context.MessageBus, 0);
+                // Handles Event B.
+                messageHandlers.AddInstance<int>((message, context) =>
+                {
+                    AssertStackTrace(context.StackTrace, 3, message, MessageKind.Event);
+                    AssertEventBus(context.MessageBus, 0);
 
-                context.MessageBus.Publish(eventD);
+                    context.MessageBus.Publish(eventD);
 
-                AssertEventBus(context.MessageBus, 1);
+                    AssertEventBus(context.MessageBus, 1);
+                });
             });
 
             await HandleMessageAsync((message, context) =>
@@ -225,7 +234,10 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public async Task HandleMessageAsync_Throws_IfUnitOfWorkModeIsInvalid()
         {
-            ProcessorBuilder.UnitOfWorkMode = (UnitOfWorkMode)(-1);
+            Processor.ConfigureSettings(settings =>
+            {
+                settings.UnitOfWorkMode = (UnitOfWorkMode) (-1);
+            });
 
             await HandleMessageAsync((message, context) => { }, new object());
         }
@@ -234,7 +246,10 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task HandleMessageAsync_ThrowsOnEnlist_IfUnitOfWorkIsDisabled()
         {
-            ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.Disabled;
+            Processor.ConfigureSettings(settings =>
+            {
+                settings.UnitOfWorkMode = UnitOfWorkMode.Disabled;
+            });
 
             var changeTracker = new ChangeTrackerSpy(true);
 
@@ -261,7 +276,10 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_DoesNothingOnFlushAsync_IfUnitOfWorkModeIsDisabled()
         {
-            ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.Disabled;
+            Processor.ConfigureSettings(settings =>
+            {
+                settings.UnitOfWorkMode = UnitOfWorkMode.Disabled;
+            });
 
             await HandleMessageAsync(async (message, context) =>
             {
@@ -273,7 +291,10 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_FlushesChangeTrackersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeChangeTrackersRequireFlush()
         {
-            ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
+            Processor.ConfigureSettings(settings =>
+            {
+                settings.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
+            });
 
             var changeTrackerA = new ChangeTrackerSpy(true);
             var changeTrackerB = new ChangeTrackerSpy(true);
@@ -309,7 +330,10 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task HandleMessageAsync_FlushesChangeTrackersSynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeChangeTrackerThrows()
         {
-            ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
+            Processor.ConfigureSettings(settings =>
+            {
+                settings.UnitOfWorkMode = UnitOfWorkMode.SingleThreaded;
+            });
 
             var exceptionToThrow = new InternalServerErrorException(MicroProcessorOperationStackTrace.Empty);
             var changeTrackerA = new ChangeTrackerSpy(true);
@@ -361,7 +385,10 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_FlushesChangeTrackersAsynchronously_IfUnitOfWorkIsMultiThreaded_And_SomeChangeTrackersRequireFlush()
         {
-            ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
+            Processor.ConfigureSettings(settings =>
+            {
+                settings.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
+            });
 
             var changeTrackerA = new ChangeTrackerSpy(true);
             var changeTrackerB = new ChangeTrackerSpy(true);
@@ -400,9 +427,12 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task HandleMessageAsync_FlushesChangeTrackersAsynchronously_IfUnitOfWorkIsSingleThreaded_And_SomeChangeTrackerThrows()
         {
-            ProcessorBuilder.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
+            Processor.ConfigureSettings(settings =>
+            {
+                settings.UnitOfWorkMode = UnitOfWorkMode.MultiThreaded;
+            });
 
-            var exceptionToThrow = new InternalServerErrorException(MicroProcessorOperationStackTrace.Empty, null);
+            var exceptionToThrow = new InternalServerErrorException(MicroProcessorOperationStackTrace.Empty);
             var changeTrackerA = new ChangeTrackerSpy(true);
             var changeTrackerB = new ChangeTrackerSpy(true, exceptionToThrow);
             var changeTrackerC = new ChangeTrackerSpy(true);
@@ -632,7 +662,10 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_CreatesNewInstanceForEveryInvocation_IfMessageHandlerHasTransientLifetime()
         {
-            ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.Add<TransientMessageHandler>();
+            });
 
             var processor = CreateProcessor();
 
@@ -652,7 +685,10 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_CreatesNewInstancePerScope_IfMessageHandlerHasScopedLifetime()
         {
-            ProcessorBuilder.MessageHandlers.Add<ScopedMessageHandler>();
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.Add<ScopedMessageHandler>();
+            });
 
             var processor = CreateProcessor();
 
@@ -672,7 +708,10 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_CreatesOnlyOneInstanceEver_IfMessageHandlerHasSingletonLifetime()
         {
-            ProcessorBuilder.MessageHandlers.Add<SingletonMessageHandler>();
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.Add<SingletonMessageHandler>();
+            });
 
             var processor = CreateProcessor();
 
@@ -692,7 +731,10 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_UsesOnlyOneInstanceEver_IfMessageHandlerWasRegisteredAsInstance()
         {
-            ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.AddInstance(new TransientMessageHandler());
+            });
 
             var processor = CreateProcessor();
 
@@ -712,8 +754,11 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_InvokesInstanceOverType_IfInstanceIsRegisteredBeforeType()
         {
-            ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
-            ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.Add<TransientMessageHandler>();
+                messageHandlers.AddInstance(new TransientMessageHandler());
+            });
 
             var processor = CreateProcessor();
 
@@ -733,8 +778,11 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleMessageAsync_InvokesInstanceOverType_IfInstanceIsRegisteredAfterType()
         {
-            ProcessorBuilder.MessageHandlers.Add<TransientMessageHandler>();
-            ProcessorBuilder.MessageHandlers.AddInstance(new TransientMessageHandler());
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.Add<TransientMessageHandler>();
+                messageHandlers.AddInstance(new TransientMessageHandler());
+            });
 
             var processor = CreateProcessor();
 

@@ -71,7 +71,7 @@ namespace Kingo.MicroServices
             _message;
 
         private TMessage MessageContent() =>
-            Processor.Validate(ref _message);
+            Validate(ref _message, Processor.ServiceProvider);
 
         public override MicroProcessorOperationKind Kind =>
             MicroProcessorOperationKind.BranchOperation;

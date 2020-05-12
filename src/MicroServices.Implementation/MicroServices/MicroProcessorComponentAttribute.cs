@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices

@@ -72,7 +72,7 @@ namespace Kingo.MicroServices
             _message;
 
         private TRequest MessageContent() =>
-            Processor.Validate(ref _message);
+            Validate(ref _message, Processor.ServiceProvider);
 
         internal override ExecuteAsyncMethodOperation<TResponse> CreateMethodOperation(MicroProcessorOperationContext context) => 
             new MethodOperation(this, context);        

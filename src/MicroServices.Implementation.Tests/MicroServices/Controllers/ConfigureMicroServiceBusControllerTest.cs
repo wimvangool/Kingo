@@ -11,7 +11,7 @@
 //namespace Kingo.MicroServices.Configuration
 //{
 //    [TestClass]
-//    public sealed class AddMicroServiceBusControllerTest : MicroProcessorTest<MicroProcessor>
+//    public sealed class ConfigureMicroServiceBusControllerTest : MicroProcessorTest<MicroProcessor>
 //    {
 //        #region [====== MicroServiceBusController Types ======]
 
