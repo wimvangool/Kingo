@@ -42,7 +42,7 @@ namespace Kingo.MicroServices
             _header.CorrelationId;
 
         public override Message<TContent> CorrelateWith(IMessage message) =>
-            new MessageImplementation<TContent>(_kind, _direction, _header.WithCorrelationId(message.Id), _content, _deliveryTimeUtc);
+            new MessageImplementation<TContent>(_kind, _direction, _header.WithCorrelationId(message?.Id), _content, _deliveryTimeUtc);
 
         #endregion
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kingo.MicroServices
@@ -28,7 +29,7 @@ namespace Kingo.MicroServices
             internal override MessageHandlerOperationResult Append(MessageHandlerOperationResult result) =>
                 result;
 
-            internal override MessageHandlerOperationResult Commit(IMessage message) =>
+            internal override MessageHandlerOperationResult Commit(IMessage message, IServiceProvider serviceProvider) =>
                 this;
         }
 
@@ -68,8 +69,8 @@ namespace Kingo.MicroServices
             return new MessageListResult(messages, messageHandlerCount);
         }
 
-        internal virtual MessageHandlerOperationResult Commit(IMessage message) =>
-            new MessageListResult(Messages.Select(outputMessage => outputMessage.CorrelateWith(message)), MessageHandlerCount);
+        internal virtual MessageHandlerOperationResult Commit(IMessage message, IServiceProvider serviceProvider) =>
+            new MessageListResult(Messages.Select(outputMessage => outputMessage.CorrelateWith(message).Validate(serviceProvider)), MessageHandlerCount);
 
         internal MessageHandlerOperationResult<TMessage> WithInput<TMessage>(IMessage<TMessage> input) =>
             new MessageHandlerOperationResult<TMessage>(this, input);

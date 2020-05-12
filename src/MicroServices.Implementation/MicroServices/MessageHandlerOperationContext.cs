@@ -14,14 +14,14 @@ namespace Kingo.MicroServices
             base(processor)
         {                        
             _unitOfWork = unitOfWork;
-            _messageBus = CreateMessageBus(processor, Clock);
+            _messageBus = new MessageBus(processor.MessageFactory, Clock);
         }
 
         private MessageHandlerOperationContext(MessageHandlerOperationContext context, IAsyncMethodOperation operation) :
             base(context, operation)
         {                        
             _unitOfWork = context._unitOfWork;
-            _messageBus = CreateMessageBus(context.Processor, Clock);
+            _messageBus = new MessageBus(context.Processor.MessageFactory, Clock);
         }
 
         /// <inheritdoc />
@@ -37,8 +37,5 @@ namespace Kingo.MicroServices
 
         internal MessageHandlerOperationContext PushOperation(HandleAsyncMethodOperation operation) =>
             new MessageHandlerOperationContext(this, operation);
-        
-        private static MessageBus CreateMessageBus(MicroProcessor processor, IClock clock) =>
-            new MessageBus(processor.MessageFactory, processor.ServiceProvider, clock);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Kingo.MicroServices
+﻿using System;
+
+namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents the result of executing a query by a <see cref="IMicroProcessor" />.
@@ -7,7 +9,7 @@
     /// <typeparam name="TResponse">Type of the returned response message.</typeparam>
     public sealed class QueryOperationResult<TRequest, TResponse> : QueryOperationResult<TResponse>
     {
-        internal QueryOperationResult(IMessage<TResponse> output, IMessage<TRequest> input) : base(output)
+        internal QueryOperationResult(Message<TResponse> output, IMessage<TRequest> input) : base(output)
         {
             Input = input;
         }

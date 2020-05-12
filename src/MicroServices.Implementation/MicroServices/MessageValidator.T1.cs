@@ -78,7 +78,7 @@ namespace Kingo.MicroServices
 
         public override Message<TContent> Validate(IServiceProvider serviceProvider)
         {
-            var message = ValidateKind(_message, _expectedKind, _validationOptions.HasFlag(MessageValidationOptions.BlockUndefined));
+            var message = ValidateKind(_message, _expectedKind, _validationOptions);
             if (message.MustBeValidated(_validationOptions))
             {
                 return ValidateContent(message, serviceProvider);
@@ -86,7 +86,7 @@ namespace Kingo.MicroServices
             return message;
         }
 
-        private static Message<TContent> ValidateKind(Message<TContent> message, MessageKind expectedKind, bool blockUndefined)
+        private static Message<TContent> ValidateKind(Message<TContent> message, MessageKind expectedKind, MessageValidationOptions validationOptions)
         {
             if (message.Kind == expectedKind)
             {
@@ -94,9 +94,9 @@ namespace Kingo.MicroServices
             }
             if (message.Kind == MessageKind.Undefined)
             {
-                if (blockUndefined)
+                if (validationOptions.HasFlag(MessageValidationOptions.BlockUndefined))
                 {
-                    throw NewUndefinedMessagesBlockedException(message);
+                    throw NewUndefinedMessagesBlockedException(new MessageValidator<TContent>(message, expectedKind, validationOptions));
                 }
                 return message.CommitToKind(expectedKind);
             }

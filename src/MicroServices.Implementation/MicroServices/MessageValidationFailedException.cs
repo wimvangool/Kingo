@@ -76,12 +76,13 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         protected override bool IsBadRequest(MicroProcessorOperationStackTrace operationStackTrace) =>
-            IsBadRequest(operationStackTrace.CurrentOperation);
-
-        private static bool IsBadRequest(MicroProcessorOperationStackItem operation) =>
-            IsBadRequest(operation.Message);
+            IsBadRequest(ValidatedMessage);
 
         private static bool IsBadRequest(IMessage message) =>
-            message == null || message.Kind == MessageKind.Request || message.Kind == MessageKind.Command;
+            message == null || message.Direction == MessageDirection.Input && (message.Kind == MessageKind.Request || message.Kind == MessageKind.Command);
+
+        /// <inheritdoc />
+        protected override BadRequestException ToBadRequestException(MicroProcessorOperationStackTrace operationStackTrace) =>
+            new BadRequestMessageException(operationStackTrace, _validationErrors, Message, this);
     }
 }

@@ -139,7 +139,7 @@ namespace Kingo.MicroServices
         {
             try
             {
-                return result.Commit(message);
+                return result.Commit(message, Processor.ServiceProvider);
             }
             finally
             {

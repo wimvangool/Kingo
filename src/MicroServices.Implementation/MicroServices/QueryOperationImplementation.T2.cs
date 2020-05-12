@@ -42,11 +42,11 @@ namespace Kingo.MicroServices
             public override async Task<QueryOperationResult<TResponse>> ExecuteAsync() =>
                 new QueryOperationResult<TResponse>(await ExecuteMethodAsync().ConfigureAwait(false));
 
-            private async Task<IMessage<TResponse>> ExecuteMethodAsync() =>
+            private async Task<Message<TResponse>> ExecuteMethodAsync() =>
                 CreateResponseMessage(await _method.ExecuteAsync(_operation.MessageContent(), _context).ConfigureAwait(false));
 
-            private IMessage<TResponse> CreateResponseMessage(TResponse response) =>
-                Context.Processor.MessageFactory.CreateResponse(MessageDirection.Output, MessageHeader.Unspecified, response).CorrelateWith(Message);
+            private Message<TResponse> CreateResponseMessage(TResponse response) =>
+                Context.Processor.MessageFactory.CreateResponse(MessageDirection.Output, MessageHeader.Unspecified, response);
         }
 
         #endregion

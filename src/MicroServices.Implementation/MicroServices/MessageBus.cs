@@ -10,14 +10,12 @@ namespace Kingo.MicroServices
     internal sealed class MessageBus : IMessageBus
     {
         private readonly MessageFactory _messageFactory;
-        private readonly IServiceProvider _serviceProvider;
         private readonly List<Message<object>> _messages;
         private readonly IClock _clock;
 
-        public MessageBus(MessageFactory messageFactory, IServiceProvider serviceProvider, IClock clock)
+        public MessageBus(MessageFactory messageFactory, IClock clock)
         {
             _messageFactory = messageFactory;
-            _serviceProvider = serviceProvider;
             _messages = new List<Message<object>>();
             _clock = clock;
         }
@@ -66,7 +64,7 @@ namespace Kingo.MicroServices
             Add(IsNotNull(@event, nameof(@event)), MessageKind.Event, deliveryTime);
 
         private void Add(object content, MessageKind kind, DateTimeOffset? deliveryTime) =>
-            _messages.Add(_messageFactory.CreateMessage(kind, MessageDirection.Output, MessageHeader.Unspecified, content, deliveryTime).Validate(_serviceProvider));
+            _messages.Add(_messageFactory.CreateMessage(kind, MessageDirection.Output, MessageHeader.Unspecified, content, deliveryTime));
 
         private DateTimeOffset ToDeliveryTime(TimeSpan delay)
         {

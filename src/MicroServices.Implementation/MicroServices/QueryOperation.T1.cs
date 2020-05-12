@@ -57,6 +57,12 @@ namespace Kingo.MicroServices
             {
                 throw;
             }
+            catch (InternalOperationException exception)
+            {
+                // When a InternalOperationException was thrown, the processor converts it into the appropriate
+                // MicroProcessorOperationException, depending on the cause and current stack-trace.
+                throw exception.ToMicroProcessorOperationException(operation.Context.CaptureOperationStackTrace());
+            }
             catch (OperationCanceledException exception)
             {
                 // OperationCanceledExceptions are treated as InternalServerErrors, even if the operation was
@@ -77,7 +83,7 @@ namespace Kingo.MicroServices
         {
             try
             {
-                return result;
+                return result.Commit(Message, Processor.ServiceProvider);
             }
             finally
             {
