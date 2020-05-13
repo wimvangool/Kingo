@@ -27,7 +27,7 @@ namespace Kingo.MicroServices
             _operation.Message;
 
         /// <inheritdoc />
-        public IMicroProcessorOperationContext Context =>
+        public MicroProcessorOperationContext Context =>
             _operation.Context;
 
         /// <inheritdoc />

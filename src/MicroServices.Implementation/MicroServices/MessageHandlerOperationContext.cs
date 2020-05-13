@@ -5,7 +5,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents the context in which a <see cref="MicroProcessor"/> invokes a <see cref="IMessageHandler{TMessage}"/>.
     /// </summary>
-    public sealed class MessageHandlerOperationContext : MicroProcessorOperationContext, IMessageHandlerOperationContext
+    public sealed class MessageHandlerOperationContext : MicroProcessorOperationContext
     {                
         private readonly IUnitOfWork _unitOfWork;
         private readonly MessageBus _messageBus;
@@ -24,11 +24,16 @@ namespace Kingo.MicroServices
             _messageBus = new MessageBus(context.Processor.MessageFactory, Clock);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Represents the unit of work that is associated to the current operation.
+        /// </summary>
         public IUnitOfWork UnitOfWork =>
             _unitOfWork;
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Represents the message bus that can be used to send commands and publish events
+        /// after the operation has completed.
+        /// </summary>
         public IMessageBus MessageBus =>
             _messageBus;
 

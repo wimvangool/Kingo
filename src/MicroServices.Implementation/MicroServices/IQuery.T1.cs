@@ -18,6 +18,6 @@ namespace Kingo.MicroServices
         /// Note that the response of a query is never allowed to be <c>null</c>. To represent empty results,
         /// please return an empty message or default value instead.
         /// </remarks> 
-        Task<TResponse> ExecuteAsync(IQueryOperationContext context);
+        Task<TResponse> ExecuteAsync(QueryOperationContext context);
     }
 }

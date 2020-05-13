@@ -23,14 +23,14 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task HandleMessageAsync_Throws_IfMessageHandlerActionIsNull()
         {
-            await HandleMessageAsync(null as Action<object, IMessageHandlerOperationContext>, new object());
+            await HandleMessageAsync(null as Action<object, MessageHandlerOperationContext>, new object());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task HandleMessageAsync_Throws_IfMessageHandlerFuncIsNull()
         {
-            await HandleMessageAsync(null as Func<object, IMessageHandlerOperationContext, Task>, new object());
+            await HandleMessageAsync(null as Func<object, MessageHandlerOperationContext, Task>, new object());
         }
 
         [TestMethod]
@@ -593,7 +593,7 @@ namespace Kingo.MicroServices
         private abstract class MessageHandlerBase : IMessageHandler<int>, IMessageHandler<object>
         {
             [MessageBusEndpoint(MessageBusTypes.All)]
-            public Task HandleAsync(int message, IMessageHandlerOperationContext context)
+            public Task HandleAsync(int message, MessageHandlerOperationContext context)
             {
                 try
                 {
@@ -606,7 +606,7 @@ namespace Kingo.MicroServices
             }
 
             [MessageBusEndpoint(MessageBusTypes.All)]
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context)
+            public Task HandleAsync(object message, MessageHandlerOperationContext context)
             {
                 try
                 {
@@ -618,14 +618,14 @@ namespace Kingo.MicroServices
                 }
             }
 
-            private Task HandleMessageAsync<TMessage>(TMessage message, IMessageHandlerOperationContext context)
+            private Task HandleMessageAsync<TMessage>(TMessage message, MessageHandlerOperationContext context)
             {
                 AssertContext(message, context);
                 Instances(context).Add(this);
                 return Task.CompletedTask;
             }
 
-            private void AssertContext<TMessage>(TMessage message, IMessageHandlerOperationContext context) =>
+            private void AssertContext<TMessage>(TMessage message, MessageHandlerOperationContext context) =>
                 AssertOperation(message, context.StackTrace.CurrentOperation);
 
             private void AssertOperation<TMessage>(TMessage message, IAsyncMethodOperation operation)
@@ -638,7 +638,7 @@ namespace Kingo.MicroServices
             private static void AssertMethod(Type messageType, IAsyncMethod method)
             {
                 Assert.AreSame(messageType, method.MessageParameterInfo.ParameterType);
-                Assert.AreSame(typeof(IMessageHandlerOperationContext), method.ContextParameterInfo.ParameterType);
+                Assert.AreSame(typeof(MessageHandlerOperationContext), method.ContextParameterInfo.ParameterType);
             }
 
             private static void AssertMessageHandlerType(Type expectedType, Type actualType)
@@ -647,7 +647,7 @@ namespace Kingo.MicroServices
                 Assert.AreSame(expectedType, actualType);
             }
 
-            private static IInstanceCollector Instances(IMicroProcessorOperationContext context) =>
+            private static IInstanceCollector Instances(MicroProcessorOperationContext context) =>
                 context.ServiceProvider.GetRequiredService<IInstanceCollector>();
         }
 
@@ -823,18 +823,18 @@ namespace Kingo.MicroServices
             get;
         }
 
-        protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
+        protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
         protected Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null) =>
             HandleMessageAsync(CreateProcessor(), messageHandler, message, token);
 
-        protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, IMessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Action<TMessage, MessageHandlerOperationContext> messageHandler, TMessage message, CancellationToken? token = null);
 
-        protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null);
+        protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, TMessage message, CancellationToken? token = null);
 
         protected abstract Task<MessageHandlerOperationResult<TMessage>> HandleMessageAsync<TMessage>(IMicroProcessor processor, IMessageHandler<TMessage> messageHandler, TMessage message, CancellationToken? token = null);
 

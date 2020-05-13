@@ -80,7 +80,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Action<TCommand, IMessageHandlerOperationContext> messageHandler, TCommand message) =>
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Action<TCommand, MessageHandlerOperationContext> messageHandler, TCommand message) =>
             ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified);
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Action<TCommand, IMessageHandlerOperationContext> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Action<TCommand, MessageHandlerOperationContext> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
             ExecuteCommandAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, messageHeader, token);
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Func<TCommand, IMessageHandlerOperationContext, Task> messageHandler, TCommand message) =>
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Func<TCommand, MessageHandlerOperationContext, Task> messageHandler, TCommand message) =>
             ExecuteCommandAsync(messageHandler, message, MessageHeader.Unspecified);
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Func<TCommand, IMessageHandlerOperationContext, Task> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
+        Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(Func<TCommand, MessageHandlerOperationContext, Task> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
             ExecuteCommandAsync(MessageHandlerDecorator<TCommand>.Decorate(messageHandler), message, messageHeader, token);
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Action<TEvent, IMessageHandlerOperationContext> messageHandler, TEvent message) =>
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Action<TEvent, MessageHandlerOperationContext> messageHandler, TEvent message) =>
             HandleEventAsync(messageHandler, message, MessageHeader.Unspecified);
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Action<TEvent, IMessageHandlerOperationContext> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Action<TEvent, MessageHandlerOperationContext> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
             HandleEventAsync(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message, messageHeader, token);
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Func<TEvent, IMessageHandlerOperationContext, Task> messageHandler, TEvent message) =>
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Func<TEvent, MessageHandlerOperationContext, Task> messageHandler, TEvent message) =>
             HandleEventAsync(messageHandler, message, MessageHeader.Unspecified);
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>         
-        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Func<TEvent, IMessageHandlerOperationContext, Task> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
+        Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(Func<TEvent, MessageHandlerOperationContext, Task> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
             HandleEventAsync(MessageHandlerDecorator<TEvent>.Decorate(messageHandler), message, messageHeader, token);
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>        
-        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<IQueryOperationContext, TResponse> query, CancellationToken? token = null) =>
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, TResponse> query, CancellationToken? token = null) =>
             ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>        
-        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<IQueryOperationContext, Task<TResponse>> query, CancellationToken? token = null) =>
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, Task<TResponse>> query, CancellationToken? token = null) =>
             ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>          
-        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, TResponse> query, TRequest message) =>
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, QueryOperationContext, TResponse> query, TRequest message) =>
             ExecuteQueryAsync(query, message, MessageHeader.Unspecified);
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>          
-        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, TResponse> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, QueryOperationContext, TResponse> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
             ExecuteQueryAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, messageHeader, token);
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest message) =>
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, QueryOperationContext, Task<TResponse>> query, TRequest message) =>
             ExecuteQueryAsync(query, message, MessageHeader.Unspecified);
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, IQueryOperationContext, Task<TResponse>> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
+        Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Func<TRequest, QueryOperationContext, Task<TResponse>> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
             ExecuteQueryAsync(QueryDecorator<TRequest, TResponse>.Decorate(query), message, messageHeader, token);
 
         /// <summary>

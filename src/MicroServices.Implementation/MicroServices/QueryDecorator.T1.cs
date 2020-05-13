@@ -32,7 +32,7 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public virtual Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
+        public virtual Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
             Query.ExecuteAsync(context);
 
         /// <inheritdoc />
@@ -43,9 +43,9 @@ namespace Kingo.MicroServices
 
         private sealed class QueryFunc : IQuery<TResponse>
         {
-            private readonly Func<IQueryOperationContext, TResponse> _query;
+            private readonly Func<QueryOperationContext, TResponse> _query;
 
-            public QueryFunc(Func<IQueryOperationContext, TResponse> query)
+            public QueryFunc(Func<QueryOperationContext, TResponse> query)
             {
                 _query = query ?? throw new ArgumentNullException(nameof(query));
             }
@@ -53,7 +53,7 @@ namespace Kingo.MicroServices
             public override string ToString() =>
                 _query.GetType().FriendlyName();
 
-            public Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
+            public Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
                 AsyncMethod.Run(() => _query.Invoke(context));
         }
 
@@ -67,7 +67,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static IQuery<TResponse> Decorate(Func<IQueryOperationContext, TResponse> query) =>
+        public static IQuery<TResponse> Decorate(Func<QueryOperationContext, TResponse> query) =>
             new QueryFunc(query);
 
         #endregion
@@ -76,9 +76,9 @@ namespace Kingo.MicroServices
 
         private sealed class QueryFuncAsync : IQuery<TResponse>
         {
-            private readonly Func<IQueryOperationContext, Task<TResponse>> _query;
+            private readonly Func<QueryOperationContext, Task<TResponse>> _query;
 
-            public QueryFuncAsync(Func<IQueryOperationContext, Task<TResponse>> query)
+            public QueryFuncAsync(Func<QueryOperationContext, Task<TResponse>> query)
             {
                 _query = query ?? throw new ArgumentNullException(nameof(query));
             }
@@ -86,7 +86,7 @@ namespace Kingo.MicroServices
             public override string ToString() =>
                 _query.GetType().FriendlyName();
 
-            public Task<TResponse> ExecuteAsync(IQueryOperationContext context) =>
+            public Task<TResponse> ExecuteAsync(QueryOperationContext context) =>
                 _query.Invoke(context);
         }
 
@@ -100,7 +100,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public static IQuery<TResponse> Decorate(Func<IQueryOperationContext, Task<TResponse>> query) =>
+        public static IQuery<TResponse> Decorate(Func<QueryOperationContext, Task<TResponse>> query) =>
             new QueryFuncAsync(query);
 
         #endregion

@@ -12,13 +12,13 @@ namespace Kingo.MicroServices.Controllers
     {
         private sealed class SomeMessageHandler : IMessageHandler<SomeMessage>
         {
-            public Task HandleAsync(SomeMessage message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(SomeMessage message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class SomeMessageSender : IMessageHandler<SomeMessage>
         {
-            public Task HandleAsync(SomeMessage message, IMessageHandlerOperationContext context)
+            public Task HandleAsync(SomeMessage message, MessageHandlerOperationContext context)
             {
                 context.MessageBus.Send(message);
                 return Task.CompletedTask;
@@ -27,7 +27,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class SomeMessagePublisher : IMessageHandler<SomeMessage>
         {
-            public Task HandleAsync(SomeMessage message, IMessageHandlerOperationContext context)
+            public Task HandleAsync(SomeMessage message, MessageHandlerOperationContext context)
             {
                 context.MessageBus.Publish(message);
                 return Task.CompletedTask;
@@ -36,7 +36,7 @@ namespace Kingo.MicroServices.Controllers
 
         private sealed class SomeQuery : IQuery<SomeMessage, SomeMessage>
         {
-            public Task<SomeMessage> ExecuteAsync(SomeMessage message, IQueryOperationContext context) =>
+            public Task<SomeMessage> ExecuteAsync(SomeMessage message, QueryOperationContext context) =>
                 Task.FromResult(message);
         }
 

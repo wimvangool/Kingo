@@ -4,7 +4,7 @@ namespace Kingo.MicroServices.TestEngine
 {
     internal sealed class NullHandler : IMessageHandler<object>
     {
-        public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
+        public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
             Task.CompletedTask;
     }
 }

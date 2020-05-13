@@ -16,7 +16,7 @@
         /// <summary>
         /// Returns the context of this operation.
         /// </summary>
-        IMicroProcessorOperationContext Context
+        MicroProcessorOperationContext Context
         {
             get;
         }

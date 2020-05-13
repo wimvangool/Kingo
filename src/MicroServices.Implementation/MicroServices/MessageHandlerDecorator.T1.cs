@@ -32,7 +32,7 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public virtual Task HandleAsync(TMessage message, IMessageHandlerOperationContext context) =>
+        public virtual Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
             MessageHandler.HandleAsync(message, context);
 
         /// <inheritdoc />
@@ -43,9 +43,9 @@ namespace Kingo.MicroServices
 
         private sealed class MessageHandlerAction : IMessageHandler<TMessage>, IEquatable<MessageHandlerAction>
         {
-            private readonly Action<TMessage, IMessageHandlerOperationContext> _messageHandler;
+            private readonly Action<TMessage, MessageHandlerOperationContext> _messageHandler;
 
-            public MessageHandlerAction(Action<TMessage, IMessageHandlerOperationContext> messageHandler)
+            public MessageHandlerAction(Action<TMessage, MessageHandlerOperationContext> messageHandler)
             {
                 _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
             }
@@ -72,7 +72,7 @@ namespace Kingo.MicroServices
             public override string ToString() =>
                 _messageHandler.GetType().FriendlyName();
 
-            public Task HandleAsync(TMessage message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
                 AsyncMethod.Run(() => _messageHandler.Invoke(message, context));            
         }
 
@@ -86,7 +86,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public static IMessageHandler<TMessage> Decorate(Action<TMessage, IMessageHandlerOperationContext> messageHandler) =>
+        public static IMessageHandler<TMessage> Decorate(Action<TMessage, MessageHandlerOperationContext> messageHandler) =>
             new MessageHandlerAction(messageHandler);
 
         #endregion
@@ -95,9 +95,9 @@ namespace Kingo.MicroServices
 
         private sealed class MessageHandlerFunc : IMessageHandler<TMessage>, IEquatable<MessageHandlerFunc>
         {
-            private readonly Func<TMessage, IMessageHandlerOperationContext, Task> _messageHandler;
+            private readonly Func<TMessage, MessageHandlerOperationContext, Task> _messageHandler;
 
-            public MessageHandlerFunc(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler)
+            public MessageHandlerFunc(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler)
             {
                 _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
             }
@@ -124,7 +124,7 @@ namespace Kingo.MicroServices
             public override string ToString() =>
                 _messageHandler.GetType().FriendlyName();
 
-            public Task HandleAsync(TMessage message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
                 _messageHandler.Invoke(message, context);
         }
 
@@ -138,7 +138,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public static IMessageHandler<TMessage> Decorate(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler) =>
+        public static IMessageHandler<TMessage> Decorate(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler) =>
             new MessageHandlerFunc(messageHandler);
 
         #endregion

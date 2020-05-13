@@ -19,7 +19,7 @@ namespace Kingo.MicroServices
         }
 
         /// <inheritdoc />
-        public Task HandleAsync(TMessage message, IMessageHandlerOperationContext context) =>
+        public Task HandleAsync(TMessage message, MessageHandlerOperationContext context) =>
             _messageHandler.HandleAsync(message, context);        
     }
 }

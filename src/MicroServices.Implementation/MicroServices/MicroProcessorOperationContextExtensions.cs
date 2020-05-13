@@ -4,7 +4,7 @@ using System.Linq;
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Contains extension methods for instances of type <see cref="IMicroProcessorOperationContext"/>.
+    /// Contains extension methods for instances of type <see cref="MicroProcessorOperationContext"/>.
     /// </summary>
     public static class MicroProcessorOperationContextExtensions
     {
@@ -21,7 +21,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static BadRequestException NewBadRequestException(this IMicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
+        public static BadRequestException NewBadRequestException(this MicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
             new BadRequestException(CaptureOperationStackTrace(context), message, innerException);
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static UnauthorizedRequestException NewUnauthorizedRequestException(this IMicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
+        public static UnauthorizedRequestException NewUnauthorizedRequestException(this MicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
             new UnauthorizedRequestException(CaptureOperationStackTrace(context), message, innerException);
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static NotFoundException NewNotFoundException(this IMicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
+        public static NotFoundException NewNotFoundException(this MicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
             new NotFoundException(CaptureOperationStackTrace(context), message, innerException);
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static ConflictException NewConflictException(this IMicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
+        public static ConflictException NewConflictException(this MicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
             new ConflictException(CaptureOperationStackTrace(context), message, innerException);
 
         #endregion
@@ -81,7 +81,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static InternalServerErrorException NewInternalServerErrorException(this IMicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
+        public static InternalServerErrorException NewInternalServerErrorException(this MicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
             new InternalServerErrorException(CaptureOperationStackTrace(context), message, innerException);
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static GatewayTimeoutException NewGatewayTimeoutException(this IMicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
+        public static GatewayTimeoutException NewGatewayTimeoutException(this MicroProcessorOperationContext context, string message = null, Exception innerException = null) =>
             new GatewayTimeoutException(CaptureOperationStackTrace(context), message, innerException);
 
         #endregion
@@ -111,7 +111,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public static MicroProcessorOperationStackTrace CaptureOperationStackTrace(this IMicroProcessorOperationContext context) =>
+        public static MicroProcessorOperationStackTrace CaptureOperationStackTrace(this MicroProcessorOperationContext context) =>
             CaptureOperationStackTrace(NotNull(context).StackTrace);
 
         private static MicroProcessorOperationStackTrace CaptureOperationStackTrace(IAsyncMethodOperationStackTrace stackTrace) =>
@@ -122,7 +122,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private static IMicroProcessorOperationContext NotNull(IMicroProcessorOperationContext context) =>
+        private static MicroProcessorOperationContext NotNull(MicroProcessorOperationContext context) =>
             context ?? throw new ArgumentNullException(nameof(context));
     }
 }

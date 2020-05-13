@@ -17,6 +17,6 @@ namespace Kingo.MicroServices
         /// Something went wrong while processing the specified <paramref name="message"/>, such as
         /// the violation of a business rule.
         /// </exception> 
-        Task HandleAsync(TMessage message, IMessageHandlerOperationContext context);
+        Task HandleAsync(TMessage message, MessageHandlerOperationContext context);
     }
 }

@@ -14,28 +14,28 @@ namespace Kingo.MicroServices
 
         private sealed class MessageHandler1 : IMessageHandler<object>
         {
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class MessageHandler2 : IMessageHandler<object>
         {
             [MessageBusEndpoint(MessageBusTypes.MicroServiceBus)]
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
         private sealed class MessageHandler3 : IMessageHandler<object>, IMessageHandler<int>, IMessageHandler<string>
         {
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
 
             [MessageBusEndpoint(MessageBusTypes.MicroServiceBus)]
-            public Task HandleAsync(int message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(int message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
 
             [MessageBusEndpoint(MessageBusTypes.MicroServiceBus)]
-            public Task HandleAsync(string message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(string message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
@@ -148,7 +148,7 @@ namespace Kingo.MicroServices
         private sealed class UndefinedMessageHandler : IMessageHandler<object>
         {
             [MessageBusEndpoint(MessageBusTypes.MicroServiceBus)]
-            public Task HandleAsync(object message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(object message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
@@ -157,7 +157,7 @@ namespace Kingo.MicroServices
         private sealed class SomeRequestHandler : IMessageHandler<SomeRequest>
         {
             [MessageBusEndpoint(MessageBusTypes.MicroServiceBus)]
-            public Task HandleAsync(SomeRequest message, IMessageHandlerOperationContext context) =>
+            public Task HandleAsync(SomeRequest message, MessageHandlerOperationContext context) =>
                 Task.CompletedTask;
         }
 
@@ -166,7 +166,7 @@ namespace Kingo.MicroServices
         private sealed class SomeCommandHandler : IMessageHandler<SomeCommand>
         {
             [MessageBusEndpoint(MessageBusTypes.MicroServiceBus)]
-            public Task HandleAsync(SomeCommand message, IMessageHandlerOperationContext context)
+            public Task HandleAsync(SomeCommand message, MessageHandlerOperationContext context)
             {
                 context.MessageBus.Publish(string.Empty);
                 return Task.CompletedTask;
@@ -178,7 +178,7 @@ namespace Kingo.MicroServices
         private sealed class SomeEventHandler : IMessageHandler<SomeEvent>
         {
             [MessageBusEndpoint(MessageBusTypes.MicroServiceBus)]
-            public Task HandleAsync(SomeEvent message, IMessageHandlerOperationContext context)
+            public Task HandleAsync(SomeEvent message, MessageHandlerOperationContext context)
             {
                 context.MessageBus.Publish(string.Empty);
                 return Task.CompletedTask;

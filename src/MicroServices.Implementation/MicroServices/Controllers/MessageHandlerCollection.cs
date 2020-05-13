@@ -54,7 +54,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public bool AddInstance<TMessage>(Action<TMessage, IMessageHandlerOperationContext> messageHandler) =>
+        public bool AddInstance<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler) =>
             AddInstance(new MessageHandlerInstance<TMessage>(messageHandler));
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public bool AddInstance<TMessage>(Func<TMessage, IMessageHandlerOperationContext, Task> messageHandler) =>
+        public bool AddInstance<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler) =>
             AddInstance(new MessageHandlerInstance<TMessage>(messageHandler));
 
         /// <summary>

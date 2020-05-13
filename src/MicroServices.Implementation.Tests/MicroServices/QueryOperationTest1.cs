@@ -21,14 +21,14 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryFuncIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync(null as Func<IQueryOperationContext, object>);
+            await CreateProcessor().ExecuteQueryAsync(null as Func<QueryOperationContext, object>);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task ExecuteQueryAsync_Throws_IfQueryFuncAsyncIsNull()
         {
-            await CreateProcessor().ExecuteQueryAsync(null as Func<IQueryOperationContext, Task<object>>);
+            await CreateProcessor().ExecuteQueryAsync(null as Func<QueryOperationContext, Task<object>>);
         }
 
         #endregion
@@ -54,7 +54,7 @@ namespace Kingo.MicroServices
 
         private sealed class QueryStub : IQuery<object>
         {
-            public Task<object> ExecuteAsync(IQueryOperationContext context)
+            public Task<object> ExecuteAsync(QueryOperationContext context)
             {
                 Assert.AreEqual(1, context.StackTrace.Count);
                 AssertOperation(context.StackTrace.CurrentOperation);
@@ -68,7 +68,7 @@ namespace Kingo.MicroServices
 
                 Assert.IsNull(operation.Message);
                 Assert.IsNull(operation.Method.MessageParameterInfo);
-                Assert.AreSame(typeof(IQueryOperationContext), operation.Method.ContextParameterInfo.ParameterType);
+                Assert.AreSame(typeof(QueryOperationContext), operation.Method.ContextParameterInfo.ParameterType);
 
                 AssertComponentType(operation.Method.ComponentType);
             }

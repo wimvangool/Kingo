@@ -44,7 +44,7 @@ namespace Kingo.MicroServices.Domain
         /// <exception cref="ItemNotFoundException">
         /// The snapshot with the specified <paramref name="id"/> was not found.
         /// </exception>
-        public async Task<TItem> GetItemByIdAsync(TKey id, IMicroProcessorOperationContext context) =>
+        public async Task<TItem> GetItemByIdAsync(TKey id, MicroProcessorOperationContext context) =>
             await GetItemByIdOrNullAsync(id, context) ?? throw NewItemNotFoundException(id);
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Kingo.MicroServices.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        public Task<TItem> GetItemByIdOrNullAsync(TKey id, IMicroProcessorOperationContext context) =>
+        public Task<TItem> GetItemByIdOrNullAsync(TKey id, MicroProcessorOperationContext context) =>
             throw new NotImplementedException();
 
         private static Exception NewItemNotFoundException(TKey id)
