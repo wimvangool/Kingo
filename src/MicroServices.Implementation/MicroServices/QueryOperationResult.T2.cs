@@ -7,19 +7,26 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TRequest">Type of the request-message.</typeparam>
     /// <typeparam name="TResponse">Type of the returned response message.</typeparam>
-    public sealed class QueryOperationResult<TRequest, TResponse> : QueryOperationResult<TResponse>
+    public sealed class QueryOperationResult<TRequest, TResponse> : QueryOperationResultBase<IMessage<TRequest>, IMessage<TResponse>>
     {
-        internal QueryOperationResult(Message<TResponse> output, IMessage<TRequest> input) : base(output)
+        private readonly Message<TRequest> _input;
+        private readonly Message<TResponse> _output;
+
+        internal QueryOperationResult(Message<TRequest> input, Message<TResponse> output)
         {
-            Input = input;
+            _input = input;
+            _output = output.CorrelateWith(input);
         }
 
-        /// <summary>
-        /// The request-message of the query.
-        /// </summary>
-        public IMessage<TRequest> Input
-        {
-            get;
-        }
+        /// <inheritdoc />
+        public override IMessage<TRequest> Input =>
+            _input;
+
+        /// <inheritdoc />
+        public override IMessage<TResponse> Output =>
+            _output;
+
+        internal QueryOperationResult<TRequest, TResponse> Validate(IServiceProvider serviceProvider) =>
+            new QueryOperationResult<TRequest, TResponse>(_input, _output.Validate(serviceProvider));
     }
 }

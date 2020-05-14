@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,72 +7,50 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents the result of a <see cref="IMessageHandler{TMessage}"/> operation executed by a <see cref="IMicroProcessor" />.
     /// </summary>
-    public abstract class MessageHandlerOperationResult : IMicroProcessorOperationResult<IReadOnlyList<IMessage>>, IMessageHandlerOperationResult
+    public abstract class MessageHandlerOperationResult : IReadOnlyCollection<Message<object>>
     {
-        #region [====== EmptyResult ======]
+        #region [====== IReadOnlyCollection<Message<object>> ======]
 
-        private sealed class EmptyResult : MessageHandlerOperationResult
-        {
-            private readonly Message<object>[] _messages;
+        int IReadOnlyCollection<Message<object>>.Count =>
+            Output.Count;
 
-            public EmptyResult()
-            {
-                _messages = new Message<object>[0];
-            }
+        IEnumerator<Message<object>> IEnumerable<Message<object>>.GetEnumerator() =>
+            GetEnumerator();
 
-            internal override IReadOnlyList<Message<object>> Messages =>
-                _messages;
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
 
-            public override int MessageHandlerCount =>
-                0;
-
-            internal override MessageHandlerOperationResult Append(MessageHandlerOperationResult result) =>
-                result;
-
-            internal override MessageHandlerOperationResult Commit(IMessage message, IServiceProvider serviceProvider) =>
-                this;
-        }
+        internal abstract IEnumerator<Message<object>> GetEnumerator();
 
         #endregion
 
+        #region [====== Input & Output ======]
+
         /// <summary>
-        /// Represents an empty result.
+        /// Gets the list of messages that were produced by the operation.
         /// </summary>
-        public static readonly MessageHandlerOperationResult Empty = new EmptyResult();
-
-        IReadOnlyList<IMessage> IMicroProcessorOperationResult<IReadOnlyList<IMessage>>.Value =>
-            Output;
-
-        /// <inheritdoc />
-        public IReadOnlyList<IMessage> Output =>
-            Messages;
-
-        internal abstract IReadOnlyList<Message<object>> Messages
+        public abstract IReadOnlyList<IMessage> Output
         {
             get;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the number of message-handlers that were invoked during the operation.
+        /// </summary>
         public abstract int MessageHandlerCount
         {
             get;
         }
 
-        /// <inheritdoc />
-        public override string ToString() =>
-            $"{Output} ({nameof(MessageHandlerCount)} = {MessageHandlerCount})";
+        #endregion
 
-        internal virtual MessageHandlerOperationResult Append(MessageHandlerOperationResult result)
-        {
-            var messages = Messages.Concat(result.Messages);
-            var messageHandlerCount = MessageHandlerCount + result.MessageHandlerCount;
-            return new MessageListResult(messages, messageHandlerCount);
-        }
+        #region [====== Append ======]
 
-        internal virtual MessageHandlerOperationResult Commit(IMessage message, IServiceProvider serviceProvider) =>
-            new MessageListResult(Messages.Select(outputMessage => outputMessage.CorrelateWith(message).Validate(serviceProvider)), MessageHandlerCount);
+        internal static MessageHandlerOperationResult<TMessage> FromInput<TMessage>(Message<TMessage> input) =>
+            new MessageHandlerOperationResult<TMessage>(input, Enumerable.Empty<Message<object>>());
 
-        internal MessageHandlerOperationResult<TMessage> WithInput<TMessage>(IMessage<TMessage> input) =>
-            new MessageHandlerOperationResult<TMessage>(this, input);
+        internal abstract MessageHandlerOperationResult<TMessage> AppendTo<TMessage>(MessageHandlerOperationResult<TMessage> result);
+
+        #endregion
     }
 }

@@ -14,7 +14,6 @@ namespace Kingo.MicroServices
         private readonly ClaimsPrincipal _user;
         private readonly IClock _clock;
         private readonly AsyncMethodOperationStackTrace _stackTrace;
-        private readonly IQueryProcessor _queryProcessor;
 
         internal MicroProcessorOperationContext(MicroProcessor processor, AsyncMethodOperationStackTrace stackTrace = null)
         {
@@ -22,7 +21,6 @@ namespace Kingo.MicroServices
             _user = processor.CurrentUser();
             _clock = processor.CurrentClock();
             _stackTrace = stackTrace ?? AsyncMethodOperationStackTrace.Empty;
-            _queryProcessor = new QueryProcessor(this);
         }
 
         internal MicroProcessorOperationContext(MicroProcessorOperationContext context, IAsyncMethodOperation operation)
@@ -31,7 +29,6 @@ namespace Kingo.MicroServices
             _user = context._user.Clone();
             _clock = context._clock;
             _stackTrace = context._stackTrace.Push(operation);
-            _queryProcessor = new QueryProcessor(this);
         }
 
         internal MicroProcessor Processor =>
@@ -61,17 +58,11 @@ namespace Kingo.MicroServices
         public IServiceProvider ServiceProvider =>
             _processor.ServiceProvider;
 
-        /// <summary>
-        /// Returns the processor that can be used to execute (internal) queries as part of the current operation.
-        /// </summary>
-        public IQueryProcessor QueryProcessor =>
-            _queryProcessor;
-
         /// <inheritdoc />
         public override string ToString() =>
             GetType().FriendlyName();
 
-        internal QueryOperationContext PushOperation<TResponse>(ExecuteAsyncMethodOperation<TResponse> operation) =>
+        internal QueryOperationContext PushOperation<TRequest, TResponse>(ExecuteAsyncMethodOperation<TRequest, TResponse> operation) =>
             new QueryOperationContext(this, operation);
     }
 }

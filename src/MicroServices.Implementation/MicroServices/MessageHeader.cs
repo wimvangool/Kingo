@@ -16,6 +16,14 @@ namespace Kingo.MicroServices
         public static readonly MessageHeader Unspecified = new MessageHeader();
 
         /// <summary>
+        /// Generates and returns a new <see cref="MessageHeader" /> where the <see cref="MessageHeader.Id"/>
+        /// has been set to a random <see cref="Guid"/>.
+        /// </summary>
+        /// <returns>A new header.</returns>
+        public static MessageHeader NewHeader() =>
+            new MessageHeader(Guid.NewGuid().ToString());
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MessageHeader" /> class.
         /// </summary>
         /// <param name="id">Identifier of the message.</param>

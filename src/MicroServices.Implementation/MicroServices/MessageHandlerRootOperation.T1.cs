@@ -23,7 +23,7 @@ namespace Kingo.MicroServices
         public override MicroProcessorOperationKind Kind =>
             MicroProcessorOperationKind.RootOperation;      
 
-        protected override async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
+        internal override async Task<MessageHandlerOperationResult<TMessage>> ExecuteAsync(HandleAsyncMethodOperation<TMessage> operation)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace Kingo.MicroServices
             }
         }
 
-        protected override IEnumerable<HandleAsyncMethodOperation> CreateMethodOperations(MessageHandlerOperationContext context)
+        protected override IEnumerable<HandleAsyncMethodOperation<TMessage>> CreateMethodOperations(MessageHandlerOperationContext context)
         {
             yield return CreateMethodOperation(_method, context);
         }                 

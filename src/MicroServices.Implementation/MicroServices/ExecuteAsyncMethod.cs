@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
@@ -34,6 +36,19 @@ namespace Kingo.MicroServices
                 MessageParameterInfo = parameters[0];
                 ContextParameterInfo = parameters[1];
             }
+        }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"{Query.Type.FriendlyName()}.{MethodInfo.Name}({string.Join(", ", Parameters())})";
+
+        private IEnumerable<string> Parameters()
+        {
+            if (MessageParameterInfo != null)
+            {
+                yield return MessageParameterInfo.ParameterType.FriendlyName();
+            }
+            yield return "...";
         }
 
         #region [====== IAsyncMethod ======]

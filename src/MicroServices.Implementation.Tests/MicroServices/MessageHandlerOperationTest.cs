@@ -805,7 +805,7 @@ namespace Kingo.MicroServices
         private async Task HandleMessageAsync(IMicroProcessor processor, IMessageHandler<int> messageHandler) =>
             AssertMessageHandlerResult(await HandleMessageAsync(processor, messageHandler, DateTimeOffset.UtcNow.Second));
 
-        private static void AssertMessageHandlerResult(IMessageHandlerOperationResult result)
+        private static void AssertMessageHandlerResult(MessageHandlerOperationResult result)
         {
             Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(1, result.Output.Count);

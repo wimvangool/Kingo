@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices
 {
     [TestClass]
-    public sealed class ExecuteAsyncMethodTest2 : AsyncMethodTest
+    public sealed class ExecuteAsyncMethodTest : AsyncMethodTest
     {
         #region [====== Query Types ======]        
 
@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
         public void Method_ReturnsExpectedMethod_IfQueryImplementsOneInterface_And_MessageTypeMatchesExactly()
         {
             var query = new Query1();
-            var method = new ExecuteAsyncMethod<object, int>(query);
+            var method = new ExecuteAsyncMethod<object, int>(CreateQuery(query));
 
             AssertComponentProperties<Query1>(method, 12);
             AssertMethodProperties<object, int>(method, 2, 3);
@@ -45,7 +45,7 @@ namespace Kingo.MicroServices
         public void Method_ReturnsExpectedMethod_IfQueryImplementsOneInterface_And_MessageTypeDoesNotMatchExactly()
         {
             var query = new Query1();
-            var method = new ExecuteAsyncMethod<string, int>(query);
+            var method = new ExecuteAsyncMethod<string, int>(CreateQuery<string, int>(query));
 
             AssertComponentProperties<Query1>(method, 12);
             AssertMethodProperties<object, int>(method, 2, 3);
@@ -55,8 +55,8 @@ namespace Kingo.MicroServices
         public void Method_ReturnsExpectedMethod_IfQueryImplementsTwoInterfaces_And_MessageTypeMatchesExactly()
         {
             var query = new Query2();
-            var methodOfString = new ExecuteAsyncMethod<string, int>(query);
-            var methodOfObject = new ExecuteAsyncMethod<object, int>(query);            
+            var methodOfString = new ExecuteAsyncMethod<string, int>(CreateQuery<string, int>(query));
+            var methodOfObject = new ExecuteAsyncMethod<object, int>(CreateQuery<object, int>(query));            
 
             AssertComponentProperties<Query2>(methodOfString, 22);
             AssertMethodProperties<string, int>(methodOfString, 4, 5);
@@ -69,11 +69,14 @@ namespace Kingo.MicroServices
         public void Method_ReturnsExpectedMethod_IfQueryImplementsTwoInterfaces_And_MessageTypeDoesNotMatchExactly()
         {
             var query = new Query2();
-            var method = new ExecuteAsyncMethod<IDisposable, int>(query);
+            var method = new ExecuteAsyncMethod<IDisposable, int>(CreateQuery<IDisposable, int>(query));
 
             AssertComponentProperties<Query2>(method, 22);
             AssertMethodProperties<object, int>(method, 6, 7);
         }
+
+        private static Query<TRequest, TResponse> CreateQuery<TRequest, TResponse>(IQuery<TRequest, TResponse> query) =>
+            new QueryAdapter<TRequest, TResponse>(query);
 
         private static void AssertMethodProperties<TRequest, TResponse>(IAsyncMethod method, int messageValue, int contextValue)
         {

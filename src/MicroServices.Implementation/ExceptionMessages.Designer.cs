@@ -133,6 +133,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot send or publish any messages at this point because the operation has already committed to its output..
+        /// </summary>
+        internal static string MessageBus_AlreadyCommitted {
+            get {
+                return ResourceManager.GetString("MessageBus_AlreadyCommitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified delay ({0}) is not allowed to be negative..
         /// </summary>
         internal static string MessageBus_NegativeDelayNotAllowed {

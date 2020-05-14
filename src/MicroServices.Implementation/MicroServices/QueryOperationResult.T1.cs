@@ -1,35 +1,24 @@
-﻿using System;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {    
     /// <summary>
     /// Represents the result of executing a query by a <see cref="IMicroProcessor" />.
     /// </summary>
     /// <typeparam name="TResponse">Type of the returned response message.</typeparam>
-    public class QueryOperationResult<TResponse> : IMicroProcessorOperationResult<TResponse>, IQueryOperationResult<TResponse>
+    public sealed class QueryOperationResult<TResponse> : QueryOperationResultBase<IMessage, IMessage<TResponse>>
     {
-        private readonly Message<TResponse> _output;
+        private readonly QueryOperationResult<VoidRequest, TResponse> _result;
 
-        internal QueryOperationResult(Message<TResponse> output)
+        internal QueryOperationResult(QueryOperationResult<VoidRequest, TResponse> result)
         {
-            _output = output;
+            _result = result;
         }
 
-        TResponse IMicroProcessorOperationResult<TResponse>.Value =>
-            _output.Content;
+        /// <inheritdoc />
+        public override IMessage Input =>
+            _result.Input;
 
         /// <inheritdoc />
-        public IMessage<TResponse> Output =>
-            _output;
-
-        /// <inheritdoc />
-        public override string ToString() =>
-            _output.ToString();
-
-        internal QueryOperationResult<TRequest, TResponse> WithInput<TRequest>(IMessage<TRequest> input) =>
-            new QueryOperationResult<TRequest, TResponse>(_output, input);
-
-        internal QueryOperationResult<TResponse> Commit(IMessage message, IServiceProvider serviceProvider) =>
-            new QueryOperationResult<TResponse>(_output.CorrelateWith(message).Validate(serviceProvider));
+        public override IMessage<TResponse> Output =>
+            _result.Output;
     }
 }

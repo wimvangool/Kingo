@@ -119,25 +119,25 @@ namespace Kingo.MicroServices
         public override MessageKind MessageKind =>
             _operationFactory.MessageKind;
 
-        #region [====== InvokeAsync ======]
+        #region [====== ProcessAsync ======]
 
-        public override Task<IMessageHandlerOperationResult> ProcessAsync(object message, MessageHeader messageHeader, CancellationToken? token = null)
+        public override async Task<MessageHandlerOperationResult<object>> ProcessAsync(object message, MessageHeader messageHeader, CancellationToken? token = null)
         {
             var messageToProcess = _processor.MessageFactory.CreateMessage(MessageKind, MessageDirection.Input, messageHeader, IsNotNull(message, nameof(message)));
             if (messageToProcess.TryConvertTo<TMessage>(out var messageOfSupportedType))
             {
-                return ProcessAsync(messageOfSupportedType, token);
+                return (await ProcessAsync(messageOfSupportedType, token).ConfigureAwait(false)).ConvertTo<object>();
             }
             throw NewMessageNotOfSupportedTypeException(Name, typeof(TMessage), message);
         }
 
-        private async Task<IMessageHandlerOperationResult> ProcessAsync(Message<TMessage> message, CancellationToken? token)
+        private async Task<MessageHandlerOperationResult<TMessage>> ProcessAsync(Message<TMessage> message, CancellationToken? token)
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
             // the infrastructure does not create a scope upon receiving a new message.
             using (_processor.ServiceProvider.CreateScope())
             {
-                return await _processor.ExecuteWriteOperationAsync(_operationFactory.CreateOperation(message, token));
+                return await _processor.ExecuteWriteOperationAsync(_operationFactory.CreateOperation(message, token)).ConfigureAwait(false);
             }
         }
 

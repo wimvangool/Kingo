@@ -55,7 +55,7 @@ namespace Kingo.MicroServices
             IsRequestMessage(operation.Message);
 
         private static bool IsRequestMessage(IMessage message) =>
-            message == null || message.Kind == MessageKind.Command || message.Kind == MessageKind.Request;
+            message.Kind == MessageKind.Command || message.Kind == MessageKind.Request;
 
         /// <summary>
         /// Creates and returns this exception as a <see cref="BadRequestException"/>, indicating that

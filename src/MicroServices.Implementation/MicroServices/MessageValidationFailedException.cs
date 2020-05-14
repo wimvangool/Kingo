@@ -79,7 +79,7 @@ namespace Kingo.MicroServices
             IsBadRequest(ValidatedMessage);
 
         private static bool IsBadRequest(IMessage message) =>
-            message == null || message.Direction == MessageDirection.Input && (message.Kind == MessageKind.Request || message.Kind == MessageKind.Command);
+            message.Direction == MessageDirection.Input && (message.Kind == MessageKind.Request || message.Kind == MessageKind.Command);
 
         /// <inheritdoc />
         protected override BadRequestException ToBadRequestException(MicroProcessorOperationStackTrace operationStackTrace) =>

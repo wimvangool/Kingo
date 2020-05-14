@@ -3,8 +3,9 @@
     /// <summary>    
     /// Represents an operation of a <see cref="IMicroProcessor"/> where a query ie being executed.    
     /// </summary>
+    /// <typeparam name="TRequest">Type of the request of the query.</typeparam>
     /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
-    public abstract class ExecuteAsyncMethodOperation<TResponse> : MicroProcessorOperation<QueryOperationResult<TResponse>>, IAsyncMethodOperation<QueryOperationResult<TResponse>>
+    public abstract class ExecuteAsyncMethodOperation<TRequest, TResponse> : MicroProcessorOperation<QueryOperationResult<TRequest, TResponse>>, IAsyncMethodOperation<QueryOperationResult<TRequest, TResponse>>
     {
         #region [====== IAsyncMethodOperation ======]
 
@@ -37,11 +38,11 @@
 
         #endregion
 
-        #region [====== IMicroProcessorOperation<ExecuteAsyncResult<TResponse>> ======]
+        #region [====== IMicroProcessorOperation<ExecuteAsyncResult<TRequest, TResponse>> ======]
 
         /// <inheritdoc />
-        public AsyncMethodOperation<QueryOperationResult<TResponse>> ToAsyncMethodOperation() =>
-            new AsyncMethodOperation<QueryOperationResult<TResponse>>(this);        
+        public AsyncMethodOperation<QueryOperationResult<TRequest, TResponse>> ToAsyncMethodOperation() =>
+            new AsyncMethodOperation<QueryOperationResult<TRequest, TResponse>>(this);        
 
         #endregion
     }

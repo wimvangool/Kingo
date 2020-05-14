@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
@@ -39,8 +38,5 @@ namespace Kingo.MicroServices
 
         internal string ToString(object operationOrMethod) =>
             $"{operationOrMethod} [{Kind}]";
-
-        internal TContent Validate<TContent>(ref Message<TContent> message, IServiceProvider serviceProvider) =>
-            Interlocked.Exchange(ref message, message.Validate(serviceProvider)).Content;
     }
 }

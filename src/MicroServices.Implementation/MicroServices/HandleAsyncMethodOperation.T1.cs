@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an operation of a <see cref="IMicroProcessor"/> where a message is being handled by a message handler.
     /// </summary>
-    public abstract class HandleAsyncMethodOperation : MicroProcessorOperation<MessageHandlerOperationResult>, IAsyncMethodOperation<MessageHandlerOperationResult>
+    public abstract class HandleAsyncMethodOperation<TMessage> : MicroProcessorOperation<MessageHandlerOperationResult<TMessage>>, IAsyncMethodOperation<MessageHandlerOperationResult<TMessage>>
     {
         #region [====== IAsyncMethodOperation ======]
 
@@ -43,8 +43,8 @@
         #region [====== IMicroProcessorOperation<HandleAsyncResult> ======]
 
         /// <inheritdoc />
-        public AsyncMethodOperation<MessageHandlerOperationResult> ToAsyncMethodOperation() =>
-            new AsyncMethodOperation<MessageHandlerOperationResult>(this);        
+        public AsyncMethodOperation<MessageHandlerOperationResult<TMessage>> ToAsyncMethodOperation() =>
+            new AsyncMethodOperation<MessageHandlerOperationResult<TMessage>>(this);        
 
         #endregion
     }

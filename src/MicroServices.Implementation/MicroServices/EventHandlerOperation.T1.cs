@@ -11,7 +11,7 @@ namespace Kingo.MicroServices
         public EventHandlerOperation(MicroProcessor processor, HandleAsyncMethod<TEvent> method, Message<TEvent> message, CancellationToken? token) :
             base(processor, method, message, token) { }
 
-        protected override async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
+        internal override async Task<MessageHandlerOperationResult<TEvent>> ExecuteAsync(HandleAsyncMethodOperation<TEvent> operation)
         {
             try
             {

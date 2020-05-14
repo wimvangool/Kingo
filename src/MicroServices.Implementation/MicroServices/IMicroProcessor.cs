@@ -264,49 +264,88 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Queries (Without Request) ======]
+        #region [====== Requests (Without Content) ======]
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>
         /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>   
-        /// <param name="query">The query to execute.</param>               
+        /// <param name="query">The query to execute.</param>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>        
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, TResponse> query) =>
+            ExecuteQueryAsync(query, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>   
+        /// <param name="query">The query to execute.</param>
+        /// <param name="messageHeader">Header of the message.</param> 
         /// <param name="token">Optional token that can be used to cancel the operation.</param>          
         /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>        
-        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, TResponse> query, CancellationToken? token = null) =>
-            ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, TResponse> query, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), messageHeader, token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>
         /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam> 
-        /// <param name="query">The query to execute.</param>               
+        /// <param name="query">The query to execute.</param>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>        
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, Task<TResponse>> query) =>
+            ExecuteQueryAsync(query, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam> 
+        /// <param name="query">The query to execute.</param>
+        /// <param name="messageHeader">Header of the message.</param> 
         /// <param name="token">Optional token that can be used to cancel the operation.</param>          
         /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>        
-        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, Task<TResponse>> query, CancellationToken? token = null) =>
-            ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), token);
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(Func<QueryOperationContext, Task<TResponse>> query, MessageHeader messageHeader, CancellationToken? token = null) =>
+            ExecuteQueryAsync(QueryDecorator<TResponse>.Decorate(query), messageHeader, token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>
         /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>        
-        /// <param name="query">The query to execute.</param> 
+        /// <param name="query">The query to execute.</param>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>         
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query) =>
+            ExecuteQueryAsync(query, MessageHeader.Unspecified);
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param>
+        /// <param name="messageHeader">Header of the message.</param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>                        
         /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>         
-        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
+        Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, MessageHeader messageHeader, CancellationToken? token = null);
 
         #endregion
 
-        #region [====== Queries (With Request) ======]
+        #region [====== Requests (With Content) ======]
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.

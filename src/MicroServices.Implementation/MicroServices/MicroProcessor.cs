@@ -9,6 +9,7 @@ using Kingo.Clocks;
 using Kingo.Reflection;
 using Kingo.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -255,12 +256,12 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, MessageHeader messageHeader, CancellationToken? token = null) =>
-            ExecuteCommandAsync(messageHandler, CreateCommand(message, messageHeader), token);
+            ExecuteCommandAsync(messageHandler, CreateCommand(messageHeader, message), token);
 
         private async Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, Message<TCommand> message, CancellationToken? token = null) =>
-            (await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
+            (await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, IsNotNull(messageHandler, nameof(messageHandler)), message, token)).ConfigureAwait(false));
 
-        private Message<TCommand> CreateCommand<TCommand>(TCommand message, MessageHeader messageHeader) =>
+        private Message<TCommand> CreateCommand<TCommand>(MessageHeader messageHeader, TCommand message) =>
             MessageFactory.CreateCommand(MessageDirection.Input, messageHeader, message);
 
         #endregion
@@ -269,12 +270,12 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, TEvent message, MessageHeader messageHeader, CancellationToken? token = null) =>
-            HandleEventAsync(messageHandler, CreateEvent(message, messageHeader), token);
+            HandleEventAsync(messageHandler, CreateEvent(messageHeader, message), token);
 
         private async Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, Message<TEvent> message, CancellationToken? token = null) =>
-            (await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, messageHandler, message, token)).ConfigureAwait(false)).WithInput(message);
+            (await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, IsNotNull(messageHandler, nameof(messageHandler)), message, token)).ConfigureAwait(false));
 
-        private Message<TEvent> CreateEvent<TEvent>(TEvent message, MessageHeader messageHeader) =>
+        private Message<TEvent> CreateEvent<TEvent>(MessageHeader messageHeader, TEvent message) =>
             MessageFactory.CreateEvent(MessageDirection.Input, messageHeader, message);
 
         #endregion
@@ -282,17 +283,17 @@ namespace Kingo.MicroServices
         #region [====== Requests ======]
 
         /// <inheritdoc />
-        public async Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
-            await ExecuteReadOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token)).ConfigureAwait(false);
+        public async Task<QueryOperationResult<TResponse>> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query, MessageHeader messageHeader, CancellationToken? token = null) =>
+            new QueryOperationResult<TResponse>(await ExecuteQueryAsync(new QueryAdapter<TResponse>(query), CreateRequest(messageHeader, new VoidRequest()), token));
 
         /// <inheritdoc />
         public Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, MessageHeader messageHeader, CancellationToken? token = null) =>
-            ExecuteQueryAsync(query, CreateRequest(message, messageHeader), token);
+            ExecuteQueryAsync(new QueryAdapter<TRequest, TResponse>(query), CreateRequest(messageHeader, message), token);
 
-        private async Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token = null) =>
-            (await ExecuteReadOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token)).ConfigureAwait(false)).WithInput(message);
+        private Task<QueryOperationResult<TRequest, TResponse>> ExecuteQueryAsync<TRequest, TResponse>(Query<TRequest, TResponse> query, Message<TRequest> message, CancellationToken? token = null) =>
+            ExecuteReadOperationAsync(new QueryOperation<TRequest, TResponse>(this, query, message, token));
 
-        private Message<TRequest> CreateRequest<TRequest>(TRequest message, MessageHeader messageHeader) =>
+        private Message<TRequest> CreateRequest<TRequest>(MessageHeader messageHeader, TRequest message) =>
             MessageFactory.CreateRequest(MessageDirection.Input, messageHeader, message);
 
         #endregion
@@ -305,7 +306,7 @@ namespace Kingo.MicroServices
         /// </summary>        
         /// <param name="operation">The operation to execute.</param>
         /// <returns>The result of the operation.</returns>
-        protected internal virtual async Task<MessageHandlerOperationResult> ExecuteWriteOperationAsync(MessageHandlerOperation operation)
+        protected internal virtual async Task<MessageHandlerOperationResult<TMessage>> ExecuteWriteOperationAsync<TMessage>(MessageHandlerOperation<TMessage> operation)
         {
             var result = await ExecuteOperationAsync(operation).ConfigureAwait(false);
             if (result.Output.Count > 0)
@@ -318,10 +319,11 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Executes the specified (read) <paramref name="operation"/> and returns its result.
         /// </summary>
+        /// <typeparam name="TRequest">Type of the request of the query.</typeparam>
         /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
         /// <param name="operation">The operation to execute.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<QueryOperationResult<TResponse>> ExecuteReadOperationAsync<TResponse>(QueryOperation<TResponse> operation) =>
+        protected virtual Task<QueryOperationResult<TRequest, TResponse>> ExecuteReadOperationAsync<TRequest, TResponse>(QueryOperation<TRequest, TResponse> operation) =>
             ExecuteOperationAsync(operation);
 
         /// <summary>

@@ -1,6 +1,4 @@
-﻿using Kingo.Clocks;
-
-namespace Kingo.MicroServices
+﻿namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents the context in which a <see cref="MicroProcessor"/> invokes a <see cref="IMessageHandler{TMessage}"/>.
@@ -37,10 +35,10 @@ namespace Kingo.MicroServices
         public IMessageBus MessageBus =>
             _messageBus;
 
-        internal MessageBusResult MessageBusResult() =>
-            _messageBus.ToResult();
+        internal MessageHandlerOperationResult<TMessage> CommitResult<TMessage>(Message<TMessage> input) =>
+            _messageBus.CommitResult(input);
 
-        internal MessageHandlerOperationContext PushOperation(HandleAsyncMethodOperation operation) =>
+        internal MessageHandlerOperationContext PushOperation<TMessage>(HandleAsyncMethodOperation<TMessage> operation) =>
             new MessageHandlerOperationContext(this, operation);
     }
 }

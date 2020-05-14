@@ -73,7 +73,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentException">
         /// <paramref name="message"/> is not an instance of a type that is supported by this endpoint.
         /// </exception>
-        Task<IMessageHandlerOperationResult> ProcessAsync(object message) =>
+        Task<MessageHandlerOperationResult<object>> ProcessAsync(object message) =>
             ProcessAsync(message, MessageHeader.Unspecified);
 
         /// <summary>
@@ -93,6 +93,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentException">
         /// <paramref name="message"/> is not an instance of a type that is supported by this endpoint.
         /// </exception>
-        Task<IMessageHandlerOperationResult> ProcessAsync(object message, MessageHeader messageHeader, CancellationToken? token = null);
+        Task<MessageHandlerOperationResult<object>> ProcessAsync(object message, MessageHeader messageHeader, CancellationToken? token = null);
     }
 }

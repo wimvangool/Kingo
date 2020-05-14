@@ -44,6 +44,6 @@ namespace Kingo.MicroServices
             ToString(ComponentType.FriendlyName());
 
         private string ToString(string componentType) =>
-            Message == null ? componentType : $"{componentType}({Message.Content.GetType().FriendlyName()})";
+            $"{componentType}({Message.Content.GetType().FriendlyName()})";
     }
 }

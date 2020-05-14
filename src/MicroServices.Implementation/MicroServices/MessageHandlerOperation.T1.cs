@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {    
-    internal class MessageHandlerOperation<TMessage> : MessageHandlerOperation
+    public class MessageHandlerOperation<TMessage> : MicroProcessorOperation<MessageHandlerOperationResult<TMessage>>
     {
         #region [====== MethodOperation ======]
 
-        private sealed class MethodOperation : HandleAsyncMethodOperation
+        private sealed class MethodOperation : HandleAsyncMethodOperation<TMessage>
         {
             private readonly MessageHandlerOperation<TMessage> _operation;
             private readonly HandleAsyncMethod<TMessage> _method;            
@@ -39,46 +38,54 @@ namespace Kingo.MicroServices
             public override MicroProcessorOperationKind Kind =>
                 _operation.Kind;            
 
-            public override async Task<MessageHandlerOperationResult> ExecuteAsync()
+            public override async Task<MessageHandlerOperationResult<TMessage>> ExecuteAsync()
             {
-                await _method.HandleAsync(_operation.MessageContent(), _context).ConfigureAwait(false);
-                return _context.MessageBusResult();
+                var input = Validate(ref _operation._message);
+                await _method.HandleAsync(input.Content, _context).ConfigureAwait(false);
+                return Validate(_context.CommitResult(input));
             }
+
+            private Message<TMessage> Validate(ref Message<TMessage> input) =>
+                Interlocked.Exchange(ref input, input.Validate(_operation.Processor.ServiceProvider));
+
+            private MessageHandlerOperationResult<TMessage> Validate(MessageHandlerOperationResult<TMessage> output) =>
+                output.Validate(_operation.Processor.ServiceProvider);
         }
 
         #endregion
 
         private readonly MessageHandlerOperationContext _context;
+        private readonly CancellationToken _token;
         private Message<TMessage> _message;
 
-        private MessageHandlerOperation(MessageHandlerOperationContext context, Message<TMessage> message) :
+        internal MessageHandlerOperation(MessageHandlerOperationContext context, Message<TMessage> message) :
             this(context, message, context.StackTrace.CurrentOperation.Token) { }
 
-        protected MessageHandlerOperation(MessageHandlerOperationContext context, Message<TMessage> message, CancellationToken? token) :
-            base(token)
+        internal MessageHandlerOperation(MessageHandlerOperationContext context, Message<TMessage> message, CancellationToken? token)
         {
             _context = context;
+            _token = token ?? CancellationToken.None;
             _message = message;
         }
 
         internal MicroProcessor Processor =>
             _context.Processor;
 
-        internal override Task<MessageHandlerOperationResult> HandleAsync<TEvent>(Message<TEvent> message, MessageHandlerOperationContext context) =>
-            new MessageHandlerOperation<TEvent>(context, message).ExecuteAsync();
+        public override CancellationToken Token =>
+            _token;
 
         public override IMessage Message =>
             _message;
 
-        private TMessage MessageContent() =>
-            Validate(ref _message, Processor.ServiceProvider);
+        public override MicroProcessorOperationType Type =>
+            MicroProcessorOperationType.MessageHandlerOperation;
 
         public override MicroProcessorOperationKind Kind =>
             MicroProcessorOperationKind.BranchOperation;
 
-        public override async Task<MessageHandlerOperationResult> ExecuteAsync()
+        public override async Task<MessageHandlerOperationResult<TMessage>> ExecuteAsync()
         {
-            var result = MessageHandlerOperationResult.Empty;
+            var result = MessageHandlerOperationResult.FromInput(_message);
 
             foreach (var operation in CreateMethodOperationPipelines(_context))
             {
@@ -87,24 +94,11 @@ namespace Kingo.MicroServices
             return result;
         }
 
-        protected virtual async Task<MessageHandlerOperationResult> ExecuteAsync(HandleAsyncMethodOperation operation)
+        internal virtual async Task<MessageHandlerOperationResult<TMessage>> ExecuteAsync(HandleAsyncMethodOperation<TMessage> operation)
         {
-            Token.ThrowIfCancellationRequested();
-
             try
             {
-                // After the operation has been executed, its result is committed, which means no more messages
-                // can be added/produced by the operation and all messages are automatically correlated to the
-                // current message.
-                var result = Commit(await operation.ExecuteAsync().ConfigureAwait(false), operation.Message);
-                if (result.Messages.Count > 0)
-                {
-                    // Every operation potentially yields a new stream of messages, which is immediately handled by the processor
-                    // inside the current context. The processor uses a depth-first approach, which means that each message and its resulting
-                    // sub-tree of events are handled before the next event in the stream.
-                    return result.Append(await HandleAsync(result.Messages, operation.Context).ConfigureAwait(false));
-                }
-                return result;
+                return await ExecuteOperationAsync(operation).ConfigureAwait(false);
             }
             catch (MicroProcessorOperationException)
             {
@@ -135,11 +129,24 @@ namespace Kingo.MicroServices
             }
         }
 
-        private MessageHandlerOperationResult Commit(MessageHandlerOperationResult result, IMessage message)
+        private async Task<MessageHandlerOperationResult<TMessage>> ExecuteOperationAsync(HandleAsyncMethodOperation<TMessage> operation)
         {
+            Token.ThrowIfCancellationRequested();
+
             try
             {
-                return result.Commit(message, Processor.ServiceProvider);
+                // After the operation has been executed, its result is committed, which means no more messages
+                // can be added/produced by the operation and all messages are automatically correlated to the
+                // current message.
+                var result = await operation.ExecuteAsync().ConfigureAwait(false);
+                if (result.Output.Count > 0)
+                {
+                    // Every operation potentially yields a new stream of events, which are immediately handled by the processor
+                    // inside the current context. The processor uses a depth-first approach, which means that each events and its resulting
+                    // sub-tree of events are handled before the next event in the stream.
+                    return await EventProcessor.HandleEventsAsync(result, operation.Context);
+                }
+                return result;
             }
             finally
             {
@@ -147,39 +154,25 @@ namespace Kingo.MicroServices
             }
         }
 
-        private async Task<MessageHandlerOperationResult> HandleAsync(IEnumerable<Message<object>> messages, MessageHandlerOperationContext context)
-        {
-            var result = MessageHandlerOperationResult.Empty;
-
-            foreach (var message in messages.Where(IsUnscheduledEvent))
-            {
-                result = result.Append(await HandleAsync(message, context).ConfigureAwait(false));
-            }
-            return result;
-        }
-
-        private static bool IsUnscheduledEvent(IMessage message) =>
-            message.Kind == MessageKind.Event && message.DeliveryTimeUtc == null;
-
-        private IEnumerable<HandleAsyncMethodOperation> CreateMethodOperationPipelines(MessageHandlerOperationContext context)
+        private IEnumerable<HandleAsyncMethodOperation<TMessage>> CreateMethodOperationPipelines(MessageHandlerOperationContext context)
         {
             // TODO
             return CreateMethodOperations(context);
         }
 
-        protected virtual IEnumerable<HandleAsyncMethodOperation> CreateMethodOperations(MessageHandlerOperationContext context)
+        protected virtual IEnumerable<HandleAsyncMethodOperation<TMessage>> CreateMethodOperations(MessageHandlerOperationContext context)
         {
-            var methodFactory = Processor.ServiceProvider.GetService<IMessageBusEndpointFactory>();
-            if (methodFactory != null)
+            var endpointFactory = Processor.ServiceProvider.GetService<IMessageBusEndpointFactory>();
+            if (endpointFactory != null)
             {
-                foreach (var method in methodFactory.CreateInternalEventBusEndpoints<TMessage>(Processor.ServiceProvider))
+                foreach (var method in endpointFactory.CreateInternalEventBusEndpoints<TMessage>(Processor.ServiceProvider))
                 {
                     yield return CreateMethodOperation(method, context);
                 }
             }
         }
 
-        protected HandleAsyncMethodOperation CreateMethodOperation(HandleAsyncMethod<TMessage> method, MessageHandlerOperationContext context) =>
+        internal HandleAsyncMethodOperation<TMessage> CreateMethodOperation(HandleAsyncMethod<TMessage> method, MessageHandlerOperationContext context) =>
             new MethodOperation(this, method, context);
     }
 }
