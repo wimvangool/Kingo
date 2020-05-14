@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Threading;
 using Kingo.Clocks;
 using Kingo.Reflection;
 
@@ -11,6 +12,7 @@ namespace Kingo.MicroServices
     public abstract class MicroProcessorOperationContext
     {        
         private readonly MicroProcessor _processor;
+        private readonly QueryProcessor _queryProcessor;
         private readonly ClaimsPrincipal _user;
         private readonly IClock _clock;
         private readonly AsyncMethodOperationStackTrace _stackTrace;
@@ -18,6 +20,7 @@ namespace Kingo.MicroServices
         internal MicroProcessorOperationContext(MicroProcessor processor, AsyncMethodOperationStackTrace stackTrace = null)
         {
             _processor = processor;
+            _queryProcessor = new QueryProcessor(this);
             _user = processor.CurrentUser();
             _clock = processor.CurrentClock();
             _stackTrace = stackTrace ?? AsyncMethodOperationStackTrace.Empty;
@@ -26,6 +29,7 @@ namespace Kingo.MicroServices
         internal MicroProcessorOperationContext(MicroProcessorOperationContext context, IAsyncMethodOperation operation)
         {
             _processor = context._processor;
+            _queryProcessor = new QueryProcessor(this);
             _user = context._user.Clone();
             _clock = context._clock;
             _stackTrace = context._stackTrace.Push(operation);
@@ -33,6 +37,12 @@ namespace Kingo.MicroServices
 
         internal MicroProcessor Processor =>
             _processor;
+
+        /// <summary>
+        /// Gets the processor that can be used to execute (internal) queries as part of another operation.
+        /// </summary>
+        public IQueryProcessor QueryProcessor =>
+            _queryProcessor;
 
         /// <summary>
         /// Gets the user that is executing the current operation.
@@ -45,6 +55,12 @@ namespace Kingo.MicroServices
         /// </summary>
         public IClock Clock =>
             _clock;
+
+        /// <summary>
+        /// Gets the token that is associated to the current operation.
+        /// </summary>
+        public CancellationToken Token =>
+            StackTrace.CurrentOperation.Token;
 
         /// <summary>
         /// Returns a stack trace of all operations that are currently being executed.

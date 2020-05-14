@@ -1,131 +1,111 @@
-﻿//using System.Threading.Tasks;
-//using Microsoft.Extensions.DependencyInjection;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-//namespace Kingo.MicroServices
-//{
-//    [TestClass]
-//    public sealed class ExecuteInternalQueryTest : MicroProcessorTest<MicroProcessor>
-//    {
-//        #region [====== MessageHandler & Query Types ======]
+namespace Kingo.MicroServices
+{
+    [TestClass]
+    public sealed class ExecuteInternalQueryTest : MicroProcessorTest<MicroProcessor>
+    {
+        #region [====== PublishResultFunction ======]
 
-//        private sealed class CommandHandler : IMessageHandler<int>
-//        {
-//            private readonly IConstantProvider _constantProvider;
-//            private readonly IMultiplier _multiplier;
+        private sealed class PublishResultFunction : IMessageHandler<int>
+        {
+            private readonly IGetProductQuery _getProductQuery;
 
-//            public CommandHandler(IConstantProvider constantProvider, IMultiplier multiplier)
-//            {
-//                _constantProvider = constantProvider;
-//                _multiplier = multiplier;
-//            }
+            public PublishResultFunction(IGetProductQuery getProductQuery)
+            {
+                _getProductQuery = getProductQuery;
+            }
 
-//            public async Task HandleAsync(int message, MessageHandlerOperationContext context)
-//            {
-//                context.MessageBus.Publish(await _constantProvider.GetConstantAsync(context));
-//                context.MessageBus.Publish(await _multiplier.MultiplyByTwoAsync(message, context));
-//            }                
-//        }
+            public async Task HandleAsync(int message, MessageHandlerOperationContext context)
+            {
+                Assert.AreEqual(1, context.StackTrace.Count);
+                Assert.AreEqual(MicroProcessorOperationType.MessageHandlerOperation, context.StackTrace.CurrentOperation.Type);
+                Assert.AreEqual(MicroProcessorOperationKind.RootOperation, context.StackTrace.CurrentOperation.Kind);
 
-//        private sealed class QueryWithSubQueries : IQuery<int, int>
-//        {
-//            private readonly IConstantProvider _constantProvider;
-//            private readonly IMultiplier _multiplier;
+                context.MessageBus.Publish(await _getProductQuery.ExecuteAsync(message, context));
+            }
+        }
 
-//            public QueryWithSubQueries(IConstantProvider constantProvider, IMultiplier multiplier)
-//            {
-//                _constantProvider = constantProvider;
-//                _multiplier = multiplier;
-//            }
+        #endregion
 
-//            public async Task<int> ExecuteAsync(int message, QueryOperationContext context)
-//            {
-//                var a = await _constantProvider.GetConstantAsync(context);
-//                var b = await _multiplier.MultiplyByTwoAsync(a, context);
-//                return b + message;
-//            }                
-//        }
+        #region [====== GetProductQuery ======]
 
-//        private interface IConstantProvider
-//        {
-//            Task<int> GetConstantAsync(MicroProcessorOperationContext context);
-//        }
+        private interface IGetProductQuery : IQuery<int, int>
+        {
+            Task<int> ExecuteAsync(int message, MicroProcessorOperationContext context) =>
+                context.QueryProcessor.ExecuteQueryAsync(this, message);
+        }
 
-//        [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IConstantProvider))]
-//        private sealed class ConstantProviderQuery : IConstantProvider, IQuery<int>
-//        {
-//            Task<int> IConstantProvider.GetConstantAsync(MicroProcessorOperationContext context) =>
-//                context.QueryProcessor.ExecuteQueryAsync(this);
+        [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IGetProductQuery))]
+        private sealed class GetProductQuery : IGetProductQuery
+        {
+            private readonly IGetConstantValueQuery _getConstantValueQuery;
 
-//            public Task<int> ExecuteAsync(QueryOperationContext context)
-//            {
-//                Assert.AreEqual(2, context.StackTrace.Count);
-//                Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
-//                Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
-//                return Task.FromResult(10);
-//            }
-//        }
+            public GetProductQuery(IGetConstantValueQuery getConstantValueQuery)
+            {
+                _getConstantValueQuery = getConstantValueQuery;
+            }
 
-//        private interface IMultiplier
-//        {
-//            Task<int> MultiplyByTwoAsync(int value, MicroProcessorOperationContext context);
-//        }
+            public async Task<int> ExecuteAsync(int message, QueryOperationContext context)
+            {
+                Assert.AreEqual(2, context.StackTrace.Count);
+                Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
+                Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
 
-//        [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IMultiplier))]
-//        private sealed class MultiplierQuery : IMultiplier, IQuery<int, int>
-//        {
-//            Task<int> IMultiplier.MultiplyByTwoAsync(int value, MicroProcessorOperationContext context) =>
-//                context.QueryProcessor.ExecuteQueryAsync(this, value);
+                return message * await _getConstantValueQuery.ExecuteAsync(context);
+            }
+        }
 
-//            public Task<int> ExecuteAsync(int message, QueryOperationContext context)
-//            {
-//                Assert.AreEqual(2, context.StackTrace.Count);
-//                Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
-//                Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
-//                return Task.FromResult(2 * message);
-//            }                
-//        }
+        #endregion
 
-//        #endregion
+        #region [====== GetConstantValueQuery ======]
 
-//        [TestMethod]
-//        public async Task ExecuteCommandAsync_ExecutesSubQueryAsExpected()
-//        {
-//            Processor.ConfigureMessageHandlers(messageHandlers =>
-//            {
-//                messageHandlers.Add<CommandHandler>();
-//            });
-//            Processor.ConfigureQueries(queries =>
-//            {
-//                queries.Add<ConstantProviderQuery>();
-//                queries.Add<MultiplierQuery>();
-//            });
+        private interface IGetConstantValueQuery : IQuery<int>
+        {
+            Task<int> ExecuteAsync(MicroProcessorOperationContext context) =>
+                context.QueryProcessor.ExecuteQueryAsync(this);
+        }
 
-//            var processor = CreateProcessor();
-//            var messageHandler = processor.ServiceProvider.GetRequiredService<CommandHandler>();
-//            var result = await processor.ExecuteCommandAsync(messageHandler, 3);
+        [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IGetConstantValueQuery))]
+        private sealed class GetConstantValueQuery : IGetConstantValueQuery
+        {
+            public Task<int> ExecuteAsync(QueryOperationContext context)
+            {
+                Assert.AreEqual(3, context.StackTrace.Count);
+                Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
+                Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
 
-//            Assert.AreEqual(1, result.MessageHandlerCount);
-//            Assert.AreEqual(2, result.Output.Count);
-//            Assert.AreEqual(10, result.Output[0].Content);
-//            Assert.AreEqual(6, result.Output[1].Content);
-//        }
+                return Task.FromResult(_Value);
+            }
+        }
 
-//        [TestMethod]
-//        public async Task ExecuteQueryAsync_ExecutesSubQueryAsExpected()
-//        {
-//            Processor.ConfigureQueries(queries =>
-//            {
-//                queries.Add<QueryWithSubQueries>();
-//                queries.Add<ConstantProviderQuery>();
-//                queries.Add<MultiplierQuery>();
-//            });
+        #endregion
 
-//            var processor = CreateProcessor();
-//            var query = processor.ServiceProvider.GetRequiredService<QueryWithSubQueries>();
-//            var result = await processor.ExecuteQueryAsync(query, 3);
+        private static readonly int _Value = DateTimeOffset.UtcNow.Second;
 
-//            Assert.AreEqual(23, result.Output.Content);            
-//        }
-//    }
-//}
+        [TestMethod]
+        public async Task ExecuteCommandAsync_ExecutesInternalQueriesAsExpected()
+        {
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.Add<PublishResultFunction>();
+            });
+            Processor.ConfigureQueries(queries =>
+            {
+                queries.Add<GetProductQuery>();
+                queries.Add<GetConstantValueQuery>();
+            });
+
+            var processor = CreateProcessor();
+            var messageHandler = processor.ServiceProvider.GetRequiredService<PublishResultFunction>();
+            var result = await processor.ExecuteCommandAsync(messageHandler, 3);
+
+            Assert.AreEqual(1, result.MessageHandlerCount);
+            Assert.AreEqual(1, result.Output.Count);
+            Assert.AreEqual(3 * _Value, result.Output[0].Content);
+        }
+    }
+}
