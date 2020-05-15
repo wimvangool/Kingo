@@ -13,20 +13,18 @@ namespace Kingo.MicroServices
     {
         private readonly Message<TMessage> _input;
         private readonly Message<object>[] _output;
-        private readonly int _messageHandlerCount;
 
-        internal MessageHandlerOperationResult(Message<TMessage> input, IEnumerable<Message<object>> output, int messageHandlerCount = 0) :
-            this(input, output.Select(message => message.CorrelateWith(input)).ToArray(), messageHandlerCount) { }
+        internal MessageHandlerOperationResult(Message<TMessage> input, IEnumerable<Message<object>> output) :
+            this(input, output.Select(message => message.CorrelateWith(input)).ToArray()) { }
 
-        private MessageHandlerOperationResult(Message<TMessage> input, Message<object>[] output, int messageHandlerCount)
+        private MessageHandlerOperationResult(Message<TMessage> input, Message<object>[] output)
         {
             _input = input;
             _output = output;
-            _messageHandlerCount = messageHandlerCount;
         }
 
         internal MessageHandlerOperationResult<TOther> ConvertTo<TOther>() =>
-            new MessageHandlerOperationResult<TOther>(_input.ConvertTo<TOther>(), _output, _messageHandlerCount);
+            new MessageHandlerOperationResult<TOther>(_input.ConvertTo<TOther>(), _output);
 
         /// <inheritdoc />
         public override string ToString() =>
@@ -51,16 +49,12 @@ namespace Kingo.MicroServices
         public override IReadOnlyList<IMessage> Output =>
             _output;
 
-        /// <inheritdoc />
-        public override int MessageHandlerCount =>
-            _messageHandlerCount;
-
         #endregion
 
         #region [====== Validate & Append ======]
 
         internal MessageHandlerOperationResult<TMessage> Validate(IServiceProvider serviceProvider) =>
-            new MessageHandlerOperationResult<TMessage>(_input, _output.Select(message => message.Validate(serviceProvider)), _messageHandlerCount);
+            new MessageHandlerOperationResult<TMessage>(_input, _output.Select(message => message.Validate(serviceProvider)));
 
         internal MessageHandlerOperationResult<TMessage> Append(MessageHandlerOperationResult result) =>
             result.AppendTo(this);
@@ -69,8 +63,8 @@ namespace Kingo.MicroServices
         {
             var input = result._input;
             var output = result._output.Concat(CorrelateOutputWith(result._input)).ToArray();
-            var messageHandlerCount = result._messageHandlerCount + _messageHandlerCount;
-            return new MessageHandlerOperationResult<TOther>(input, output, messageHandlerCount);
+            
+            return new MessageHandlerOperationResult<TOther>(input, output);
         }
 
         private IEnumerable<Message<object>> CorrelateOutputWith(IMessage input)

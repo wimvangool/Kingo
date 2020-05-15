@@ -130,7 +130,7 @@
     <value>Unknown placeholder specified: '{0}'.</value>
   </data>
   <data name="MessageBus_AlreadyCommitted" xml:space="preserve">
-    <value>Cannot send or publish any messages at this point because the operation has already committed to its output.</value>
+    <value>Cannot perform the operation at this point because the operation has already committed to its output.</value>
   </data>
   <data name="MessageBus_NegativeDelayNotAllowed" xml:space="preserve">
     <value>The specified delay ({0}) is not allowed to be negative.</value>

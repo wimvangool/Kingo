@@ -24,6 +24,7 @@ namespace Kingo.MicroServices
                 Assert.AreEqual(1, context.StackTrace.Count);
                 Assert.AreEqual(MicroProcessorOperationType.MessageHandlerOperation, context.StackTrace.CurrentOperation.Type);
                 Assert.AreEqual(MicroProcessorOperationKind.RootOperation, context.StackTrace.CurrentOperation.Kind);
+                Assert.AreEqual(MessageDirection.Input, context.StackTrace.CurrentOperation.Message.Direction);
 
                 context.MessageBus.Publish(await _getProductQuery.ExecuteAsync(message, context));
             }
@@ -39,7 +40,6 @@ namespace Kingo.MicroServices
                 context.QueryProcessor.ExecuteQueryAsync(this, message);
         }
 
-        [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IGetProductQuery))]
         private sealed class GetProductQuery : IGetProductQuery
         {
             private readonly IGetConstantValueQuery _getConstantValueQuery;
@@ -54,6 +54,7 @@ namespace Kingo.MicroServices
                 Assert.AreEqual(2, context.StackTrace.Count);
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
                 Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
+                Assert.AreEqual(MessageDirection.Internal, context.StackTrace.CurrentOperation.Message.Direction);
 
                 return message * await _getConstantValueQuery.ExecuteAsync(context);
             }
@@ -69,7 +70,6 @@ namespace Kingo.MicroServices
                 context.QueryProcessor.ExecuteQueryAsync(this);
         }
 
-        [MicroProcessorComponent(ServiceLifetime.Transient, typeof(IGetConstantValueQuery))]
         private sealed class GetConstantValueQuery : IGetConstantValueQuery
         {
             public Task<int> ExecuteAsync(QueryOperationContext context)
@@ -77,6 +77,7 @@ namespace Kingo.MicroServices
                 Assert.AreEqual(3, context.StackTrace.Count);
                 Assert.AreEqual(MicroProcessorOperationType.QueryOperation, context.StackTrace.CurrentOperation.Type);
                 Assert.AreEqual(MicroProcessorOperationKind.BranchOperation, context.StackTrace.CurrentOperation.Kind);
+                Assert.AreEqual(MessageDirection.Internal, context.StackTrace.CurrentOperation.Message.Direction);
 
                 return Task.FromResult(_Value);
             }
@@ -93,6 +94,7 @@ namespace Kingo.MicroServices
             {
                 messageHandlers.Add<PublishResultFunction>();
             });
+
             Processor.ConfigureQueries(queries =>
             {
                 queries.Add<GetProductQuery>();
@@ -103,7 +105,6 @@ namespace Kingo.MicroServices
             var messageHandler = processor.ServiceProvider.GetRequiredService<PublishResultFunction>();
             var result = await processor.ExecuteCommandAsync(messageHandler, 3);
 
-            Assert.AreEqual(1, result.MessageHandlerCount);
             Assert.AreEqual(1, result.Output.Count);
             Assert.AreEqual(3 * _Value, result.Output[0].Content);
         }

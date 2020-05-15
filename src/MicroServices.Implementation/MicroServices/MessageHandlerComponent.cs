@@ -21,7 +21,7 @@ namespace Kingo.MicroServices
             this(component, component._interfaces) { }
 
         internal MessageHandlerComponent(MicroProcessorComponent component, params MessageHandlerInterface[] interfaces) :
-            base(component, interfaces.Select(@interface => @interface.Type))
+            base(component, interfaces.SelectMany(@interface => @interface.ServiceTypes))
         {
             _interfaces = interfaces;
         }        

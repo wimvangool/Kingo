@@ -52,7 +52,7 @@ namespace Kingo.MicroServices
                 _endpoint;
 
             protected override MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method) =>
-                new CommandHandlerOperation<TMessage>(Endpoint._processor, method, message, token);
+                new CommandHandlerRootOperation<TMessage>(Endpoint._processor, method, message, token);
         }
 
         #endregion
@@ -75,7 +75,7 @@ namespace Kingo.MicroServices
                 _endpoint;
 
             protected override MessageHandlerOperation<TMessage> CreateOperation(Message<TMessage> message, CancellationToken? token, HandleAsyncMethod<TMessage> method) =>
-                new EventHandlerOperation<TMessage>(Endpoint._processor, method, message, token);
+                new EventHandlerRootOperation<TMessage>(Endpoint._processor, method, message, token);
         }
 
         #endregion

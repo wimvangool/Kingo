@@ -25,7 +25,7 @@ namespace Kingo.MicroServices
                 context.MessageBus.Send(new object(), DateTimeOffset.Now);
             }, new object());
 
-            Assert.AreEqual(1, result.MessageHandlerCount);
+            Assert.AreEqual(2, result.Output.Count);
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace Kingo.MicroServices
                 context.MessageBus.Publish(new object(), DateTimeOffset.Now);
             }, new object());
 
-            Assert.AreEqual(1, result.MessageHandlerCount);
+            Assert.AreEqual(1, result.Output.Count);
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ namespace Kingo.MicroServices
                 context.MessageBus.Publish(new object());
             }, new object());
 
-            Assert.AreEqual(2, result.MessageHandlerCount);
+            Assert.AreEqual(1, result.Output.Count);
         }
 
         private static void Fail(object message) =>

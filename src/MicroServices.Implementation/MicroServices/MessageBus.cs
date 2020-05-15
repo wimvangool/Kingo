@@ -26,22 +26,42 @@ namespace Kingo.MicroServices
             public abstract void Publish(object @event, TimeSpan delay);
 
             public abstract void Publish(object @event, DateTimeOffset? deliveryTime = null);
+
+            public abstract void Add(Message<object> message);
+
+            public abstract State Commit();
+
+            /// <inheritdoc />
+            public override string ToString() =>
+                ToString(Messages.Count(IsCommand), Messages.Count(IsEvent));
+
+            private static string ToString(int commandCount, int eventCount) =>
+                $"{commandCount} command(s), {eventCount} event(s)";
+
+            private static bool IsCommand(IMessage message) =>
+                message.Kind == MessageKind.Command;
+
+            private static bool IsEvent(IMessage message) =>
+                message.Kind == MessageKind.Event;
         }
 
         #endregion
 
         #region [====== UncommittedState ======]
 
-        private sealed class UncommittedState : State
+        private class UncommittedState : State
         {
-            private readonly MessageFactory _messageFactory;
             private readonly List<Message<object>> _messages;
+            private readonly MessageBus _messageBus;
+
+            private readonly MessageFactory _messageFactory;
             private readonly IClock _clock;
 
-            public UncommittedState(MessageFactory messageFactory, IClock clock)
+            public UncommittedState(MessageFactory messageFactory, IClock clock, MessageBus messageBus)
             {
-                _messageFactory = messageFactory;
                 _messages = new List<Message<object>>();
+                _messageBus = messageBus;
+                _messageFactory = messageFactory;
                 _clock = clock;
             }
 
@@ -61,7 +81,22 @@ namespace Kingo.MicroServices
                 Add(IsNotNull(@event, nameof(@event)), MessageKind.Event, deliveryTime);
 
             private void Add(object content, MessageKind kind, DateTimeOffset? deliveryTime) =>
-                _messages.Add(_messageFactory.CreateMessage(kind, MessageDirection.Output, MessageHeader.Unspecified, content, deliveryTime));
+                Add(_messageFactory.CreateMessage(kind, MessageDirection.Output, MessageHeader.Unspecified, content, deliveryTime));
+
+            public override void Add(Message<object> message) =>
+                _messages.Add(message);
+
+            public override State Commit()
+            {
+                if (_messageBus != null)
+                {
+                    foreach (var message in _messages)
+                    {
+                        _messageBus._state.Add(message);
+                    }
+                }
+                return new CommittedState();
+            }
 
             private DateTimeOffset ToDeliveryTime(TimeSpan delay)
             {
@@ -108,6 +143,15 @@ namespace Kingo.MicroServices
             public override void Publish(object @event, DateTimeOffset? deliveryTime = null) =>
                 throw NewMessageBusCommittedException();
 
+            public override void Add(Message<object> message) =>
+                throw NewMessageBusCommittedException();
+
+            public override State Commit() =>
+                throw NewMessageBusCommittedException();
+
+            public override string ToString() =>
+                base.ToString() + " (Committed)";
+
             private static Exception NewMessageBusCommittedException() =>
                 new InvalidOperationException(ExceptionMessages.MessageBus_AlreadyCommitted);
         }
@@ -116,9 +160,9 @@ namespace Kingo.MicroServices
 
         private State _state;
 
-        public MessageBus(MessageFactory messageFactory, IClock clock)
-        {   
-            _state = new UncommittedState(messageFactory, clock);
+        public MessageBus(MessageFactory messageFactory, IClock clock, MessageBus messageBus = null)
+        {
+            _state = new UncommittedState(messageFactory, clock, messageBus);
         }
 
         #region [====== IReadOnlyList<IMessage> ======]
@@ -137,16 +181,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            ToString(_state.Messages.Count(IsCommand), _state.Messages.Count(IsEvent));
-
-        private static string ToString(int commandCount, int eventCount) =>
-            $"{commandCount} command(s), {eventCount} event(s)";
-
-        private static bool IsCommand(IMessage message) =>
-            message.Kind == MessageKind.Command;
-
-        private static bool IsEvent(IMessage message) =>
-            message.Kind == MessageKind.Event;
+            _state.ToString();
 
         #endregion
 
@@ -169,10 +204,10 @@ namespace Kingo.MicroServices
         #region [====== CommitResult ======]
 
         public MessageHandlerOperationResult<TMessage> CommitResult<TMessage>(Message<TMessage> input) =>
-            new MessageHandlerOperationResult<TMessage>(input, CommitOutput(), 1);
+            new MessageHandlerOperationResult<TMessage>(input, CommitOutput());
 
         private IEnumerable<Message<object>> CommitOutput() =>
-            Interlocked.Exchange(ref _state, new CommittedState()).Messages;
+            Interlocked.Exchange(ref _state, _state.Commit()).Messages;
 
         #endregion
     }

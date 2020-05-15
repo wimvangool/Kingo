@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class EventHandlerOperation<TEvent> : MessageHandlerRootOperation<TEvent>
+    internal sealed class EventHandlerRootOperation<TEvent> : MessageHandlerRootOperation<TEvent>
     {
-        public EventHandlerOperation(MicroProcessor processor, IMessageHandler<TEvent> messageHandler, Message<TEvent> message, CancellationToken? token) :
+        public EventHandlerRootOperation(MicroProcessor processor, IMessageHandler<TEvent> messageHandler, Message<TEvent> message, CancellationToken? token) :
             this(processor, new HandleAsyncMethod<TEvent>(messageHandler), message, token) { }
 
-        public EventHandlerOperation(MicroProcessor processor, HandleAsyncMethod<TEvent> method, Message<TEvent> message, CancellationToken? token) :
+        public EventHandlerRootOperation(MicroProcessor processor, HandleAsyncMethod<TEvent> method, Message<TEvent> message, CancellationToken? token) :
             base(processor, method, message, token) { }
 
         internal override async Task<MessageHandlerOperationResult<TEvent>> ExecuteAsync(HandleAsyncMethodOperation<TEvent> operation)

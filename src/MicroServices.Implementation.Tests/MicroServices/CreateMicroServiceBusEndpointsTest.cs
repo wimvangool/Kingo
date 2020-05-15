@@ -265,7 +265,6 @@ namespace Kingo.MicroServices
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
             var result = await endpoint.ProcessAsync(new object());
 
-            Assert.AreEqual(0, result.MessageHandlerCount);
             Assert.AreEqual(0, result.Output.Count);
         }
 
@@ -284,7 +283,6 @@ namespace Kingo.MicroServices
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
             var result = await endpoint.ProcessAsync(new SomeCommand());
 
-            Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(2, result.Output.Count);
         }
 
@@ -388,7 +386,6 @@ namespace Kingo.MicroServices
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
             var result = await endpoint.ProcessAsync(new SomeEvent());
 
-            Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(2, result.Output.Count);
         }
 

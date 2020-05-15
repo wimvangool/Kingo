@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kingo.MicroServices.Controllers;
 
 namespace Kingo.MicroServices
@@ -12,9 +13,23 @@ namespace Kingo.MicroServices
     public abstract class MessageHandlerOrQueryInterface<TComponent, TMethod> : MicroProcessorComponentInterface
         where TComponent : MicroProcessorComponent
         where TMethod : IAsyncMethod
-    {        
-        internal MessageHandlerOrQueryInterface(Type type) :
-            base(type) { }
+    {
+        private readonly Type _implementingType;
+
+        internal MessageHandlerOrQueryInterface(Type type, Type implementingType = null) :
+            base(type)
+        {
+            _implementingType = implementingType ?? type;
+        }
+
+        /// <summary>
+        /// Represents the interface that inherits the interface-type.
+        /// </summary>
+        public Type ImplementingType =>
+            _implementingType;
+
+        internal IEnumerable<Type> ServiceTypes =>
+            new[] { Type, ImplementingType };
 
         internal abstract TMethod CreateMethod(TComponent component);
     }

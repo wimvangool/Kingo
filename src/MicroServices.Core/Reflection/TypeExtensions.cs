@@ -801,14 +801,26 @@ namespace Kingo.Reflection
             {
                 throw new ArgumentNullException(nameof(interfaceType));
             }
-            if ((type.IsClass || type.IsValueType) && interfaceType.IsInterface)
+            if (interfaceType.IsInterface)
             {
-                return
-                    from implementedInterfaceType in type.GetInterfaces()
-                    where IsInterfaceType(implementedInterfaceType, interfaceType)
-                    select implementedInterfaceType;
+                return GetInterfacesOfSpecifiedType(type, interfaceType);
             }
             return Enumerable.Empty<Type>();
+        }
+
+        private static IEnumerable<Type> GetInterfacesOfSpecifiedType(Type type, Type interfaceType)
+        {
+            if (type.IsInterface && IsInterfaceType(type, interfaceType))
+            {
+                yield return type;
+            }
+            foreach (var implementedInterfaceType in type.GetInterfaces())
+            {
+                if (IsInterfaceType(implementedInterfaceType, interfaceType))
+                {
+                    yield return implementedInterfaceType;
+                }
+            }
         }
 
         private static bool IsInterfaceType(Type implementedInterfaceType, Type interfaceType)

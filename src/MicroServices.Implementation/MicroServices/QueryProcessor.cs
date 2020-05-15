@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class QueryProcessor : IQueryProcessor
+    internal sealed class QueryProcessor : InternalMessageProcessor<MicroProcessorOperationContext>, IQueryProcessor
     {
         private readonly MicroProcessorOperationContext _context;
 
@@ -15,6 +10,9 @@ namespace Kingo.MicroServices
         {
             _context = context;
         }
+
+        protected override MicroProcessorOperationContext Context =>
+            _context;
 
         public Task<TResponse> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query) =>
             ExecuteQueryAsync(new QueryAdapter<TResponse>(query), CreateRequest(new VoidRequest()));
@@ -26,10 +24,7 @@ namespace Kingo.MicroServices
             ExecuteOperationAsync(new QueryOperation<TRequest,TResponse>(_context, query, message, _context.Token));
 
         private Message<TRequest> CreateRequest<TRequest>(TRequest message) =>
-            CreateRequestMessage(message).CorrelateWith(_context.StackTrace.CurrentOperation.Message);
-
-        private Message<TRequest> CreateRequestMessage<TRequest>(TRequest message) =>
-            _context.Processor.MessageFactory.CreateRequest(MessageDirection.Internal, MessageHeader.Unspecified, message);
+            CreateMessage(MessageKind.Request, message);
 
         private static async Task<TResponse> ExecuteOperationAsync<TRequest, TResponse>(QueryOperation<TRequest, TResponse> operation) =>
             (await operation.ExecuteAsync()).Output.Content;

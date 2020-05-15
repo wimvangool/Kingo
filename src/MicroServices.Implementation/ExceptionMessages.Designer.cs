@@ -133,7 +133,7 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot send or publish any messages at this point because the operation has already committed to its output..
+        ///   Looks up a localized string similar to Cannot perform the operation at this point because the operation has already committed to its output..
         /// </summary>
         internal static string MessageBus_AlreadyCommitted {
             get {

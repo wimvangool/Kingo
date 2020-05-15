@@ -15,7 +15,7 @@ namespace Kingo.MicroServices
         private readonly QueryInterface[] _interfaces;
 
         internal QueryComponent(MicroProcessorComponent component, params QueryInterface[] interfaces) :
-            base(component, interfaces.Select(@interface => @interface.Type))
+            base(component, interfaces.SelectMany(@interface => @interface.ServiceTypes))
         {
             _interfaces = interfaces;
         }

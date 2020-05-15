@@ -50,7 +50,6 @@ namespace Kingo.MicroServices
             var result = await HandleMessageAsync((message, context) => { }, new object());
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.MessageHandlerCount);
             Assert.AreEqual(0, result.Output.Count);
         }
 
@@ -64,7 +63,6 @@ namespace Kingo.MicroServices
             }, command);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.MessageHandlerCount);
             Assert.AreEqual(1, result.Output.Count);
             Assert.AreSame(command, result.Output[0].Content);
         }
@@ -91,7 +89,6 @@ namespace Kingo.MicroServices
             }, command);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.MessageHandlerCount);
             Assert.AreEqual(2, result.Output.Count);
             Assert.AreSame(eventA, result.Output[0].Content);
             Assert.AreSame(eventB, result.Output[1].Content);
@@ -133,7 +130,6 @@ namespace Kingo.MicroServices
             }, command);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(4, result.MessageHandlerCount);
             Assert.AreEqual(4, result.Output.Count);
             Assert.AreSame(eventA, result.Output[0].Content);
             Assert.AreEqual(eventB, result.Output[1].Content);
@@ -805,11 +801,8 @@ namespace Kingo.MicroServices
         private async Task HandleMessageAsync(IMicroProcessor processor, IMessageHandler<int> messageHandler) =>
             AssertMessageHandlerResult(await HandleMessageAsync(processor, messageHandler, DateTimeOffset.UtcNow.Second));
 
-        private static void AssertMessageHandlerResult(MessageHandlerOperationResult result)
-        {
-            Assert.AreEqual(2, result.MessageHandlerCount);
+        private static void AssertMessageHandlerResult(MessageHandlerOperationResult result) =>
             Assert.AreEqual(1, result.Output.Count);
-        }
 
         private static void AssertInstanceCount(IMicroProcessor processor, int count) =>
             processor.ServiceProvider.GetRequiredService<IInstanceCollector>().AssertInstanceCountIs(count);

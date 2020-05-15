@@ -259,7 +259,7 @@ namespace Kingo.MicroServices
             ExecuteCommandAsync(messageHandler, CreateCommand(messageHeader, message), token);
 
         private async Task<MessageHandlerOperationResult<TCommand>> ExecuteCommandAsync<TCommand>(IMessageHandler<TCommand> messageHandler, Message<TCommand> message, CancellationToken? token = null) =>
-            (await ExecuteWriteOperationAsync(new CommandHandlerOperation<TCommand>(this, IsNotNull(messageHandler, nameof(messageHandler)), message, token)).ConfigureAwait(false));
+            (await ExecuteWriteOperationAsync(new CommandHandlerRootOperation<TCommand>(this, IsNotNull(messageHandler, nameof(messageHandler)), message, token)).ConfigureAwait(false));
 
         private Message<TCommand> CreateCommand<TCommand>(MessageHeader messageHeader, TCommand message) =>
             MessageFactory.CreateCommand(MessageDirection.Input, messageHeader, message);
@@ -273,7 +273,7 @@ namespace Kingo.MicroServices
             HandleEventAsync(messageHandler, CreateEvent(messageHeader, message), token);
 
         private async Task<MessageHandlerOperationResult<TEvent>> HandleEventAsync<TEvent>(IMessageHandler<TEvent> messageHandler, Message<TEvent> message, CancellationToken? token = null) =>
-            (await ExecuteWriteOperationAsync(new EventHandlerOperation<TEvent>(this, IsNotNull(messageHandler, nameof(messageHandler)), message, token)).ConfigureAwait(false));
+            (await ExecuteWriteOperationAsync(new EventHandlerRootOperation<TEvent>(this, IsNotNull(messageHandler, nameof(messageHandler)), message, token)).ConfigureAwait(false));
 
         private Message<TEvent> CreateEvent<TEvent>(MessageHeader messageHeader, TEvent message) =>
             MessageFactory.CreateEvent(MessageDirection.Input, messageHeader, message);

@@ -34,14 +34,6 @@ namespace Kingo.MicroServices
             get;
         }
 
-        /// <summary>
-        /// Gets the number of message-handlers that were invoked during the operation.
-        /// </summary>
-        public abstract int MessageHandlerCount
-        {
-            get;
-        }
-
         #endregion
 
         #region [====== Append ======]

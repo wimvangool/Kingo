@@ -13,11 +13,10 @@ namespace Kingo.MicroServices
     {        
         private readonly Type[] _messageTypes;
 
-        private QueryInterface(Type type) :
-            base(type)
+        private QueryInterface(Type type, Type implementingType = null) : base(type, implementingType)
         {            
             _messageTypes = type.GetGenericArguments();
-        }        
+        }
 
         /// <summary>
         /// The request message type. This returns <c>null</c> if this interface represents an instance of the
@@ -44,8 +43,9 @@ namespace Kingo.MicroServices
         #region [====== FromComponent ======]
 
         internal static IEnumerable<QueryInterface> FromComponent(MicroProcessorComponent component) =>
-            from queryInterface in component.Type.GetInterfacesOfType(typeof(IQuery<>), typeof(IQuery<,>))
-            select new QueryInterface(queryInterface);
+            from interfaceType in component.Type.GetInterfaces()
+            from queryInterfaceType in interfaceType.GetInterfacesOfType(typeof(IQuery<>), typeof(IQuery<,>))
+            select new QueryInterface(queryInterfaceType, interfaceType);
 
         #endregion
 
