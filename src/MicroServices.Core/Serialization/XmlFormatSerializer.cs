@@ -9,73 +9,27 @@ namespace Kingo.Serialization
     /// <summary>
     /// Represents a <see cref="ISerializer" /> that uses XML as a serialization format.
     /// </summary>
-    public class XmlFormatSerializer : Serializer
+    public class XmlFormatSerializer : TextFormatSerializer
     {
-        #region [====== Serialize & Deserialize ======]
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonFormatSerializer" /> class.
+        /// </summary>
+        /// <param name="encoder">Optional encoder that will be used by the serializer to convert string-values to and from byte-arrays.</param>
+        public XmlFormatSerializer(ITextEncoder encoder = null) :
+            base(encoder) { }
+
+        #region [====== Serialize ======]
 
         /// <inheritdoc />
-        public override string Serialize(object instance)
+        protected override string SerializeToString(object content)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
             var value = new StringBuilder();
 
             using (var writer = CreateXmlWriter(value))
             {
-                WriteObject(writer, instance);
+                WriteObject(writer, content);
             }
             return value.ToString();
-        }
-
-        private void WriteObject(XmlWriter writer, object instance)
-        {
-            try
-            {
-                CreateXmlSerializer(instance.GetType()).WriteObject(writer, instance);
-            }
-            catch (SerializationException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw NewSerializationFailedException(instance.GetType(), exception);
-            }
-        }
-
-        /// <inheritdoc />
-        public override object Deserialize(string value, Type type)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            using (var reader = CreateXmlReader(value))
-            {
-                return ReadObject(reader, type);
-            }
-        }
-
-        private object ReadObject(XmlReader reader, Type type)
-        {
-            try
-            {
-                return CreateXmlSerializer(type).ReadObject(reader);
-            }
-            catch (SerializationException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw NewDeserializationFailedException(type, exception);
-            }
         }
 
         /// <summary>
@@ -87,6 +41,22 @@ namespace Kingo.Serialization
         protected virtual XmlWriter CreateXmlWriter(StringBuilder value) =>
             XmlWriter.Create(value);
 
+        private void WriteObject(XmlWriter writer, object content) =>
+            CreateXmlSerializer(content.GetType()).WriteObject(writer, content);
+
+        #endregion
+
+        #region [====== Deserialize ======]
+
+        /// <inheritdoc />
+        protected override object DeserializeFromString(string content, Type contentType)
+        {
+            using (var reader = CreateXmlReader(content))
+            {
+                return ReadObject(reader, contentType);
+            }
+        }
+
         /// <summary>
         /// Creates and returns a new <see cref="XmlReader"/> that will read all xml-data
         /// from the specified <paramref name="value"/>.
@@ -96,6 +66,11 @@ namespace Kingo.Serialization
         protected virtual XmlReader CreateXmlReader(string value) =>
             XmlReader.Create(new StringReader(value));
 
+        private object ReadObject(XmlReader reader, Type type) =>
+            CreateXmlSerializer(type).ReadObject(reader);
+
+        #endregion
+
         /// <summary>
         /// Creates and returns a new <see cref="XmlObjectSerializer" /> that can serialize
         /// and deserialize objects using a specific xml-format.
@@ -104,7 +79,5 @@ namespace Kingo.Serialization
         /// <returns>A new <see cref="XmlObjectSerializer"/>.</returns>
         protected virtual XmlObjectSerializer CreateXmlSerializer(Type type) =>
             new DataContractSerializer(type);
-
-        #endregion
     }
 }

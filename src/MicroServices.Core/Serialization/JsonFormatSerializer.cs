@@ -6,47 +6,24 @@ namespace Kingo.Serialization
     /// <summary>
     /// Represents a <see cref="ISerializer"/> that uses JSON as a serialization format.
     /// </summary>
-    public class JsonFormatSerializer : Serializer
+    public class JsonFormatSerializer : TextFormatSerializer
     {
-        #region [====== Serialize & Deserialize ======]
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonFormatSerializer" /> class.
+        /// </summary>
+        /// <param name="encoder">Optional encoder that will be used by the serializer to convert string-values to and from byte-arrays.</param>
+        public JsonFormatSerializer(ITextEncoder encoder = null) :
+            base(encoder) { }
+
+        #region [====== Serialize ======]
 
         /// <inheritdoc />
-        public override string Serialize(object instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            try
-            {
-                return JsonSerializer.Serialize(instance, CreateSerializerOptions());
-            }
-            catch (Exception exception)
-            {
-                throw NewSerializationFailedException(instance.GetType(), exception);
-            }
-        }
+        protected override string SerializeToString(object content) =>
+            JsonSerializer.Serialize(content, CreateSerializerOptions());
 
         /// <inheritdoc />
-        public override object Deserialize(string value, Type type)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            try
-            {
-                return JsonSerializer.Deserialize(value, type, CreateSerializerOptions());
-            }
-            catch (Exception exception)
-            {
-                throw NewDeserializationFailedException(type, exception);
-            }
-        }
+        protected override object DeserializeFromString(string content, Type contentType) =>
+            JsonSerializer.Deserialize(content, contentType, CreateSerializerOptions());
 
         /// <summary>
         /// Creates and returns the options that determine how the serializer should serialize

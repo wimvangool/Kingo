@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Kingo.Reflection;
+using static Kingo.Ensure;
 
 namespace Kingo.Serialization
 {
@@ -10,38 +13,87 @@ namespace Kingo.Serialization
     /// </summary>
     public abstract class Serializer : ISerializer
     {
-        /// <inheritdoc />
-        public abstract string Serialize(object instance);
+        #region [====== Serialize ======]
 
         /// <inheritdoc />
-        public abstract object Deserialize(string value, Type type);
+        public byte[] Serialize(object content)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+            try
+            {
+                return SerializeContent(content);
+            }
+            catch (SerializationException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw NewSerializationFailedException(content.GetType(), exception);
+            }
+        }
 
         /// <summary>
-        /// Creates and returns an exception that indicates serialization of an object of type
-        /// <paramref name="type"/> failed.
+        /// Serializes the specified <paramref name="content"/>.
         /// </summary>
-        /// <param name="type">Type of the instance that was being serialized.</param>
-        /// <param name="exception">Exception that was thrown while serializing the object.</param>
-        /// <returns>A wrapper exception indicating the error.</returns>
-        protected static SerializationException NewSerializationFailedException(Type type, Exception exception)
+        /// <param name="content">The content to serialize.</param>
+        /// <returns>A byte-array representing the serialized object.</returns>
+        protected abstract byte[] SerializeContent(object content);
+
+        private static SerializationException NewSerializationFailedException(Type type, Exception exception)
         {
             var messageFormat = ExceptionMessages.Serializer_SerializationFailed;
             var message = string.Format(messageFormat, type.FriendlyName());
             return new SerializationException(message, exception);
         }
 
+        #endregion
+
+        #region [====== Deserialize ======]
+
+        /// <inheritdoc />
+        public object Deserialize(byte[] content, Type contentType)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+            if (contentType == null)
+            {
+                throw new ArgumentNullException(nameof(contentType));
+            }
+            try
+            {
+                return DeserializeContent(content, contentType);
+            }
+            catch (SerializationException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw NewDeserializationFailedException(contentType, exception);
+            }
+        }
+
         /// <summary>
-        /// Creates and returns an exception that indicates deserialization of an object of type
-        /// <paramref name="type"/> failed.
+        /// Deserializes the specified <paramref name="content"/> to an instance of type <paramref name="contentType"/>.
         /// </summary>
-        /// <param name="type">Type of the instance that was being deserialized.</param>
-        /// <param name="exception">Exception that was thrown while deserializing the object.</param>
-        /// <returns>A wrapper exception indicating the error.</returns>
-        protected static SerializationException NewDeserializationFailedException(Type type, Exception exception)
+        /// <param name="content">A byte-array representing the serialized object.</param>
+        /// <param name="contentType">Type of the target-object.</param>
+        /// <returns>The deserialized instance of type <paramref name="contentType"/>.</returns>
+        protected abstract object DeserializeContent(byte[] content, Type contentType);
+
+        private static SerializationException NewDeserializationFailedException(Type type, Exception exception)
         {
             var messageFormat = ExceptionMessages.Serializer_DeserializationFailed;
             var message = string.Format(messageFormat, type.FriendlyName());
             return new SerializationException(message, exception);
         }
+
+        #endregion
     }
 }

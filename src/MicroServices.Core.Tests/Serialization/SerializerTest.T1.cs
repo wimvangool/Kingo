@@ -17,33 +17,33 @@ namespace Kingo.Serialization
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Serialize_Throws_IfInstanceIsNull()
+        public void Serialize_Throws_IfContentIsNull()
         {
             Serializer.Serialize(null);
         }
 
         [TestMethod]
-        public void Serialize_ReturnsSerializedValue_IfInstanceIsObject()
+        public void Serialize_ReturnsSerializedValue_IfContentIsObject()
         {
             AssertSerializedValue(Serializer.Serialize(new object()));
         }
 
         [TestMethod]
-        public void Serialize_ReturnsSerializedValue_IfInstanceIsInt32()
+        public void Serialize_ReturnsSerializedValue_IfContentIsInt32()
         {
             AssertSerializedValue(Serializer.Serialize(Clock.SystemClock.LocalDateAndTime().Millisecond));
         }
 
         [TestMethod]
-        public void Serialize_ReturnsSerializedValue_IfInstanceIsSomeCustomObject()
+        public void Serialize_ReturnsSerializedValue_IfContentIsSomeCustomObject()
         {
             AssertSerializedValue(Serializer.Serialize(new SomeCustomObject()));
         }
 
-        protected static void AssertSerializedValue(string value)
+        protected static void AssertSerializedValue(byte[] content)
         {
-            Assert.IsNotNull(value);
-            Assert.IsTrue(value.Length > 0);
+            Assert.IsNotNull(content);
+            Assert.IsTrue(content.Length > 0);
         }
 
         #endregion
@@ -52,28 +52,28 @@ namespace Kingo.Serialization
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Deserialize_Throws_IfValueIsNull()
+        public void Deserialize_Throws_IfContentIsNull()
         {
             Serializer.Deserialize(null, typeof(object));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Deserialize_Throws_IfTypeIsNull()
+        public void Deserialize_Throws_IfContentTypeIsNull()
         {
-            Serializer.Deserialize(string.Empty, null);
+            Serializer.Deserialize(new byte[0], null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(SerializationException))]
-        public void Deserialize_Throws_IfValueCannotBeDeserialized()
+        public void Deserialize_Throws_IfContentCannotBeDeserialized()
         {
-            Serializer.Deserialize(string.Empty, typeof(object));
+            Serializer.Deserialize(new byte[0], typeof(object));
         }
 
         [TestMethod]
         [ExpectedException(typeof(SerializationException))]
-        public void Deserialize_Throws_IfValueCannotBeDeserializedToSpecifiedType()
+        public void Deserialize_Throws_IfContentCannotBeDeserializedToSpecifiedType()
         {
             var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);
@@ -82,7 +82,7 @@ namespace Kingo.Serialization
         }
 
         [TestMethod]
-        public void Deserialize_ReturnsExpectedValue_IfValueTypeIsInt32()
+        public void Deserialize_ReturnsExpectedValue_IfContentTypeIsInt32()
         {
             var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);
@@ -92,7 +92,7 @@ namespace Kingo.Serialization
         }
 
         [TestMethod]
-        public void Deserialize_ReturnsExpectedValue_IfValueTypeIsSomeCustomObject()
+        public void Deserialize_ReturnsExpectedValue_IfContentTypeIsSomeCustomObject()
         {
             var value = new SomeCustomObject();
             var serializedValue = Serializer.Serialize(value);

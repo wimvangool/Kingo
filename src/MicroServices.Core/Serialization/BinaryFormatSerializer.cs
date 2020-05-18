@@ -23,64 +23,38 @@ namespace Kingo.Serialization
         private BinaryFormatter Formatter =>
             _formatter.Value;
 
-        #region [====== Serialize & Deserialize ======]
+        #region [====== Serialize ======]
 
         /// <inheritdoc />
-        public override string Serialize(object instance)
+        protected override byte[] SerializeContent(object content)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
             using (var stream = new MemoryStream())
             {
-                Formatter.Serialize(stream, instance);
-                return Encode(stream.ToArray());
+                Formatter.Serialize(stream, content);
+                return stream.ToArray();
             }
         }
+
+        #endregion
+
+        #region [====== Deserialize ======]
 
         /// <inheritdoc />
-        public override object Deserialize(string value, Type type)
+        protected override object DeserializeContent(byte[] content, Type contentType)
         {
-            if (value == null)
+            using (var stream = new MemoryStream(content))
             {
-                throw new ArgumentNullException(nameof(value));
-            }
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            try
-            {
-                using (var stream = new MemoryStream(Decode(value)))
-                {
-                    return Convert(Formatter.Deserialize(stream), type);
-                }
-            }
-            catch (SerializationException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw NewDeserializationFailedException(type, exception);
+                return Convert(Formatter.Deserialize(stream), contentType);
             }
         }
 
-        private static object Convert(object instance, Type type)
+        private static object Convert(object content, Type contentType)
         {
-            if (type.IsInstanceOfType(instance))
+            if (contentType.IsInstanceOfType(content))
             {
-                return instance;
+                return content;
             }
-            try
-            {
-                return System.Convert.ChangeType(instance, type);
-            }
-            catch (Exception exception)
-            {
-                throw NewDeserializationFailedException(type, exception);
-            }
+            return System.Convert.ChangeType(content, contentType);
         }
 
         /// <summary>
@@ -90,28 +64,6 @@ namespace Kingo.Serialization
         /// <returns>A new <see cref="BinaryFormatter"/>.</returns>
         protected virtual BinaryFormatter CreateFormatter() =>
             new BinaryFormatter();
-
-        #endregion
-
-        #region [====== Encode & Decode ======]
-
-        /// <summary>
-        /// Encodes the specified <paramref name="data"/> as a string. The default implementation
-        /// converts the data into a base64-format.
-        /// </summary>
-        /// <param name="data">The data to encode.</param>
-        /// <returns>A string-representation of the specified <paramref name="data"/>.</returns>
-        protected virtual string Encode(byte[] data) =>
-            System.Convert.ToBase64String(data);
-
-        /// <summary>
-        /// Decodes the specified <paramref name="value"/> to its raw byte-representation. The default
-        /// implementation expects <paramref name="value"/> to be a base64 encoded string.
-        /// </summary>
-        /// <param name="value">The value to decode.</param>
-        /// <returns>The raw byte-representation of the <paramref name="value"/>.</returns>
-        protected virtual byte[] Decode(string value) =>
-            System.Convert.FromBase64String(value);
 
         #endregion
     }

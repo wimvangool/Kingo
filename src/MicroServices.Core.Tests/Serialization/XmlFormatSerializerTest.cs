@@ -21,7 +21,7 @@ namespace Kingo.Serialization
 
         [TestMethod]
         [ExpectedException(typeof(SerializationException))]
-        public void Deserialize_Throws_IfValueTypeIsDerivedFromSpecifiedType()
+        public void Deserialize_Throws_IfContentTypeIsDerivedFromSpecifiedType()
         {
             var value = Clock.SystemClock.LocalDateAndTime().Millisecond;
             var serializedValue = Serializer.Serialize(value);

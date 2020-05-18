@@ -32,7 +32,7 @@ namespace Kingo.Serialization
         #region [====== Deserialize ======]
 
         [TestMethod]
-        public void Deserialize_ReturnsExpectedValue_IfValueTypeIsNotEqualToOriginalType()
+        public void Deserialize_ReturnsExpectedValue_IfContentTypeIsNotEqualToOriginalType()
         {
             var value = new SomeCustomObject();
             var serializedValue = Serializer.Serialize(value);
