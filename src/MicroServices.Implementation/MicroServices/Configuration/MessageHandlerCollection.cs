@@ -4,15 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// Represents a collection of message handler instances and types.
     /// </summary>
     public sealed class MessageHandlerCollection : MicroProcessorComponentCollection
     {
-        internal static readonly string Key = Guid.NewGuid().ToString();
-
         private readonly List<MessageHandlerComponent> _instances;
         private readonly IServiceCollection _instanceCollection;
 
@@ -21,6 +19,36 @@ namespace Kingo.MicroServices.Controllers
             _instances = new List<MessageHandlerComponent>();
             _instanceCollection = new ServiceCollection();
         }
+
+        #region [====== AddSpecificComponentsTo ======]
+
+        /// <inheritdoc />
+        protected override IServiceCollection AddSpecificComponentsTo(IServiceCollection services)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+            foreach (var service in _instanceCollection)
+            {
+                services.Add(service);
+            }
+            return services.AddSingleton(BuildMessageBusEndpointFactory());
+        }
+
+        // When building the factory, we filter out all types that have also been registered as an instance.
+        // If we don't do this, resolving a specific MessageHandler is undeterministic. As such, we simply
+        // decide that types that were added as instance hide any regular type-registrations.
+        private IMessageBusEndpointFactory BuildMessageBusEndpointFactory() =>
+            new MessageBusEndpointFactory(_instances.Concat(MessageHandlerTypes));
+
+        private IEnumerable<MessageHandlerComponent> MessageHandlerTypes =>
+            this.OfType<MessageHandlerType>().Where(IsNotRegisteredAsInstance);
+
+        private bool IsNotRegisteredAsInstance(MicroProcessorComponent messageHandler) =>
+            _instances.All(instance => instance.Type != messageHandler.Type);
+
+        #endregion
 
         #region [====== Add ======]
 
@@ -97,36 +125,6 @@ namespace Kingo.MicroServices.Controllers
             }
             return false;
         }
-
-        #endregion
-
-        #region [====== AddSpecificComponentsTo ======]
-
-        /// <inheritdoc />
-        protected internal override IServiceCollection AddSpecificComponentsTo(IServiceCollection services)
-        {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-            foreach (var service in _instanceCollection)
-            {
-                services.Add(service);
-            }
-            return services.AddSingleton(BuildMessageBusEndpointFactory());
-        }
-
-        // When building the factory, we filter out all types that have also been registered as an instance.
-        // If we don't do this, resolving a specific MessageHandler is undeterministic. As such, we simply
-        // decide that types that were added as instance hide any regular type-registrations.
-        private IMessageBusEndpointFactory BuildMessageBusEndpointFactory() =>
-            new MessageBusEndpointFactory(_instances.Concat(MessageHandlerTypes));
-
-        private IEnumerable<MessageHandlerComponent> MessageHandlerTypes =>
-            this.OfType<MessageHandlerType>().Where(IsNotRegisteredAsInstance);
-
-        private bool IsNotRegisteredAsInstance(MicroProcessorComponent messageHandler) =>
-            _instances.All(instance => instance.Type != messageHandler.Type);
 
         #endregion
     }

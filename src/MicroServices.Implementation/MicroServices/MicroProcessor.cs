@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Clocks;
+using Kingo.MicroServices.Configuration;
 using Kingo.Reflection;
 using Kingo.Threading;
 using Microsoft.Extensions.DependencyInjection;
@@ -149,7 +150,7 @@ namespace Kingo.MicroServices
             ServiceProvider.GetService<MessageFactory>() ?? DefaultMessageFactory();
 
         private static MessageFactory DefaultMessageFactory() =>
-            new MessageFactoryBuilder().BuildMessageFactory();
+            new MessageCollection().BuildMessageFactory();
 
         #endregion
 

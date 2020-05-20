@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// When implemented by a class, represents a builder that can be used to configure
@@ -27,7 +27,8 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="configurator"/> is <c>null</c>.
         /// </exception>
-        IMicroProcessorBuilder ConfigureMessages(Action<MessageFactoryBuilder> configurator);
+        IMicroProcessorBuilder ConfigureMessages(Action<MessageCollection> configurator) =>
+            ConfigureComponents(configurator);
 
         /// <summary>
         /// Configures all <see cref="IMessageHandler{TMessage}"/>-types to be used by the
@@ -54,6 +55,18 @@ namespace Kingo.MicroServices.Controllers
             ConfigureComponents(configurator);
 
         /// <summary>
+        /// Configures all serializers that the <see cref="IMicroProcessor" /> can use to serialize and deserialize
+        /// messages and domain data.
+        /// </summary>
+        /// <param name="configurator">Delegate that will be used to configure the collection.</param>
+        /// <returns>This builder.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="configurator"/> is <c>null</c>.
+        /// </exception>
+        IMicroProcessorBuilder ConfigureSerializers(Action<SerializerCollection> configurator) =>
+            ConfigureComponents(configurator);
+
+        /// <summary>
         /// Configures a specific collection of components that are to be registered for use by the <see cref="IMicroProcessor" />.
         /// </summary>
         /// <typeparam name="TCollection">Type of the collection to configure.</typeparam>
@@ -62,6 +75,6 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="configurator"/> is <c>null</c>.
         /// </exception>
-        IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator) where TCollection : MicroProcessorComponentCollection, new ();
+        IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator) where TCollection : IMicroProcessorComponentCollection, new();
     }
 }

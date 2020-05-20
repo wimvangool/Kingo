@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Kingo.MicroServices.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.TestEngine
@@ -203,7 +204,7 @@ namespace Kingo.MicroServices.TestEngine
 
         #endregion
 
-        private static readonly MessageFactory _MessageFactory = new MessageFactoryBuilder().BuildMessageFactory();
+        private static readonly MessageFactory _MessageFactory = new MessageCollection().BuildMessageFactory();
 
         private static MessageStream CreateEventStream(params object[] events) =>
             new MessageStream(events.Select(CreateEvent));

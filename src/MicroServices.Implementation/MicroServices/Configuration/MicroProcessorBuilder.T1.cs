@@ -5,19 +5,17 @@ using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using static Kingo.Ensure;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     internal sealed class MicroProcessorBuilder<TProcessor> : IMicroProcessorBuilder where TProcessor : MicroProcessor
     {
         private readonly MicroProcessorSettings _settings;
-        private readonly MessageFactoryBuilder _messageFactoryBuilder;
-        private readonly Dictionary<Type, MicroProcessorComponentCollection> _componentCollections;
+        private readonly Dictionary<Type, IMicroProcessorComponentCollection> _componentCollections;
 
         public MicroProcessorBuilder()
         {
             _settings = MicroProcessorSettings.DefaultSettings();
-            _messageFactoryBuilder = new MessageFactoryBuilder();
-            _componentCollections = new Dictionary<Type, MicroProcessorComponentCollection>();
+            _componentCollections = new Dictionary<Type, IMicroProcessorComponentCollection>();
         }
 
         #region [====== IMicroProcessorBuilder ======]
@@ -25,10 +23,7 @@ namespace Kingo.MicroServices.Controllers
         public IMicroProcessorBuilder ConfigureSettings(Action<MicroProcessorSettings> configurator) =>
             Invoke(configurator, _settings);
 
-        public IMicroProcessorBuilder ConfigureMessages(Action<MessageFactoryBuilder> configurator) =>
-            Invoke(configurator, _messageFactoryBuilder);
-
-        public IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator) where TCollection : MicroProcessorComponentCollection, new() =>
+        public IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator) where TCollection : IMicroProcessorComponentCollection, new() =>
             Invoke(configurator, GetOrAddCollection<TCollection>());
 
         private IMicroProcessorBuilder Invoke<TArgument>(Action<TArgument> configurator, TArgument argument)
@@ -37,7 +32,7 @@ namespace Kingo.MicroServices.Controllers
             return this;
         }
 
-        private TCollection GetOrAddCollection<TCollection>() where TCollection : MicroProcessorComponentCollection, new()
+        private TCollection GetOrAddCollection<TCollection>() where TCollection : IMicroProcessorComponentCollection, new()
         {
             if (_componentCollections.TryGetValue(typeof(TCollection), out var componentCollection))
             {
@@ -62,13 +57,12 @@ namespace Kingo.MicroServices.Controllers
             {
                 return AddComponentsTo(services, _componentCollections.Values.ToArray())
                     .AddSingleton(_settings.Copy())
-                    .AddSingleton(_messageFactoryBuilder.BuildMessageFactory())
                     .AddComponent(processor);
             }
             throw NewInvalidProcessorTypeException(typeof(TProcessor));
         }
 
-        private static IServiceCollection AddComponentsTo(IServiceCollection services, MicroProcessorComponentCollection[] componentCollections)
+        private static IServiceCollection AddComponentsTo(IServiceCollection services, IMicroProcessorComponentCollection[] componentCollections)
         {
             // First, all basic components added to the collections are registered. Before registration,
             // though, all components are merged, so that each type is only registered once.
@@ -86,7 +80,7 @@ namespace Kingo.MicroServices.Controllers
             return services;
         }
 
-        private static IEnumerable<MicroProcessorComponent> MergeComponents(IEnumerable<MicroProcessorComponentCollection> componentsToMerge)
+        private static IEnumerable<MicroProcessorComponent> MergeComponents(IEnumerable<IMicroProcessorComponentCollection> componentsToMerge)
         {
             var mergedComponents = new Dictionary<Type, MicroProcessorComponent>();
 

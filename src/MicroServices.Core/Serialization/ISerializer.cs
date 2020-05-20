@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 
 namespace Kingo.Serialization

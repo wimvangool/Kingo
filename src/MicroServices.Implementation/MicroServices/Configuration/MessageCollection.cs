@@ -1,28 +1,52 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Kingo.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using static Kingo.Ensure;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
-    /// Represents a builder for new <see cref="MessageFactory" /> instances.
+    /// Represents a collection of messages and associated configuration that can be used to
+    /// configure a <see cref="IMicroProcessor"/> on how to process different types of messages.
     /// </summary>
-    public sealed class MessageFactoryBuilder
+    public sealed class MessageCollection : IMicroProcessorComponentCollection
     {
         private readonly Dictionary<MessageDirection, MessageValidationOptions> _messageValidationOptions;
         private readonly Dictionary<Type, MessageAttribute> _attributes;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageFactoryBuilder" /> class.
+        /// Initializes a new instance of the <see cref="MessageCollection" /> class.
         /// </summary>
-        public MessageFactoryBuilder()
+        public MessageCollection()
         {
             _attributes = new Dictionary<Type, MessageAttribute>();
             _messageValidationOptions = new Dictionary<MessageDirection, MessageValidationOptions>();
             _messageKindResolver = new DefaultMessageKindResolver();
             _messageIdGenerator = new DefaultMessageIdGenerator();
         }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"[{nameof(Type)} --> {nameof(MessageAttribute)}] ({_attributes.Count} specific mapping(s) added)";
+
+        #region [====== IEnumerable<MicroProcessorComponent> ======]
+
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+
+        /// <inheritdoc />
+        public IEnumerator<MicroProcessorComponent> GetEnumerator() =>
+            Enumerable.Empty<MicroProcessorComponent>().GetEnumerator();
+
+        #endregion
+
+        #region [====== AddSpecificComponentsTo ======]
+
+        IServiceCollection IMicroProcessorComponentCollection.AddSpecificComponentsTo(IServiceCollection services) =>
+            services.AddSingleton(BuildMessageFactory());
 
         internal MessageFactory BuildMessageFactory()
         {
@@ -31,9 +55,7 @@ namespace Kingo.MicroServices
             return new MessageFactory(_messageValidationOptions, messageKindResolver, messageIdGenerator);
         }
 
-        /// <inheritdoc />
-        public override string ToString() =>
-            $"[{nameof(Type)} --> {nameof(MessageAttribute)}] ({_attributes.Count} specific mapping(s) added)";
+        #endregion
 
         #region [====== MessageValidationOptions ======]
 

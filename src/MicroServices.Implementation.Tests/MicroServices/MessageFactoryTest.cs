@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Kingo.MicroServices.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
@@ -52,11 +53,11 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly MessageFactoryBuilder _builder;
+        private readonly MessageCollection _builder;
 
         public MessageFactoryTest()
         {
-            _builder = new MessageFactoryBuilder();
+            _builder = new MessageCollection();
         }
 
         #region [====== Builder ======]

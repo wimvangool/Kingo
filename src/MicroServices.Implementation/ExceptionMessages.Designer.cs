@@ -70,6 +70,51 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified content (Length = {0}) could not be read. See inner-exception for details..
+        /// </summary>
+        internal static string DataContractBlob_ContentCouldNotBeRead {
+            get {
+                return ResourceManager.GetString("DataContractBlob_ContentCouldNotBeRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified attribute (Name = {0}, Namespace = {1}) is not valid. See inner-exception for details..
+        /// </summary>
+        internal static string DataContractType_AttributeNotValid {
+            get {
+                return ResourceManager.GetString("DataContractType_AttributeNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified contentType Name ({0}) must be a valid, relative Uri..
+        /// </summary>
+        internal static string DataContractType_ContentTypeNameNotValid {
+            get {
+                return ResourceManager.GetString("DataContractType_ContentTypeNameNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified contentType Namespace ({0}) must be a valid, absolute Uri..
+        /// </summary>
+        internal static string DataContractType_ContentTypeNamespaceNotValid {
+            get {
+                return ResourceManager.GetString("DataContractType_ContentTypeNamespaceNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified contentType ({0}) must be a valid, absolute Uri..
+        /// </summary>
+        internal static string DataContractType_ContentTypeNotValid {
+            get {
+                return ResourceManager.GetString("DataContractType_ContentTypeNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name &apos;{0}&apos; contains illegal character &apos;{1}&apos; encountered at index &apos;{2}&apos;..
         /// </summary>
         internal static string EndpointNameFormat_IllegalCharacter {

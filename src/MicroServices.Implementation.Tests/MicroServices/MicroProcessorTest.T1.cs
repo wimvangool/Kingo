@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kingo.MicroServices.Controllers;
+using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -58,9 +58,8 @@ namespace Kingo.MicroServices
         // The default services are:
         // - IMicroProcessor + TProcessor
         // - MicroProcessorSettings
-        // - MessageHandlerFactory
         // - IInstanceCollector
         protected virtual int DefaultServiceCount =>
-            5;              
+            4;              
     }
 }

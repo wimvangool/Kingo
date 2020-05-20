@@ -120,6 +120,21 @@
   <data name="AsyncMethodOperationStackTrace_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
+  <data name="DataContractBlob_ContentCouldNotBeRead" xml:space="preserve">
+    <value>The specified content (Length = {0}) could not be read. See inner-exception for details.</value>
+  </data>
+  <data name="DataContractType_AttributeNotValid" xml:space="preserve">
+    <value>The specified attribute (Name = {0}, Namespace = {1}) is not valid. See inner-exception for details.</value>
+  </data>
+  <data name="DataContractType_ContentTypeNameNotValid" xml:space="preserve">
+    <value>The specified contentType Name ({0}) must be a valid, relative Uri.</value>
+  </data>
+  <data name="DataContractType_ContentTypeNamespaceNotValid" xml:space="preserve">
+    <value>The specified contentType Namespace ({0}) must be a valid, absolute Uri.</value>
+  </data>
+  <data name="DataContractType_ContentTypeNotValid" xml:space="preserve">
+    <value>The specified contentType ({0}) must be a valid, absolute Uri.</value>
+  </data>
   <data name="EndpointNameFormat_IllegalCharacter" xml:space="preserve">
     <value>Name '{0}' contains illegal character '{1}' encountered at index '{2}'.</value>
   </data>

@@ -8,13 +8,13 @@ using Kingo.Collections.Generic;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices.Controllers
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
-    /// Serves as a base-class for collections of specific <see cref="MicroProcessorComponent" /> types
-    /// that are to be added to a <see cref="IServiceCollection"/>.
+    /// Represents a collection of <see cref="MicroProcessorComponent">components</see>
+    /// that should be registered as a dependency in a <see cref="IServiceCollection" />.
     /// </summary>
-    public abstract class MicroProcessorComponentCollection : IReadOnlyCollection<MicroProcessorComponent>
+    public abstract class MicroProcessorComponentCollection : IMicroProcessorComponentCollection
     {
         private readonly Dictionary<Type, MicroProcessorComponent> _components;
 
@@ -26,11 +26,7 @@ namespace Kingo.MicroServices.Controllers
             _components = new Dictionary<Type, MicroProcessorComponent>();
         }
 
-        #region [====== IReadOnlyCollection ======]
-
-        /// <inheritdoc />
-        public int Count =>
-            _components.Count;                
+        #region [====== IEnumerable<MicroProcessorComponent> ======]
 
         IEnumerator IEnumerable.GetEnumerator() =>
             GetEnumerator();
@@ -38,6 +34,21 @@ namespace Kingo.MicroServices.Controllers
         /// <inheritdoc />
         public IEnumerator<MicroProcessorComponent> GetEnumerator() =>
             _components.Values.GetEnumerator();
+
+        #endregion
+
+        #region [====== AddSpecificComponentsTo ======]
+
+        IServiceCollection IMicroProcessorComponentCollection.AddSpecificComponentsTo(IServiceCollection services) =>
+            AddSpecificComponentsTo(services);
+
+        /// <summary>
+        /// Adds types and mappings to the specified <paramref name="services"/> that are specific to this collection.
+        /// </summary>
+        /// <param name="services">A service collection.</param>
+        /// <returns>The resulting collection.</returns>
+        protected virtual IServiceCollection AddSpecificComponentsTo(IServiceCollection services) =>
+            services;
 
         #endregion
 
@@ -125,21 +136,6 @@ namespace Kingo.MicroServices.Controllers
             _components[component.Type] = component;
             return true;
         }
-
-        #endregion
-
-        #region [====== AddSpecificComponentsTo ======]
-
-        /// <summary>
-        /// Adds types and mappings to the specified <paramref name="services"/> that are specific to this collection.
-        /// </summary>
-        /// <param name="services">A service collection.</param>
-        /// <returns>The resulting collection.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="services"/> is <c>null</c>.
-        /// </exception>
-        protected internal virtual IServiceCollection AddSpecificComponentsTo(IServiceCollection services) =>
-            services ?? throw new ArgumentNullException(nameof(services));
 
         #endregion
     }

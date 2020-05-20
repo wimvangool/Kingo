@@ -1,4 +1,4 @@
-﻿using Kingo.MicroServices.Controllers;
+﻿using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.TestEngine
