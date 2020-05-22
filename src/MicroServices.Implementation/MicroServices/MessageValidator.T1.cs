@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Kingo.MicroServices.DataAnnotations;
+using Kingo.MicroServices.DataContracts;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.MicroServices.TestEngine;
+using Kingo.MicroServices.DataContracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
@@ -48,7 +48,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsEmptyCollection_IfMethodHasNoEndpointAttribute()
         {
-            Processor.ConfigureMessages(messages =>
+            Processor.ConfigureMessagePipeline(messages =>
             {
                 messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             });
@@ -63,7 +63,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsOneEndpoint_IfMethodHasEndpointAttribute()
         {
-            Processor.ConfigureMessages(messages =>
+            Processor.ConfigureMessagePipeline(messages =>
             {
                 messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             });
@@ -81,7 +81,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMethodsHaveEndpointAttribute()
         {
-            Processor.ConfigureMessages(messages =>
+            Processor.ConfigureMessagePipeline(messages =>
             {
                 messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             });
@@ -102,7 +102,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsMultipleEndpoints_IfMultipleMessageHandlersHaveEndpointAttribute()
         {
-            Processor.ConfigureMessages(messages =>
+            Processor.ConfigureMessagePipeline(messages =>
             {
                 messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             });
@@ -123,7 +123,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMicroServiceBusEndpoints_ReturnsExpectedEndpoints_IfMessageHandlerWasAddedAsSingleton()
         {
-            Processor.ConfigureMessages(messages =>
+            Processor.ConfigureMessagePipeline(messages =>
             {
                 messages.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
             });

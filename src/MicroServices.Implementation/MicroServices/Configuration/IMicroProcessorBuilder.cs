@@ -19,15 +19,15 @@ namespace Kingo.MicroServices.Configuration
         IMicroProcessorBuilder ConfigureSettings(Action<MicroProcessorSettings> configurator);
 
         /// <summary>
-        /// Configures the factory that will be used to wrap messages that are processed and produced by the
-        /// <see cref="IMicroProcessor"/> into proper <see cref="IMessage"/>-objects.
+        /// Configures the message-pipeline that will be used by the <see cref="IMicroProcessor"/>
+        /// to consume and/or produce different types of messages.
         /// </summary>
         /// <param name="configurator">Delegate that will be used to configure the message factory.</param>
         /// <returns>This builder.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="configurator"/> is <c>null</c>.
         /// </exception>
-        IMicroProcessorBuilder ConfigureMessages(Action<MessageCollection> configurator) =>
+        IMicroProcessorBuilder ConfigureMessagePipeline(Action<MessagePipeline> configurator) =>
             ConfigureComponents(configurator);
 
         /// <summary>

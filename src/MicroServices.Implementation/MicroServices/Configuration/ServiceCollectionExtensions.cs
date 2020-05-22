@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices.Configuration
@@ -51,15 +50,6 @@ namespace Kingo.MicroServices.Configuration
         #endregion
 
         #region [====== AddComponent ======]
-        
-        internal static IServiceCollection AddComponents(this IServiceCollection services, IEnumerable<MicroProcessorComponent> components)
-        {
-            foreach (var component in components)
-            {
-                services = services.AddComponent(component);
-            }
-            return services;
-        }
 
         internal static IServiceCollection AddComponent(this IServiceCollection services, MicroProcessorComponent component, object instance = null) =>
             component.AddTo(services, instance);

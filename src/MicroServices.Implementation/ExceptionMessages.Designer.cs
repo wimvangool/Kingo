@@ -403,6 +403,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot associated any types with type &apos;{0}&apos; because it is not a concrete type that implements interface &apos;{1}&apos;..
+        /// </summary>
+        internal static string SerializerCollection_TypeNoSerializerType {
+            get {
+                return ResourceManager.GetString("SerializerCollection_TypeNoSerializerType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot resolve queue of type &apos;{0}&apos; because the resolver cannot find the appropriate constructor. Please make sure this type declares exactly one public constructor..
         /// </summary>
         internal static string StoreAndForwardQueueResolver_CannotFindConstructor {

@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
     /// <see cref="IMessage{TContent}.Id"/> and <see cref="IMessage{TContent}.CorrelationId" />.
     /// </summary>
     [Serializable]
-    public struct MessageHeader : IEquatable<MessageHeader>
+    public readonly struct MessageHeader : IEquatable<MessageHeader>
     {
         /// <summary>
         /// Represents an empty header.
@@ -27,7 +27,8 @@ namespace Kingo.MicroServices
         /// Initializes a new instance of the <see cref="MessageHeader" /> class.
         /// </summary>
         /// <param name="id">Identifier of the message.</param>
-        public MessageHeader(string id) : this(id, null) { }
+        public MessageHeader(string id) :
+            this(id, null) { }
 
         private MessageHeader(string id, string correlationId)
         {

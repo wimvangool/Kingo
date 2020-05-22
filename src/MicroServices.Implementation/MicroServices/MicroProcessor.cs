@@ -150,7 +150,7 @@ namespace Kingo.MicroServices
             ServiceProvider.GetService<MessageFactory>() ?? DefaultMessageFactory();
 
         private static MessageFactory DefaultMessageFactory() =>
-            new MessageCollection().BuildMessageFactory();
+            new MessagePipeline().BuildMessageFactory();
 
         #endregion
 

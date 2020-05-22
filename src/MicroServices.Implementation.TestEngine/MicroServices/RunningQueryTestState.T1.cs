@@ -1,0 +1,16 @@
+﻿using System.Collections.Generic;
+
+namespace Kingo.MicroServices
+{
+    internal sealed class RunningQueryTestState<TResponse> : RunningTestState<QueryTestOperation<TResponse>, VerifyingQueryTestOutputState<TResponse>>
+    {
+        public RunningQueryTestState(MicroProcessorTest test, IEnumerable<MicroProcessorTestOperation> operations) :
+            base(test, operations) { }
+
+        protected override VerifyingQueryTestOutputState<TResponse> CreateVerifyingOutputState(MicroProcessorTestContext context, MicroProcessorTestOperationId operationId) =>
+            new VerifyingQueryTestOutputState<TResponse>(Test, context, operationId);
+
+        protected override VerifyingQueryTestOutputState<TResponse> CreateVerifyingOutputState(MicroProcessorTestContext context, MicroProcessorOperationException exception) =>
+            new VerifyingQueryTestOutputState<TResponse>(Test, context, exception);
+    }
+}

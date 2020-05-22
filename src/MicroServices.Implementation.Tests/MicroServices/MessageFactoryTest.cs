@@ -53,11 +53,11 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly MessageCollection _builder;
+        private readonly MessagePipeline _builder;
 
         public MessageFactoryTest()
         {
-            _builder = new MessageCollection();
+            _builder = new MessagePipeline();
         }
 
         #region [====== Builder ======]
