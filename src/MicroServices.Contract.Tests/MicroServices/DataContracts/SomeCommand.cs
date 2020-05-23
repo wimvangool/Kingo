@@ -1,24 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace Kingo.MicroServices.DataContracts
 {    
+    [DataContract]
     public sealed class SomeCommand : ValidatableObject
     {        
-        [Required]        
+        [Required]   
+        [DataMember]
         public string PropertyA
         {
             get;
             set;
         }
 
-        [Range(1, 4)]        
+        [Range(1, 4)]
+        [DataMember]
         public int PropertyB
         {
             get;
             set;
         }
 
+        [DataMember]
         public int PropertyC
         {
             get;

@@ -5,10 +5,10 @@ namespace Kingo.MicroServices.DataContracts
 {
     internal sealed class DataContractSerializerFactory : IDataContractSerializerFactory
     {
-        private readonly SerializerFactory _serializerFactory;
+        private readonly ISerializerFactory _serializerFactory;
         private readonly DataContractTypeMap _dataContractTypeMap;
 
-        public DataContractSerializerFactory(SerializerFactory serializerFactory, DataContractTypeMap dataContractTypeMap)
+        public DataContractSerializerFactory(ISerializerFactory serializerFactory, DataContractTypeMap dataContractTypeMap)
         {
             _serializerFactory = serializerFactory;
             _dataContractTypeMap = dataContractTypeMap;

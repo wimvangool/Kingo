@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using static Kingo.Ensure;
 
 namespace Kingo.MicroServices.Configuration
 {
@@ -23,12 +22,12 @@ namespace Kingo.MicroServices.Configuration
         public IMicroProcessorBuilder ConfigureSettings(Action<MicroProcessorSettings> configurator) =>
             Invoke(configurator, _settings);
 
-        public IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator) where TCollection : IMicroProcessorComponentCollection, new() =>
+        public IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator = null) where TCollection : IMicroProcessorComponentCollection, new() =>
             Invoke(configurator, GetOrAddCollection<TCollection>());
 
         private IMicroProcessorBuilder Invoke<TArgument>(Action<TArgument> configurator, TArgument argument)
         {
-            IsNotNull(configurator, nameof(configurator)).Invoke(argument);
+            configurator?.Invoke(argument);
             return this;
         }
 

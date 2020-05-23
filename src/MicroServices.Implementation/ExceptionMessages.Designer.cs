@@ -115,6 +115,24 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot determine the content-type for data-contract of type &apos;{0}&apos;. Please make sure this type is registered with the processor in the configuration..
+        /// </summary>
+        internal static string DataContractTypeMap_ContentTypeNotMapped {
+            get {
+                return ResourceManager.GetString("DataContractTypeMap_ContentTypeNotMapped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot determine type type for data-contract with content-type &apos;{0}&apos;. Please make sure this content-type is registered with the processor in the configuration..
+        /// </summary>
+        internal static string DataContractTypeMap_TypeNotMapped {
+            get {
+                return ResourceManager.GetString("DataContractTypeMap_TypeNotMapped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name &apos;{0}&apos; contains illegal character &apos;{1}&apos; encountered at index &apos;{2}&apos;..
         /// </summary>
         internal static string EndpointNameFormat_IllegalCharacter {

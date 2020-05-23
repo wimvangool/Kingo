@@ -27,7 +27,7 @@ namespace Kingo.MicroServices.DataContracts
         {
             using (var content = CreateStream(0, true))
             {
-                DataContractBlob.FromStream(null as DataContractType, content);
+                DataContractBlob.FromStream(null as DataContractContentType, content);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Kingo.MicroServices.DataContracts
         [ExpectedException(typeof(ArgumentNullException))]
         public void FromBytes_Throws_IfContentTypeIsNull()
         {
-            DataContractBlob.FromBytes(null as DataContractType, Enumerable.Empty<byte>());
+            DataContractBlob.FromBytes(null as DataContractContentType, Enumerable.Empty<byte>());
         }
 
         [TestMethod]
@@ -194,7 +194,7 @@ namespace Kingo.MicroServices.DataContracts
                 new NotSupportedException($"Operation '{name}' is not supported.");
         }
 
-        private static readonly DataContractType _ContentType = DataContractType.FromName("SomeType");
+        private static readonly DataContractContentType _ContentType = DataContractContentType.FromName("SomeType");
 
         private static Stream CreateStream(int length, bool canRead) =>
             new StreamDecorator(new MemoryStream(new byte[length], false), canRead);

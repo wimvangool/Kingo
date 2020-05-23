@@ -1,181 +1,92 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
-using static Kingo.Ensure;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices.DataContracts
 {
-    /// <summary>
-    /// Represents a portable type-or schema-identifier of a specific data-contract.
-    /// </summary>
-    [Serializable]
-    public sealed class DataContractType : IEquatable<DataContractType>
+    internal sealed class DataContractType : MicroProcessorComponent
     {
-        private readonly Uri _contentTypeUri;
+        private readonly DataContractContentType _contentType;
 
-        private DataContractType(Uri contentType)
+        private DataContractType(MicroProcessorComponent component, DataContractContentType contentType) : base(component, Enumerable.Empty<Type>())
         {
-            _contentTypeUri = contentType;
+            _contentType = contentType;
         }
 
-        /// <inheritdoc />
-        public override string ToString() => 
-            _contentTypeUri.ToString().ToLowerInvariant();
+        public DataContractContentType ContentType =>
+            _contentType;
 
-        #region [====== Equals & GetHashCode ======]
-
-        /// <inheritdoc />
-        public override bool Equals(object obj) =>
-            Equals(obj as DataContractType);
-
-        /// <inheritdoc />
-        public bool Equals(DataContractType other)
+        public static bool IsDataContractType(MicroProcessorComponent component, out DataContractType dataContract)
         {
-            if (ReferenceEquals(other, null))
+            if (TryGetContentType(component, out var contentType))
             {
-                return false;
+                dataContract = new DataContractType(component, contentType);
+                return true;
             }
-            return _contentTypeUri.Equals(other._contentTypeUri);
+            dataContract = null;
+            return false;
         }
 
-        /// <inheritdoc />
-        public override int GetHashCode() =>
-            _contentTypeUri.GetHashCode();
-
-        #endregion
-
-        #region [====== Parse ======]
-
-        /// <summary>
-        /// Parses and converts the specified <paramref name="contentType"/> and turns it into a new <see cref="DataContractType"/>.
-        /// </summary>
-        /// <param name="contentType">The value to parse.</param>
-        /// <returns>A new <see cref="DataContractType"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="contentType"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="contentType"/> is not a valid <see cref="Uri"/>.
-        /// </exception>
-        public static DataContractType Parse(string contentType)
+        private static bool TryGetContentType(MicroProcessorComponent component, out DataContractContentType contentType)
         {
-            if (Uri.TryCreate(IsNotNull(contentType, nameof(contentType)), UriKind.Absolute, out var contentTypeUri))
+            if (TryGetDataContractAttribute(component, out var attribute))
             {
-                return new DataContractType(contentTypeUri);
+                contentType = DataContractContentType.FromAttribute(attribute);
+                return true;
             }
-            throw NewContentTypeNotValidException(contentType);
+            contentType = null;
+            return false;
         }
 
-        private static Exception NewContentTypeNotValidException(string contentType)
+        private static bool TryGetDataContractAttribute(MicroProcessorComponent component, out DataContractAttribute attribute)
         {
-            var messageFormat = ExceptionMessages.DataContractType_ContentTypeNotValid;
-            var message = string.Format(messageFormat, contentType);
-            return new ArgumentException(message, nameof(contentType));
-        }
-
-        #endregion
-
-        #region [====== FromAttribute ======]
-
-        /// <summary>
-        /// Creates and returns a new <see cref="DataContractType" /> that is inferred from the
-        /// specified <paramref name="attribute"/>.
-        /// </summary>
-        /// <param name="attribute">The attribute containing the name and namespace of the data-contract.</param>
-        /// <returns>A new <see cref="DataContractType"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="attribute"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// The <paramref name="attribute"/>'s name is not set
-        /// - or -
-        /// The <paramref name="attribute"/>'s namespace is not a valid <see cref="Uri"/>.
-        /// </exception>
-        public static DataContractType FromAttribute(DataContractAttribute attribute)
-        {
-            if (attribute == null)
+            if (component.Type.TryGetAttributeOfType(out attribute))
             {
-                throw new ArgumentNullException(nameof(attribute));
+                if (attribute.Namespace == null)
+                {
+                    attribute.Namespace = DetermineDefaultContentTypeNamespace(component.Type);
+                }
+                if (attribute.Name == null)
+                {
+                    attribute.Name = DetermineDefaultContentTypeName(component.Type);
+                }
+                return true;
             }
-            try
-            {
-                return FromName(attribute.Name, attribute.Namespace);
-            }
-            catch (ArgumentException exception)
-            {
-                throw NewAttributeNotValidException(attribute, exception);
-            }
+            return false;
         }
 
-        private static Exception NewAttributeNotValidException(DataContractAttribute attribute, Exception exception)
+        private static string DetermineDefaultContentTypeNamespace(Type type)
         {
-            var messageFormat = ExceptionMessages.DataContractType_AttributeNotValid;
-            var message = string.Format(messageFormat, attribute.Name, attribute.Namespace);
-            return new ArgumentException(message, nameof(attribute), exception);
-        }
-
-        #endregion
-
-        #region [====== FromName ======]
-
-        private static readonly Uri _DefaultNamespace = new Uri("https://schemas.kingo.net/2020/05/");
-
-        /// <summary>
-        /// Creates and returns a new <see cref="DataContractType" /> that is inferred from the
-        /// specified <paramref name="contentTypeName"/> and <paramref name="contentTypeNamespace" />.
-        /// </summary>
-        /// <param name="contentTypeName">Specific name of the type-identifier of the data-contract.</param>
-        /// <param name="contentTypeNamespace">Specific namespace in which the type-identifier resides.</param>
-        /// <returns>A new <see cref="DataContractType"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="contentTypeName"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="contentTypeName"/> is not a valid Uri (relative)
-        /// - or -
-        /// <paramref name="contentTypeNamespace"/> is not a valid Uri (absolute).
-        /// </exception>
-        public static DataContractType FromName(string contentTypeName, string contentTypeNamespace = null) =>
-            FromName(ParseContentTypeName(contentTypeName), ParseContentTypeNamespace(contentTypeNamespace));
-
-        private static DataContractType FromName(Uri contentTypeName, Uri contentTypeNamespace) =>
-            new DataContractType(new Uri(contentTypeNamespace, contentTypeName));
-
-        private static Uri ParseContentTypeName(string contentTypeName)
-        {
-            if (Uri.TryCreate(IsNotNull(contentTypeName, nameof(contentTypeName)), UriKind.Relative, out var contentTypeNameUri))
+            if (TryGetContentTypeNamespaceFromClrNamespace(type, out var contentTypeNamespace))
             {
-                return contentTypeNameUri;
+                return contentTypeNamespace;
             }
-            throw NewContentTypeNameNotValidException(contentTypeName);
+            return DataContractContentType.DefaultNamespace;
         }
 
-        private static Uri ParseContentTypeNamespace(string contentTypeNamespace)
+        private static bool TryGetContentTypeNamespaceFromClrNamespace(Type type, out string contentTypeNamespace)
         {
-            if (contentTypeNamespace == null)
+            foreach (var attribute in GetContractNamespaceAttributesFor(type))
             {
-                return _DefaultNamespace;
+                if (attribute.ClrNamespace == null || attribute.ClrNamespace == type.Namespace)
+                {
+                    contentTypeNamespace = attribute.ContractNamespace;
+                    return true;
+                }
             }
-            if (Uri.TryCreate(contentTypeNamespace, UriKind.Absolute, out var contentTypeNamespaceUri))
-            {
-                return contentTypeNamespaceUri;
-            }
-            throw NewContentTypeNamespaceNotValidException(contentTypeNamespace);
+            contentTypeNamespace = null;
+            return false;
         }
 
-        private static Exception NewContentTypeNameNotValidException(string contentTypeName)
-        {
-            var messageFormat = ExceptionMessages.DataContractType_ContentTypeNameNotValid;
-            var message = string.Format(messageFormat, contentTypeName);
-            return new ArgumentException(message, nameof(contentTypeName));
-        }
+        private static IEnumerable<ContractNamespaceAttribute> GetContractNamespaceAttributesFor(Type type) =>
+            from attribute in type.Assembly.GetAttributesOfType<ContractNamespaceAttribute>()
+            where attribute.ContractNamespace != null
+            orderby attribute.ClrNamespace descending
+            select attribute;
 
-        private static Exception NewContentTypeNamespaceNotValidException(string contentTypeNamespace)
-        {
-            var messageFormat = ExceptionMessages.DataContractType_ContentTypeNamespaceNotValid;
-            var message = string.Format(messageFormat, contentTypeNamespace);
-            return new ArgumentException(message, nameof(contentTypeNamespace));
-        }
-
-        #endregion
+        private static string DetermineDefaultContentTypeName(Type type) =>
+            type.FriendlyName(true, false);
     }
 }

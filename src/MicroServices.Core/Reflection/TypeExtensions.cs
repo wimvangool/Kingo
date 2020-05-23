@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using static Kingo.Ensure;
 
 namespace Kingo.Reflection
 {
@@ -603,7 +604,7 @@ namespace Kingo.Reflection
 
         private static IEnumerable<MethodInfo> GetOperatorsOfType(Type type, string name, Type returnType)
         {
-            if (IsClosedType(NotNull(type)))
+            if (IsClosedType(IsNotNull(type, nameof(type))))
             {
                 return
                     from method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
@@ -656,7 +657,7 @@ namespace Kingo.Reflection
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
         public static string FriendlyName(this Type type, bool useFullNames = false, bool includeGenericParameters = true) =>
-            new StringBuilder().AppendFriendlyNameOf(NotNull(type), useFullNames, includeGenericParameters).ToString();
+            new StringBuilder().AppendFriendlyNameOf(IsNotNull(type, nameof(type)), useFullNames, includeGenericParameters).ToString();
 
         private static StringBuilder AppendFriendlyNameOf(this StringBuilder builder, Type type, bool useFullNames, bool includeGenericParameters)
         {
@@ -837,8 +838,5 @@ namespace Kingo.Reflection
         }
 
         #endregion
-
-        private static Type NotNull(Type type) =>
-            type ?? throw new ArgumentNullException(nameof(type));
     }
 }

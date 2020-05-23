@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.MicroServices.DataContracts;
 
 namespace Kingo.MicroServices.Configuration
 {
@@ -19,39 +20,12 @@ namespace Kingo.MicroServices.Configuration
         IMicroProcessorBuilder ConfigureSettings(Action<MicroProcessorSettings> configurator);
 
         /// <summary>
-        /// Configures the message-pipeline that will be used by the <see cref="IMicroProcessor"/>
-        /// to consume and/or produce different types of messages.
-        /// </summary>
-        /// <param name="configurator">Delegate that will be used to configure the message factory.</param>
-        /// <returns>This builder.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="configurator"/> is <c>null</c>.
-        /// </exception>
-        IMicroProcessorBuilder ConfigureMessagePipeline(Action<MessagePipeline> configurator) =>
-            ConfigureComponents(configurator);
-
-        /// <summary>
-        /// Configures all <see cref="IMessageHandler{TMessage}"/>-types to be used by the
-        /// <see cref="IMicroProcessor"/>.
+        /// Configures all data-contracts that the <see cref="IMicroProcessor" /> will recognize and be able
+        /// to serialize and deserialize with a <see cref="IDataContractSerializer"/>.
         /// </summary>
         /// <param name="configurator">Delegate that will be used to configure the collection.</param>
         /// <returns>This builder.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="configurator"/> is <c>null</c>.
-        /// </exception>
-        IMicroProcessorBuilder ConfigureMessageHandlers(Action<MessageHandlerCollection> configurator) =>
-            ConfigureComponents(configurator);
-
-        /// <summary>
-        /// Configures all <see cref="IQuery{TResponse}"/>- and <see cref="IQuery{TRequest,TResponse}"/>-types to be
-        /// used by the <see cref="IMicroProcessor"/>.
-        /// </summary>
-        /// <param name="configurator">Delegate that will be used to configure the collection.</param>
-        /// <returns>This builder.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="configurator"/> is <c>null</c>.
-        /// </exception>
-        IMicroProcessorBuilder ConfigureQueries(Action<QueryCollection> configurator) =>
+        IMicroProcessorBuilder ConfigureDataContracts(Action<DataContractCollection> configurator = null) =>
             ConfigureComponents(configurator);
 
         /// <summary>
@@ -60,10 +34,34 @@ namespace Kingo.MicroServices.Configuration
         /// </summary>
         /// <param name="configurator">Delegate that will be used to configure the collection.</param>
         /// <returns>This builder.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="configurator"/> is <c>null</c>.
-        /// </exception>
-        IMicroProcessorBuilder ConfigureSerializers(Action<SerializerCollection> configurator) =>
+        IMicroProcessorBuilder ConfigureSerializers(Action<SerializerCollection> configurator = null) =>
+            ConfigureComponents(configurator);
+
+        /// <summary>
+        /// Configures the message-pipeline that will be used by the <see cref="IMicroProcessor"/>
+        /// to consume and/or produce different types of messages.
+        /// </summary>
+        /// <param name="configurator">Delegate that will be used to configure the message factory.</param>
+        /// <returns>This builder.</returns>
+        IMicroProcessorBuilder ConfigureMessagePipeline(Action<MessagePipeline> configurator = null) =>
+            ConfigureComponents(configurator);
+
+        /// <summary>
+        /// Configures all <see cref="IMessageHandler{TMessage}"/>-types to be used by the
+        /// <see cref="IMicroProcessor"/>.
+        /// </summary>
+        /// <param name="configurator">Delegate that will be used to configure the collection.</param>
+        /// <returns>This builder.</returns>
+        IMicroProcessorBuilder ConfigureMessageHandlers(Action<MessageHandlerCollection> configurator = null) =>
+            ConfigureComponents(configurator);
+
+        /// <summary>
+        /// Configures all <see cref="IQuery{TResponse}"/>- and <see cref="IQuery{TRequest,TResponse}"/>-types to be
+        /// used by the <see cref="IMicroProcessor"/>.
+        /// </summary>
+        /// <param name="configurator">Delegate that will be used to configure the collection.</param>
+        /// <returns>This builder.</returns>
+        IMicroProcessorBuilder ConfigureQueries(Action<QueryCollection> configurator = null) =>
             ConfigureComponents(configurator);
 
         /// <summary>
@@ -75,6 +73,6 @@ namespace Kingo.MicroServices.Configuration
         /// <exception cref="ArgumentNullException">
         /// <paramref name="configurator"/> is <c>null</c>.
         /// </exception>
-        IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator) where TCollection : IMicroProcessorComponentCollection, new();
+        IMicroProcessorBuilder ConfigureComponents<TCollection>(Action<TCollection> configurator = null) where TCollection : IMicroProcessorComponentCollection, new();
     }
 }

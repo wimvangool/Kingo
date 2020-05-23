@@ -11,14 +11,20 @@ namespace Kingo.MicroServices.Configuration
     /// </summary>
     public sealed class MessageHandlerCollection : MicroProcessorComponentCollection
     {
-        private readonly List<MessageHandlerComponent> _instances;
+        private readonly Dictionary<Type, MessageHandlerType> _messageHandlerTypes;
+        private readonly List<MessageHandlerComponent> _messageHandlerInstances;
         private readonly IServiceCollection _instanceCollection;
 
         public MessageHandlerCollection()
         {
-            _instances = new List<MessageHandlerComponent>();
+            _messageHandlerTypes = new Dictionary<Type, MessageHandlerType>();
+            _messageHandlerInstances = new List<MessageHandlerComponent>();
             _instanceCollection = new ServiceCollection();
         }
+
+        /// <inheritdoc />
+        public override IEnumerator<MicroProcessorComponent> GetEnumerator() =>
+            _messageHandlerTypes.Values.GetEnumerator();
 
         #region [====== AddSpecificComponentsTo ======]
 
@@ -40,13 +46,13 @@ namespace Kingo.MicroServices.Configuration
         // If we don't do this, resolving a specific MessageHandler is undeterministic. As such, we simply
         // decide that types that were added as instance hide any regular type-registrations.
         private IMessageBusEndpointFactory BuildMessageBusEndpointFactory() =>
-            new MessageBusEndpointFactory(_instances.Concat(MessageHandlerTypes));
+            new MessageBusEndpointFactory(_messageHandlerInstances.Concat(MessageHandlerTypes));
 
         private IEnumerable<MessageHandlerComponent> MessageHandlerTypes =>
             this.OfType<MessageHandlerType>().Where(IsNotRegisteredAsInstance);
 
         private bool IsNotRegisteredAsInstance(MicroProcessorComponent messageHandler) =>
-            _instances.All(instance => instance.Type != messageHandler.Type);
+            _messageHandlerInstances.All(instance => instance.Type != messageHandler.Type);
 
         #endregion
 
@@ -65,7 +71,7 @@ namespace Kingo.MicroServices.Configuration
         {
             if (MessageHandlerInstance.IsMessageHandlerInstance(messageHandler, out var instance))
             {
-                _instances.Add(instance);
+                _messageHandlerInstances.Add(instance);
                 _instanceCollection.AddComponent(instance, messageHandler);
                 return true;
             }
@@ -111,7 +117,7 @@ namespace Kingo.MicroServices.Configuration
 
         private bool AddInstance<TMessage>(MessageHandlerInstance<TMessage> messageHandler)
         {
-            _instances.Add(messageHandler);
+            _messageHandlerInstances.Add(messageHandler);
             _instanceCollection.AddComponent(messageHandler, messageHandler);
             return true;
         }
@@ -121,7 +127,8 @@ namespace Kingo.MicroServices.Configuration
         {
             if (MessageHandlerType.IsMessageHandler(component, out var messageHandler))
             {
-                return base.Add(messageHandler);
+                _messageHandlerTypes[messageHandler.Type] = messageHandler;
+                return true;
             }
             return false;
         }

@@ -96,7 +96,7 @@ namespace Kingo.MicroServices.Configuration
             _serializerTypeMappings = new List<SerializerTypeMapping>();
         }
 
-        #region [====== IEnumerable<MicroProcessorComponent> ======]
+        #region [====== IMicroProcessorComponentCollection ======]
 
         IEnumerator IEnumerable.GetEnumerator() =>
             GetEnumerator();
@@ -104,10 +104,6 @@ namespace Kingo.MicroServices.Configuration
         /// <inheritdoc />
         public IEnumerator<MicroProcessorComponent> GetEnumerator() =>
             _serializerTypeMappings.Select(mapping => mapping.SerializerType).GetEnumerator();
-
-        #endregion
-
-        #region [====== AddSpecificComponentsTo ======]
 
         IServiceCollection IMicroProcessorComponentCollection.AddSpecificComponentsTo(IServiceCollection services) =>
             AddSerializerFactory(services, CreateSerializerTypeMap());

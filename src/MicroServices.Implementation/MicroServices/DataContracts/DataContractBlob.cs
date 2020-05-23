@@ -13,7 +13,7 @@ namespace Kingo.MicroServices.DataContracts
     [Serializable]
     public sealed class DataContractBlob : IEquatable<DataContractBlob>
     {
-        private DataContractBlob(DataContractType contentType, byte[] content)
+        private DataContractBlob(DataContractContentType contentType, byte[] content)
         {
             ContentType = contentType;
             Content = new MemoryStream(content, false);
@@ -28,7 +28,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <summary>
         /// Gets the type-identifier of the <see cref="Content"/>.
         /// </summary>
-        public DataContractType ContentType
+        public DataContractContentType ContentType
         {
             get;
         }
@@ -85,7 +85,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <paramref name="content"/> could not be read.
         /// </exception>
         public static DataContractBlob FromStream(string contentType, Stream content) =>
-            FromStream(DataContractType.Parse(contentType), content);
+            FromStream(DataContractContentType.Parse(contentType), content);
 
         /// <summary>
         /// Creates and returns a new <see cref="DataContractBlob"/> with the specified <paramref name="contentType"/> and <paramref name="content"/>.
@@ -99,7 +99,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <exception cref="ArgumentException">
         /// <paramref name="content"/> could not be read.
         /// </exception>
-        public static DataContractBlob FromStream(DataContractType contentType, Stream content) =>
+        public static DataContractBlob FromStream(DataContractContentType contentType, Stream content) =>
             new DataContractBlob(IsNotNull(contentType, nameof(contentType)), ReadBytes(IsNotNull(content)));
 
         private static byte[] ReadBytes(Stream content)
@@ -141,7 +141,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <paramref name="content"/> could not be read.
         /// </exception>
         public static Task<DataContractBlob> FromStreamAsync(string contentType, Stream content) =>
-            FromStreamAsync(DataContractType.Parse(contentType), content);
+            FromStreamAsync(DataContractContentType.Parse(contentType), content);
 
         /// <summary>
         /// Creates and returns a new <see cref="DataContractBlob"/> with the specified <paramref name="contentType"/> and <paramref name="content"/>.
@@ -155,7 +155,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <exception cref="ArgumentException">
         /// <paramref name="content"/> could not be read.
         /// </exception>
-        public static async Task<DataContractBlob> FromStreamAsync(DataContractType contentType, Stream content) =>
+        public static async Task<DataContractBlob> FromStreamAsync(DataContractContentType contentType, Stream content) =>
             new DataContractBlob(IsNotNull(contentType, nameof(contentType)), await ReadBytesAsync(IsNotNull(content)));
 
         private static async Task<byte[]> ReadBytesAsync(Stream content)
@@ -206,7 +206,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <paramref name="contentType"/> is not a valid type-identifier.
         /// </exception>
         public static DataContractBlob FromBytes(string contentType, IEnumerable<byte> content) =>
-            FromBytes(DataContractType.Parse(contentType), content);
+            FromBytes(DataContractContentType.Parse(contentType), content);
 
         /// <summary>
         /// Creates and returns a new <see cref="DataContractBlob"/> with the specified <paramref name="contentType"/> and <paramref name="content"/>.
@@ -217,7 +217,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <exception cref="ArgumentNullException">
         /// <paramref name="contentType"/> or <paramref name="content"/> is <c>null</c>.
         /// </exception>
-        public static DataContractBlob FromBytes(DataContractType contentType, IEnumerable<byte> content) =>
+        public static DataContractBlob FromBytes(DataContractContentType contentType, IEnumerable<byte> content) =>
             new DataContractBlob(IsNotNull(contentType, nameof(contentType)), IsNotNull(content, nameof(content)).ToArray());
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <paramref name="contentType"/> is not a valid type-identifier.
         /// </exception>
         public static DataContractBlob FromBytes(string contentType, byte[] content) =>
-            FromBytes(DataContractType.Parse(contentType), content);
+            FromBytes(DataContractContentType.Parse(contentType), content);
 
         /// <summary>
         /// Creates and returns a new <see cref="DataContractBlob"/> with the specified <paramref name="contentType"/> and <paramref name="content"/>.
@@ -244,7 +244,7 @@ namespace Kingo.MicroServices.DataContracts
         /// <exception cref="ArgumentNullException">
         /// <paramref name="contentType"/> or <paramref name="content"/> is <c>null</c>.
         /// </exception>
-        public static DataContractBlob FromBytes(DataContractType contentType, byte[] content) =>
+        public static DataContractBlob FromBytes(DataContractContentType contentType, byte[] content) =>
             new DataContractBlob(IsNotNull(contentType, nameof(contentType)), CopyBytes(IsNotNull(content, nameof(content))));
 
         private static byte[] CopyBytes(byte[] content)

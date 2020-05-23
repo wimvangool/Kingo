@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Kingo.MicroServices.DataContracts
 {
@@ -8,6 +9,28 @@ namespace Kingo.MicroServices.DataContracts
     /// </summary>
 	public interface IDataContractSerializer
     {
+        #region [====== Clone ======]
+
+        /// <summary>
+        /// Clones the specified <paramref name="content"/>.
+        /// </summary>
+        /// <typeparam name="TDataContract">Type of the data-contract to clone.</typeparam>
+        /// <param name="content">The (content of the) data-contract to clone.</param>
+        /// <returns>A copy or clone of the specified <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="content"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The serializer could not determine the content-type of the specified <paramref name="content"/>.
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Serialization or deserialization of the object failed.
+        /// </exception>
+        TDataContract Clone<TDataContract>(TDataContract content) =>
+            (TDataContract) Deserialize(Serialize(content));
+
+        #endregion
+
         #region [====== Serialize ======]
 
         /// <summary>

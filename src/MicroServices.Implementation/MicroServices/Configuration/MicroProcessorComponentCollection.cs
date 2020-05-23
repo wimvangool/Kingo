@@ -16,24 +16,13 @@ namespace Kingo.MicroServices.Configuration
     /// </summary>
     public abstract class MicroProcessorComponentCollection : IMicroProcessorComponentCollection
     {
-        private readonly Dictionary<Type, MicroProcessorComponent> _components;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MicroProcessorComponentCollection" /> class.
-        /// </summary>
-        protected MicroProcessorComponentCollection()
-        {
-            _components = new Dictionary<Type, MicroProcessorComponent>();
-        }
-
         #region [====== IEnumerable<MicroProcessorComponent> ======]
 
         IEnumerator IEnumerable.GetEnumerator() =>
             GetEnumerator();
 
         /// <inheritdoc />
-        public IEnumerator<MicroProcessorComponent> GetEnumerator() =>
-            _components.Values.GetEnumerator();
+        public abstract IEnumerator<MicroProcessorComponent> GetEnumerator();
 
         #endregion
 
@@ -131,11 +120,7 @@ namespace Kingo.MicroServices.Configuration
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <returns><c>true</c> if the type was added; otherwise <c>false</c>.</returns>
-        protected virtual bool Add(MicroProcessorComponent component)
-        {
-            _components[component.Type] = component;
-            return true;
-        }
+        protected abstract bool Add(MicroProcessorComponent component);
 
         #endregion
     }

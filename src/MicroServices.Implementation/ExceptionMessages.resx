@@ -123,6 +123,12 @@
   <data name="DataContractBlob_ContentCouldNotBeRead" xml:space="preserve">
     <value>The specified content (Length = {0}) could not be read. See inner-exception for details.</value>
   </data>
+  <data name="DataContractTypeMap_ContentTypeNotMapped" xml:space="preserve">
+    <value>Cannot determine the content-type for data-contract of type '{0}'. Please make sure this type is registered with the processor in the configuration.</value>
+  </data>
+  <data name="DataContractTypeMap_TypeNotMapped" xml:space="preserve">
+    <value>Cannot determine type type for data-contract with content-type '{0}'. Please make sure this content-type is registered with the processor in the configuration.</value>
+  </data>
   <data name="DataContractType_AttributeNotValid" xml:space="preserve">
     <value>The specified attribute (Name = {0}, Namespace = {1}) is not valid. See inner-exception for details.</value>
   </data>

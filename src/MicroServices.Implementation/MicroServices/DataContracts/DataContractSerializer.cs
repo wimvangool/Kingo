@@ -18,12 +18,10 @@ namespace Kingo.MicroServices.DataContracts
         #region [====== Serialize ======]
 
         public DataContractBlob Serialize(object content) =>
-            Serialize(content, _typeMap.GetContentType(IsNotNull(content, nameof(content)).GetType()));
+            Serialize(content, _typeMap.GetContentTypeOf(IsNotNull(content, nameof(content)).GetType()));
 
-        private DataContractBlob Serialize(object content, DataContractType contentType)
-        {
-            throw new NotImplementedException();
-        }
+        private DataContractBlob Serialize(object content, DataContractContentType contentType) =>
+            DataContractBlob.FromBytes(contentType, _serializer.Serialize(content));
 
         #endregion
 
@@ -33,7 +31,14 @@ namespace Kingo.MicroServices.DataContracts
             Deserialize(DataContractBlob.FromBytes(contentType, content), updateToLatestVersion);
 
         public object Deserialize(DataContractBlob blob, bool updateToLatestVersion = false) =>
-            throw new NotImplementedException();
+            Deserialize(blob, _typeMap.GetTypeOf(IsNotNull(blob, nameof(blob)).ContentType), updateToLatestVersion);
+
+        private object Deserialize(DataContractBlob blob, Type type, bool updateToLatestVersion = false)
+        {
+            var content = _serializer.Deserialize(blob.Content.ToArray(), type);
+
+            return content;
+        }
 
         #endregion
     }
