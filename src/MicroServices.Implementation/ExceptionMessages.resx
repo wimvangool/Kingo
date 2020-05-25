@@ -216,23 +216,14 @@
   <data name="MicroProcessorOperation_OperationCancelledUnexpectedly" xml:space="preserve">
     <value>A certain operation was cancelled unexpectedly.</value>
   </data>
-  <data name="MicroServiceBusClient_EndpointNotSupported" xml:space="preserve">
-    <value>Cannot connect endpoint '{0}' (Name = {1}) to the service-bus because it is not supported by this client.</value>
-  </data>
-  <data name="MicroServiceBusController_AlreadyStarted" xml:space="preserve">
-    <value>Controller of type '{0}' cannot be started because it has already been started.</value>
-  </data>
-  <data name="MicroServiceBusController_CannotPublishEvents" xml:space="preserve">
-    <value>Controller of type '{0}' cannot publish the specified event(s) because it has not been (fully) started yet.</value>
-  </data>
-  <data name="MicroServiceBusController_CannotSendCommands" xml:space="preserve">
-    <value>Controller of type '{0}' cannot send the specified command(s) because it has not been (fully) started yet.</value>
-  </data>
   <data name="MicroServiceBusEndpoint_MessageNotOfSupportedType" xml:space="preserve">
     <value>Message of type '{0}' is not supported by endpoint '{1}'. This endpoint only supports messages that can be converted to an instance of type '{2}'.</value>
   </data>
-  <data name="MicroServiceBus_CircularDependencyDetected" xml:space="preserve">
-    <value>Cannot publish the specified event(s) inside the constructor of a type that is registered as a '{0}'-type, because this causes a circular reference.</value>
+  <data name="MicroServiceBus_ProxyAlreadyRunning" xml:space="preserve">
+    <value>Cannot start the {0} because it is already running.</value>
+  </data>
+  <data name="MicroServiceBus_ProxyNotRunning" xml:space="preserve">
+    <value>Cannot send any message because the {0} is not running.</value>
   </data>
   <data name="Repository_ItemNotFound" xml:space="preserve">
     <value>Item of type '{0}' with id '{1}' was not found.</value>

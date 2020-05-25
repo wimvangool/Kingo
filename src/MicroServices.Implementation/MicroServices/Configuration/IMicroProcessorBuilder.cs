@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.MicroServices.Controllers;
 using Kingo.MicroServices.DataContracts;
 
 namespace Kingo.MicroServices.Configuration
@@ -26,6 +27,15 @@ namespace Kingo.MicroServices.Configuration
         /// <param name="configurator">Delegate that will be used to configure the collection.</param>
         /// <returns>This builder.</returns>
         IMicroProcessorBuilder ConfigureDataContracts(Action<DataContractCollection> configurator = null) =>
+            ConfigureComponents(configurator);
+
+        /// <summary>
+        /// Configures all <see cref="MicroServiceBusController"/>-instances that the <see cref="IMicroProcessor" /> 
+        /// will use to send and/or receive messages.
+        /// </summary>
+        /// <param name="configurator">Delegate that will be used to configure the collection.</param>
+        /// <returns>This builder.</returns>
+        IMicroProcessorBuilder ConfigureMicroServiceBusControllers(Action<MicroServiceBusControllerCollection> configurator = null) =>
             ConfigureComponents(configurator);
 
         /// <summary>

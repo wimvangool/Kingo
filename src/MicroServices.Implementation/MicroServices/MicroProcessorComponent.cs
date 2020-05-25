@@ -11,15 +11,15 @@ namespace Kingo.MicroServices
     /// </summary>
     public class MicroProcessorComponent : IEquatable<MicroProcessorComponent>, IMicroProcessorComponentConfiguration
     {
-        private readonly Lazy<IMicroProcessorComponentConfiguration> _configuration;
         private readonly Type _type;
         private readonly Type[] _serviceTypes;
-        
+        private readonly Lazy<IMicroProcessorComponentConfiguration> _configuration;
+
         private MicroProcessorComponent(Type type)
         {
             _type = type ?? throw new ArgumentNullException(nameof(type));
-            _configuration = new Lazy<IMicroProcessorComponentConfiguration>(GetConfiguration);
             _serviceTypes = new Type[0];
+            _configuration = new Lazy<IMicroProcessorComponentConfiguration>(GetConfiguration);
         }        
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace Kingo.MicroServices
                 throw new ArgumentNullException(nameof(component));
             }
             _type = component._type;
-            _configuration = component._configuration;
             _serviceTypes = serviceTypes.ToArray();
+            _configuration = component._configuration;
         }
 
         /// <summary>

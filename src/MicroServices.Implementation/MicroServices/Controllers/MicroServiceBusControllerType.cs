@@ -27,11 +27,11 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== Factory Methods ======]
 
-        public static bool IsController(MicroProcessorComponent component, out MicroServiceBusControllerType controller)
+        public static bool IsMicroServiceBusController(MicroProcessorComponent component, out MicroServiceBusControllerType controller)
         {
             if (typeof(MicroServiceBusController).IsAssignableFrom(component.Type))
             {
-                controller = new MicroServiceBusControllerType(component, typeof(MicroServiceBusController), typeof(IHostedService));
+                controller = new MicroServiceBusControllerType(component, typeof(MicroServiceBusController), typeof(IMicroServiceBus), typeof(IHostedService));
                 return true;
             }
             controller = null;

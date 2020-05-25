@@ -2,15 +2,45 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Reflection;
 
 namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// Serves as a base-class for all <see cref="IMicroServiceBus" /> implementations. 
     /// </summary>
-    public abstract class MicroServiceBus : IMicroServiceBus, IDisposable
+    public abstract class MicroServiceBus : AsyncDisposable, IMicroServiceBus
     {
-        #region [====== MessageSender ======]
+        private readonly MicroServiceBusProxyManager _sender;
+        private readonly MicroServiceBusProxyManager _receiver;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MicroServiceBus" /> class.
+        /// </summary>
+        protected MicroServiceBus()
+        {
+            _sender = new MicroServiceBusProxyManager(nameof(Sender), StartSenderAsync);
+            _receiver = new MicroServiceBusProxyManager(nameof(Receiver), StartReceiverAsync);
+        }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"{GetType().FriendlyName()} ({nameof(Sender)} = {_sender}, {nameof(Receiver)} = {_receiver})";
+
+        /// <inheritdoc />
+        public override async ValueTask DisposeAsync()
+        {
+            await _sender.DisposeAsync();
+            await _receiver.DisposeAsync();
+        }
+
+        #region [====== Sender ======]
+
+        /// <summary>
+        /// Returns the sender of this bus.
+        /// </summary>
+        protected IMicroServiceBus Sender =>
+            _sender.Proxy;
 
         /// <summary>
         /// Starts the component of this bus that is responsible for sending messages.
@@ -21,8 +51,8 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="InvalidOperationException">
         /// The message sender has already been started.
         /// </exception>
-        public Task StartMessageSenderAsync(CancellationToken token) =>
-            throw new NotImplementedException();
+        public Task StartSendingMessagesAsync(CancellationToken token) =>
+            _sender.StartAsync(token);
 
         /// <summary>
         /// Stops the component of this bus that is responsible for sending messages.
@@ -32,16 +62,29 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="InvalidOperationException">
         /// The message sender has already been stopped.
         /// </exception>
-        public Task StopMessageSenderAsync() =>
-            throw new NotImplementedException();
-        
+        public Task StopSendingMessagesAsync() =>
+            _sender.StopAsync();
+
         /// <inheritdoc />
         public Task SendAsync(IEnumerable<IMessage> messages) =>
-            throw new NotImplementedException();
+            Sender.SendAsync(messages);
+
+        /// <summary>
+        /// Creates and returns a <see cref="MicroServiceBusProxy"/> that is ready to send messages.
+        /// </summary>
+        /// <param name="token">Token that can be used to cancel the operation.</param>
+        /// <returns>A new <see cref="MicroServiceBusProxy"/> that is ready to send messages.</returns>
+        protected abstract Task<MicroServiceBusProxy> StartSenderAsync(CancellationToken token);
 
         #endregion
 
-        #region [====== MessageReceiver ======]
+        #region [====== Receiver ======]
+
+        /// <summary>
+        /// Gets the receiver of this bus.
+        /// </summary>
+        protected IMicroServiceBus Receiver =>
+            _receiver.Proxy;
 
         /// <summary>
         /// Starts the component of this bus that is responsible for receiving messages.
@@ -53,8 +96,8 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="InvalidOperationException">
         /// The message receiver has already been started.
         /// </exception>
-        public Task StartMessageReceiverAsync(CancellationToken token) =>
-            throw new NotImplementedException();
+        public Task StartReceivingMessagesAsync(CancellationToken token) =>
+            _receiver.StartAsync(token);
 
         /// <summary>
         /// Stops the component of this bus that is responsible for sending messages.
@@ -64,13 +107,16 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="InvalidOperationException">
         /// The message receiver has already been stopped.
         /// </exception>
-        public Task StopMessageReceiverAsync() =>
-            throw new NotImplementedException();
+        public Task StopReceivingMessagesAsync() =>
+            _receiver.StopAsync();
+
+        /// <summary>
+        /// Creates and returns a <see cref="MicroServiceBusProxy"/> that is actively receiving messages.
+        /// </summary>
+        /// <param name="token">Token that can be used to cancel the operation.</param>
+        /// <returns>A new <see cref="MicroServiceBusProxy"/> that is actively receiving messages.</returns>
+        protected abstract Task<MicroServiceBusProxy> StartReceiverAsync(CancellationToken token);
 
         #endregion
-
-        /// <inheritdoc />
-        public void Dispose() =>
-            throw new NotImplementedException();
     }
 }

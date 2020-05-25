@@ -40,6 +40,14 @@ namespace Kingo.MicroServices.Controllers
         protected IMicroProcessor Processor =>
             _processor;
 
+        /// <summary>
+        /// Gets the options that were set for this controller.
+        /// </summary>
+        protected abstract MicroServiceBusControllerOptions Options
+        {
+            get;
+        }
+
         /// <inheritdoc />
         public override string ToString() =>
             $"{GetType().FriendlyName()} - [{StoreAndForwardQueue.GetType().FriendlyName()} --> {Client.GetType().FriendlyName()}]";
@@ -62,8 +70,8 @@ namespace Kingo.MicroServices.Controllers
         /// </summary>
         /// <param name="bus">The bus to which the messages will be forwarded.</param>
         /// <returns></returns>
-        protected virtual StoreAndForwardQueue CreateStoreAndForwardQueue(MicroServiceBus bus) =>
-            new MemoryQueue(bus);
+        protected virtual StoreAndForwardQueue CreateStoreAndForwardQueue(IMicroServiceBus bus) =>
+            new ForwardOnlyQueue(bus);
 
         #endregion
 
@@ -81,9 +89,31 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== StartAsync(...) & StopAsync(...) ======]
 
+        /// <summary>
+        /// Starts this controller by instructing the <see cref="StoreAndForwardQueue"/> and
+        /// <see cref="Client"/> to start their message-senders and -receivers, based on the
+        /// <see cref="MicroServiceBusModes" /> set for this controller.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// Token that can be used to cancel the operation. If this token is signaled before
+        /// the operation completes, the controller will move back to its stopped state.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This controller is either already starting or has already started.
+        /// </exception>
         public Task StartAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
+        /// <summary>
+        /// Stops this controller by instructing the <see cref="StoreAndForwardQueue"/> and
+        /// <see cref="Client"/> to stop their message-senders and -receivers, based on the
+        /// <see cref="MicroServiceBusModes" /> set for this controller.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// Token that can be used to cancel the operation. If this token is signaled before
+        /// the operation completes, the operation in which the controller is stopped in a graceful
+        /// manner is aborted immediately and moved back to its stopped state.
+        /// </param>
         public Task StopAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
@@ -91,6 +121,7 @@ namespace Kingo.MicroServices.Controllers
 
         #region [====== SendAsync ======]
 
+        /// <inheritdoc />
         public Task SendAsync(IEnumerable<IMessage> messages) =>
             throw new NotImplementedException();
 

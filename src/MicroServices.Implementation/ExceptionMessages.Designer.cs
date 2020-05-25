@@ -358,47 +358,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot publish the specified event(s) inside the constructor of a type that is registered as a &apos;{0}&apos;-type, because this causes a circular reference..
+        ///   Looks up a localized string similar to Cannot start the {0} because it is already running..
         /// </summary>
-        internal static string MicroServiceBus_CircularDependencyDetected {
+        internal static string MicroServiceBus_ProxyAlreadyRunning {
             get {
-                return ResourceManager.GetString("MicroServiceBus_CircularDependencyDetected", resourceCulture);
+                return ResourceManager.GetString("MicroServiceBus_ProxyAlreadyRunning", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot connect endpoint &apos;{0}&apos; (Name = {1}) to the service-bus because it is not supported by this client..
+        ///   Looks up a localized string similar to Cannot send any message because the {0} is not running..
         /// </summary>
-        internal static string MicroServiceBusClient_EndpointNotSupported {
+        internal static string MicroServiceBus_ProxyNotRunning {
             get {
-                return ResourceManager.GetString("MicroServiceBusClient_EndpointNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot be started because it has already been started..
-        /// </summary>
-        internal static string MicroServiceBusController_AlreadyStarted {
-            get {
-                return ResourceManager.GetString("MicroServiceBusController_AlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot publish the specified event(s) because it has not been (fully) started yet..
-        /// </summary>
-        internal static string MicroServiceBusController_CannotPublishEvents {
-            get {
-                return ResourceManager.GetString("MicroServiceBusController_CannotPublishEvents", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Controller of type &apos;{0}&apos; cannot send the specified command(s) because it has not been (fully) started yet..
-        /// </summary>
-        internal static string MicroServiceBusController_CannotSendCommands {
-            get {
-                return ResourceManager.GetString("MicroServiceBusController_CannotSendCommands", resourceCulture);
+                return ResourceManager.GetString("MicroServiceBus_ProxyNotRunning", resourceCulture);
             }
         }
         
