@@ -17,16 +17,16 @@ namespace Kingo.MicroServices.Controllers
         /// <summary>
         /// Indicates the controller is able to send messages to the bus.
         /// </summary>
-        Sending,
+        Send,
 
         /// <summary>
         /// Indicates the controller is able to receive messages from the bus.
         /// </summary>
-        Receiving,
+        Receive,
 
         /// <summary>
         /// Indicates the controller is both able to send and receive messages from the bus.
         /// </summary>
-        SendingAndReceiving = Sending | Receiving
+        SendAndReceive = Send | Receive
     }
 }

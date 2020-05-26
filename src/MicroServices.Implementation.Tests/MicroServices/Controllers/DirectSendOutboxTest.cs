@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.Controllers
 {
     [TestClass]
-    public sealed class ForwardOnlyQueueTest
+    public sealed class DirectSendOutboxTest
     {
         #region [====== Stubs ======]
 
@@ -34,11 +34,11 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         private readonly MicroServiceBusStub _microServiceBus;
-        private readonly ForwardOnlyQueue _queue;
+        private readonly DirectSendOutbox _outbox;
 
-        public ForwardOnlyQueueTest()
+        public DirectSendOutboxTest()
         {
-            _queue = new ForwardOnlyQueue(_microServiceBus = new MicroServiceBusStub());
+            _outbox = new DirectSendOutbox(_microServiceBus = new MicroServiceBusStub());
         }
 
         #region [====== SendAsync ======]
@@ -49,7 +49,7 @@ namespace Kingo.MicroServices.Controllers
         {
             try
             {
-                await _queue.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateMessages(1));
             }
             finally
             {
@@ -61,11 +61,11 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task SendAsync_Throws_IfReceiverHasNotBeenStarted()
         {
-            await _queue.StartSendingMessagesAsync(CancellationToken.None);
+            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
 
             try
             {
-                await _queue.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateMessages(1));
             }
             finally
             {
@@ -76,12 +76,12 @@ namespace Kingo.MicroServices.Controllers
         [TestMethod]
         public async Task SendAsync_SendsAllMessages_IfBothSenderAndReceiverHaveBeenStarted()
         {
-            await _queue.StartSendingMessagesAsync(CancellationToken.None);
-            await _queue.StartReceivingMessagesAsync(CancellationToken.None);
+            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
+            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
             var messageCount = DateTimeOffset.UtcNow.Millisecond;
 
-            await _queue.SendAsync(CreateMessages(messageCount));
+            await _outbox.SendAsync(CreateMessages(messageCount));
 
             _microServiceBus.AssertMessageCountIs(messageCount);
         }
@@ -90,13 +90,13 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task SendAsync_Throws_IfReceiverHasBeenStoppedAgain()
         {
-            await _queue.StartSendingMessagesAsync(CancellationToken.None);
-            await _queue.StartReceivingMessagesAsync(CancellationToken.None);
-            await _queue.StopReceivingMessagesAsync();
+            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
+            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
+            await _outbox.StopReceivingMessagesAsync();
 
             try
             {
-                await _queue.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateMessages(1));
             }
             finally
             {
@@ -108,13 +108,13 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task SendAsync_Throws_IfSenderHasBeenStoppedAgain()
         {
-            await _queue.StartSendingMessagesAsync(CancellationToken.None);
-            await _queue.StartReceivingMessagesAsync(CancellationToken.None);
-            await _queue.StopSendingMessagesAsync();
+            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
+            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
+            await _outbox.StopSendingMessagesAsync();
 
             try
             {
-                await _queue.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateMessages(1));
             }
             finally
             {

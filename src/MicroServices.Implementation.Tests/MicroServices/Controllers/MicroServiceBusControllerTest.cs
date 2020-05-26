@@ -26,19 +26,19 @@ namespace Kingo.MicroServices.Controllers
             protected override MicroServiceBusControllerOptions Options =>
                 _options;
 
-            protected override MicroServiceBusClient CreateClient(IEnumerable<IMicroServiceBusEndpoint> endpoints) =>
+            protected override MicroServiceBus CreateServiceBus(IEnumerable<IMicroServiceBusEndpoint> endpoints) =>
                 new MicroServiceBusClientStub(endpoints);
         }
 
-        private sealed class MicroServiceBusClientStub : MicroServiceBusClient
+        private sealed class MicroServiceBusClientStub : MicroServiceBus
         {
             public MicroServiceBusClientStub(IEnumerable<IMicroServiceBusEndpoint> endpoints) :
                 base(endpoints) { }
 
-            protected override Task<MicroServiceBusProxy> StartSenderAsync(CancellationToken token) =>
+            protected override Task<MicroServiceBusClient> CreateSenderAsync(CancellationToken token) =>
                 throw new NotImplementedException();
 
-            protected override Task<MicroServiceBusProxy> StartReceiverAsync(CancellationToken token) =>
+            protected override Task<MicroServiceBusClient> CreateReceiverAsync(CancellationToken token) =>
                 throw new NotImplementedException();
         }
 

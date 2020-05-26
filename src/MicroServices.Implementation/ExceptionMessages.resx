@@ -219,11 +219,11 @@
   <data name="MicroServiceBusEndpoint_MessageNotOfSupportedType" xml:space="preserve">
     <value>Message of type '{0}' is not supported by endpoint '{1}'. This endpoint only supports messages that can be converted to an instance of type '{2}'.</value>
   </data>
-  <data name="MicroServiceBus_ProxyAlreadyRunning" xml:space="preserve">
-    <value>Cannot start the {0} because it is already running.</value>
+  <data name="MicroServiceBus_ClientAlreadyRunning" xml:space="preserve">
+    <value>Cannot start the client ({0}) because it is already running.</value>
   </data>
-  <data name="MicroServiceBus_ProxyNotRunning" xml:space="preserve">
-    <value>Cannot send any message because the {0} is not running.</value>
+  <data name="MicroServiceBus_ClientNotRunning" xml:space="preserve">
+    <value>Cannot send any messages because the client to communicate with the bus ({0}) is not running.</value>
   </data>
   <data name="Repository_ItemNotFound" xml:space="preserve">
     <value>Item of type '{0}' with id '{1}' was not found.</value>

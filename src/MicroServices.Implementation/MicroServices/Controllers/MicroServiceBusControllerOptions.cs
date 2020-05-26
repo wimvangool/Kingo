@@ -11,7 +11,7 @@
         /// </summary>
         public MicroServiceBusControllerOptions()
         {
-            Modes = MicroServiceBusModes.SendingAndReceiving;
+            Modes = MicroServiceBusModes.SendAndReceive;
         }
 
         /// <summary>

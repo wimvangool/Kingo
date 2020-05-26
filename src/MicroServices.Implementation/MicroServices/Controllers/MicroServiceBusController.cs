@@ -14,11 +14,11 @@ namespace Kingo.MicroServices.Controllers
     /// for further processing.
     /// </summary>
     [MicroProcessorComponent(ServiceLifetime.Singleton)]
-    public abstract class MicroServiceBusController : IMicroServiceBus, IHostedService, IDisposable
+    public abstract class MicroServiceBusController : AsyncDisposable, IMicroServiceBus, IHostedService
     {
         private readonly IMicroProcessor _processor;
-        private readonly Lazy<StoreAndForwardQueue> _storeAndForwardQueue;
-        private readonly Lazy<MicroServiceBusClient> _client;
+        private readonly Lazy<MicroServiceBusOutbox> _outbox;
+        private readonly Lazy<MicroServiceBus> _serviceBus;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroServiceBusController" /> class.
@@ -30,8 +30,8 @@ namespace Kingo.MicroServices.Controllers
         protected MicroServiceBusController(IMicroProcessor processor)
         {
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
-            _storeAndForwardQueue = new Lazy<StoreAndForwardQueue>(CreateStoreAndForwardQueue, true);
-            _client = new Lazy<MicroServiceBusClient>(CreateClient, true);
+            _outbox = new Lazy<MicroServiceBusOutbox>(CreateOutbox, true);
+            _serviceBus = new Lazy<MicroServiceBus>(CreateServiceBus, true);
         }
 
         /// <summary>
@@ -50,48 +50,57 @@ namespace Kingo.MicroServices.Controllers
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{GetType().FriendlyName()} - [{StoreAndForwardQueue.GetType().FriendlyName()} --> {Client.GetType().FriendlyName()}]";
+            $"{GetType().FriendlyName()} - [{Outbox.GetType().FriendlyName()} --> {ServiceBus.GetType().FriendlyName()}]";
 
-        #region [====== StoreAndForwardQueue ======]
+        #region [====== Outbox ======]
 
         /// <summary>
-        /// The <see cref="StoreAndForwardQueue"/> this controller uses to buffer any messages while
+        /// The <see cref="Outbox"/> this controller uses to buffer any messages while
         /// a transaction is still in progress.
         /// </summary>
-        protected StoreAndForwardQueue StoreAndForwardQueue =>
-            _storeAndForwardQueue.Value;
+        protected MicroServiceBusOutbox Outbox =>
+            _outbox.Value;
 
-        private StoreAndForwardQueue CreateStoreAndForwardQueue() =>
-            CreateStoreAndForwardQueue(Client);
+        private MicroServiceBusOutbox CreateOutbox() =>
+            CreateOutbox(ServiceBus);
 
         /// <summary>
-        /// Creates and returns the <see cref="StoreAndForwardQueue"/> that this controller will use to
-        /// buffer any messages while a transaction is still in progress. By default
+        /// Creates and returns the <see cref="Outbox"/> that will be used by this controller to
+        /// temporarily store any messages produced by the processor, which the outbox will
+        /// then forward to the specified <paramref name="bus"/> at the appropriate time.
         /// </summary>
         /// <param name="bus">The bus to which the messages will be forwarded.</param>
-        /// <returns></returns>
-        protected virtual StoreAndForwardQueue CreateStoreAndForwardQueue(IMicroServiceBus bus) =>
-            new ForwardOnlyQueue(bus);
+        /// <returns>A new <see cref="MicroServiceBusOutbox"/>.</returns>
+        protected virtual MicroServiceBusOutbox CreateOutbox(IMicroServiceBus bus) =>
+            new DirectSendOutbox(bus);
 
         #endregion
 
-        #region [====== Client ======]
+        #region [====== ServiceBus ======]
 
-        protected MicroServiceBusClient Client =>
-            _client.Value;
+        protected MicroServiceBus ServiceBus =>
+            _serviceBus.Value;
 
-        private MicroServiceBusClient CreateClient() =>
-            CreateClient(_processor.CreateMicroServiceBusEndpoints());
-
-        protected abstract MicroServiceBusClient CreateClient(IEnumerable<IMicroServiceBusEndpoint> endpoints);
-
-        #endregion
-
-        #region [====== StartAsync(...) & StopAsync(...) ======]
+        private MicroServiceBus CreateServiceBus() =>
+            CreateServiceBus(_processor.CreateMicroServiceBusEndpoints());
 
         /// <summary>
-        /// Starts this controller by instructing the <see cref="StoreAndForwardQueue"/> and
-        /// <see cref="Client"/> to start their message-senders and -receivers, based on the
+        /// Creates and returns a new <see cref="MicroServiceBus"/> that will be used by this controller to
+        /// send and/or receive messages from a service-bus, depending on the configuration of this controller.
+        /// </summary>
+        /// <param name="endpoints">
+        /// The endpoints exposed by the processor that are configured to receive messages from the service-bus.
+        /// </param>
+        /// <returns>A new <see cref="MicroServiceBus"/>.</returns>
+        protected abstract MicroServiceBus CreateServiceBus(IEnumerable<IMicroServiceBusEndpoint> endpoints);
+
+        #endregion
+
+        #region [====== StartAsync(...), StopAsync(...) & DisposeAsync(...) ======]
+
+        /// <summary>
+        /// Starts this controller by instructing the <see cref="Outbox"/> and
+        /// <see cref="ServiceBus"/> to start their message-senders and -receivers, based on the
         /// <see cref="MicroServiceBusModes" /> set for this controller.
         /// </summary>
         /// <param name="cancellationToken">
@@ -105,8 +114,8 @@ namespace Kingo.MicroServices.Controllers
             throw new NotImplementedException();
 
         /// <summary>
-        /// Stops this controller by instructing the <see cref="StoreAndForwardQueue"/> and
-        /// <see cref="Client"/> to stop their message-senders and -receivers, based on the
+        /// Stops this controller by instructing the <see cref="Outbox"/> and
+        /// <see cref="ServiceBus"/> to stop their message-senders and -receivers, based on the
         /// <see cref="MicroServiceBusModes" /> set for this controller.
         /// </summary>
         /// <param name="cancellationToken">
@@ -117,23 +126,27 @@ namespace Kingo.MicroServices.Controllers
         public Task StopAsync(CancellationToken cancellationToken) =>
             throw new NotImplementedException();
 
+        /// <inheritdoc />
+        public override async ValueTask DisposeAsync()
+        {
+            if (_outbox.IsValueCreated)
+            {
+                await _outbox.Value.DisposeAsync();
+            }
+            if (_serviceBus.IsValueCreated)
+            {
+                await _serviceBus.Value.DisposeAsync();
+            }
+            await base.DisposeAsync();
+        }
+
         #endregion
 
         #region [====== SendAsync ======]
 
         /// <inheritdoc />
         public Task SendAsync(IEnumerable<IMessage> messages) =>
-            throw new NotImplementedException();
-
-        #endregion
-
-        #region [====== Dispose ======]
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+            Outbox.SendAsync(messages);
 
         #endregion
     }

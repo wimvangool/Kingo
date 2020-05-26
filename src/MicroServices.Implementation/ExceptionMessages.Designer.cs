@@ -358,20 +358,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot start the {0} because it is already running..
+        ///   Looks up a localized string similar to Cannot start the client ({0}) because it is already running..
         /// </summary>
-        internal static string MicroServiceBus_ProxyAlreadyRunning {
+        internal static string MicroServiceBus_ClientAlreadyRunning {
             get {
-                return ResourceManager.GetString("MicroServiceBus_ProxyAlreadyRunning", resourceCulture);
+                return ResourceManager.GetString("MicroServiceBus_ClientAlreadyRunning", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot send any message because the {0} is not running..
+        ///   Looks up a localized string similar to Cannot send any messages because the client to communicate with the bus ({0}) is not running..
         /// </summary>
-        internal static string MicroServiceBus_ProxyNotRunning {
+        internal static string MicroServiceBus_ClientNotRunning {
             get {
-                return ResourceManager.GetString("MicroServiceBus_ProxyNotRunning", resourceCulture);
+                return ResourceManager.GetString("MicroServiceBus_ClientNotRunning", resourceCulture);
             }
         }
         

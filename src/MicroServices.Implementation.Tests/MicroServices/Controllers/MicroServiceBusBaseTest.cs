@@ -7,11 +7,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.Controllers
 {
     [TestClass]
-    public sealed class MicroServiceBusTest
+    public sealed class MicroServiceBusBaseTest
     {
         #region [====== Stub ======]
 
-        private sealed class MicroServiceBusStub : MicroServiceBus
+        private sealed class MicroServiceBusStub : MicroServiceBusBase
         {
             private readonly MicroServiceBusProxyStub _proxyStub;
 
@@ -20,17 +20,17 @@ namespace Kingo.MicroServices.Controllers
                 _proxyStub = new MicroServiceBusProxyStub();
             }
 
-            protected override Task<MicroServiceBusProxy> StartSenderAsync(CancellationToken token) =>
+            protected override Task<MicroServiceBusClient> CreateSenderAsync(CancellationToken token) =>
                 CreateProxyAsync();
 
-            protected override Task<MicroServiceBusProxy> StartReceiverAsync(CancellationToken token) =>
+            protected override Task<MicroServiceBusClient> CreateReceiverAsync(CancellationToken token) =>
                 CreateProxyAsync();
 
-            private Task<MicroServiceBusProxy> CreateProxyAsync() =>
-                Task.FromResult<MicroServiceBusProxy>(_proxyStub);
+            private Task<MicroServiceBusClient> CreateProxyAsync() =>
+                Task.FromResult<MicroServiceBusClient>(_proxyStub);
         }
 
-        private sealed class MicroServiceBusProxyStub : MicroServiceBusProxy
+        private sealed class MicroServiceBusProxyStub : MicroServiceBusClient
         {
             public override Task SendAsync(IEnumerable<IMessage> messages) =>
                 Task.CompletedTask;

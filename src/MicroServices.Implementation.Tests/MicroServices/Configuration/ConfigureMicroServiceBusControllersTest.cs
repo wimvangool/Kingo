@@ -24,7 +24,7 @@ namespace Kingo.MicroServices.Configuration
             protected override MicroServiceBusControllerOptions Options =>
                 _options;
 
-            protected override MicroServiceBusClient CreateClient(IEnumerable<IMicroServiceBusEndpoint> endpoints) =>
+            protected override MicroServiceBus CreateServiceBus(IEnumerable<IMicroServiceBusEndpoint> endpoints) =>
                 throw new NotSupportedException();
         }
 
