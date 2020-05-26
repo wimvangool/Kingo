@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.MicroServices.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.MicroServices.MessageFactoryTest;
 
 namespace Kingo.MicroServices.Controllers
 {
@@ -49,7 +50,7 @@ namespace Kingo.MicroServices.Controllers
         {
             try
             {
-                await _outbox.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateInt32Messages(1));
             }
             finally
             {
@@ -65,7 +66,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await _outbox.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateInt32Messages(1));
             }
             finally
             {
@@ -74,14 +75,25 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
-        public async Task SendAsync_SendsAllMessages_IfBothSenderAndReceiverHaveBeenStarted()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task SendAsync_Throws_IfBothSenderAndReceiverHaveBeenStarted_But_MessagesIsNull()
         {
             await _outbox.StartSendingMessagesAsync(CancellationToken.None);
             await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
-            var messageCount = DateTimeOffset.UtcNow.Millisecond;
+            await _outbox.SendAsync(null);
+        }
 
-            await _outbox.SendAsync(CreateMessages(messageCount));
+        [TestMethod]
+        public async Task SendAsync_SendsSomeMessages_IfBothSenderAndReceiverHaveBeenStarted_But_SomeMessagesHaveUnsupportedDirection()
+        {
+            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
+            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
+
+            var messageCount = DateTimeOffset.UtcNow.Millisecond + 1;
+            var messages = CreateInt32Messages(messageCount).Concat(CreateInt32Messages(messageCount, MessageKind.Event, MessageDirection.Input));
+
+            await _outbox.SendAsync(messages);
 
             _microServiceBus.AssertMessageCountIs(messageCount);
         }
@@ -96,7 +108,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await _outbox.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateInt32Messages(1));
             }
             finally
             {
@@ -114,7 +126,7 @@ namespace Kingo.MicroServices.Controllers
 
             try
             {
-                await _outbox.SendAsync(CreateMessages(1));
+                await _outbox.SendAsync(CreateInt32Messages(1));
             }
             finally
             {
@@ -122,22 +134,39 @@ namespace Kingo.MicroServices.Controllers
             }
         }
 
-        #endregion
-
-        #region [====== CreateMessages ======]
-
-        private static readonly MessageFactory _MessageFactory = new MessagePipeline().BuildMessageFactory();
-
-        private static IEnumerable<IMessage> CreateMessages(int count)
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task SendAsync_Throws_IfOutboxHasBeenDisposed()
         {
-            for (int index = 0; index < count; index++)
+            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
+            _outbox.Dispose();
+
+            try
             {
-                yield return CreateMessage(index);
+                await _outbox.SendAsync(CreateInt32Messages(1));
+            }
+            finally
+            {
+                _microServiceBus.AssertMessageCountIs(0);
             }
         }
 
-        private static IMessage CreateMessage(object content) =>
-            _MessageFactory.CreateEvent(MessageDirection.Output, MessageHeader.Unspecified, content);
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task SendAsync_Throws_IfOutboxHasBeenDisposedAsynchronously()
+        {
+            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
+            await _outbox.DisposeAsync();
+
+            try
+            {
+                await _outbox.SendAsync(CreateInt32Messages(1));
+            }
+            finally
+            {
+                _microServiceBus.AssertMessageCountIs(0);
+            }
+        }
 
         #endregion
     }

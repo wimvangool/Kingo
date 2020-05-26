@@ -15,7 +15,7 @@ namespace Kingo.MicroServices.Controllers
         {
             private readonly MicroServiceBusProxyStub _proxyStub;
 
-            public MicroServiceBusStub()
+            public MicroServiceBusStub() : base(MessageDirection.Output, MessageDirection.Output)
             {
                 _proxyStub = new MicroServiceBusProxyStub();
             }
@@ -44,7 +44,7 @@ namespace Kingo.MicroServices.Controllers
         private const string _StoppedState = "Stopped";
         private const string _StartedState = "Started";
 
-        #region [====== Start & Stop ======]
+        #region [====== StartAsync(...), StopAsync(...) & DisposeAsync(...) ======]
 
         [TestMethod]
         public async Task StartSendingMessagesAsync_StartsTheSender_IfSenderHasNotBeenStarted()
@@ -76,6 +76,26 @@ namespace Kingo.MicroServices.Controllers
                     AssertIsInState(bus, _Receiver, _StoppedState);
                 }
             }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StartSendingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposed()
+        {
+            var bus = new MicroServiceBusStub();
+
+            bus.Dispose();
+            await bus.StartSendingMessagesAsync(CancellationToken.None);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StartSendingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposedAsynchronously()
+        {
+            var bus = new MicroServiceBusStub();
+
+            await bus.DisposeAsync();
+            await bus.StartSendingMessagesAsync(CancellationToken.None);
         }
 
         [TestMethod]
@@ -111,6 +131,26 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StartReceivingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposed()
+        {
+            var bus = new MicroServiceBusStub();
+
+            bus.Dispose();
+            await bus.StartReceivingMessagesAsync(CancellationToken.None);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StartReceivingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposedAsynchronously()
+        {
+            var bus = new MicroServiceBusStub();
+
+            await bus.DisposeAsync();
+            await bus.StartReceivingMessagesAsync(CancellationToken.None);
+        }
+
+        [TestMethod]
         public async Task StopSendingMessagesAsync_DoesNothing_IfSenderHasNotBeenStarted()
         {
             await using (var bus = new MicroServiceBusStub())
@@ -136,6 +176,26 @@ namespace Kingo.MicroServices.Controllers
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StopSendingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposed()
+        {
+            var bus = new MicroServiceBusStub();
+
+            bus.Dispose();
+            await bus.StopSendingMessagesAsync();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StopSendingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposedAsynchronously()
+        {
+            var bus = new MicroServiceBusStub();
+
+            await bus.DisposeAsync();
+            await bus.StopSendingMessagesAsync();
+        }
+
+        [TestMethod]
         public async Task StopReceivingMessagesAsync_DoesNothing_IfReceiverHasNotBeenStarted()
         {
             await using (var bus = new MicroServiceBusStub())
@@ -158,6 +218,26 @@ namespace Kingo.MicroServices.Controllers
                 AssertIsInState(bus, _Sender, _StoppedState);
                 AssertIsInState(bus, _Receiver, _StoppedState);
             }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StopReceivingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposed()
+        {
+            var bus = new MicroServiceBusStub();
+
+            bus.Dispose();
+            await bus.StopReceivingMessagesAsync();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public async Task StopReceivingMessagesAsync_Throws_IfBusHasAlreadyBeenDisposedAsynchronously()
+        {
+            var bus = new MicroServiceBusStub();
+
+            await bus.DisposeAsync();
+            await bus.StopReceivingMessagesAsync();
         }
 
         private static void AssertIsInState(object queue, string component, string state) =>

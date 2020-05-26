@@ -376,6 +376,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot start controller of type &apos;{0}&apos; because the controller has already been started..
+        /// </summary>
+        internal static string MicroServiceBusController_ControllerAlreadyStarted {
+            get {
+                return ResourceManager.GetString("MicroServiceBusController_ControllerAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not supported by endpoint &apos;{1}&apos;. This endpoint only supports messages that can be converted to an instance of type &apos;{2}&apos;..
         /// </summary>
         internal static string MicroServiceBusEndpoint_MessageNotOfSupportedType {

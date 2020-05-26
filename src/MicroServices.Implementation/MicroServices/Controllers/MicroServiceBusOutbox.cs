@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Transactions;
 
 namespace Kingo.MicroServices.Controllers
 {
@@ -20,7 +19,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="serviceBus"/> is <c>null</c>.
         /// </exception>
-        protected MicroServiceBusOutbox(IMicroServiceBus serviceBus)
+        protected MicroServiceBusOutbox(IMicroServiceBus serviceBus) : base(MessageDirection.Output, MessageDirection.Output)
         {
             _serviceBus = serviceBus ?? throw new ArgumentNullException(nameof(serviceBus));
         }

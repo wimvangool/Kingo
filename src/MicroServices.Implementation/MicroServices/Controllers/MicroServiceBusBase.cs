@@ -16,14 +16,19 @@ namespace Kingo.MicroServices.Controllers
         private sealed class SenderHost : MicroServiceBusClientHost
         {
             private readonly MicroServiceBusBase _microServiceBus;
+            private readonly MessageDirection _supportedMessageDirection;
 
-            public SenderHost(MicroServiceBusBase microServiceBus)
+            public SenderHost(MicroServiceBusBase microServiceBus, MessageDirection supportedMessageDirection)
             {
                 _microServiceBus = microServiceBus;
+                _supportedMessageDirection = supportedMessageDirection;
             }
 
             protected override string Name =>
                 nameof(_microServiceBus.Sender).ToLowerInvariant();
+
+            protected override MessageDirection SupportedMessageDirection =>
+                _supportedMessageDirection;
 
             protected override Task<MicroServiceBusClient> CreateClientAsync(CancellationToken token) =>
                 _microServiceBus.CreateSenderAsync(token);
@@ -36,14 +41,19 @@ namespace Kingo.MicroServices.Controllers
         private sealed class ReceiverHost : MicroServiceBusClientHost
         {
             private readonly MicroServiceBusBase _microServiceBus;
+            private readonly MessageDirection _supportedMessageDirection;
 
-            public ReceiverHost(MicroServiceBusBase microServiceBus)
+            public ReceiverHost(MicroServiceBusBase microServiceBus, MessageDirection supportedMessageDirection)
             {
                 _microServiceBus = microServiceBus;
+                _supportedMessageDirection = supportedMessageDirection;
             }
 
             protected override string Name =>
                 nameof(_microServiceBus.Receiver);
+
+            protected override MessageDirection SupportedMessageDirection =>
+                _supportedMessageDirection;
 
             protected override Task<MicroServiceBusClient> CreateClientAsync(CancellationToken token) =>
                 _microServiceBus.CreateReceiverAsync(token);
@@ -52,15 +62,15 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         private readonly SenderHost _sender;
-        private readonly MicroServiceBusClientHost _receiver;
+        private readonly ReceiverHost _receiver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroServiceBusBase" /> class.
         /// </summary>
-        internal MicroServiceBusBase()
+        internal MicroServiceBusBase(MessageDirection senderMessageDirection, MessageDirection receiverMessageDirection)
         {
-            _sender = new SenderHost(this);
-            _receiver = new ReceiverHost(this);
+            _sender = new SenderHost(this, senderMessageDirection);
+            _receiver = new ReceiverHost(this, receiverMessageDirection);
         }
 
         /// <inheritdoc />
@@ -68,10 +78,14 @@ namespace Kingo.MicroServices.Controllers
             $"{GetType().FriendlyName()} ({nameof(Sender)} = {_sender}, {nameof(Receiver)} = {_receiver})";
 
         /// <inheritdoc />
-        public override async ValueTask DisposeAsync()
+        protected override async ValueTask DisposeAsync(DisposeContext context)
         {
-            await _sender.DisposeAsync();
-            await _receiver.DisposeAsync();
+            if (context != DisposeContext.Finalizer)
+            {
+                await _sender.DisposeAsync();
+                await _receiver.DisposeAsync();
+            }
+            await base.DisposeAsync(context);
         }
 
         #region [====== Sender ======]

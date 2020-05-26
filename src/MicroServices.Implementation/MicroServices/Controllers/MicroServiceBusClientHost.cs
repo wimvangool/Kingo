@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices.Controllers
 {
@@ -24,8 +26,14 @@ namespace Kingo.MicroServices.Controllers
 
             public abstract Task StopAsync();
 
-            public override ValueTask DisposeAsync() =>
-                Client.DisposeAsync();
+            protected override async ValueTask DisposeAsync(DisposeContext context)
+            {
+                if (context != DisposeContext.Finalizer)
+                {
+                    await Client.DisposeAsync();
+                }
+                await base.DisposeAsync(context);
+            }
         }
 
         #endregion
@@ -54,14 +62,16 @@ namespace Kingo.MicroServices.Controllers
                 // When starting the client, we first move to the starting state. While in this state,
                 // the client is created, initialized and returned. When the client is returned, the
                 // client-host is moved to the started state. If this process, for whatever reason,
-                // fails, then the client-host is reverted back to a stopped state. if
+                // fails, then the client-host is reverted back to a stopped state.
                 if (await _host.MoveToStateAsync(this, startingState).ConfigureAwait(false))
                 {
                     try
                     {
                         // While the client is being created, another thread may have called StopAsync() on the host.
-                        // For this reason, we check if the host is successfully moved into the started state. If not,
-                        // the client that was just created remains unused and can be disposed immediately.
+                        // If that's the case, the specified token will be signaled, so that the startup-operation knows it
+                        // can cancel its operation.
+                        // In addition, we can no longer move into the started-state (since the current state is no longer the
+                        // starting state). This means this state can then immediately be disposed.
                         var startedState = await CreateStartedStateAsync(startingState.Token).ConfigureAwait(false);
 
                         if (await _host.MoveToStateAsync(startingState, startedState).ConfigureAwait(false))
@@ -76,7 +86,10 @@ namespace Kingo.MicroServices.Controllers
                         throw;
                     }
                 }
-                throw _host.NewClientAlreadyRunningException();
+                else
+                {
+                    throw NewClientAlreadyRunningException(_host);
+                }
             }
 
             private async Task<StartedState> CreateStartedStateAsync(CancellationToken token) =>
@@ -110,21 +123,25 @@ namespace Kingo.MicroServices.Controllers
                 _tokenSource.Token;
 
             public override Task StartAsync(CancellationToken token) =>
-                throw _host.NewClientAlreadyRunningException();
+                throw NewClientAlreadyRunningException(_host);
 
-            public override Task StopAsync() =>
-                _host.MoveToStateAsync(this, new StoppedState(_host));
-
-            protected override void Dispose(bool disposing)
+            public override async Task StopAsync()
             {
-                if (disposing)
+                // If StopAsync is called when the host is still starting, we signal
+                // to the startup-operation that it should cancel its efforts.
+                if (await _host.MoveToStateAsync(this, new StoppedState(_host)).ConfigureAwait(false))
                 {
-                    // The starting-state might be disposed because another thread just opted to
-                    // stop the client, in which case we want to cancel the startup-operation.
                     _tokenSource.Cancel();
+                }
+            }
+
+            protected override ValueTask DisposeAsync(DisposeContext context)
+            {
+                if (context != DisposeContext.Finalizer)
+                {
                     _tokenSource.Dispose();
                 }
-                base.Dispose(disposing);
+                return base.DisposeAsync(context);
             }
         }
 
@@ -147,13 +164,44 @@ namespace Kingo.MicroServices.Controllers
                 _client;
 
             public override Task StartAsync(CancellationToken token) =>
-                throw _host.NewClientAlreadyRunningException();
+                throw NewClientAlreadyRunningException(_host);
 
             public override Task StopAsync() =>
                 _host.MoveToStateAsync(this, new StoppedState(_host));
 
-            public override ValueTask DisposeAsync() =>
-                _client.DisposeAsync();
+            protected override async ValueTask DisposeAsync(DisposeContext context)
+            {
+                if (context != DisposeContext.Finalizer)
+                {
+                    await _client.DisposeAsync();
+                }
+                await base.DisposeAsync(context);
+            }
+        }
+
+        #endregion
+
+        #region [====== DisposedState ======]
+
+        private sealed class DisposedState : State
+        {
+            private readonly MicroServiceBusClientHost _host;
+            private readonly DisposedClient _client;
+
+            public DisposedState(MicroServiceBusClientHost host)
+            {
+                _host = host;
+                _client = new DisposedClient(_host);
+            }
+
+            public override MicroServiceBusClient Client =>
+                _client;
+
+            public override Task StartAsync(CancellationToken token) =>
+                throw NewClientDisposedException(_host);
+
+            public override Task StopAsync() =>
+                throw NewClientDisposedException(_host);
         }
 
         #endregion
@@ -170,7 +218,24 @@ namespace Kingo.MicroServices.Controllers
             }
 
             public override Task SendAsync(IEnumerable<IMessage> messages) =>
-                throw _host.NewClientNotRunningException();
+                throw NewClientNotRunningException(_host);
+        }
+
+        #endregion
+
+        #region [====== DisposedClient ======]
+
+        private sealed class DisposedClient : MicroServiceBusClient
+        {
+            private readonly MicroServiceBusClientHost _host;
+
+            public DisposedClient(MicroServiceBusClientHost host)
+            {
+                _host = host;
+            }
+
+            public override Task SendAsync(IEnumerable<IMessage> messages) =>
+                throw NewClientDisposedException(_host);
         }
 
         #endregion
@@ -187,11 +252,19 @@ namespace Kingo.MicroServices.Controllers
             get;
         }
 
+        protected abstract MessageDirection SupportedMessageDirection
+        {
+            get;
+        }
+
         public override string ToString() =>
             _state.ToString();
 
         public override Task SendAsync(IEnumerable<IMessage> messages) =>
-            _state.Client.SendAsync(messages);
+            _state.Client.SendAsync(IsNotNull(messages, nameof(messages)).Where(IsSupportedMessage));
+
+        private bool IsSupportedMessage(IMessage message) =>
+            message != null && message.Direction == SupportedMessageDirection;
 
         #region [====== StartAsync(...), StopAsync(...) & DisposeAsync(...) ======]
 
@@ -203,8 +276,31 @@ namespace Kingo.MicroServices.Controllers
         public Task StopAsync() =>
             _state.StopAsync();
 
-        public override ValueTask DisposeAsync() =>
-            _state.DisposeAsync();
+        protected override async ValueTask DisposeAsync(DisposeContext context)
+        {
+            if (context != DisposeContext.Finalizer)
+            {
+                await Interlocked.Exchange(ref _state, new DisposedState(this)).DisposeAsync().ConfigureAwait(false);
+            }
+            await base.DisposeAsync(context);
+        }
+
+        private static Exception NewClientNotRunningException(MicroServiceBusClientHost host)
+        {
+            var messageFormat = ExceptionMessages.MicroServiceBus_ClientNotRunning;
+            var message = string.Format(messageFormat, host.Name);
+            return new InvalidOperationException(message);
+        }
+
+        private static Exception NewClientAlreadyRunningException(MicroServiceBusClientHost host)
+        {
+            var messageFormat = ExceptionMessages.MicroServiceBus_ClientAlreadyRunning;
+            var message = string.Format(messageFormat, host.Name);
+            return new InvalidOperationException(message);
+        }
+
+        private static ObjectDisposedException NewClientDisposedException(MicroServiceBusClientHost host) =>
+            host.NewObjectDisposedException();
 
         #endregion
 
@@ -224,24 +320,6 @@ namespace Kingo.MicroServices.Controllers
 
         private bool MoveToState(State oldState, State newState) =>
             Interlocked.CompareExchange(ref _state, newState, oldState) == oldState;
-
-        #endregion
-
-        #region [======= Exception Factory Methods ======]
-
-        private Exception NewClientNotRunningException()
-        {
-            var messageFormat = ExceptionMessages.MicroServiceBus_ClientNotRunning;
-            var message = string.Format(messageFormat, Name);
-            return new InvalidOperationException(message);
-        }
-
-        private Exception NewClientAlreadyRunningException()
-        {
-            var messageFormat = ExceptionMessages.MicroServiceBus_ClientAlreadyRunning;
-            var message = string.Format(messageFormat, Name);
-            return new InvalidOperationException(message);
-        }
 
         #endregion
     }

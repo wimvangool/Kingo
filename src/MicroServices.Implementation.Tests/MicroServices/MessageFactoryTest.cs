@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Kingo.MicroServices.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -368,5 +369,22 @@ namespace Kingo.MicroServices
 
         private IMessage CreateMessage<TContent>(TContent content, MessageKind kind = MessageKind.Command, MessageDirection direction = MessageDirection.Input, DateTimeOffset? deliveryTime = null) =>
             _builder.BuildMessageFactory().CreateMessage(kind, direction, MessageHeader.Unspecified, content, deliveryTime).Validate(null);
+
+        #region [====== CreateInt32Messages ======]
+
+        private static readonly MessageFactory _MessageFactory = new MessagePipeline().BuildMessageFactory();
+
+        internal static IEnumerable<IMessage> CreateInt32Messages(int count, MessageKind kind = MessageKind.Event, MessageDirection direction = MessageDirection.Output)
+        {
+            for (int index = 0; index < count; index++)
+            {
+                yield return CreateInt32Message(index, kind, direction);
+            }
+        }
+
+        private static IMessage CreateInt32Message(int content, MessageKind kind, MessageDirection direction) =>
+            _MessageFactory.CreateMessage(kind, direction, MessageHeader.Unspecified, content);
+
+        #endregion
     }
 }

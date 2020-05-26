@@ -12,7 +12,7 @@ namespace Kingo.MicroServices.DataContracts
             set;
         }
 
-        public override bool Equals(object? obj) =>
+        public override bool Equals(object obj) =>
             Equals(obj as SomeDataContract);
 
         public bool Equals(SomeDataContract other) =>

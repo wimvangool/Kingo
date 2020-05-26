@@ -20,7 +20,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="endpoints"/> is <c>null</c>.
         /// </exception>
-        protected MicroServiceBus(IEnumerable<IMicroServiceBusEndpoint> endpoints)
+        protected MicroServiceBus(IEnumerable<IMicroServiceBusEndpoint> endpoints) : base(MessageDirection.Output, MessageDirection.Input)
         {
             _endpoints = endpoints?.ToArray() ?? throw new ArgumentNullException(nameof(endpoints));
         }
