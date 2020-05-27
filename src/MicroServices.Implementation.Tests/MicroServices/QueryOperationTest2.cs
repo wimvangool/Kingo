@@ -66,11 +66,11 @@ namespace Kingo.MicroServices
             Assert.AreSame(request, result.Input.Content);
             Assert.AreSame(request, result.Output.Content);
 
-            Assert.AreEqual(36, result.Input.Id.Length);
+            Assert.AreEqual(36, result.Input.MessageId.Length);
             Assert.IsNull(result.Input.CorrelationId);
 
-            Assert.AreEqual(36, result.Output.Id.Length);
-            Assert.AreEqual(result.Input.Id, result.Output.CorrelationId);
+            Assert.AreEqual(36, result.Output.MessageId.Length);
+            Assert.AreEqual(result.Input.MessageId, result.Output.CorrelationId);
         }
 
         #endregion

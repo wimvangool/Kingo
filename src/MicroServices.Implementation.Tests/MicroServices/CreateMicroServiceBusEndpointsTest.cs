@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kingo.MicroServices.DataContracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.MicroServices.MessageFactoryTest;
 
 namespace Kingo.MicroServices
 {
@@ -254,8 +255,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public async Task ProcessAsync_Throws_IfMessageIsNotSupported()
+        public async Task ProcessAsync_ReturnsMessageKindNotSupported_IfMessageKindIsNotEqualToEndpointKind()
         {
             Processor.ConfigureMessageHandlers(messageHandlers =>
             {
@@ -263,9 +263,37 @@ namespace Kingo.MicroServices
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
-            var result = await endpoint.ProcessAsync(new object());
+            var message = CreateMessage(new SomeCommand(), MessageKind.Event, MessageDirection.Input);
 
-            Assert.AreEqual(0, result.Output.Count);
+            Assert.AreEqual(ProcessOperationResult.MessageKindNotSupported, await endpoint.ProcessAsync(message));
+        }
+
+        [TestMethod]
+        public async Task ProcessAsync_ReturnsMessageDirectionNotSupported_IfMessageKindIsNotEqualToInput()
+        {
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.AddInstance(new SomeCommandHandler());
+            });
+
+            var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+            var message = CreateMessage(new SomeCommand(), endpoint.MessageKind, MessageDirection.Output);
+
+            Assert.AreEqual(ProcessOperationResult.MessageDirectionNotSupported, await endpoint.ProcessAsync(message));
+        }
+
+        [TestMethod]
+        public async Task ProcessAsync_ReturnsMessageContentNotSupported_IfMessageContentCannotBeConvertedToSupportedType()
+        {
+            Processor.ConfigureMessageHandlers(messageHandlers =>
+            {
+                messageHandlers.AddInstance(new SomeCommandHandler());
+            });
+
+            var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+            var message = CreateMessage(new object(), endpoint.MessageKind, MessageDirection.Input);
+
+            Assert.AreEqual(ProcessOperationResult.MessageContentNotSupported, await endpoint.ProcessAsync(message));
         }
 
         [TestMethod]
@@ -281,9 +309,9 @@ namespace Kingo.MicroServices
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
-            var result = await endpoint.ProcessAsync(new SomeCommand());
+            var message = CreateMessage(new SomeCommand(), endpoint.MessageKind, MessageDirection.Input);
 
-            Assert.AreEqual(2, result.Output.Count);
+            Assert.AreEqual(ProcessOperationResult.Accepted, await endpoint.ProcessAsync(message));
         }
 
         [TestMethod]
@@ -302,10 +330,11 @@ namespace Kingo.MicroServices
                 });
 
                 var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+                var message = CreateMessage(new SomeCommand(), endpoint.MessageKind, MessageDirection.Input);
 
                 try
                 {
-                    await endpoint.ProcessAsync(new SomeCommand(), MessageHeader.Unspecified, tokenSource.Token);
+                    await endpoint.ProcessAsync(message, tokenSource.Token);
                 }
                 catch (GatewayTimeoutException exception)
                 {
@@ -331,10 +360,11 @@ namespace Kingo.MicroServices
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+            var message = CreateMessage(new SomeCommand(), endpoint.MessageKind, MessageDirection.Input);
 
             try
             {
-                await endpoint.ProcessAsync(new SomeCommand());
+                await endpoint.ProcessAsync(message);
             }
             catch (InternalServerErrorException exception)
             {
@@ -359,10 +389,11 @@ namespace Kingo.MicroServices
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+            var message = CreateMessage(new SomeCommand(), endpoint.MessageKind, MessageDirection.Input);
 
             try
             {
-                await endpoint.ProcessAsync(new SomeCommand());
+                await endpoint.ProcessAsync(message);
             }
             catch (BadRequestException exception)
             {
@@ -384,9 +415,9 @@ namespace Kingo.MicroServices
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
-            var result = await endpoint.ProcessAsync(new SomeEvent());
+            var message = CreateMessage(new SomeEvent(), endpoint.MessageKind, MessageDirection.Input);
 
-            Assert.AreEqual(2, result.Output.Count);
+            Assert.AreEqual(ProcessOperationResult.Accepted, await endpoint.ProcessAsync(message));
         }
 
         [TestMethod]
@@ -405,10 +436,11 @@ namespace Kingo.MicroServices
                 });
 
                 var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+                var message = CreateMessage(new SomeEvent(), endpoint.MessageKind, MessageDirection.Input);
 
                 try
                 {
-                    await endpoint.ProcessAsync(new SomeEvent(), MessageHeader.Unspecified, tokenSource.Token);
+                    await endpoint.ProcessAsync(message, tokenSource.Token);
                 }
                 catch (GatewayTimeoutException exception)
                 {
@@ -434,10 +466,11 @@ namespace Kingo.MicroServices
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+            var message = CreateMessage(new SomeEvent(), endpoint.MessageKind, MessageDirection.Input);
 
             try
             {
-                await endpoint.ProcessAsync(new SomeEvent());
+                await endpoint.ProcessAsync(message);
             }
             catch (InternalServerErrorException exception)
             {
@@ -462,10 +495,11 @@ namespace Kingo.MicroServices
             });
 
             var endpoint = CreateProcessor().CreateMicroServiceBusEndpoints().Single();
+            var message = CreateMessage(new SomeEvent(), endpoint.MessageKind, MessageDirection.Input);
 
             try
             {
-                await endpoint.ProcessAsync(new SomeEvent());
+                await endpoint.ProcessAsync(message);
             }
             catch (InternalServerErrorException exception)
             {

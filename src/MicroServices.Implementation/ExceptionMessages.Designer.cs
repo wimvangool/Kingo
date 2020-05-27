@@ -385,15 +385,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not supported by endpoint &apos;{1}&apos;. This endpoint only supports messages that can be converted to an instance of type &apos;{2}&apos;..
-        /// </summary>
-        internal static string MicroServiceBusEndpoint_MessageNotOfSupportedType {
-            get {
-                return ResourceManager.GetString("MicroServiceBusEndpoint_MessageNotOfSupportedType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Item of type &apos;{0}&apos; with id &apos;{1}&apos; was not found..
         /// </summary>
         internal static string Repository_ItemNotFound {

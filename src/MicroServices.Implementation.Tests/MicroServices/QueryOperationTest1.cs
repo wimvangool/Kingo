@@ -45,8 +45,8 @@ namespace Kingo.MicroServices
             Assert.IsNotNull(result);
             Assert.AreSame(response, result.Output.Content);
 
-            Assert.AreEqual(36, result.Output.Id.Length);
-            Assert.AreEqual(header.Id, result.Output.CorrelationId);
+            Assert.AreEqual(36, result.Output.MessageId.Length);
+            Assert.AreEqual(header.MessageId, result.Output.CorrelationId);
         }
 
         #endregion

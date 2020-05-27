@@ -113,12 +113,12 @@ namespace Kingo.MicroServices.Configuration
         /// <typeparam name="TMessage">A message type.</typeparam>
         /// <param name="messageKind">Indicates what <see cref="MessageKind">kind</see> of message the specified <typeparamref name="TMessage"/> is.</param>
         /// <param name="messageIdFormat">
-        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.Id"/>
+        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.MessageId"/>
         /// of the message at run-time.
         /// </param>
         /// <param name="messageIdProperties">
         /// A collection of property-names that will be used to insert the required values into the
-        /// specified <paramref name="messageIdFormat"/> when formatting the <see cref="IMessage.Id" />.
+        /// specified <paramref name="messageIdFormat"/> when formatting the <see cref="IMessage.MessageId" />.
         /// </param>
         /// <exception cref="ArgumentException">
         /// A mapping for the specified <typeparamref name="TMessage"/> already exists.
@@ -132,12 +132,12 @@ namespace Kingo.MicroServices.Configuration
         /// <param name="messageType">A message type.</param>
         /// <param name="messageKind">Indicates what <see cref="MessageKind">kind</see> of message the specified <paramref name="messageType"/> is.</param>
         /// <param name="messageIdFormat">
-        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.Id"/>
+        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.MessageId"/>
         /// of the message at run-time.
         /// </param>
         /// <param name="messageIdProperties">
         /// A collection of property-names that will be used to insert the required values into the
-        /// specified <paramref name="messageIdFormat"/> when formatting the <see cref="IMessage.Id" />.
+        /// specified <paramref name="messageIdFormat"/> when formatting the <see cref="IMessage.MessageId" />.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messageType"/> is <c>null</c>.

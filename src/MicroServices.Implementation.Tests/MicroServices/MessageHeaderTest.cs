@@ -12,18 +12,18 @@ namespace Kingo.MicroServices
         public void WithId_ReturnsExpectedHeader_IfIdWasNotYetSpecified()
         {
             var headerA = MessageHeader.Unspecified;
-            var headerB = headerA.WithId(new DefaultMessageIdGenerator(), new object());
+            var headerB = headerA.WithMessageId(new DefaultMessageIdGenerator(), new object());
 
-            Assert.AreEqual(36, headerB.Id.Length);
+            Assert.AreEqual(36, headerB.MessageId.Length);
         }
 
         [TestMethod]
         public void WithId_ReturnsExpectedHeader_IfIdWasAlreadySpecified()
         {
             var headerA = new MessageHeader(string.Empty);
-            var headerB = headerA.WithId(new DefaultMessageIdGenerator(), new object());
+            var headerB = headerA.WithMessageId(new DefaultMessageIdGenerator(), new object());
 
-            Assert.AreEqual(string.Empty, headerB.Id);
+            Assert.AreEqual(string.Empty, headerB.MessageId);
         }
 
         #endregion

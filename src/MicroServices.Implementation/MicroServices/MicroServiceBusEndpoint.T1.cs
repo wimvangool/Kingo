@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using static Kingo.Ensure;
 
 namespace Kingo.MicroServices
 {
@@ -121,31 +120,39 @@ namespace Kingo.MicroServices
 
         #region [====== ProcessAsync ======]
 
-        public override async Task<MessageHandlerOperationResult<object>> ProcessAsync(object message, MessageHeader messageHeader, CancellationToken? token = null)
+        public override async Task<ProcessOperationResult> ProcessAsync(IMessage message, CancellationToken? token = null)
         {
-            var messageToProcess = _processor.MessageFactory.CreateMessage(MessageKind, MessageDirection.Input, messageHeader, IsNotNull(message, nameof(message)));
-            if (messageToProcess.TryConvertTo<TMessage>(out var messageOfSupportedType))
+            if (message == null)
             {
-                return (await ProcessAsync(messageOfSupportedType, token).ConfigureAwait(false)).ConvertTo<object>();
+                throw new ArgumentNullException(nameof(message));
             }
-            throw NewMessageNotOfSupportedTypeException(Name, typeof(TMessage), message);
+            if (message.Kind != MessageKind)
+            {
+                return ProcessOperationResult.MessageKindNotSupported;
+            }
+            if (message.Direction != MessageDirection.Input)
+            {
+                return ProcessOperationResult.MessageDirectionNotSupported;
+            }
+            if (message.TryConvertTo<TMessage>(out var messageOfSupportedType))
+            {
+                await ProcessAsync(messageOfSupportedType, token).ConfigureAwait(false);
+                return ProcessOperationResult.Accepted;
+            }
+            return ProcessOperationResult.MessageContentNotSupported;
         }
 
-        private async Task<MessageHandlerOperationResult<TMessage>> ProcessAsync(Message<TMessage> message, CancellationToken? token)
+        private Task ProcessAsync(IMessage<TMessage> message, CancellationToken? token) =>
+            ExecuteAsync(_operationFactory.CreateOperation(_processor.MessageFactory.CreateMessage(message), token));
+
+        private async Task ExecuteAsync(MessageHandlerOperation<TMessage> operation)
         {
             // We create a new scope here because endpoints are typically hosted in an environment where
             // the infrastructure does not create a scope upon receiving a new message.
             using (_processor.ServiceProvider.CreateScope())
             {
-                return await _processor.ExecuteWriteOperationAsync(_operationFactory.CreateOperation(message, token)).ConfigureAwait(false);
+                await _processor.ExecuteWriteOperationAsync(operation).ConfigureAwait(false);
             }
-        }
-
-        private static Exception NewMessageNotOfSupportedTypeException(string endpointName, Type endpointMessageType, object message)
-        {
-            var errorMessageFormat = ExceptionMessages.MicroServiceBusEndpoint_MessageNotOfSupportedType;
-            var errorMessage = string.Format(errorMessageFormat, message.GetType().FriendlyName(), endpointName, endpointMessageType.FriendlyName());
-            return new ArgumentException(errorMessage, nameof(message));
         }
 
         #endregion

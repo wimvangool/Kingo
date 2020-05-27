@@ -57,7 +57,7 @@ namespace Kingo.MicroServices.Controllers
             {
                 try
                 {
-                    await outbox.SendAsync(CreateInt32Messages(1));
+                    await outbox.SendAsync(CreateMessages(1));
                 }
                 finally
                 {
@@ -76,7 +76,7 @@ namespace Kingo.MicroServices.Controllers
 
                 try
                 {
-                    await outbox.SendAsync(CreateInt32Messages(1));
+                    await outbox.SendAsync(CreateMessages(1));
                 }
                 finally
                 {
@@ -107,7 +107,7 @@ namespace Kingo.MicroServices.Controllers
                 await outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
                 var messageCount = DateTimeOffset.UtcNow.Millisecond + 1;
-                var messages = CreateInt32Messages(messageCount).Concat(CreateInt32Messages(messageCount, MessageKind.Event, MessageDirection.Input));
+                var messages = CreateMessages(messageCount).Concat(CreateMessages(messageCount, MessageKind.Event, MessageDirection.Input));
 
                 await outbox.SendAsync(messages);
 
@@ -127,7 +127,7 @@ namespace Kingo.MicroServices.Controllers
 
                 try
                 {
-                    await outbox.SendAsync(CreateInt32Messages(1));
+                    await outbox.SendAsync(CreateMessages(1));
                 }
                 finally
                 {
@@ -148,7 +148,7 @@ namespace Kingo.MicroServices.Controllers
 
                 try
                 {
-                    await outbox.SendAsync(CreateInt32Messages(1));
+                    await outbox.SendAsync(CreateMessages(1));
                 }
                 finally
                 {
@@ -168,7 +168,7 @@ namespace Kingo.MicroServices.Controllers
 
                 try
                 {
-                    await outbox.SendAsync(CreateInt32Messages(1));
+                    await outbox.SendAsync(CreateMessages(1));
                 }
                 finally
                 {
@@ -188,7 +188,7 @@ namespace Kingo.MicroServices.Controllers
 
                 try
                 {
-                    await outbox.SendAsync(CreateInt32Messages(1));
+                    await outbox.SendAsync(CreateMessages(1));
                 }
                 finally
                 {
@@ -209,7 +209,7 @@ namespace Kingo.MicroServices.Controllers
                 await outbox.StartSendingMessagesAsync(CancellationToken.None);
                 await outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
-                await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+                await outbox.SendAsync(CreateMessages(DateTimeOffset.UtcNow.Millisecond));
 
                 Assert.IsNotNull(_microServiceBus.Transaction);
             }
@@ -225,7 +225,7 @@ namespace Kingo.MicroServices.Controllers
 
                 using (var scope = new TransactionScope())
                 {
-                    await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+                    await outbox.SendAsync(CreateMessages(DateTimeOffset.UtcNow.Millisecond));
 
                     Assert.AreSame(Transaction.Current, _microServiceBus.Transaction);
                     scope.Complete();
@@ -241,7 +241,7 @@ namespace Kingo.MicroServices.Controllers
                 await outbox.StartSendingMessagesAsync(CancellationToken.None);
                 await outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
-                await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+                await outbox.SendAsync(CreateMessages(DateTimeOffset.UtcNow.Millisecond));
 
                 Assert.IsNotNull(_microServiceBus.Transaction);
             }
@@ -257,7 +257,7 @@ namespace Kingo.MicroServices.Controllers
 
                 using (var scope = new TransactionScope())
                 {
-                    await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+                    await outbox.SendAsync(CreateMessages(DateTimeOffset.UtcNow.Millisecond));
 
                     Assert.IsNotNull(_microServiceBus.Transaction);
                     Assert.AreNotSame(Transaction.Current, _microServiceBus.Transaction);
@@ -274,7 +274,7 @@ namespace Kingo.MicroServices.Controllers
                 await outbox.StartSendingMessagesAsync(CancellationToken.None);
                 await outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
-                await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+                await outbox.SendAsync(CreateMessages(DateTimeOffset.UtcNow.Millisecond));
 
                 Assert.IsNull(_microServiceBus.Transaction);
             }
@@ -290,7 +290,7 @@ namespace Kingo.MicroServices.Controllers
 
                 using (var scope = new TransactionScope())
                 {
-                    await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+                    await outbox.SendAsync(CreateMessages(DateTimeOffset.UtcNow.Millisecond));
 
                     Assert.IsNull(_microServiceBus.Transaction);
                     scope.Complete();

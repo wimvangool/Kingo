@@ -7,7 +7,7 @@ namespace Kingo.MicroServices
     internal abstract class Message<TContent> : IMessage<TContent>
     {
         public override string ToString() =>
-            $"{Content.GetType().FriendlyName()} ({Kind} | {Direction} | {Id})";
+            $"{Content.GetType().FriendlyName()} ({Kind} | {Direction} | {MessageId})";
 
         #region [====== Kind & Direction ======]
 
@@ -25,9 +25,9 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Id & Correlation ======]
+        #region [====== MessageId & CorrelationId ======]
 
-        public abstract string Id
+        public abstract string MessageId
         {
             get;
         }
@@ -41,7 +41,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== DeliveryTime ======]
+        #region [====== Routing & Delivery ======]
 
         public abstract DateTimeOffset? DeliveryTimeUtc
         {

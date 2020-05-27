@@ -107,32 +107,32 @@ namespace Kingo.MicroServices
         [ExpectedException(typeof(ArgumentNullException))]
         public void CreateMessage_Throws_IfContentIsNull()
         {
-            CreateMessage(null as object);
+            CreateAndValidateMessage(null as object);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CreateMessage_Throws_IfMessageKindIsNotValid()
         {
-            CreateMessage(new object(), MessageKind.Undefined);
+            CreateAndValidateMessage(new object(), MessageKind.Undefined);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CreateMessage_Throws_IfMessageDirectionIsNotValid()
         {
-            CreateMessage(new object(), MessageKind.Command, (MessageDirection) (-1));
+            CreateAndValidateMessage(new object(), MessageKind.Command, (MessageDirection) (-1));
         }
 
         [TestMethod]
         public void CreateMessage_ReturnsExpectedMessage_IfContentTypeDeclaresNoMessageAttribute_And_NoAttributeWasAddedForType()
         {
-            var message = CreateMessage(new object());
+            var message = CreateAndValidateMessage(new object());
 
             Assert.IsInstanceOfType(message, typeof(IMessage<object>));
             Assert.AreEqual(MessageKind.Command, message.Kind);
             Assert.AreEqual(MessageDirection.Input, message.Direction);
-            Assert.AreNotEqual(Guid.Empty, Guid.Parse(message.Id));
+            Assert.AreNotEqual(Guid.Empty, Guid.Parse(message.MessageId));
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -142,12 +142,12 @@ namespace Kingo.MicroServices
         {
             _builder.MessageKindResolver = new FixedMessageKindResolver(MessageKind.Command);
 
-            var message = CreateMessage(new object());
+            var message = CreateAndValidateMessage(new object());
 
             Assert.IsInstanceOfType(message, typeof(IMessage<object>));
             Assert.AreEqual(MessageKind.Command, message.Kind);
             Assert.AreEqual(MessageDirection.Input, message.Direction);
-            Assert.AreNotEqual(Guid.Empty, Guid.Parse(message.Id));
+            Assert.AreNotEqual(Guid.Empty, Guid.Parse(message.MessageId));
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -159,12 +159,12 @@ namespace Kingo.MicroServices
 
             _builder.MessageIdGenerator = new FixedMessageIdGenerator(messageId);
 
-            var message = CreateMessage(new object(), MessageKind.Request, MessageDirection.Internal);
+            var message = CreateAndValidateMessage(new object(), MessageKind.Request, MessageDirection.Internal);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<object>));
             Assert.AreEqual(MessageKind.Request, message.Kind);
             Assert.AreEqual(MessageDirection.Internal, message.Direction);
-            Assert.AreEqual(messageId, message.Id);
+            Assert.AreEqual(messageId, message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -173,12 +173,12 @@ namespace Kingo.MicroServices
         public void CreateMessage_ReturnsExpectedMessage_IfDeliveryTimeWasSpecified()
         {
             var deliveryTime = DateTimeOffset.UtcNow;
-            var message = CreateMessage(new object(), MessageKind.Event, MessageDirection.Output, deliveryTime);
+            var message = CreateAndValidateMessage(new object(), MessageKind.Event, MessageDirection.Output, deliveryTime);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<object>));
             Assert.AreEqual(MessageKind.Event, message.Kind);
             Assert.AreEqual(MessageDirection.Output, message.Direction);
-            Assert.AreNotEqual(Guid.Empty, Guid.Parse(message.Id));
+            Assert.AreNotEqual(Guid.Empty, Guid.Parse(message.MessageId));
             Assert.IsNull(message.CorrelationId);
             Assert.AreEqual(deliveryTime, message.DeliveryTimeUtc);
         }
@@ -192,12 +192,12 @@ namespace Kingo.MicroServices
         {
             _builder.Add<string>(MessageKind.Command, "Id-{0}", nameof(string.Length));
 
-            var message = CreateMessage(Guid.NewGuid().ToString());
+            var message = CreateAndValidateMessage(Guid.NewGuid().ToString());
 
             Assert.IsInstanceOfType(message, typeof(IMessage<string>));
             Assert.AreEqual(MessageKind.Command, message.Kind);
             Assert.AreEqual(MessageDirection.Input, message.Direction);
-            Assert.AreEqual("Id-36", message.Id);
+            Assert.AreEqual("Id-36", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -205,12 +205,12 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMessage_ReturnsExpectedMessage_IfContentTypeDeclaresMessageAttribute_And_NoAttributeWasAddedForType()
         {
-            var message = CreateMessage(new MessageA(10));
+            var message = CreateAndValidateMessage(new MessageA(10));
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageA>));
             Assert.AreEqual(MessageKind.Command, message.Kind);
             Assert.AreEqual(MessageDirection.Input, message.Direction);
-            Assert.AreEqual("[10]", message.Id);
+            Assert.AreEqual("[10]", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -220,12 +220,12 @@ namespace Kingo.MicroServices
         {
             _builder.Add<MessageA>(MessageKind.Event, "({0})", nameof(MessageA.PropertyA));
 
-            var message = CreateMessage(new MessageA(10), MessageKind.Event);
+            var message = CreateAndValidateMessage(new MessageA(10), MessageKind.Event);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageA>));
             Assert.AreEqual(MessageKind.Event, message.Kind);
             Assert.AreEqual(MessageDirection.Input, message.Direction);
-            Assert.AreEqual("(10)", message.Id);
+            Assert.AreEqual("(10)", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -233,12 +233,12 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMessage_ReturnsExpectedMessage_IfContentTypeDeclaresNewMessageAttribute_And_NoAttributeWasAddedForType()
         {
-            var message = CreateMessage(new MessageB(10, 20), MessageKind.Event);
+            var message = CreateAndValidateMessage(new MessageB(10, 20), MessageKind.Event);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageB>));
             Assert.AreEqual(MessageKind.Event, message.Kind);
             Assert.AreEqual(MessageDirection.Input, message.Direction);
-            Assert.AreEqual("[10-20]", message.Id);
+            Assert.AreEqual("[10-20]", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -248,12 +248,12 @@ namespace Kingo.MicroServices
         {
             _builder.Add<MessageB>(MessageKind.Request, "({0}-{1})", nameof(MessageA.PropertyA), nameof(MessageB.PropertyB));
 
-            var message = CreateMessage(new MessageB(10, 20), MessageKind.Request);
+            var message = CreateAndValidateMessage(new MessageB(10, 20), MessageKind.Request);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageB>));
             Assert.AreEqual(MessageKind.Request, message.Kind);
             Assert.AreEqual(MessageDirection.Input, message.Direction);
-            Assert.AreEqual("(10-20)", message.Id);
+            Assert.AreEqual("(10-20)", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -261,11 +261,11 @@ namespace Kingo.MicroServices
         [TestMethod]
         public void CreateMessage_ReturnsExpectedMessage_IfContentTypeInheritsMessageAttribute_And_NoAttributeWasAddedForType()
         {
-            var message = CreateMessage(new MessageC(10, 20, 30), MessageKind.Event);
+            var message = CreateAndValidateMessage(new MessageC(10, 20, 30), MessageKind.Event);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageC>));
             Assert.AreEqual(MessageKind.Event, message.Kind);
-            Assert.AreEqual("[10-20]", message.Id);
+            Assert.AreEqual("[10-20]", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -275,11 +275,11 @@ namespace Kingo.MicroServices
         {
             _builder.Add<MessageB>(MessageKind.Request, "({0}-{1})", nameof(MessageA.PropertyA), nameof(MessageB.PropertyB));
 
-            var message = CreateMessage(new MessageC(10, 20, 30), MessageKind.Request);
+            var message = CreateAndValidateMessage(new MessageC(10, 20, 30), MessageKind.Request);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageC>));
             Assert.AreEqual(MessageKind.Request, message.Kind);
-            Assert.AreEqual("(10-20)", message.Id);
+            Assert.AreEqual("(10-20)", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -289,11 +289,11 @@ namespace Kingo.MicroServices
         {
             _builder.Add<MessageC>(MessageKind.Request, "({0}-{1}-{2})", nameof(MessageA.PropertyA), nameof(MessageB.PropertyB), nameof(MessageC.PropertyC));
 
-            var message = CreateMessage(new MessageC(10, 20, 30), MessageKind.Request);
+            var message = CreateAndValidateMessage(new MessageC(10, 20, 30), MessageKind.Request);
 
             Assert.IsInstanceOfType(message, typeof(IMessage<MessageC>));
             Assert.AreEqual(MessageKind.Request, message.Kind);
-            Assert.AreEqual("(10-20-30)", message.Id);
+            Assert.AreEqual("(10-20-30)", message.MessageId);
             Assert.IsNull(message.CorrelationId);
             Assert.IsNull(message.DeliveryTimeUtc);
         }
@@ -322,7 +322,7 @@ namespace Kingo.MicroServices
         {
             _builder.Add<object>(MessageKind.Command);
 
-            CreateMessage(new object(), MessageKind.Event);
+            CreateAndValidateMessage(new object(), MessageKind.Event);
         }
 
         [TestMethod]
@@ -331,13 +331,13 @@ namespace Kingo.MicroServices
         {
             _builder.Validate(MessageDirection.Input, MessageValidationOptions.BlockUndefined);
 
-            CreateMessage(new object());
+            CreateAndValidateMessage(new object());
         }
 
         [TestMethod]
         public void Validate_ReturnsExpectedMessage_IfMessageKindIsUndefined_But_UndefinedMessagesAreAccepted()
         {
-            var message = CreateMessage(new object());
+            var message = CreateAndValidateMessage(new object());
 
             Assert.AreEqual(MessageKind.Command, message.Kind);
         }
@@ -348,13 +348,13 @@ namespace Kingo.MicroServices
         {
             _builder.Validate(MessageDirection.Input, MessageValidationOptions.Commands);
 
-            CreateMessage(new SomeCommand(null));
+            CreateAndValidateMessage(new SomeCommand(null));
         }
 
         [TestMethod]
         public void Validate_ReturnsExpectedMessage_IfMessageMustNotBeValidated_And_MessageContentIsNotValid()
         {
-            CreateMessage(new SomeCommand(null));
+            CreateAndValidateMessage(new SomeCommand(null));
         }
 
         [TestMethod]
@@ -362,27 +362,27 @@ namespace Kingo.MicroServices
         {
             _builder.Validate(MessageDirection.Input, MessageValidationOptions.Commands);
 
-            CreateMessage(new SomeCommand(string.Empty));
+            CreateAndValidateMessage(new SomeCommand(string.Empty));
         }
 
         #endregion
 
-        private IMessage CreateMessage<TContent>(TContent content, MessageKind kind = MessageKind.Command, MessageDirection direction = MessageDirection.Input, DateTimeOffset? deliveryTime = null) =>
+        private IMessage CreateAndValidateMessage<TContent>(TContent content, MessageKind kind = MessageKind.Command, MessageDirection direction = MessageDirection.Input, DateTimeOffset? deliveryTime = null) =>
             _builder.BuildMessageFactory().CreateMessage(kind, direction, MessageHeader.Unspecified, content, deliveryTime).Validate(null);
 
         #region [====== CreateInt32Messages ======]
 
         private static readonly MessageFactory _MessageFactory = new MessagePipeline().BuildMessageFactory();
 
-        internal static IEnumerable<IMessage> CreateInt32Messages(int count, MessageKind kind = MessageKind.Event, MessageDirection direction = MessageDirection.Output)
+        internal static IEnumerable<IMessage> CreateMessages(int count, MessageKind kind = MessageKind.Event, MessageDirection direction = MessageDirection.Output)
         {
             for (int index = 0; index < count; index++)
             {
-                yield return CreateInt32Message(index, kind, direction);
+                yield return CreateMessage(index, kind, direction);
             }
         }
 
-        private static IMessage CreateInt32Message(int content, MessageKind kind, MessageDirection direction) =>
+        internal static IMessage CreateMessage(object content, MessageKind kind, MessageDirection direction) =>
             _MessageFactory.CreateMessage(kind, direction, MessageHeader.Unspecified, content);
 
         #endregion

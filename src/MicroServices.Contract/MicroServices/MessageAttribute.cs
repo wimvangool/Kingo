@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents an attribute that can be applied on message-types to configure the <see cref="MicroServices.MessageKind"/>
-    /// and an optional message-id format that can used to generate a message-specific <see cref="IMessage.Id"/>
+    /// and an optional message-id format that can used to generate a message-specific <see cref="IMessage.MessageId"/>
     /// at run-time.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -19,12 +19,12 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="messageKind">Indicates what <see cref="MicroServices.MessageKind">kind</see> of message this is.</param>
         /// <param name="messageIdFormat">
-        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.Id"/>
+        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.MessageId"/>
         /// of the message at run-time.
         /// </param>
         /// <param name="messageIdProperties">
         /// A collection of property-names that will be used to insert the required values into the
-        /// specified <paramref name="messageIdFormat"/> when formatting the <see cref="IMessage.Id" />.
+        /// specified <paramref name="messageIdFormat"/> when formatting the <see cref="IMessage.MessageId" />.
         /// </param>
         public MessageAttribute(MessageKind messageKind, string messageIdFormat = null, params string[] messageIdProperties)
         {
@@ -48,7 +48,7 @@ namespace Kingo.MicroServices
         #region [====== MessageId ======]
 
         /// <summary>
-        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.Id"/>
+        /// If specified, represents a format string that will be used to generate the <see cref="IMessage.MessageId"/>
         /// of the message at run-time.
         /// </summary>
         public string MessageIdFormat
@@ -58,7 +58,7 @@ namespace Kingo.MicroServices
 
         /// <summary>
         /// A collection of property-names that will be used to insert the required values into the
-        /// specified <see cref="MessageIdFormat"/> when formatting the <see cref="IMessage.Id" />.
+        /// specified <see cref="MessageIdFormat"/> when formatting the <see cref="IMessage.MessageId" />.
         /// </summary>
         public IReadOnlyList<string> MessageIdProperties
         {

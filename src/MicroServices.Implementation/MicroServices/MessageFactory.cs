@@ -29,6 +29,9 @@ namespace Kingo.MicroServices
         public Message<TContent> CreateResponse<TContent>(MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
             CreateMessage(MessageKind.Response, direction, header, content, deliveryTime);
 
+        public Message<TContent> CreateMessage<TContent>(IMessage<TContent> message) =>
+            CreateMessage(message.Kind, message.Direction, new MessageHeader(message.MessageId).WithCorrelationId(message.CorrelationId), message.Content, message.DeliveryTimeUtc);
+
         public Message<TContent> CreateMessage<TContent>(MessageKind kind, MessageDirection direction, MessageHeader header, TContent content, DateTimeOffset? deliveryTime = null) =>
             CreateMessageValidator(IsValid(kind), IsValid(direction), header, content).DeliverAt(deliveryTime).ConvertTo<TContent>();
 
@@ -42,7 +45,7 @@ namespace Kingo.MicroServices
         private Message<object> CreateMessageImplementation(MessageDirection direction, MessageHeader header, object content)
         {
             var messageKind = _messageKindResolver.ResolveMessageKind(content);
-            var messageHeader = header.WithId(this, content);
+            var messageHeader = header.WithMessageId(this, content);
             return new MessageImplementation<object>(messageKind, direction, messageHeader, content);
         }
 

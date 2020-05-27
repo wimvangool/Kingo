@@ -34,7 +34,7 @@ namespace Kingo.MicroServices.Controllers
             protected override MicroServiceBusOutbox CreateOutbox(IMicroServiceBus bus) =>
                 new MicroServiceBusOutboxStub(bus);
 
-            public new MicroServiceBusInboxStub ServiceBus =>
+            public new MicroServiceBusInboxStub Inbox =>
                 base.Inbox as MicroServiceBusInboxStub;
 
             protected override MicroServiceBusInbox CreateInbox(IEnumerable<IMicroServiceBusEndpoint> endpoints) =>
@@ -171,9 +171,9 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNull(controller.Outbox.Sender);
                 Assert.IsNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNull(controller.ServiceBus.Sender);
-                Assert.IsNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNull(controller.Inbox.Sender);
+                Assert.IsNull(controller.Inbox.Receiver);
             }
         }
 
@@ -188,9 +188,9 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNotNull(controller.Outbox.Sender);
                 Assert.IsNotNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNotNull(controller.ServiceBus.Sender);
-                Assert.IsNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNotNull(controller.Inbox.Sender);
+                Assert.IsNull(controller.Inbox.Receiver);
             }
         }
 
@@ -205,9 +205,9 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNull(controller.Outbox.Sender);
                 Assert.IsNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNull(controller.ServiceBus.Sender);
-                Assert.IsNotNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNull(controller.Inbox.Sender);
+                Assert.IsNotNull(controller.Inbox.Receiver);
             }
         }
 
@@ -222,9 +222,9 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNotNull(controller.Outbox.Sender);
                 Assert.IsNotNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNotNull(controller.ServiceBus.Sender);
-                Assert.IsNotNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNotNull(controller.Inbox.Sender);
+                Assert.IsNotNull(controller.Inbox.Receiver);
             }
         }
 
@@ -270,9 +270,9 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNull(controller.Outbox.Sender);
                 Assert.IsNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNull(controller.ServiceBus.Sender);
-                Assert.IsNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNull(controller.Inbox.Sender);
+                Assert.IsNull(controller.Inbox.Receiver);
             }
         }
 
@@ -288,9 +288,9 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNull(controller.Outbox.Sender);
                 Assert.IsNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNull(controller.ServiceBus.Sender);
-                Assert.IsNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNull(controller.Inbox.Sender);
+                Assert.IsNull(controller.Inbox.Receiver);
             }
         }
 
@@ -306,13 +306,13 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNotNull(controller.Outbox.Sender);
                 Assert.IsNotNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNotNull(controller.ServiceBus.Sender);
-                Assert.IsNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNotNull(controller.Inbox.Sender);
+                Assert.IsNull(controller.Inbox.Receiver);
 
                 controller.Outbox.Sender.AssertIsDisposed();
                 controller.Outbox.Receiver.AssertIsDisposed();
-                controller.ServiceBus.Sender.AssertIsDisposed();
+                controller.Inbox.Sender.AssertIsDisposed();
             }
         }
 
@@ -328,11 +328,11 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNull(controller.Outbox.Sender);
                 Assert.IsNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNull(controller.ServiceBus.Sender);
-                Assert.IsNotNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNull(controller.Inbox.Sender);
+                Assert.IsNotNull(controller.Inbox.Receiver);
 
-                controller.ServiceBus.Receiver.AssertIsDisposed();
+                controller.Inbox.Receiver.AssertIsDisposed();
             }
         }
 
@@ -348,14 +348,14 @@ namespace Kingo.MicroServices.Controllers
                 Assert.IsNotNull(controller.Outbox.Sender);
                 Assert.IsNotNull(controller.Outbox.Receiver);
 
-                Assert.IsNotNull(controller.ServiceBus);
-                Assert.IsNotNull(controller.ServiceBus.Sender);
-                Assert.IsNotNull(controller.ServiceBus.Receiver);
+                Assert.IsNotNull(controller.Inbox);
+                Assert.IsNotNull(controller.Inbox.Sender);
+                Assert.IsNotNull(controller.Inbox.Receiver);
 
                 controller.Outbox.Sender.AssertIsDisposed();
                 controller.Outbox.Receiver.AssertIsDisposed();
-                controller.ServiceBus.Sender.AssertIsDisposed();
-                controller.ServiceBus.Receiver.AssertIsDisposed();
+                controller.Inbox.Sender.AssertIsDisposed();
+                controller.Inbox.Receiver.AssertIsDisposed();
             }
         }
 
@@ -389,7 +389,7 @@ namespace Kingo.MicroServices.Controllers
         {
             await using (var controller = CreateController(MicroServiceBusModes.Disabled))
             {
-                await controller.SendAsync(CreateInt32Messages(0));
+                await controller.SendAsync(CreateMessages(0));
             }
         }
 
@@ -400,7 +400,7 @@ namespace Kingo.MicroServices.Controllers
             await using (var controller = CreateController(MicroServiceBusModes.Disabled))
             {
                 await controller.StartAsync(CancellationToken.None);
-                await controller.SendAsync(CreateInt32Messages(0));
+                await controller.SendAsync(CreateMessages(0));
             }
         }
 
@@ -410,7 +410,7 @@ namespace Kingo.MicroServices.Controllers
         {
             await using (var controller = CreateController(MicroServiceBusModes.Send))
             {
-                await controller.SendAsync(CreateInt32Messages(0));
+                await controller.SendAsync(CreateMessages(0));
             }
         }
 
@@ -430,14 +430,14 @@ namespace Kingo.MicroServices.Controllers
         {
             await using (var controller = CreateController(MicroServiceBusModes.Send))
             {
-                var messages = CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond + 1).ToArray();
+                var messages = CreateMessages(DateTimeOffset.UtcNow.Millisecond + 1).ToArray();
 
                 await controller.StartAsync(CancellationToken.None);
                 await controller.SendAsync(messages);
 
                 controller.Outbox.Sender.AssertMessageCountIs(messages.Length);
                 controller.Outbox.Receiver.AssertMessageCountIs(messages.Length);
-                controller.ServiceBus.Sender.AssertMessageCountIs(messages.Length);
+                controller.Inbox.Sender.AssertMessageCountIs(messages.Length);
             }
         }
 
@@ -447,7 +447,7 @@ namespace Kingo.MicroServices.Controllers
         {
             await using (var controller = CreateController(MicroServiceBusModes.Receive))
             {
-                await controller.SendAsync(CreateInt32Messages(0));
+                await controller.SendAsync(CreateMessages(0));
             }
         }
 
@@ -458,7 +458,7 @@ namespace Kingo.MicroServices.Controllers
             await using (var controller = CreateController(MicroServiceBusModes.Receive))
             {
                 await controller.StartAsync(CancellationToken.None);
-                await controller.SendAsync(CreateInt32Messages(0));
+                await controller.SendAsync(CreateMessages(0));
             }
         }
 
@@ -468,7 +468,7 @@ namespace Kingo.MicroServices.Controllers
         {
             await using (var controller = CreateController(MicroServiceBusModes.SendAndReceive))
             {
-                await controller.SendAsync(CreateInt32Messages(0));
+                await controller.SendAsync(CreateMessages(0));
             }
         }
 
@@ -488,14 +488,14 @@ namespace Kingo.MicroServices.Controllers
         {
             await using (var controller = CreateController(MicroServiceBusModes.SendAndReceive))
             {
-                var messages = CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond + 1).ToArray();
+                var messages = CreateMessages(DateTimeOffset.UtcNow.Millisecond + 1).ToArray();
 
                 await controller.StartAsync(CancellationToken.None);
                 await controller.SendAsync(messages);
 
                 controller.Outbox.Sender.AssertMessageCountIs(messages.Length);
                 controller.Outbox.Receiver.AssertMessageCountIs(messages.Length);
-                controller.ServiceBus.Sender.AssertMessageCountIs(messages.Length);
+                controller.Inbox.Sender.AssertMessageCountIs(messages.Length);
             }
         }
 
@@ -506,7 +506,7 @@ namespace Kingo.MicroServices.Controllers
             var controller = CreateController(MicroServiceBusModes.SendAndReceive);
             controller.Dispose();
             
-            await controller.SendAsync(CreateInt32Messages(0));
+            await controller.SendAsync(CreateMessages(0));
         }
 
         [TestMethod]
@@ -516,7 +516,7 @@ namespace Kingo.MicroServices.Controllers
             var controller = CreateController(MicroServiceBusModes.SendAndReceive);
             await controller.DisposeAsync();
 
-            await controller.SendAsync(CreateInt32Messages(0));
+            await controller.SendAsync(CreateMessages(0));
         }
 
         #endregion

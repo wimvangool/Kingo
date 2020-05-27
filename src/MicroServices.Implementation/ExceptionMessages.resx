@@ -219,9 +219,6 @@
   <data name="MicroServiceBusController_ControllerAlreadyStarted" xml:space="preserve">
     <value>Cannot start controller of type '{0}' because the controller has already been started.</value>
   </data>
-  <data name="MicroServiceBusEndpoint_MessageNotOfSupportedType" xml:space="preserve">
-    <value>Message of type '{0}' is not supported by endpoint '{1}'. This endpoint only supports messages that can be converted to an instance of type '{2}'.</value>
-  </data>
   <data name="MicroServiceBus_ClientAlreadyRunning" xml:space="preserve">
     <value>Cannot start the client ({0}) because it is already running.</value>
   </data>

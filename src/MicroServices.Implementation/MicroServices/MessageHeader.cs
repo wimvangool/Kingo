@@ -5,7 +5,7 @@ namespace Kingo.MicroServices
 {
     /// <summary>
     /// Represents the header of a <see cref="IMessage{TContent}"/>, which contains its
-    /// <see cref="IMessage{TContent}.Id"/> and <see cref="IMessage{TContent}.CorrelationId" />.
+    /// <see cref="IMessage.MessageId"/> and <see cref="IMessage{TContent}.CorrelationId" />.
     /// </summary>
     [Serializable]
     public readonly struct MessageHeader : IEquatable<MessageHeader>
@@ -16,7 +16,7 @@ namespace Kingo.MicroServices
         public static readonly MessageHeader Unspecified = new MessageHeader();
 
         /// <summary>
-        /// Generates and returns a new <see cref="MessageHeader" /> where the <see cref="MessageHeader.Id"/>
+        /// Generates and returns a new <see cref="MessageHeader" /> where the <see cref="MessageId"/>
         /// has been set to a random <see cref="Guid"/>.
         /// </summary>
         /// <returns>A new header.</returns>
@@ -26,24 +26,24 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHeader" /> class.
         /// </summary>
-        /// <param name="id">Identifier of the message.</param>
-        public MessageHeader(string id) :
-            this(id, null) { }
+        /// <param name="messageId">Identifier of the message.</param>
+        public MessageHeader(string messageId) :
+            this(messageId, null) { }
 
-        private MessageHeader(string id, string correlationId)
+        private MessageHeader(string messageId, string correlationId)
         {
-            Id = id;
+            MessageId = messageId;
             CorrelationId = correlationId;
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            if (Id == null)
+            if (MessageId == null)
             {
                 return nameof(Unspecified);
             }
-            var header = new StringBuilder($"{nameof(Id)} = {Id}");
+            var header = new StringBuilder($"{nameof(MessageId)} = {MessageId}");
 
             if (CorrelationId != null)
             {
@@ -60,20 +60,20 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public bool Equals(MessageHeader other) =>
-            Id == other.Id && CorrelationId == other.CorrelationId;
+            MessageId == other.MessageId && CorrelationId == other.CorrelationId;
 
         /// <inheritdoc />
         public override int GetHashCode() =>
-            HashCode.Combine(GetType(), Id, CorrelationId);
+            HashCode.Combine(GetType(), MessageId, CorrelationId);
 
         #endregion
 
-        #region [====== Id & Correlation ======]
+        #region [====== MessageId & CorrelationId ======]
 
         /// <summary>
         /// Identifier of the message.
         /// </summary>
-        public string Id
+        public string MessageId
         {
             get;
         }
@@ -86,9 +86,9 @@ namespace Kingo.MicroServices
             get;
         }
 
-        internal MessageHeader WithId(IMessageIdGenerator messageIdGenerator, object content)
+        internal MessageHeader WithMessageId(IMessageIdGenerator messageIdGenerator, object content)
         {
-            if (Id == null)
+            if (MessageId == null)
             {
                 return new MessageHeader(messageIdGenerator.GenerateMessageId(content));
             }
@@ -101,15 +101,15 @@ namespace Kingo.MicroServices
         /// <param name="correlationId">The correlation-id to assign.</param>
         /// <returns>A new header where the <see cref="CorrelationId"/> has been set to the specified <paramref name="correlationId"/>.</returns>
         /// <exception cref="InvalidOperationException">
-        /// The <see cref="Id"/> of this header is unspecified.
+        /// The <see cref="MessageId"/> of this header is unspecified.
         /// </exception>
         public MessageHeader WithCorrelationId(string correlationId)
         {
-            if (Id == null)
+            if (MessageId == null)
             {
                 throw NewIdRequiredException();
             }
-            return new MessageHeader(Id, correlationId);
+            return new MessageHeader(MessageId, correlationId);
         }
 
         private static Exception NewIdRequiredException() =>

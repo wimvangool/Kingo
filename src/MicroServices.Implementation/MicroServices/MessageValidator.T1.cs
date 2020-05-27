@@ -33,10 +33,10 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Id & Correlation ======]
+        #region [====== MessageId & CorrelationId ======]
 
-        public override string Id =>
-            _message.Id;
+        public override string MessageId =>
+            _message.MessageId;
 
         public override string CorrelationId =>
             _message.CorrelationId;
@@ -46,7 +46,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== DeliveryTime ======]
+        #region [====== Routing & Delivery ======]
 
         public override DateTimeOffset? DeliveryTimeUtc =>
             _message.DeliveryTimeUtc;

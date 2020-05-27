@@ -27,12 +27,12 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Id & Correlation ======]
+        #region [====== MessageId & CorrelationId ======]
 
         /// <summary>
-        /// Returns the unique identifier of this message.
+        /// Gets the unique identifier of this message.
         /// </summary>
-        string Id
+        string MessageId
         {
             get;
         }
@@ -48,7 +48,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== DeliveryTime ======]
+        #region [====== Routing & Delivery ======]
 
         /// <summary>
         /// If specified, indicates at what (UTC) time the message should be delivered.

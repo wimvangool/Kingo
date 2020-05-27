@@ -33,20 +33,20 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Id & Correlation ======]
+        #region [====== MessageId & CorrelationId ======]
 
-        public override string Id =>
-            _header.Id;
+        public override string MessageId =>
+            _header.MessageId;
 
         public override string CorrelationId =>
             _header.CorrelationId;
 
         public override Message<TContent> CorrelateWith(IMessage message) =>
-            new MessageImplementation<TContent>(_kind, _direction, _header.WithCorrelationId(message.Id), _content, _deliveryTimeUtc);
+            new MessageImplementation<TContent>(_kind, _direction, _header.WithCorrelationId(message.MessageId), _content, _deliveryTimeUtc);
 
         #endregion
 
-        #region [====== DeliveryTime ======]
+        #region [====== Routing & Delivery ======]
 
         public override DateTimeOffset? DeliveryTimeUtc =>
             _deliveryTimeUtc;
