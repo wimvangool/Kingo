@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Kingo.MicroServices.MessageFactoryTest;
 
@@ -16,14 +17,19 @@ namespace Kingo.MicroServices.Controllers
         private sealed class MicroServiceBusStub : IMicroServiceBus
         {
             private readonly List<IMessage> _messages;
+            private Transaction _transaction;
 
             public MicroServiceBusStub()
             {
                 _messages = new List<IMessage>();
             }
 
+            public Transaction Transaction =>
+                _transaction;
+
             public Task SendAsync(IEnumerable<IMessage> messages)
             {
+                _transaction = Transaction.Current;
                 _messages.AddRange(messages);
                 return Task.CompletedTask;
             }
@@ -35,26 +41,28 @@ namespace Kingo.MicroServices.Controllers
         #endregion
 
         private readonly MicroServiceBusStub _microServiceBus;
-        private readonly DirectSendOutbox _outbox;
 
         public DirectSendOutboxTest()
         {
-            _outbox = new DirectSendOutbox(_microServiceBus = new MicroServiceBusStub());
+            _microServiceBus = new MicroServiceBusStub();
         }
 
-        #region [====== SendAsync ======]
+        #region [====== SendAsync (Start, Stop & Dispose) ======]
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task SendAsync_Throws_IfSenderHasNotBeenStarted()
         {
-            try
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
             {
-                await _outbox.SendAsync(CreateInt32Messages(1));
-            }
-            finally
-            {
-                _microServiceBus.AssertMessageCountIs(0);
+                try
+                {
+                    await outbox.SendAsync(CreateInt32Messages(1));
+                }
+                finally
+                {
+                    _microServiceBus.AssertMessageCountIs(0);
+                }
             }
         }
 
@@ -62,15 +70,18 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task SendAsync_Throws_IfReceiverHasNotBeenStarted()
         {
-            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
 
-            try
-            {
-                await _outbox.SendAsync(CreateInt32Messages(1));
-            }
-            finally
-            {
-                _microServiceBus.AssertMessageCountIs(0);
+                try
+                {
+                    await outbox.SendAsync(CreateInt32Messages(1));
+                }
+                finally
+                {
+                    _microServiceBus.AssertMessageCountIs(0);
+                }
             }
         }
 
@@ -78,41 +89,50 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task SendAsync_Throws_IfBothSenderAndReceiverHaveBeenStarted_But_MessagesIsNull()
         {
-            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
-            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
-            await _outbox.SendAsync(null);
+                await outbox.SendAsync(null);
+            }
         }
 
         [TestMethod]
         public async Task SendAsync_SendsSomeMessages_IfBothSenderAndReceiverHaveBeenStarted_But_SomeMessagesHaveUnsupportedDirection()
         {
-            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
-            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
 
-            var messageCount = DateTimeOffset.UtcNow.Millisecond + 1;
-            var messages = CreateInt32Messages(messageCount).Concat(CreateInt32Messages(messageCount, MessageKind.Event, MessageDirection.Input));
+                var messageCount = DateTimeOffset.UtcNow.Millisecond + 1;
+                var messages = CreateInt32Messages(messageCount).Concat(CreateInt32Messages(messageCount, MessageKind.Event, MessageDirection.Input));
 
-            await _outbox.SendAsync(messages);
+                await outbox.SendAsync(messages);
 
-            _microServiceBus.AssertMessageCountIs(messageCount);
+                _microServiceBus.AssertMessageCountIs(messageCount);
+            }
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task SendAsync_Throws_IfReceiverHasBeenStoppedAgain()
         {
-            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
-            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
-            await _outbox.StopReceivingMessagesAsync();
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+                await outbox.StopReceivingMessagesAsync();
 
-            try
-            {
-                await _outbox.SendAsync(CreateInt32Messages(1));
-            }
-            finally
-            {
-                _microServiceBus.AssertMessageCountIs(0);
+                try
+                {
+                    await outbox.SendAsync(CreateInt32Messages(1));
+                }
+                finally
+                {
+                    _microServiceBus.AssertMessageCountIs(0);
+                }
             }
         }
 
@@ -120,17 +140,20 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task SendAsync_Throws_IfSenderHasBeenStoppedAgain()
         {
-            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
-            await _outbox.StartReceivingMessagesAsync(CancellationToken.None);
-            await _outbox.StopSendingMessagesAsync();
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+                await outbox.StopSendingMessagesAsync();
 
-            try
-            {
-                await _outbox.SendAsync(CreateInt32Messages(1));
-            }
-            finally
-            {
-                _microServiceBus.AssertMessageCountIs(0);
+                try
+                {
+                    await outbox.SendAsync(CreateInt32Messages(1));
+                }
+                finally
+                {
+                    _microServiceBus.AssertMessageCountIs(0);
+                }
             }
         }
 
@@ -138,16 +161,19 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ObjectDisposedException))]
         public async Task SendAsync_Throws_IfOutboxHasBeenDisposed()
         {
-            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
-            _outbox.Dispose();
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                outbox.Dispose();
 
-            try
-            {
-                await _outbox.SendAsync(CreateInt32Messages(1));
-            }
-            finally
-            {
-                _microServiceBus.AssertMessageCountIs(0);
+                try
+                {
+                    await outbox.SendAsync(CreateInt32Messages(1));
+                }
+                finally
+                {
+                    _microServiceBus.AssertMessageCountIs(0);
+                }
             }
         }
 
@@ -155,16 +181,120 @@ namespace Kingo.MicroServices.Controllers
         [ExpectedException(typeof(ObjectDisposedException))]
         public async Task SendAsync_Throws_IfOutboxHasBeenDisposedAsynchronously()
         {
-            await _outbox.StartSendingMessagesAsync(CancellationToken.None);
-            await _outbox.DisposeAsync();
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.DisposeAsync();
 
-            try
-            {
-                await _outbox.SendAsync(CreateInt32Messages(1));
+                try
+                {
+                    await outbox.SendAsync(CreateInt32Messages(1));
+                }
+                finally
+                {
+                    _microServiceBus.AssertMessageCountIs(0);
+                }
             }
-            finally
+        }
+
+        #endregion
+
+        #region [====== SendAsync (Transactions) ======]
+
+        [TestMethod]
+        public async Task SendAsync_CreatesNewTransaction_IfTransactionScopeOptionIsRequired_And_CurrentTransactionIsNull()
+        {
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
             {
-                _microServiceBus.AssertMessageCountIs(0);
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+
+                await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+
+                Assert.IsNotNull(_microServiceBus.Transaction);
+            }
+        }
+
+        [TestMethod]
+        public async Task SendAsync_ExecutesWithinExistingTransaction_IfTransactionScopeOptionIsRequired_And_CurrentTransactionIsNotNull()
+        {
+            await using (var outbox = new DirectSendOutbox(_microServiceBus))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+
+                using (var scope = new TransactionScope())
+                {
+                    await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+
+                    Assert.AreSame(Transaction.Current, _microServiceBus.Transaction);
+                    scope.Complete();
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task SendAsync_CreatesNewTransaction_IfTransactionScopeOptionIsRequiresNew_And_CurrentTransactionIsNull()
+        {
+            await using (var outbox = new DirectSendOutbox(_microServiceBus, TransactionScopeOption.RequiresNew))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+
+                await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+
+                Assert.IsNotNull(_microServiceBus.Transaction);
+            }
+        }
+
+        [TestMethod]
+        public async Task SendAsync_CreatesNewTransaction_IfTransactionScopeOptionIsRequiresNew_And_CurrentTransactionIsNotNull()
+        {
+            await using (var outbox = new DirectSendOutbox(_microServiceBus, TransactionScopeOption.RequiresNew))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+
+                using (var scope = new TransactionScope())
+                {
+                    await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+
+                    Assert.IsNotNull(_microServiceBus.Transaction);
+                    Assert.AreNotSame(Transaction.Current, _microServiceBus.Transaction);
+                    scope.Complete();
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task SendAsync_ExecutesWithinNoTransaction_IfTransactionScopeOptionIsSuppress_And_CurrentTransactionIsNull()
+        {
+            await using (var outbox = new DirectSendOutbox(_microServiceBus, TransactionScopeOption.Suppress))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+
+                await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+
+                Assert.IsNull(_microServiceBus.Transaction);
+            }
+        }
+
+        [TestMethod]
+        public async Task SendAsync_ExecutesWithinNoTransaction_IfTransactionScopeOptionIsSuppress_And_CurrentTransactionIsNotNull()
+        {
+            await using (var outbox = new DirectSendOutbox(_microServiceBus, TransactionScopeOption.Suppress))
+            {
+                await outbox.StartSendingMessagesAsync(CancellationToken.None);
+                await outbox.StartReceivingMessagesAsync(CancellationToken.None);
+
+                using (var scope = new TransactionScope())
+                {
+                    await outbox.SendAsync(CreateInt32Messages(DateTimeOffset.UtcNow.Millisecond));
+
+                    Assert.IsNull(_microServiceBus.Transaction);
+                    scope.Complete();
+                }
             }
         }
 

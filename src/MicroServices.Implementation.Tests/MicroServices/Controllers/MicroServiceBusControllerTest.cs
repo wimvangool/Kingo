@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Kingo.MicroServices.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,11 +34,11 @@ namespace Kingo.MicroServices.Controllers
             protected override MicroServiceBusOutbox CreateOutbox(IMicroServiceBus bus) =>
                 new MicroServiceBusOutboxStub(bus);
 
-            public new MicroServiceBusStub ServiceBus =>
-                base.ServiceBus as MicroServiceBusStub;
+            public new MicroServiceBusInboxStub ServiceBus =>
+                base.Inbox as MicroServiceBusInboxStub;
 
-            protected override MicroServiceBus CreateServiceBus(IEnumerable<IMicroServiceBusEndpoint> endpoints) =>
-                new MicroServiceBusStub(endpoints);
+            protected override MicroServiceBusInbox CreateInbox(IEnumerable<IMicroServiceBusEndpoint> endpoints) =>
+                new MicroServiceBusInboxStub(endpoints);
         }
 
         #endregion
@@ -55,11 +56,14 @@ namespace Kingo.MicroServices.Controllers
                     _outbox = outbox;
                 }
 
-                public override async Task SendAsync(IEnumerable<IMessage> messages)
+                protected override async Task SendAsync(IMessage[] messages)
                 {
                     await base.SendAsync(messages);
                     await _outbox.Receiver.SendAsync(messages);
                 }
+
+                protected override TransactionScope CreateTransactionScope() =>
+                    new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled);
             }
 
             private sealed class ReceiverClientStub : MicroServiceBusClientStub
@@ -71,11 +75,14 @@ namespace Kingo.MicroServices.Controllers
                     _outbox = outbox;
                 }
 
-                public override async Task SendAsync(IEnumerable<IMessage> messages)
+                protected override async Task SendAsync(IMessage[] messages)
                 {
                     await base.SendAsync(messages);
                     await _outbox.ServiceBus.SendAsync(messages);
                 }
+
+                protected override TransactionScope CreateTransactionScope() =>
+                    new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled);
             }
 
             private MicroServiceBusClientStub _sender;
@@ -98,14 +105,14 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== MicroServiceBusStub ======]
+        #region [====== MicroServiceBusInboxStub ======]
 
-        private sealed class MicroServiceBusStub : MicroServiceBus
+        private sealed class MicroServiceBusInboxStub : MicroServiceBusInbox
         {
             private MicroServiceBusClientStub _sender;
             private MicroServiceBusClientStub _receiver;
 
-            public MicroServiceBusStub(IEnumerable<IMicroServiceBusEndpoint> endpoints) : base(endpoints) { }
+            public MicroServiceBusInboxStub(IEnumerable<IMicroServiceBusEndpoint> endpoints) : base(endpoints) { }
 
             public new MicroServiceBusClientStub Sender =>
                 _sender;
@@ -139,11 +146,14 @@ namespace Kingo.MicroServices.Controllers
             public void AssertMessageCountIs(int count) =>
                 Assert.AreEqual(count, _messages.Count);
 
-            public override Task SendAsync(IEnumerable<IMessage> messages)
+            protected override Task SendAsync(IMessage[] messages)
             {
                 _messages.AddRange(messages);
                 return Task.CompletedTask;
             }
+
+            protected override TransactionScope CreateTransactionScope() =>
+                new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled);
         }
 
         #endregion

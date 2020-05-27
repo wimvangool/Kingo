@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.Controllers
 {
     [TestClass]
-    public sealed class MicroServiceBusBaseTest
+    public sealed class MicroServiceBusTest
     {
         #region [====== Stub ======]
 
-        private sealed class MicroServiceBusStub : MicroServiceBusBase
+        private sealed class MicroServiceBusStub : MicroServiceBus
         {
-            private readonly MicroServiceBusProxyStub _proxyStub;
+            private readonly MicroServiceBusClientStub _clientStub;
 
             public MicroServiceBusStub() : base(MessageDirection.Output, MessageDirection.Output)
             {
-                _proxyStub = new MicroServiceBusProxyStub();
+                _clientStub = new MicroServiceBusClientStub();
             }
 
             protected override Task<MicroServiceBusClient> CreateSenderAsync(CancellationToken token) =>
@@ -27,13 +28,16 @@ namespace Kingo.MicroServices.Controllers
                 CreateProxyAsync();
 
             private Task<MicroServiceBusClient> CreateProxyAsync() =>
-                Task.FromResult<MicroServiceBusClient>(_proxyStub);
+                Task.FromResult<MicroServiceBusClient>(_clientStub);
         }
 
-        private sealed class MicroServiceBusProxyStub : MicroServiceBusClient
+        private sealed class MicroServiceBusClientStub : MicroServiceBusClient
         {
-            public override Task SendAsync(IEnumerable<IMessage> messages) =>
+            protected override Task SendAsync(IMessage[] messages) =>
                 Task.CompletedTask;
+
+            protected override TransactionScope CreateTransactionScope() =>
+                new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled);
         }
 
         #endregion

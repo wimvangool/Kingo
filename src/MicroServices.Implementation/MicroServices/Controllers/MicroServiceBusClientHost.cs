@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Kingo.Reflection;
 using static Kingo.Ensure;
 
@@ -217,8 +218,11 @@ namespace Kingo.MicroServices.Controllers
                 _host = host;
             }
 
-            public override Task SendAsync(IEnumerable<IMessage> messages) =>
+            protected override Task SendAsync(IMessage[] messages) =>
                 throw NewClientNotRunningException(_host);
+
+            protected override TransactionScope CreateTransactionScope() =>
+                new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled);
         }
 
         #endregion
@@ -234,8 +238,11 @@ namespace Kingo.MicroServices.Controllers
                 _host = host;
             }
 
-            public override Task SendAsync(IEnumerable<IMessage> messages) =>
+            protected override Task SendAsync(IMessage[] messages) =>
                 throw NewClientDisposedException(_host);
+
+            protected override TransactionScope CreateTransactionScope() =>
+                new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled);
         }
 
         #endregion
@@ -260,7 +267,7 @@ namespace Kingo.MicroServices.Controllers
         public override string ToString() =>
             _state.ToString();
 
-        public override Task SendAsync(IEnumerable<IMessage> messages) =>
+        protected override Task SendAsync(IMessage[] messages) =>
             _state.Client.SendAsync(IsNotNull(messages, nameof(messages)).Where(IsSupportedMessage));
 
         private bool IsSupportedMessage(IMessage message) =>

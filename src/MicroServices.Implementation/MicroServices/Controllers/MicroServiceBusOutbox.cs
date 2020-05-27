@@ -4,11 +4,11 @@ namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
     /// When implemented, represents a conceptual outbox where messages that are produced by a <see cref="IMicroProcessor"/>
-    /// can temporarily be stored before they are send out to another <see cref="IMicroServiceBus" />. An outbox can be useful
-    /// to decouple the transaction/operation in which the messages are produced from the task to actually send these messages
-    /// to a service-bus.
+    /// can temporarily be stored before they are send out to another <see cref="IMicroServiceBus" />. The primary purpose of
+    /// an outbox is to decouple the transaction/operation in which the messages are produced from the transaction/operation
+    /// to physically transmit these messages over a network (i.e. to the <see cref="MicroServiceBusInbox"/>).
     /// </summary>
-    public abstract class MicroServiceBusOutbox : MicroServiceBusBase
+    public abstract class MicroServiceBusOutbox : MicroServiceBus
     {
         private readonly IMicroServiceBus _serviceBus;
 

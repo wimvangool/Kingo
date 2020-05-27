@@ -223,7 +223,7 @@ namespace Kingo.MicroServices.Controllers
 
         private readonly IMicroProcessor _processor;
         private readonly Lazy<MicroServiceBusOutbox> _outbox;
-        private readonly Lazy<MicroServiceBus> _serviceBus;
+        private readonly Lazy<MicroServiceBusInbox> _inbox;
         private State _state;
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Kingo.MicroServices.Controllers
         {
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
             _outbox = new Lazy<MicroServiceBusOutbox>(CreateOutbox, true);
-            _serviceBus = new Lazy<MicroServiceBus>(CreateServiceBus, true);
+            _inbox = new Lazy<MicroServiceBusInbox>(CreateInbox, true);
             _state = new StoppedState(this);
         }
 
@@ -269,7 +269,7 @@ namespace Kingo.MicroServices.Controllers
             _outbox.Value;
 
         private MicroServiceBusOutbox CreateOutbox() =>
-            CreateOutbox(ServiceBus);
+            CreateOutbox(Inbox);
 
         /// <summary>
         /// Creates and returns the <see cref="Outbox"/> that will be used by this controller to
@@ -283,23 +283,23 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== ServiceBus ======]
+        #region [====== Inbox ======]
 
-        protected MicroServiceBus ServiceBus =>
-            _serviceBus.Value;
+        protected MicroServiceBusInbox Inbox =>
+            _inbox.Value;
 
-        private MicroServiceBus CreateServiceBus() =>
-            CreateServiceBus(_processor.CreateMicroServiceBusEndpoints());
+        private MicroServiceBusInbox CreateInbox() =>
+            CreateInbox(_processor.CreateMicroServiceBusEndpoints());
 
         /// <summary>
-        /// Creates and returns a new <see cref="MicroServiceBus"/> that will be used by this controller to
+        /// Creates and returns a new <see cref="MicroServiceBusInbox"/> that will be used by this controller to
         /// send and/or receive messages from a service-bus, depending on the configuration of this controller.
         /// </summary>
         /// <param name="endpoints">
         /// The endpoints exposed by the processor that are configured to receive messages from the service-bus.
         /// </param>
-        /// <returns>A new <see cref="MicroServiceBus"/>.</returns>
-        protected abstract MicroServiceBus CreateServiceBus(IEnumerable<IMicroServiceBusEndpoint> endpoints);
+        /// <returns>A new <see cref="MicroServiceBusInbox"/>.</returns>
+        protected abstract MicroServiceBusInbox CreateInbox(IEnumerable<IMicroServiceBusEndpoint> endpoints);
 
         #endregion
 
@@ -307,7 +307,7 @@ namespace Kingo.MicroServices.Controllers
 
         /// <summary>
         /// Starts this controller by instructing the <see cref="Outbox"/> and
-        /// <see cref="ServiceBus"/> to start their message-senders and -receivers, based on the
+        /// <see cref="Inbox"/> to start their message-senders and -receivers, based on the
         /// <see cref="MicroServiceBusModes" /> set for this controller.
         /// </summary>
         /// <param name="cancellationToken">
@@ -327,19 +327,19 @@ namespace Kingo.MicroServices.Controllers
                 // When starting Send-mode, we must first start the Sender of the ServiceBus. This will allow
                 // all messages forwarded by the Outbox to be sent as they are handed over. As soon as the ServiceBus
                 // is ready, we instruct the Outbox to start forwarding messages and then to also accept new messages.
-                await ServiceBus.StartSendingMessagesAsync(cancellationToken);
+                await Inbox.StartSendingMessagesAsync(cancellationToken);
                 await Outbox.StartReceivingMessagesAsync(cancellationToken);
                 await Outbox.StartSendingMessagesAsync(cancellationToken);
             }
             if (Options.Modes.HasFlag(MicroServiceBusModes.Receive))
             {
-                await ServiceBus.StartReceivingMessagesAsync(cancellationToken);
+                await Inbox.StartReceivingMessagesAsync(cancellationToken);
             }
         }
 
         /// <summary>
         /// Stops this controller by instructing the <see cref="Outbox"/> and
-        /// <see cref="ServiceBus"/> to stop their message-senders and -receivers, based on the
+        /// <see cref="Inbox"/> to stop their message-senders and -receivers, based on the
         /// <see cref="MicroServiceBusModes" /> set for this controller.
         /// </summary>
         /// <param name="cancellationToken">
@@ -355,10 +355,10 @@ namespace Kingo.MicroServices.Controllers
 
         private IEnumerable<Task> StopSendingAndReceivingMessages()
         {
-            yield return ServiceBus.StopReceivingMessagesAsync();
+            yield return Inbox.StopReceivingMessagesAsync();
             yield return Outbox.StopSendingMessagesAsync();
             yield return Outbox.StopReceivingMessagesAsync();
-            yield return ServiceBus.StopSendingMessagesAsync();
+            yield return Inbox.StopSendingMessagesAsync();
         }
 
         /// <inheritdoc />
@@ -372,9 +372,9 @@ namespace Kingo.MicroServices.Controllers
                 {
                     await _outbox.Value.DisposeAsync();
                 }
-                if (_serviceBus.IsValueCreated)
+                if (_inbox.IsValueCreated)
                 {
-                    await _serviceBus.Value.DisposeAsync();
+                    await _inbox.Value.DisposeAsync();
                 }
             }
             await base.DisposeAsync(context);
