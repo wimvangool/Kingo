@@ -70,11 +70,29 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified batch-size is too small ({0}). Batch-size should be at least {1}..
+        /// </summary>
+        internal static string BatchSize_BatchSizeTooSmall {
+            get {
+                return ResourceManager.GetString("BatchSize_BatchSizeTooSmall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified content (Length = {0}) could not be read. See inner-exception for details..
         /// </summary>
         internal static string DataContractBlob_ContentCouldNotBeRead {
             get {
                 return ResourceManager.GetString("DataContractBlob_ContentCouldNotBeRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot infer the content-type of type &apos;{0}&apos;: type must be a concrete, instantiable type..
+        /// </summary>
+        internal static string DataContractContentType_UnsupportedType {
+            get {
+                return ResourceManager.GetString("DataContractContentType_UnsupportedType", resourceCulture);
             }
         }
         
@@ -111,15 +129,6 @@ namespace Kingo {
         internal static string DataContractType_ContentTypeNotValid {
             get {
                 return ResourceManager.GetString("DataContractType_ContentTypeNotValid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot determine the content-type for data-contract of type &apos;{0}&apos;. Please make sure this type is registered with the processor in the configuration..
-        /// </summary>
-        internal static string DataContractTypeMap_ContentTypeNotMapped {
-            get {
-                return ResourceManager.GetString("DataContractTypeMap_ContentTypeNotMapped", resourceCulture);
             }
         }
         
@@ -417,6 +426,60 @@ namespace Kingo {
         internal static string StoreAndForwardQueueResolver_CircularDependencyDetected {
             get {
                 return ResourceManager.GetString("StoreAndForwardQueueResolver_CircularDependencyDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction cannot be completed because no signal was received from the transaction-manager to complete the transaction at this point..
+        /// </summary>
+        internal static string TransactionalMemoryQueue_CannotCompleteTransaction {
+            get {
+                return ResourceManager.GetString("TransactionalMemoryQueue_CannotCompleteTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction completed with errors. See inner-exception for details..
+        /// </summary>
+        internal static string TransactionalMemoryQueue_CompletionFailed {
+            get {
+                return ResourceManager.GetString("TransactionalMemoryQueue_CompletionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified isolation-level ({0}) is not supported by this queue. Please use one of the following isolation-levels: {1}..
+        /// </summary>
+        internal static string TransactionalMemoryQueue_IsolationLevelNotSupported {
+            get {
+                return ResourceManager.GetString("TransactionalMemoryQueue_IsolationLevelNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction failed because a lock timeout expired ({0})..
+        /// </summary>
+        internal static string TransactionalMemoryQueue_LockTimeout {
+            get {
+                return ResourceManager.GetString("TransactionalMemoryQueue_LockTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified timeout cannot be negative ({0})..
+        /// </summary>
+        internal static string TransactionalMemoryQueue_NegativeTimeoutNotAllowed {
+            get {
+                return ResourceManager.GetString("TransactionalMemoryQueue_NegativeTimeoutNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot perform the operation because the transaction it is executed in has already completed (LocalId = {0}, Status = {1})..
+        /// </summary>
+        internal static string TransactionalMemoryQueue_TransactionAlreadyCompleted {
+            get {
+                return ResourceManager.GetString("TransactionalMemoryQueue_TransactionAlreadyCompleted", resourceCulture);
             }
         }
         

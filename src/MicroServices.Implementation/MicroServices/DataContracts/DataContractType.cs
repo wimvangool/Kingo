@@ -31,62 +31,13 @@ namespace Kingo.MicroServices.DataContracts
 
         private static bool TryGetContentType(MicroProcessorComponent component, out DataContractContentType contentType)
         {
-            if (TryGetDataContractAttribute(component, out var attribute))
+            if (component.Type.TryGetAttributeOfType(out DataContractAttribute attribute))
             {
-                contentType = DataContractContentType.FromAttribute(attribute);
+                contentType = DataContractContentType.FromType(component.Type, attribute);
                 return true;
             }
             contentType = null;
             return false;
         }
-
-        private static bool TryGetDataContractAttribute(MicroProcessorComponent component, out DataContractAttribute attribute)
-        {
-            if (component.Type.TryGetAttributeOfType(out attribute))
-            {
-                if (attribute.Namespace == null)
-                {
-                    attribute.Namespace = DetermineDefaultContentTypeNamespace(component.Type);
-                }
-                if (attribute.Name == null)
-                {
-                    attribute.Name = DetermineDefaultContentTypeName(component.Type);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        private static string DetermineDefaultContentTypeNamespace(Type type)
-        {
-            if (TryGetContentTypeNamespaceFromClrNamespace(type, out var contentTypeNamespace))
-            {
-                return contentTypeNamespace;
-            }
-            return DataContractContentType.DefaultNamespace;
-        }
-
-        private static bool TryGetContentTypeNamespaceFromClrNamespace(Type type, out string contentTypeNamespace)
-        {
-            foreach (var attribute in GetContractNamespaceAttributesFor(type))
-            {
-                if (attribute.ClrNamespace == null || attribute.ClrNamespace == type.Namespace)
-                {
-                    contentTypeNamespace = attribute.ContractNamespace;
-                    return true;
-                }
-            }
-            contentTypeNamespace = null;
-            return false;
-        }
-
-        private static IEnumerable<ContractNamespaceAttribute> GetContractNamespaceAttributesFor(Type type) =>
-            from attribute in type.Assembly.GetAttributesOfType<ContractNamespaceAttribute>()
-            where attribute.ContractNamespace != null
-            orderby attribute.ClrNamespace descending
-            select attribute;
-
-        private static string DetermineDefaultContentTypeName(Type type) =>
-            type.FriendlyName(true, false);
     }
 }

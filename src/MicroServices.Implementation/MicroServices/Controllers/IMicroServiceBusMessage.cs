@@ -1,36 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.IO;
+using System.Text;
 
-namespace Kingo.MicroServices.DataContracts
+namespace Kingo.MicroServices.Controllers
 {
     /// <summary>
-    /// Represents a message of which the contents are serialized into a blob.
+    /// When implemented by a class, represents a serialized version of a <see cref="IMessage"/> that can be
+    /// transported over a <see cref="IMicroServiceBus" />.
     /// </summary>
-    [Serializable]
-    [DataContract]
-    public sealed class MessageBlob 
+    public interface IMicroServiceBusMessage
     {
-        #region [====== MessageId & Correlation ======]
+        #region [====== MessageId & CorrelationId ======]
 
         /// <summary>
         /// Gets the unique identifier of this message.
         /// </summary>
-        [DataMember]
         public string MessageId
         {
             get;
-            set;
         }
 
         /// <summary>
-        /// Gets the <see cref="MessageId"/> of the message this message is correlated with.
+        /// Gets the <see cref="MessageId"/> of the message that this message is correlated with.
         /// </summary>
-        [DataMember]
         public string CorrelationId
         {
             get;
-            set;
         }
 
         #endregion
@@ -40,11 +36,9 @@ namespace Kingo.MicroServices.DataContracts
         /// <summary>
         /// Indicates at what (UTC) time the message should be delivered.
         /// </summary>
-        [DataMember]
         public DateTimeOffset? DeliveryTimeUtc
         {
             get;
-            set;
         }
 
         #endregion
@@ -54,21 +48,17 @@ namespace Kingo.MicroServices.DataContracts
         /// <summary>
         /// Identifies the type or schema of the <see cref="Content"/> of this message.
         /// </summary>
-        [DataMember]
         public string ContentType
         {
             get;
-            set;
         }
 
         /// <summary>
         /// The (serialized) content of the message.
         /// </summary>
-        [DataMember]
-        public IReadOnlyList<byte> Content
+        public MemoryStream Content
         {
             get;
-            set;
         }
 
         #endregion

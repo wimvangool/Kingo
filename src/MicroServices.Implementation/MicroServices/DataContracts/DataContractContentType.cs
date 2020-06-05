@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
+using Kingo.Reflection;
 using static Kingo.Ensure;
 
 namespace Kingo.MicroServices.DataContracts
@@ -19,7 +23,18 @@ namespace Kingo.MicroServices.DataContracts
 
         /// <inheritdoc />
         public override string ToString() => 
-            _contentTypeUri.ToString().ToLowerInvariant();
+            _contentTypeUri.ToString();
+
+        internal bool IsSystemType(out Type type)
+        {
+            if (_contentTypeUri.ToString().TryRemovePrefix(DefaultNamespace, out var typeNameUri))
+            {
+                type = FromDefaultTypeName(typeNameUri);
+                return type != null;
+            }
+            type = null;
+            return false;
+        }
 
         #region [====== Equals & GetHashCode ======]
 
@@ -74,27 +89,49 @@ namespace Kingo.MicroServices.DataContracts
 
         #endregion
 
-        #region [====== FromAttribute ======]
+        #region [====== FromType ======]
 
         /// <summary>
         /// Creates and returns a new <see cref="DataContractContentType" /> that is inferred from the
-        /// specified <paramref name="attribute"/>.
+        /// specified <paramref name="type"/>.
         /// </summary>
-        /// <param name="attribute">The attribute containing the name and namespace of the data-contract.</param>
-        /// <returns>A new <see cref="DataContractContentType"/>.</returns>
+        /// <param name="type"></param>
+        /// <returns>A new <see cref="DataContractContentType"/> that was inferred from the specified <paramref name="type"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="attribute"/> is <c>null</c>.
+        /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        /// <exception cref="ArgumentException">
-        /// The <paramref name="attribute"/>'s name is not set
-        /// - or -
-        /// The <paramref name="attribute"/>'s namespace is not a valid <see cref="Uri"/>.
-        /// </exception>
-        public static DataContractContentType FromAttribute(DataContractAttribute attribute)
+        public static DataContractContentType FromType(Type type)
         {
-            if (attribute == null)
+            if (IsUnsupportedType(IsNotNull(type, nameof(type))))
             {
-                throw new ArgumentNullException(nameof(attribute));
+                throw NewUnsupportedTypeException(type);
+            }
+            if (type.TryGetAttributeOfType(out DataContractAttribute attribute))
+            {
+                return FromType(type, attribute);
+            }
+            return FromName(ToDefaultContentTypeName(type), ToDefaultContentTypeNamespace(type));
+        }
+
+        private static bool IsUnsupportedType(Type type) =>
+            type.IsAbstract || type.IsGenericTypeDefinition;
+
+        private static Exception NewUnsupportedTypeException(Type type)
+        {
+            var messageFormat = ExceptionMessages.DataContractContentType_UnsupportedType;
+            var message = string.Format(messageFormat, type.FriendlyName());
+            return new ArgumentException(message);
+        }
+
+        internal static DataContractContentType FromType(Type type, DataContractAttribute attribute)
+        {
+            if (attribute.Namespace == null)
+            {
+                attribute.Namespace = ToDefaultContentTypeNamespace(type);
+            }
+            if (attribute.Name == null)
+            {
+                attribute.Name = ToDefaultContentTypeName(type);
             }
             try
             {
@@ -105,6 +142,56 @@ namespace Kingo.MicroServices.DataContracts
                 throw NewAttributeNotValidException(attribute, exception);
             }
         }
+
+        private static string ToDefaultContentTypeNamespace(Type type)
+        {
+            if (TryGetContentTypeNamespaceFromClrNamespace(type, out var contentTypeNamespace))
+            {
+                return contentTypeNamespace;
+            }
+            return DefaultNamespace;
+        }
+
+        private static bool TryGetContentTypeNamespaceFromClrNamespace(Type type, out string contentTypeNamespace)
+        {
+            foreach (var attribute in GetContractNamespaceAttributesFor(type))
+            {
+                if (attribute.ClrNamespace == null || attribute.ClrNamespace == type.Namespace)
+                {
+                    contentTypeNamespace = attribute.ContractNamespace;
+                    return true;
+                }
+            }
+            contentTypeNamespace = null;
+            return false;
+        }
+
+        private static IEnumerable<ContractNamespaceAttribute> GetContractNamespaceAttributesFor(Type type) =>
+            from attribute in type.Assembly.GetAttributesOfType<ContractNamespaceAttribute>()
+            where attribute.ContractNamespace != null
+            orderby attribute.ClrNamespace descending
+            select attribute;
+
+        private static string ToDefaultContentTypeName(Type type) =>
+            ToUriTypeName(type.FullName);
+
+        private static Type FromDefaultTypeName(string typeNameUri)
+        {
+            try
+            {
+                return Type.GetType(ToClrTypeName(typeNameUri), false, true);
+            }
+            catch (FormatException)
+            {
+                return null;
+            }
+        }
+
+        private static string ToUriTypeName(string typeNameClr) =>
+            Convert.ToBase64String(Encoding.UTF8.GetBytes(typeNameClr));
+
+        private static string ToClrTypeName(string typeNameUri) =>
+            Encoding.UTF8.GetString(Convert.FromBase64String(typeNameUri));
 
         private static Exception NewAttributeNotValidException(DataContractAttribute attribute, Exception exception)
         {

@@ -6,8 +6,12 @@ namespace Kingo.MicroServices
     [Serializable]
     internal abstract class Message<TContent> : IMessage<TContent>
     {
+        #region [====== ToString ======]
+
         public override string ToString() =>
-            $"{Content.GetType().FriendlyName()} ({Kind} | {Direction} | {MessageId})";
+            Message.ToString(this);
+
+        #endregion
 
         #region [====== Kind & Direction ======]
 
@@ -71,7 +75,7 @@ namespace Kingo.MicroServices
             {
                 return message;
             }
-            throw NewConversionFailedException(typeof(TOther), Content.GetType());
+            throw Message.NewConversionFailedException(typeof(TOther), Content.GetType());
         }
 
         bool IMessage.TryConvertTo<TOther>(out IMessage<TOther> message)
@@ -86,13 +90,6 @@ namespace Kingo.MicroServices
         }
 
         public abstract bool TryConvertTo<TOther>(out Message<TOther> message);
-
-        private static Exception NewConversionFailedException(Type expectedType, Type actualType)
-        {
-            var messageFormat = ExceptionMessages.Message_ConversionFailed;
-            var message = string.Format(messageFormat, actualType.FriendlyName(), expectedType.FriendlyName());
-            return new InvalidCastException(message);
-        }
 
         #endregion
 

@@ -71,7 +71,7 @@ namespace Kingo.MicroServices
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorOperationException">
-        /// The specified <paramref name="message"/> failed to be processed correctly.
+        /// <paramref name="message"/> could not be processed by the processor.
         /// </exception>
         Task<ProcessOperationResult> ProcessAsync(IMessage message, CancellationToken? token = null);
     }

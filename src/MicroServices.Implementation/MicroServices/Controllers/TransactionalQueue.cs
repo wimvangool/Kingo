@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Kingo.Collections.Generic;
 using Kingo.Reflection;
+using static Kingo.Ensure;
 
 namespace Kingo.MicroServices.Controllers
 {
@@ -20,9 +24,11 @@ namespace Kingo.MicroServices.Controllers
             public override string ToString() =>
                 GetType().FriendlyName().RemovePostfix(nameof(State));
 
-            public abstract Task EnqueueAsync(IEnumerable<IMessage> messages, Transaction transaction);
+            public abstract Task<int> CountAsync();
 
-            public abstract Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize, Transaction transaction);
+            public abstract Task EnqueueAsync(IEnumerable<IMessage> messages);
+
+            public abstract Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize);
         }
 
         #endregion
@@ -38,11 +44,17 @@ namespace Kingo.MicroServices.Controllers
                 _queue = queue;
             }
 
-            public override Task EnqueueAsync(IEnumerable<IMessage> messages, Transaction transaction) =>
-                throw new NotImplementedException();
+            public override Task<int> CountAsync() =>
+                _queue.CountItemsAsync();
 
-            public override Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize, Transaction transaction) =>
-                throw new NotImplementedException();
+            public override Task EnqueueAsync(IEnumerable<IMessage> messages) =>
+                EnqueueAsync(_queue.Serialize(messages));
+
+            private Task EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages) =>
+                messages.Count == 0 ? Task.CompletedTask : _queue.EnqueueAsync(messages);
+
+            public override async Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize) =>
+                _queue.Deserialize(await _queue.DequeueAsync(new BatchSize(batchSize)));
 
             protected override ValueTask DisposeAsync(DisposeContext context)
             {
@@ -67,10 +79,13 @@ namespace Kingo.MicroServices.Controllers
                 _queue = queue;
             }
 
-            public override Task EnqueueAsync(IEnumerable<IMessage> messages, Transaction transaction) =>
+            public override Task<int> CountAsync() =>
                 throw _queue.NewObjectDisposedException();
 
-            public override Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize, Transaction transaction) =>
+            public override Task EnqueueAsync(IEnumerable<IMessage> messages) =>
+                throw _queue.NewObjectDisposedException();
+
+            public override Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize) =>
                 throw _queue.NewObjectDisposedException();
 
             protected override ValueTask DisposeAsync(DisposeContext context) =>
@@ -93,6 +108,50 @@ namespace Kingo.MicroServices.Controllers
         public override string ToString() =>
             $"{GetType().FriendlyName()} ({_state})";
 
+        #region [====== Serialization ======]
+
+        /// <summary>
+        /// Gets the serializer that is used to serialize and deserialize all messages that are stored in this queue.
+        /// </summary>
+        protected abstract IMessageSerializer Serializer
+        {
+            get;
+        }
+
+        private IReadOnlyCollection<MicroServiceBusMessage> Serialize(IEnumerable<IMessage> messages) =>
+            IsNotNull(messages, nameof(messages)).WhereNotNull().Select(Serialize).ToArray();
+
+        private MicroServiceBusMessage Serialize(IMessage message) =>
+            new MicroServiceBusMessage(Serializer.Serialize(message), message.Kind);
+
+        private IReadOnlyCollection<IMessage> Deserialize(IEnumerable<MicroServiceBusMessage> messages) =>
+            IsNotNull(messages, nameof(messages)).WhereNotNull().Select(Deserialize).ToArray();
+
+        private IMessage Deserialize(MicroServiceBusMessage message) =>
+            Serializer.DeserializeOutput(message, message.Kind);
+
+        #endregion
+
+        #region [====== CountAsync ======]
+
+        /// <summary>
+        /// Counts all messages currently stored inside the queue.
+        /// </summary>
+        /// <returns>The number of messages currently stored inside the queue.</returns>
+        /// <exception cref="ObjectDisposedException">
+        /// This queue has already been disposed.
+        /// </exception>
+        public Task<int> CountAsync() =>
+            _state.CountAsync();
+
+        /// <summary>
+        /// Counts all messages currently stored inside the queue.
+        /// </summary>
+        /// <returns>The number of messages currently stored inside the queue.</returns>
+        protected abstract Task<int> CountItemsAsync();
+
+        #endregion
+
         #region [====== EnqueueAsync ======]
 
         /// <summary>
@@ -102,69 +161,48 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messages"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="SerializationException">
+        /// At least one of the specified <paramref name="messages"/> could not be serialized.
+        /// </exception>
         /// <exception cref="ObjectDisposedException">
         /// This queue has already been disposed.
         /// </exception>
         public Task EnqueueAsync(IEnumerable<IMessage> messages) =>
-            EnqueueAsync(messages, Transaction.Current);
+            _state.EnqueueAsync(messages);
 
         /// <summary>
-        /// Enqueues the specified <paramref name="messages"/> in this queue as part of the specified <paramref name="transaction"/>.
-        /// If <paramref name="transaction"/> is <c>null</c>, the queue will commit the operation immediately on completion.
+        /// Enqueues the specified <paramref name="messages"/> in this queue.
         /// </summary>
         /// <param name="messages">The messages to enqueue.</param>
-        /// <param name="transaction">Optional transaction that, if specified, this operation will enlist in.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messages"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ObjectDisposedException">
-        /// This queue has already been disposed.
-        /// </exception>
-        public Task EnqueueAsync(IEnumerable<IMessage> messages, Transaction transaction) =>
-            _state.EnqueueAsync(messages, transaction);
+        protected abstract Task EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages);
 
         #endregion
 
         #region [====== DequeueAsync ======]
 
         /// <summary>
-        /// The default (maximum) number of messages dequeued in a single <see cref="DequeueAsync(int, Transaction)"/>-operation.
+        /// Dequeues a number of messages from this queue, where the maximum number of messages retrieved is limited
+        /// by the specified <paramref name="batchSize" />.
         /// </summary>
-        public const int DefaultBatchSize = 100;
-
-        /// <summary>
-        /// The minimum number of messages dequeued in a single <see cref="DequeueAsync(int, Transaction)"/>-operation.
-        /// </summary>
-        public const int MinimumBatchSize = 1;
+        /// <param name="batchSize">The maximum number of messages to dequeue.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="batchSize"/> is less than the <see cref="BatchSize.MinValue"/>.
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// At least one of the messages dequeued in the operation could not be deserialized.
+        /// </exception>
+        /// <exception cref="ObjectDisposedException">
+        /// This queue has already been disposed.
+        /// </exception>
+        public Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize = BatchSize.DefaultValue) =>
+            _state.DequeueAsync(batchSize);
 
         /// <summary>
         /// Dequeues a number of messages from this queue, where the maximum number of messages retrieved is limited
         /// by the specified <paramref name="batchSize" />.
         /// </summary>
         /// <param name="batchSize">The maximum number of messages to dequeue.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="batchSize"/> is less than the <see cref="MinimumBatchSize"/>.
-        /// </exception>
-        /// <exception cref="ObjectDisposedException">
-        /// This queue has already been disposed.
-        /// </exception>
-        public Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize = DefaultBatchSize) =>
-            DequeueAsync(batchSize, Transaction.Current);
-
-        /// <summary>
-        /// Dequeues a number of messages from this queue, where the maximum number of messages retrieved is limited
-        /// by the specified <paramref name="batchSize" />.
-        /// </summary>
-        /// <param name="batchSize">The maximum number of messages to dequeue.</param>
-        /// <param name="transaction">Optional transaction that, if specified, this operation will enlist in.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="batchSize"/> is less than the <see cref="MinimumBatchSize"/>.
-        /// </exception>
-        /// <exception cref="ObjectDisposedException">
-        /// This queue has already been disposed.
-        /// </exception>
-        public Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize, Transaction transaction) =>
-            _state.DequeueAsync(batchSize, transaction);
+        protected abstract Task<IEnumerable<MicroServiceBusMessage>> DequeueAsync(BatchSize batchSize);
 
         #endregion
 

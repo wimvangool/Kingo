@@ -120,11 +120,14 @@
   <data name="AsyncMethodOperationStackTrace_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
+  <data name="BatchSize_BatchSizeTooSmall" xml:space="preserve">
+    <value>The specified batch-size is too small ({0}). Batch-size should be at least {1}.</value>
+  </data>
   <data name="DataContractBlob_ContentCouldNotBeRead" xml:space="preserve">
     <value>The specified content (Length = {0}) could not be read. See inner-exception for details.</value>
   </data>
-  <data name="DataContractTypeMap_ContentTypeNotMapped" xml:space="preserve">
-    <value>Cannot determine the content-type for data-contract of type '{0}'. Please make sure this type is registered with the processor in the configuration.</value>
+  <data name="DataContractContentType_UnsupportedType" xml:space="preserve">
+    <value>Cannot infer the content-type of type '{0}': type must be a concrete, instantiable type.</value>
   </data>
   <data name="DataContractTypeMap_TypeNotMapped" xml:space="preserve">
     <value>Cannot determine type type for data-contract with content-type '{0}'. Please make sure this content-type is registered with the processor in the configuration.</value>
@@ -236,6 +239,24 @@
   </data>
   <data name="StoreAndForwardQueueResolver_CircularDependencyDetected" xml:space="preserve">
     <value>Cannot resolve queue of type '{0}' because a circular dependency was detected in the pipeline.</value>
+  </data>
+  <data name="TransactionalMemoryQueue_CannotCompleteTransaction" xml:space="preserve">
+    <value>Transaction cannot be completed because no signal was received from the transaction-manager to complete the transaction at this point.</value>
+  </data>
+  <data name="TransactionalMemoryQueue_CompletionFailed" xml:space="preserve">
+    <value>Transaction completed with errors. See inner-exception for details.</value>
+  </data>
+  <data name="TransactionalMemoryQueue_IsolationLevelNotSupported" xml:space="preserve">
+    <value>The specified isolation-level ({0}) is not supported by this queue. Please use one of the following isolation-levels: {1}.</value>
+  </data>
+  <data name="TransactionalMemoryQueue_LockTimeout" xml:space="preserve">
+    <value>Transaction failed because a lock timeout expired ({0}).</value>
+  </data>
+  <data name="TransactionalMemoryQueue_NegativeTimeoutNotAllowed" xml:space="preserve">
+    <value>The specified timeout cannot be negative ({0}).</value>
+  </data>
+  <data name="TransactionalMemoryQueue_TransactionAlreadyCompleted" xml:space="preserve">
+    <value>Cannot perform the operation because the transaction it is executed in has already completed (LocalId = {0}, Status = {1}).</value>
   </data>
   <data name="UnitOfWork_Disabled" xml:space="preserve">
     <value>Cannot enlist instance of type '{0}' because the unit of work controller has been disabled.</value>

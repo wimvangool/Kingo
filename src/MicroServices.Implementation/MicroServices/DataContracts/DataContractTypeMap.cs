@@ -38,36 +38,26 @@ namespace Kingo.MicroServices.DataContracts
 
         public DataContractContentType GetContentTypeOf(Type type)
         {
-            try
+            if (_typeToContentTypeMap.TryGetValue(type, out var contentType))
             {
-                return _typeToContentTypeMap[type];
+                return contentType;
             }
-            catch (KeyNotFoundException exception)
-            {
-                throw NewContentTypeNotMappedException(type, exception);
-            }
+            return DataContractContentType.FromType(type);
         }
 
         public Type GetTypeOf(DataContractContentType contentType)
         {
-            try
+            if (TryGetTypeOf(contentType, out var type))
             {
-                return _contentTypeToTypeMap[contentType];
+                return type;
             }
-            catch (KeyNotFoundException exception)
-            {
-                throw NewTypeNotMappedException(contentType, exception);
-            }
+            throw NewTypeNotMappedException(contentType);
         }
 
-        private static Exception NewContentTypeNotMappedException(Type type, Exception exception)
-        {
-            var messageFormat = ExceptionMessages.DataContractTypeMap_ContentTypeNotMapped;
-            var message = string.Format(messageFormat, type.FriendlyName());
-            return new ArgumentException(message, nameof(type));
-        }
+        private bool TryGetTypeOf(DataContractContentType contentType, out Type type) =>
+            _contentTypeToTypeMap.TryGetValue(contentType, out type) || contentType.IsSystemType(out type);
 
-        private static Exception NewTypeNotMappedException(DataContractContentType contentType, Exception exception)
+        private static Exception NewTypeNotMappedException(DataContractContentType contentType)
         {
             var messageFormat = ExceptionMessages.DataContractTypeMap_TypeNotMapped;
             var message = string.Format(messageFormat, contentType);

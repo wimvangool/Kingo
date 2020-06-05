@@ -221,23 +221,8 @@ namespace Kingo.MicroServices
                 return component;
             }
             throw NewTypeNotSupportedException(instance);
-        }        
-
-        internal static IEnumerable<MicroProcessorComponent> FromTypes(IEnumerable<Type> types)
-        {
-            if (types == null)
-            {
-                throw new ArgumentNullException(nameof(types));
-            }
-            foreach (var type in types)
-            {
-                if (IsMicroProcessorComponent(type, out var component))
-                {
-                    yield return component;
-                }
-            }
         }
-        
+
         internal static bool IsMicroProcessorComponent(Type type, out MicroProcessorComponent component)
         {
             if (type == null)

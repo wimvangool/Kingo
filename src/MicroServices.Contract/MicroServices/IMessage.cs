@@ -3,7 +3,7 @@
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// When implemented by a class, represents (the envelope of) a message, carrying its payload and metadata.
+    /// When implemented by a class, represents a message that can be processed by a processor.
     /// </summary>
     public interface IMessage
     {

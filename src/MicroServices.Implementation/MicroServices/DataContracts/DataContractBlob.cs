@@ -19,9 +19,16 @@ namespace Kingo.MicroServices.DataContracts
             Content = new MemoryStream(content, false);
         }
 
+        #region [====== ToString ======]
+
         /// <inheritdoc />
         public override string ToString() =>
-            $"{ContentType} ({Content.Length:N0} byte(s))";
+            ToString(ContentType, Content.Length);
+
+        internal static string ToString(object contentType, long contentSize) =>
+            $"{contentType} ({contentSize:N0} byte(s))";
+
+        #endregion
 
         #region [====== ContentType & Content ======]
 

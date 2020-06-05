@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Kingo.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.DataContracts
@@ -49,20 +51,67 @@ namespace Kingo.MicroServices.DataContracts
 
         #endregion
 
-        #region [====== FromAttribute ======]
+        #region [====== FromType ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void FromAttribute_Throws_IfAttributeIsNull()
+        public void FromType_Throws_IfTypeIsNull()
         {
-            DataContractContentType.FromAttribute(null);
+            DataContractContentType.FromType(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void FromAttribute_Throws_IfAttributeNameIsNull()
+        public void FromType_Throws_IfTypeIsInterface()
         {
-            DataContractContentType.FromAttribute(new DataContractAttribute());
+            DataContractContentType.FromType(typeof(IDisposable));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void FromType_Throws_IfTypeIsAbstractClass()
+        {
+            DataContractContentType.FromType(typeof(Disposable));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void FromType_Throws_IfTypeIsGenericTypeDefinition()
+        {
+            DataContractContentType.FromType(typeof(List<>));
+        }
+
+        [TestMethod]
+        public void FromType_ReturnsExpectedContentType_IfTypeIsObject()
+        {
+            FromType_ReturnsExpectedContentType_IsTypeIsSupportedSystemType<object>();
+        }
+
+        [TestMethod]
+        public void FromType_ReturnsExpectedContentType_IfTypeIsInt32()
+        {
+            FromType_ReturnsExpectedContentType_IsTypeIsSupportedSystemType<int>();
+        }
+
+        [TestMethod]
+        public void FromType_ReturnsExpectedContentType_IfTypeIsGenericList()
+        {
+            FromType_ReturnsExpectedContentType_IsTypeIsSupportedSystemType<List<int>>();
+        }
+
+        [TestMethod]
+        public void FromType_ReturnsExpectedContentType_IfTypeIsGenericDictionary()
+        {
+            FromType_ReturnsExpectedContentType_IsTypeIsSupportedSystemType<Dictionary<int, Disposable>>();
+        }
+
+        private static void FromType_ReturnsExpectedContentType_IsTypeIsSupportedSystemType<TType>()
+        {
+            var contentType = DataContractContentType.FromType(typeof(TType));
+
+            Assert.IsTrue(contentType.ToString().StartsWith("http://schemas.datacontract.org/2004/07/"));
+            Assert.IsTrue(contentType.IsSystemType(out var type));
+            Assert.AreSame(typeof(TType), type);
         }
 
         #endregion
@@ -88,7 +137,7 @@ namespace Kingo.MicroServices.DataContracts
         {
             var type = DataContractContentType.FromName("SomeName");
 
-            Assert.AreEqual("http://schemas.datacontract.org/2004/07/somename", type.ToString());
+            Assert.AreEqual("http://schemas.datacontract.org/2004/07/SomeName", type.ToString());
         }
 
         [TestMethod]
@@ -103,7 +152,7 @@ namespace Kingo.MicroServices.DataContracts
         {
             var type = DataContractContentType.FromName("SomeName", "https://mynamespace/");
 
-            Assert.AreEqual("https://mynamespace/somename", type.ToString());
+            Assert.AreEqual("https://mynamespace/SomeName", type.ToString());
         }
 
         #endregion

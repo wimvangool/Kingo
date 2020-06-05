@@ -34,7 +34,6 @@ namespace Kingo.MicroServices.Configuration
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void Add_ReturnsFalse_IsTypeHasNoDataContractContractAttribute()
         {
             Processor.ConfigureDataContracts(dataContracts =>
@@ -45,7 +44,11 @@ namespace Kingo.MicroServices.Configuration
             var serializerFactory = CreateSerializerFactory();
             var serializer = serializerFactory.CreateSerializer();
 
-            serializer.Serialize(new object());
+            var value1 = new object();
+            var value2 = serializer.Clone(value1);
+
+            Assert.IsNotNull(value2);
+            Assert.AreNotSame(value1, value2);
         }
 
         [TestMethod]
@@ -62,7 +65,7 @@ namespace Kingo.MicroServices.Configuration
             var dataContract = new DataContractWithExplicitNamespace();
             var dataContractBlob = serializer.Serialize(dataContract);
 
-            Assert.AreEqual("http://explicit-namespace/somedatacontract", dataContractBlob.ContentType.ToString());
+            Assert.AreEqual("http://explicit-namespace/SomeDataContract", dataContractBlob.ContentType.ToString());
         }
 
         [TestMethod]
@@ -79,7 +82,7 @@ namespace Kingo.MicroServices.Configuration
             var dataContract = new DataContractWithImplicitNamespace();
             var dataContractBlob = serializer.Serialize(dataContract);
 
-            Assert.AreEqual("http://implicit-namespace/somedatacontract", dataContractBlob.ContentType.ToString());
+            Assert.AreEqual("http://implicit-namespace/SomeDataContract", dataContractBlob.ContentType.ToString());
         }
 
         [TestMethod]
@@ -96,7 +99,7 @@ namespace Kingo.MicroServices.Configuration
             var dataContract = new SomeDataContract() { Value = Clock.SystemClock.LocalDateAndTime().Millisecond };
             var dataContractBlob = serializer.Serialize(dataContract);
 
-            Assert.AreEqual("http://implicit-namespace-default/kingo.microservices.datacontracts.somedatacontract", dataContractBlob.ContentType.ToString());
+            Assert.IsTrue(dataContractBlob.ContentType.ToString().StartsWith("http://implicit-namespace-default/"));
             Assert.AreEqual(dataContract, serializer.Deserialize(dataContractBlob));
         }
 
@@ -118,10 +121,8 @@ namespace Kingo.MicroServices.Configuration
             };
             var dataContractBlob = serializer.Serialize(dataContract);
 
-            Assert.AreEqual("http://schemas.datacontract.org/2004/07/kingo.microservices.datacontracts.somecommand", dataContractBlob.ContentType.ToString());
+            Assert.IsTrue(dataContractBlob.ContentType.ToString().StartsWith(DataContractContentType.DefaultNamespace));
         }
-
-
 
         private IDataContractSerializerFactory CreateSerializerFactory() =>
             CreateProcessor().ServiceProvider.GetRequiredService<IDataContractSerializerFactory>();

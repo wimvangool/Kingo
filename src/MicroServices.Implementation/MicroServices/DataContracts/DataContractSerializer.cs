@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kingo.Serialization;
 using static Kingo.Ensure;
 
@@ -9,10 +10,10 @@ namespace Kingo.MicroServices.DataContracts
         private readonly ISerializer _serializer;
         private readonly DataContractTypeMap _typeMap;
 
-        public DataContractSerializer(ISerializer serializer, DataContractTypeMap typeMap)
+        public DataContractSerializer(ISerializer serializer = null, DataContractTypeMap typeMap = null)
         {
-            _serializer = serializer;
-            _typeMap = typeMap;
+            _serializer = serializer ?? new JsonFormatSerializer();
+            _typeMap = typeMap ?? new DataContractTypeMap();
         }
 
         #region [====== Serialize ======]
@@ -27,7 +28,7 @@ namespace Kingo.MicroServices.DataContracts
 
         #region [====== Deserialize ======]
 
-        public object Deserialize(byte[] content, string contentType, bool updateToLatestVersion = false) =>
+        public object Deserialize(IReadOnlyList<byte> content, string contentType, bool updateToLatestVersion = false) =>
             Deserialize(DataContractBlob.FromBytes(contentType, content), updateToLatestVersion);
 
         public object Deserialize(DataContractBlob blob, bool updateToLatestVersion = false) =>

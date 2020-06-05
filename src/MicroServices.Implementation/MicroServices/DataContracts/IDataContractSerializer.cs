@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Kingo.MicroServices.DataContracts
@@ -71,7 +72,7 @@ namespace Kingo.MicroServices.DataContracts
         /// - or -
         /// the specified <paramref name="contentType"/> is not a valid type-identifier.
         /// </exception>
-        object Deserialize(byte[] content, string contentType, bool updateToLatestVersion = false);
+        object Deserialize(IReadOnlyList<byte> content, string contentType, bool updateToLatestVersion = false);
 
         /// <summary>
         /// Deserializes the specified <paramref name="blob"/> into an instance of the type identified
