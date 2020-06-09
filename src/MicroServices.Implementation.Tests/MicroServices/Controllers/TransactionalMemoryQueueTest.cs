@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
-using Kingo.MicroServices.Configuration;
-using Kingo.MicroServices.DataContracts;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Kingo.MicroServices.MessageFactoryTest;
 
@@ -15,7 +10,7 @@ namespace Kingo.MicroServices.Controllers
     [TestClass]
     public sealed class TransactionalMemoryQueueTest
     {
-        #region [====== CountAsync, EnqueueAsync & DequeueAsync (Implicit Transactions) ======]
+        #region [====== EnqueueAsync, DequeueAsync & CountAsync (Implicit Transactions) ======]
 
         [TestMethod]
         public async Task CountAsync_ReturnsZero_IfQueueIsStillEmpty()
@@ -169,7 +164,7 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== EnqueueAsync & DequeueAsync (Explicit Transactions, Invalid IsolationLevels) ======]
+        #region [====== EnqueueAsync, DequeueAsync & CountAsync (Explicit Transactions, Invalid IsolationLevels) ======]
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -201,7 +196,7 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [====== EnqueueAsync & DequeueAsync (Explicit Transactions, Serializable) ======]
+        #region [====== EnqueueAsync, DequeueAsync & CountAsync (Explicit Transactions, Serializable) ======]
 
         [TestMethod]
         public async Task EnqueueAsync_EnqueuesSpecifiedMessages_IfMultipleSetsAreAddedInTheSameTransaction_And_IsolationLevelIsSerializable()
@@ -239,9 +234,29 @@ namespace Kingo.MicroServices.Controllers
             await DequeueAsync_RollsbackChanges_IfMessagesWereEnqueuedInTheSameTransaction_And_TransactionIsAborted_And_IsolationLevelIs(IsolationLevel.Serializable);
         }
 
+        [TestMethod]
+        public async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIsSerializable()
+        {
+            await CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIs(IsolationLevel.Serializable);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TimeoutException))]
+        public async Task CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIsSerializable()
+        {
+            await CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIs(IsolationLevel.Serializable);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TimeoutException))]
+        public async Task CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIsSerializable()
+        {
+            await CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIs(IsolationLevel.Serializable);
+        }
+
         #endregion
 
-        #region [====== EnqueueAsync & DequeueAsync (Explicit Transactions, RepeatableRead) ======]
+        #region [====== EnqueueAsync, DequeueAsync & CountAsync (Explicit Transactions, RepeatableRead) ======]
 
         [TestMethod]
         public async Task EnqueueAsync_EnqueuesSpecifiedMessages_IfMultipleSetsAreAddedInTheSameTransaction_And_IsolationLevelIsRepeatableRead()
@@ -279,9 +294,29 @@ namespace Kingo.MicroServices.Controllers
             await DequeueAsync_RollsbackChanges_IfMessagesWereEnqueuedInTheSameTransaction_And_TransactionIsAborted_And_IsolationLevelIs(IsolationLevel.RepeatableRead);
         }
 
+        [TestMethod]
+        public async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIsRepeatableRead()
+        {
+            await CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIs(IsolationLevel.RepeatableRead);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TimeoutException))]
+        public async Task CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIsRepeatableRead()
+        {
+            await CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIs(IsolationLevel.RepeatableRead);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TimeoutException))]
+        public async Task CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIsRepeatableRead()
+        {
+            await CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIs(IsolationLevel.RepeatableRead);
+        }
+
         #endregion
 
-        #region [====== EnqueueAsync & DequeueAsync (Explicit Transactions, ReadCommitted) ======]
+        #region [====== EnqueueAsync, DequeueAsync & CountAsync (Explicit Transactions, ReadCommitted) ======]
 
         [TestMethod]
         public async Task EnqueueAsync_EnqueuesSpecifiedMessages_IfMultipleSetsAreAddedInTheSameTransaction_And_IsolationLevelIsReadCommitted()
@@ -319,9 +354,28 @@ namespace Kingo.MicroServices.Controllers
             await DequeueAsync_RollsbackChanges_IfMessagesWereEnqueuedInTheSameTransaction_And_TransactionIsAborted_And_IsolationLevelIs(IsolationLevel.ReadCommitted);
         }
 
+        [TestMethod]
+        public async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIsReadCommitted()
+        {
+            await CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIs(IsolationLevel.ReadCommitted);
+        }
+
+        [TestMethod]
+        public async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIsReadCommitted()
+        {
+            await CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIs(IsolationLevel.ReadCommitted);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TimeoutException))]
+        public async Task CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIsReadCommitted()
+        {
+            await CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIs(IsolationLevel.ReadCommitted);
+        }
+
         #endregion
 
-        #region [====== EnqueueAsync & DequeueAsync (Explicit Transactions, ReadUncommitted) ======]
+        #region [====== EnqueueAsync, DequeueAsync & CountAsync (Explicit Transactions, ReadUncommitted) ======]
 
         [TestMethod]
         public async Task EnqueueAsync_EnqueuesSpecifiedMessages_IfMultipleSetsAreAddedInTheSameTransaction_And_IsolationLevelIsReadUncommitted()
@@ -359,9 +413,44 @@ namespace Kingo.MicroServices.Controllers
             await DequeueAsync_RollsbackChanges_IfMessagesWereEnqueuedInTheSameTransaction_And_TransactionIsAborted_And_IsolationLevelIs(IsolationLevel.ReadUncommitted);
         }
 
+        [TestMethod]
+        public async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIsReadUncommitted()
+        {
+            await CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIs(IsolationLevel.ReadUncommitted);
+        }
+
+        [TestMethod]
+        public async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIsReadUncommitted()
+        {
+            await CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIs(IsolationLevel.ReadUncommitted);
+        }
+
+        [TestMethod]
+        public async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIsReadUncommitted()
+        {
+            await using (var queue = CreateMemoryQueue())
+            {
+                using (var outerScope = CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    var messages = CreateOutputMessages();
+
+                    // The outer-transaction will add and then hold on to the write-locks until it completes.
+                    await queue.EnqueueAsync(messages);
+
+                    // This transaction will not attempt to obtain read locks because the IsolationLevel is ReadUncommitted.
+                    using (var innerScope = CreateTransactionScope(IsolationLevel.ReadUncommitted, TransactionScopeOption.RequiresNew))
+                    {
+                        Assert.AreEqual(messages.Length, await queue.CountAsync());
+                        innerScope.Complete();
+                    }
+                    outerScope.Complete();
+                }
+            }
+        }
+
         #endregion
 
-        #region [====== EnqueueAsync & DequeueAsync (Explicit Transactions) ======]
+        #region [====== EnqueueAsync, DequeueAsync & CountAsync (Explicit Transactions) ======]
 
         private async Task EnqueueAsync_EnqueuesSpecifiedMessages_IfMultipleSetsAreAddedInTheSameTransaction_And_IsolationLevelIs(IsolationLevel isolationLevel)
         {
@@ -388,13 +477,11 @@ namespace Kingo.MicroServices.Controllers
         {
             await using (var queue = CreateMemoryQueue())
             {
-                var messages = CreateOutputMessages();
-
                 using (CreateTransactionScope(isolationLevel))
                 {
-                    await queue.EnqueueAsync(messages);
+                    var messageCount = await queue.EnqueueAsync(CreateOutputMessages());
 
-                    Assert.AreEqual(messages.Length, await queue.CountAsync());
+                    Assert.AreEqual(messageCount, await queue.CountAsync());
                 }
                 Assert.AreEqual(0, await queue.CountAsync());
             }
@@ -406,26 +493,24 @@ namespace Kingo.MicroServices.Controllers
 
             await using (var queue = CreateMemoryQueue())
             {
-                var messages = CreateOutputMessages(batchSize * 3);
-
-                await queue.EnqueueAsync(messages);
+                var messageCount = await queue.EnqueueAsync(CreateOutputMessages(batchSize * 3));
 
                 using (var scope = CreateTransactionScope(isolationLevel))
                 {
-                    Assert.AreEqual(messages.Length, await queue.CountAsync());
+                    Assert.AreEqual(messageCount, await queue.CountAsync());
 
                     var messagesA = await queue.DequeueAsync(batchSize);
 
                     Assert.AreEqual(batchSize, messagesA.Count);
-                    Assert.AreEqual(messages.Length - batchSize, await queue.CountAsync());
+                    Assert.AreEqual(messageCount - batchSize, await queue.CountAsync());
 
                     var messagesB = await queue.DequeueAsync(batchSize);
 
                     Assert.AreEqual(batchSize, messagesB.Count);
-                    Assert.AreEqual(messages.Length - 2 * batchSize, await queue.CountAsync());
+                    Assert.AreEqual(messageCount - 2 * batchSize, await queue.CountAsync());
                     scope.Complete();
                 }
-                Assert.AreEqual(messages.Length - 2 * batchSize, await queue.CountAsync());
+                Assert.AreEqual(messageCount - 2 * batchSize, await queue.CountAsync());
             }
         }
 
@@ -435,20 +520,18 @@ namespace Kingo.MicroServices.Controllers
 
             await using (var queue = CreateMemoryQueue())
             {
-                var messages = CreateOutputMessages(batchSize * 3);
-
-                await queue.EnqueueAsync(messages);
+                var messageCount = await queue.EnqueueAsync(CreateOutputMessages(batchSize * 3));
 
                 using (CreateTransactionScope(isolationLevel))
                 {
-                    Assert.AreEqual(messages.Length, await queue.CountAsync());
+                    Assert.AreEqual(messageCount, await queue.CountAsync());
 
                     var messagesA = await queue.DequeueAsync(batchSize);
 
                     Assert.AreEqual(batchSize, messagesA.Count);
-                    Assert.AreEqual(messages.Length - batchSize, await queue.CountAsync());
+                    Assert.AreEqual(messageCount - batchSize, await queue.CountAsync());
                 }
-                Assert.AreEqual(messages.Length, await queue.CountAsync());
+                Assert.AreEqual(messageCount, await queue.CountAsync());
             }
         }
 
@@ -487,26 +570,323 @@ namespace Kingo.MicroServices.Controllers
 
             await using (var queue = CreateMemoryQueue())
             {
-                var messages = CreateOutputMessages(batchSize * 3);
-
                 using (CreateTransactionScope(isolationLevel))
                 {
-                    await queue.EnqueueAsync(messages);
+                    var messageCount = await queue.EnqueueAsync(CreateOutputMessages(batchSize * 3));
 
-                    Assert.AreEqual(messages.Length, await queue.CountAsync());
+                    Assert.AreEqual(messageCount, await queue.CountAsync());
 
                     var messagesA = await queue.DequeueAsync(batchSize);
 
                     Assert.AreEqual(batchSize, messagesA.Count);
-                    Assert.AreEqual(messages.Length - batchSize, await queue.CountAsync());
+                    Assert.AreEqual(messageCount - batchSize, await queue.CountAsync());
 
                     var messagesB = await queue.DequeueAsync(batchSize);
 
                     Assert.AreEqual(batchSize, messagesB.Count);
-                    Assert.AreEqual(messages.Length - 2 * batchSize, await queue.CountAsync());
+                    Assert.AreEqual(messageCount - 2 * batchSize, await queue.CountAsync());
                 }
                 Assert.AreEqual(0, await queue.CountAsync());
             }
+        }
+
+        private async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionIsNotHoldingAnyLocks_And_IsolationLevelIs(IsolationLevel isolationLevel)
+        {
+            await using (var queue = CreateMemoryQueue())
+            {
+                var messageCount = await queue.EnqueueAsync(CreateOutputMessages());
+
+                using (var outerScope = CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    // The outer-transaction will not hold on to any locks since it will release every
+                    // read-lock as it iterates over the queue.
+                    Assert.AreEqual(messageCount, await queue.CountAsync());
+
+                    // Regardless of the locks acquired by the inner-transaction, it won't be blocked.
+                    using (var innerScope = CreateTransactionScope(isolationLevel, TransactionScopeOption.RequiresNew))
+                    {
+                        Assert.AreEqual(messageCount, await queue.CountAsync());
+                        innerScope.Complete();
+                    }
+                    outerScope.Complete();
+                }
+            }
+        }
+
+        private async Task CountAsync_DoesNotCauseTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIs(IsolationLevel isolationLevel)
+        {
+            await using (var queue = CreateMemoryQueue())
+            {
+                var messageCount = await queue.EnqueueAsync(CreateOutputMessages());
+
+                using (var outerScope = CreateTransactionScope(IsolationLevel.RepeatableRead))
+                {
+                    // The outer-transaction will hold on to (upgradeable) read-locks until it completes.
+                    Assert.AreEqual(messageCount, await queue.CountAsync());
+
+                    // This transaction will only attempt to obtain simple read locks on those items (as long as IsolationLevel is RU or RC),
+                    // which won't block the count-operation.
+                    using (var innerScope = CreateTransactionScope(isolationLevel, TransactionScopeOption.RequiresNew))
+                    {
+                        Assert.AreEqual(messageCount, await queue.CountAsync());
+                        innerScope.Complete();
+                    }
+                    outerScope.Complete();
+                }
+            }
+        }
+
+        private async Task CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsUpgradeableReadLocks_And_IsolationLevelIs(IsolationLevel isolationLevel)
+        {
+            await using (var queue = CreateMemoryQueue())
+            {
+                var messageCount = await queue.EnqueueAsync(CreateOutputMessages());
+
+                using (CreateTransactionScope(IsolationLevel.RepeatableRead))
+                {
+                    // The outer-transaction will hold on to (upgradeable) read-locks until it completes.
+                    Assert.AreEqual(messageCount, await queue.CountAsync());
+
+                    // This transaction will also attempt to obtain upgradeable read locks on those items (as long as IsolationLevel is RR or SZ),
+                    // causing it to block until the locks are released. However, the outer transaction will not be completed, because we
+                    // are awaiting the result of CountAsync here. As such, the timeout on acquiring the read-locks will expire and an exception
+                    // will be thrown as a result.
+                    using (CreateTransactionScope(isolationLevel, TransactionScopeOption.RequiresNew))
+                    {
+                        try
+                        {
+                            await queue.CountAsync();
+
+                            throw NewTimeoutExpectedException();
+                        }
+                        catch (TimeoutException exception)
+                        {
+                            AssertIsLockTimeoutException(exception);
+                            throw;
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task CountAsync_CausesTimeout_IfExecutedWhileOtherTransactionStillHoldsWriteLocks_And_IsolationLevelIs(IsolationLevel isolationLevel)
+        {
+            await using (var queue = CreateMemoryQueue())
+            {
+                using (CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    // The outer-transaction will add and then hold on to the write-locks until it completes.
+                    await queue.EnqueueAsync(CreateOutputMessages());
+
+                    // This transaction will attempt to obtain read locks on those items (as long as IsolationLevel is not ReadUncommitted),
+                    // causing it to block until the locks are released. However, the outer transaction will not be completed, because we
+                    // are awaiting the result of CountAsync here. As such, the timeout on acquiring the read-locks will expire and an exception
+                    // will be thrown as a result.
+                    using (CreateTransactionScope(isolationLevel, TransactionScopeOption.RequiresNew))
+                    {
+                        try
+                        {
+                            await queue.CountAsync();
+
+                            throw NewTimeoutExpectedException();
+                        }
+                        catch (TimeoutException exception)
+                        {
+                            AssertIsLockTimeoutException(exception);
+                            throw;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void AssertIsLockTimeoutException(Exception exception) =>
+            Assert.IsTrue(exception.Message.StartsWith("Transaction failed because a lock timeout expired"));
+
+        private static Exception NewTimeoutExpectedException() =>
+            new AssertFailedException("Expected timeout did not occur.");
+
+        #endregion
+
+        #region [====== Changed (Event) ======]
+
+        [TestMethod]
+        public async Task Changed_IsNotRaised_IfOnlyCountAsyncWasExecuted()
+        {
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                Assert.AreEqual(0, await queue.CountAsync());
+            }
+            AssertIsNull(changedEventArgs);
+        }
+
+        [TestMethod]
+        public async Task Changed_IsNotRaised_IfEnqueueAsyncWasExecuted_But_MessagesCountWasZero()
+        {
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                Assert.AreEqual(0, await queue.EnqueueAsync(Enumerable.Empty<IMessage>()));
+            }
+            AssertIsNull(changedEventArgs);
+        }
+
+        [TestMethod]
+        public async Task Changed_IsNotRaised_IfEnqueueAsyncWasExecuted_But_TransactionWasRolledBack()
+        {
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                using (CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    await queue.EnqueueAsync(CreateOutputMessages());
+                }
+            }
+            AssertIsNull(changedEventArgs);
+        }
+
+        [TestMethod]
+        public async Task Changed_IsRaised_IfEnqueueAsyncWasExecuted_And_TransactionWasCommitted()
+        {
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+            var messages = CreateOutputMessages();
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                using (var scope = CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    await queue.EnqueueAsync(messages);
+                    scope.Complete();
+                }
+            }
+            AssertChanges(changedEventArgs, messages.Length, 0);
+        }
+
+        [TestMethod]
+        public async Task Changed_IsNotRaised_IfDequeueAsyncWasExecuted_But_MessagesCountWasZero()
+        {
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                var messages = await queue.DequeueAsync();
+
+                Assert.AreEqual(0, messages.Count);
+            }
+            AssertIsNull(changedEventArgs);
+        }
+
+        [TestMethod]
+        public async Task Changed_IsNotRaised_IfDequeueAsyncWasExecuted_But_TransactionWasRolledBack()
+        {
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+            var messages = CreateOutputMessages();
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                Assert.AreEqual(messages.Length, await queue.EnqueueAsync(messages));
+
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                using (CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    await queue.DequeueAsync(messages.Length);
+                }
+            }
+            AssertIsNull(changedEventArgs);
+        }
+
+        [TestMethod]
+        public async Task Changed_IsRaised_IfDequeueAsyncWasExecuted_And_TransactionWasCommitted()
+        {
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+            var messages = CreateOutputMessages();
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                Assert.AreEqual(messages.Length, await queue.EnqueueAsync(messages));
+
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                using (var scope = CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    await queue.DequeueAsync(messages.Length);
+                    scope.Complete();
+                }
+            }
+            AssertChanges(changedEventArgs, 0, messages.Length);
+        }
+
+        [TestMethod]
+        public async Task Changed_IsRaised_IfBothEnqueueAsyncAndDequeueAsyncWereExecuted_And_TransactionWasCommitted()
+        {
+            const int batchSize = 5;
+            TransactionalQueueChangedEventArgs changedEventArgs = null;
+            var messages = CreateOutputMessages(2 * batchSize);
+
+            await using (var queue = CreateMemoryQueue())
+            {
+                queue.Changed += (s, e) =>
+                {
+                    changedEventArgs = e;
+                };
+
+                using (var scope = CreateTransactionScope(IsolationLevel.ReadCommitted))
+                {
+                    await queue.EnqueueAsync(messages);
+                    await queue.DequeueAsync(batchSize);
+                    await queue.EnqueueAsync(messages);
+                    await queue.DequeueAsync(batchSize);
+                    await queue.DequeueAsync(batchSize);
+                    scope.Complete();
+                }
+            }
+            AssertChanges(changedEventArgs, 2 * messages.Length, 3 * batchSize);
+        }
+
+        private static void AssertIsNull(TransactionalQueueChangedEventArgs changedEventArgs) =>
+            Assert.IsNull(changedEventArgs, "The changed-event should not have been raised.");
+
+        private static void AssertChanges(TransactionalQueueChangedEventArgs changedEventArgs, int enqueueCount, int dequeueCount)
+        {
+            Assert.IsNotNull(changedEventArgs);
+            Assert.AreEqual(enqueueCount, changedEventArgs.EnqueueCount);
+            Assert.AreEqual(dequeueCount, changedEventArgs.DequeueCount);
         }
 
         #endregion
@@ -520,7 +900,7 @@ namespace Kingo.MicroServices.Controllers
         }
 
         private static TransactionalMemoryQueue CreateMemoryQueue() =>
-            new TransactionalMemoryQueue(new MessageSerializer(), TimeSpan.FromSeconds(120));
+            new TransactionalMemoryQueue(new MessageSerializer(), TimeSpan.FromSeconds(1));
 
         private static IMessage[] CreateOutputMessages(int minimum = 1) =>
             CreateMessages(DateTimeOffset.UtcNow.Millisecond + minimum).ToArray();

@@ -8,8 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Kingo.Reflection;
-using static Kingo.Ensure;
-using Timer = System.Timers.Timer;
 
 namespace Kingo.MicroServices.Controllers
 {
@@ -19,30 +17,242 @@ namespace Kingo.MicroServices.Controllers
     /// </summary>
     public sealed class TransactionalMemoryQueue : TransactionalQueue
     {
-        #region [====== TransactionOperationManager ======]
+        #region [====== GarbageCollectorThread ======]
 
-        // The TransactionOperationManager is responsible for executing the operations that are part
+        // The GarbageCollectorThread represents a logical thread which sole purpose is to
+        // remove items from the queue that have been marked as permanently deleted.
+        private sealed class GarbageCollectorThread : AsyncDisposable
+        {
+            private static readonly TimeSpan _LockTimeout = TimeSpan.FromSeconds(30);
+            private static int _InstanceCount;
+
+            private readonly TransactionalMemoryQueue _queue;
+            private readonly Thread _thread;
+            private readonly ManualResetEventSlim _collectWaitHandle;
+            private readonly ManualResetEventSlim _collectCompletedWaitHandle;
+            private readonly CancellationTokenSource _collectCompletedTokenSource;
+
+            public GarbageCollectorThread(TransactionalMemoryQueue queue)
+            {
+                _queue = queue;
+                _thread = new Thread(ExecuteGarbageCollector)
+                {
+                    Name = $"{queue.GetType().FriendlyName()}.{nameof(GarbageCollectorThread)}.{Interlocked.Increment(ref _InstanceCount)}",
+                    Priority = ThreadPriority.BelowNormal,
+                    IsBackground = true
+                };
+                _collectWaitHandle = new ManualResetEventSlim();
+                _collectCompletedWaitHandle = new ManualResetEventSlim();
+                _collectCompletedTokenSource = new CancellationTokenSource();
+            }
+
+            public void Start() =>
+                _thread.Start();
+
+            // This method is called by a TransactionOperationThread to signal that a Transaction was just
+            // completed (either via Commit or Rollback) and the queue may contain some deleted items that
+            // can be removed.
+            public void Collect() =>
+                _collectWaitHandle.Set();
+
+            private void ExecuteGarbageCollector()
+            {
+                try
+                {
+                    // The GarbageCollectorThread will simply await signals from the transaction-threads
+                    // to start collecting garbage when the transactions are completed. The Wait-method will
+                    // only return false when the entire queue is being disposed of. At that moment, the
+                    // garbage collector will do a final run to clean up the entire queue and dispose of all
+                    // items in the queue before it signals it is done.
+                    while (WaitForNextItemsToCollect())
+                    {
+                        RemoveDeletedItems();
+                    }
+                    RemoveAllItems();
+                }
+                finally
+                {
+                    _collectCompletedWaitHandle.Set();
+                }
+            }
+
+            private bool WaitForNextItemsToCollect()
+            {
+                // The worker-thread is made to wait for the next signal to collect (i.e. remove)
+                // deleted items from the queue. If, however, the cancellation-token is signaled
+                // before that, the worker-thread can stop collecting new items.
+                try
+                {
+                    _collectWaitHandle.Wait(_collectCompletedTokenSource.Token);
+                    _collectWaitHandle.Reset();
+                    return true;
+                }
+                catch (OperationCanceledException)
+                {
+                    return false;
+                }
+            }
+
+            private void RemoveDeletedItems() =>
+                RemoveDeletedItems(GetItemsToDelete().ToArray());
+
+            private void RemoveDeletedItems(IReadOnlyCollection<LinkedListNode<QueueItem>> itemsToDelete)
+            {
+                // When there is at least a single item that can be removed from the queue,
+                // we attempt to acquire a write-lock. As soon as it's acquired, the garbage
+                // can be collected safely.
+                if (itemsToDelete.Count == 0)
+                {
+                    return;
+                }
+                var timeout = TimeSpan.FromMilliseconds(10);
+
+                do
+                {
+                    // The garbage-collector thread takes a back seat relative to the transaction-threads
+                    // regarding acquiring locks, because we want to avoid interfering with the regular
+                    // transaction processing as much as possible. As such, we just check if the write-lock
+                    // is available and, if not, do not block other threads in awaiting the lock-availability.
+                    // Instead, we just retry to acquire the lock at a later moment.
+                    if (_queue._itemsLock.TryEnterWriteLock(TimeSpan.Zero))
+                    {
+                        try
+                        {
+                            foreach (var node in itemsToDelete)
+                            {
+                                _queue._items.Remove(node);
+                            }
+                        }
+                        finally
+                        {
+                            _queue._itemsLock.ExitWriteLock();
+                        }
+                        // After the items are removed from the queue, they can be disposed.
+                        foreach (var node in itemsToDelete)
+                        {
+                            node.Value.Dispose();
+                        }
+                        return;
+                    }
+                } while (WaitForNextAttempt(ref timeout));
+            }
+
+            // The wait-time is increased by a factor of 1.5 every time the thread fails to acquire
+            // the write-lock up until the wait time surpasses a certain threshold. When that happens, congestion
+            // must be very high and we just stop trying.
+            private bool WaitForNextAttempt(ref TimeSpan timeout)
+            {
+                if (_LockTimeout < timeout || _collectCompletedTokenSource.IsCancellationRequested)
+                {
+                    return false;
+                }
+                Thread.Sleep(timeout);
+                timeout = timeout.Multiply(1.5);
+                return true;
+            }
+
+            private IEnumerable<LinkedListNode<QueueItem>> GetItemsToDelete()
+            {
+                // When removing deleted items, the thread first scans the list in read-mode.
+                // This yields a list of items that can be removed by the collector.
+                if (_queue._itemsLock.TryEnterReadLock(_LockTimeout))
+                {
+                    try
+                    {
+                        for (var startNode = _queue._items.First; TryGetNextItemToDelete(startNode, out var deletedItemNode); startNode = deletedItemNode.Next)
+                        {
+                            yield return deletedItemNode;
+                        }
+                    }
+                    finally
+                    {
+                        _queue._itemsLock.ExitReadLock();
+                    }
+                }
+            }
+
+            private static bool TryGetNextItemToDelete(LinkedListNode<QueueItem> startNode, out LinkedListNode<QueueItem> deletedItemNode)
+            {
+                for (var currentNode = startNode; currentNode != null; currentNode = currentNode.Next)
+                {
+                    if (currentNode.Value.IsDeletedPermanently)
+                    {
+                        deletedItemNode = currentNode;
+                        return true;
+                    }
+                }
+                deletedItemNode = null;
+                return false;
+            }
+
+            private void RemoveAllItems()
+            {
+                if (_queue._itemsLock.TryEnterWriteLock(_LockTimeout))
+                {
+                    try
+                    {
+                        foreach (var item in _queue._items)
+                        {
+                            item.Dispose();
+                        }
+                        _queue._items.Clear();
+                    }
+                    finally
+                    {
+                        _queue._itemsLock.ExitWriteLock();
+                    }
+                }
+            }
+
+            protected override ValueTask DisposeAsync(DisposeContext context)
+            {
+                if (context != DisposeContext.Finalizer)
+                {
+                    // When the GarbageCollectorThread is disposed, we first signal the thread to
+                    // stop waiting for the next items to collect and to wrap up its work by signalling
+                    // the cancellation-token. Then we wait for it to reach the end of its lifetime
+                    // before we dispose all the resources.
+                    _collectCompletedTokenSource.Cancel();
+
+                    if (_collectCompletedWaitHandle.Wait(_LockTimeout))
+                    {
+                        _collectCompletedTokenSource.Dispose();
+                        _collectCompletedWaitHandle.Dispose();
+                        _collectWaitHandle.Dispose();
+                    }
+                }
+                return base.DisposeAsync(context);
+            }
+        }
+
+        #endregion
+
+        #region [====== TransactionOperationThread ======]
+
+        // The TransactionOperationThread is responsible for executing the operations that are part
         // of one specific transaction. It makes sure every operation is executed on the thread
         // that is strictly associated with the transaction it manages. This is required to make sure
         // the traditional locks with thread-affinity work as expected.
-        private sealed class TransactionOperationManager : AsyncDisposable, ISinglePhaseNotification
+        private sealed class TransactionOperationThread : AsyncDisposable, ISinglePhaseNotification
         {
             private readonly TransactionalMemoryQueue _queue;
             private readonly Transaction _transaction;
-            private readonly Thread _transactionThread;
+            private readonly Thread _thread;
             private readonly ManualResetEventSlim _operationWaitHandle;
             private readonly CancellationTokenSource _operationWaitHandleTokenSource;
             private readonly ConcurrentQueue<TransactionOperation> _operationsToExecute;
             private readonly List<TransactionOperation> _operationsToComplete;
             private TransactionCompletionOperation _transactionCompletionOperation;
+            private Exception _exception;
 
-            public TransactionOperationManager(TransactionalMemoryQueue queue, Transaction transaction)
+            public TransactionOperationThread(TransactionalMemoryQueue queue, Transaction transaction)
             {
                 _queue = queue;
                 _transaction = transaction;
-                _transactionThread = new Thread(ExecuteTransaction)
+                _thread = new Thread(ExecuteTransaction)
                 {
-                    Name = $"Transaction (LocalId = {transaction.TransactionInformation.LocalIdentifier}, IsolationLevel = {transaction.IsolationLevel})"
+                    Name = $"{queue.GetType().FriendlyName()}.{nameof(TransactionOperationThread)}.{transaction.TransactionInformation.LocalIdentifier} (IsolationLevel = {transaction.IsolationLevel})",
+                    IsBackground = true
                 };
                 _operationWaitHandle = new ManualResetEventSlim();
                 _operationWaitHandleTokenSource = new CancellationTokenSource();
@@ -51,16 +261,17 @@ namespace Kingo.MicroServices.Controllers
                 _transactionCompletionOperation = new NullOperation();
             }
 
-            public TransactionOperationManager Start()
+            public TransactionOperationThread Start()
             {
                 _transaction.EnlistVolatile(this, EnlistmentOptions.None);
-                _transactionThread.Start();
+                _transaction.TransactionCompleted += HandleTransactionCompleted;
+                _thread.Start();
                 return this;
             }
 
             // This method, executed by any client-thread, schedules the specified operation to be
             // executed by this manager and then waits for the result to become available. It essentially
-            // plays the role of the producer in the producer/consumer-pattern implemented by the manager.
+            // plays the role of the producer in the producer/consumer-pattern implemented by this thread.
             public Task<IReadOnlyCollection<MicroServiceBusMessage>> ExecuteAsync(TransactionOperation operation)
             {
                 // As soon as the operation is added, the wait-handle is signaled so that it can be executed.
@@ -82,7 +293,7 @@ namespace Kingo.MicroServices.Controllers
                 {
                     while (_operationsToExecute.TryDequeue(out var operation))
                     {
-                        _operationsToComplete.Add(operation.Execute(_queue, _transaction.IsolationLevel));
+                        Execute(operation);
                     }
                 }
 
@@ -90,6 +301,32 @@ namespace Kingo.MicroServices.Controllers
                 // will make sure all locks held by the transaction are released. After this step, the transaction
                 // is logically completed and the manager can clean up after itself.
                 _transactionCompletionOperation.Execute(_operationsToComplete);
+            }
+
+            private void Execute(TransactionOperation operation)
+            {
+                // When executing an operation, we first check if a previous operation failed.
+                // If that's the case, we simply abort the operation. If not, we can execute
+                // the operation as normal. 
+                try
+                {
+                    if (_exception == null)
+                    {
+                        operation.Execute(_queue, _transaction.IsolationLevel);
+                    }
+                    else
+                    {
+                        operation.Abort(_exception);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    _exception = exception;
+                }
+                finally
+                {
+                    _operationsToComplete.Add(operation);
+                }
             }
 
             private bool WaitForNextOperationsToExecute()
@@ -113,8 +350,17 @@ namespace Kingo.MicroServices.Controllers
             void ISinglePhaseNotification.SinglePhaseCommit(SinglePhaseEnlistment singlePhaseEnlistment) =>
                 Execute(new SinglePhaseCommitOperation(_queue, _transaction.IsolationLevel, singlePhaseEnlistment));
 
-            void IEnlistmentNotification.Prepare(PreparingEnlistment preparingEnlistment) =>
-                preparingEnlistment.Prepared();
+            void IEnlistmentNotification.Prepare(PreparingEnlistment preparingEnlistment)
+            {
+                if (_exception == null)
+                {
+                    preparingEnlistment.Done();
+                }
+                else
+                {
+                    preparingEnlistment.ForceRollback(_exception);
+                }
+            }
 
             void IEnlistmentNotification.InDoubt(Enlistment enlistment) =>
                 Execute(new InDoubtOperation(_queue, _transaction.IsolationLevel, enlistment));
@@ -133,14 +379,25 @@ namespace Kingo.MicroServices.Controllers
                 _transactionCompletionOperation.WaitForCompletion(_queue._lockTimeout);
             }
 
+            private void HandleTransactionCompleted(object sender, TransactionEventArgs e) =>
+                _queue._garbageCollectorThread.Collect();
+
             protected override async ValueTask DisposeAsync(DisposeContext context)
             {
                 if (context != DisposeContext.Finalizer)
                 {
+                    foreach (var operation in _operationsToExecute)
+                    {
+                        await operation.DisposeAsync();
+                    }
+                    foreach (var operation in _operationsToComplete)
+                    {
+                        await operation.DisposeAsync();
+                    }
+                    await _transactionCompletionOperation.DisposeAsync();
+
                     _operationWaitHandleTokenSource.Dispose();
                     _operationWaitHandle.Dispose();
-
-                    await _transactionCompletionOperation.DisposeAsync();
                 }
                 await base.DisposeAsync(context);
             }
@@ -148,7 +405,7 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        #region [===== TransactionCompletionOperations ======]
+        #region [====== TransactionCompletionOperations ======]
 
         private abstract class TransactionCompletionOperation : AsyncDisposable
         {
@@ -216,9 +473,9 @@ namespace Kingo.MicroServices.Controllers
         private sealed class NullOperation : TransactionCompletionOperation
         {
             protected override TransactionOperation Complete(TransactionOperation operation) =>
-                throw NewTransactionCannotBeCompletedException();
+                throw NewCannotCompleteTransactionException();
 
-            private static Exception NewTransactionCannotBeCompletedException() =>
+            private static Exception NewCannotCompleteTransactionException() =>
                 new InvalidOperationException(ExceptionMessages.TransactionalMemoryQueue_CannotCompleteTransaction);
         }
 
@@ -350,22 +607,27 @@ namespace Kingo.MicroServices.Controllers
                 _items = new List<QueueItem>();
             }
 
-            public TransactionOperation Execute(TransactionalMemoryQueue queue, IsolationLevel isolationLevel)
+            public void Execute(TransactionalMemoryQueue queue, IsolationLevel isolationLevel)
             {
                 try
                 {
                     Execute(queue, _items, isolationLevel);
-                    return this;
                 }
                 catch (Exception exception)
                 {
                     _exception = exception;
-                    return this;
+                    throw;
                 }
                 finally
                 {
                     _waitHandle.Set();
                 }
+            }
+
+            public void Abort(Exception exception)
+            {
+                _exception = exception;
+                _waitHandle.Set();
             }
 
             // When the operation is executed, it adds all items it touched to the specified items-collection. This collection
@@ -427,6 +689,8 @@ namespace Kingo.MicroServices.Controllers
         // The SelectOperation simply iterates over the entire queue, acquiring the locks as needed.
         private sealed class SelectOperation : TransactionOperation
         {
+            private bool _releaseItemsLock;
+
             protected override void Execute(TransactionalMemoryQueue queue, ICollection<QueueItem> items, IsolationLevel isolationLevel)
             {
                 switch (isolationLevel)
@@ -452,14 +716,23 @@ namespace Kingo.MicroServices.Controllers
             // queue to prevent other transactions to insert or delete items while the transaction is still in
             // progress. This prevents so-called phantom-reads (newly inserted records) when the select-operation
             // is executed more than once. The lock is released when the transaction ends.
-            private static void ExecuteSerializable(TransactionalMemoryQueue queue, ICollection<QueueItem> items)
+            private void ExecuteSerializable(TransactionalMemoryQueue queue, ICollection<QueueItem> items)
             {
                 if (queue._itemsLock.TryEnterUpgradeableReadLock(queue._lockTimeout))
                 {
-                    ExecuteRepeatableRead(queue, items);
-                    return;
+                    try
+                    {
+                        ExecuteRepeatableRead(queue, items);
+                    }
+                    finally
+                    {
+                        _releaseItemsLock = true;
+                    }
                 }
-                throw NewLockTimeoutException(queue._lockTimeout);
+                else
+                {
+                    throw NewLockTimeoutException(queue._lockTimeout);
+                }
             }
 
             // In isolation-level RepeatableRead (or higher), the select-operation attempts to obtain upgradeable
@@ -496,9 +769,14 @@ namespace Kingo.MicroServices.Controllers
                         var item = enumerator.Current;
                         if (item.EnterReadLock(queue._lockTimeout))
                         {
-                            Select(item, items);
-
-                            item.ExitReadLock();
+                            try
+                            {
+                                Select(item, items);
+                            }
+                            finally
+                            {
+                                item.ExitReadLock();
+                            }
                         }
                     }
                 }
@@ -540,7 +818,7 @@ namespace Kingo.MicroServices.Controllers
             // When a read-operation is completed, all it needs to do is release all the locks is still holds, since no modifications were made
             // to the items in the queue. This only applies to isolation-levels that actually cause locks to be held for the duration of the
             // whole transaction.
-            private static void Complete(TransactionalMemoryQueue queue, IEnumerable<QueueItem> items, IsolationLevel isolationLevel)
+            private void Complete(TransactionalMemoryQueue queue, IEnumerable<QueueItem> items, IsolationLevel isolationLevel)
             {
                 switch (isolationLevel)
                 {
@@ -553,7 +831,7 @@ namespace Kingo.MicroServices.Controllers
                 }
             }
 
-            private static void CompleteSerializable(IEnumerable<QueueItem> items, TransactionalMemoryQueue queue)
+            private void CompleteSerializable(IEnumerable<QueueItem> items, TransactionalMemoryQueue queue)
             {
                 try
                 {
@@ -561,7 +839,10 @@ namespace Kingo.MicroServices.Controllers
                 }
                 finally
                 {
-                    queue._itemsLock.ExitUpgradeableReadLock();
+                    if (_releaseItemsLock)
+                    {
+                        queue._itemsLock.ExitUpgradeableReadLock();
+                    }
                 }
             }
 
@@ -600,14 +881,16 @@ namespace Kingo.MicroServices.Controllers
                     try
                     {
                         EnqueueItems(queue, items);
-                        return;
                     }
                     finally
                     {
                         queue._itemsLock.ExitWriteLock();
                     }
                 }
-                throw NewLockTimeoutException(queue._lockTimeout);
+                else
+                {
+                    throw NewLockTimeoutException(queue._lockTimeout);
+                }
             }
 
             private void EnqueueItems(TransactionalMemoryQueue queue, ICollection<QueueItem> items)
@@ -667,6 +950,7 @@ namespace Kingo.MicroServices.Controllers
         private sealed class DequeueOperation : TransactionOperation
         {
             private readonly int _batchSize;
+            private bool _releaseItemsLock;
 
             public DequeueOperation(BatchSize batchSize)
             {
@@ -697,10 +981,19 @@ namespace Kingo.MicroServices.Controllers
             {
                 if (queue._itemsLock.TryEnterReadLock(queue._lockTimeout))
                 {
-                    Execute(queue, items);
-                    return;
+                    try
+                    {
+                        Execute(queue, items);
+                    }
+                    finally
+                    {
+                        _releaseItemsLock = true;
+                    }
                 }
-                throw NewLockTimeoutException(queue._lockTimeout);
+                else
+                {
+                    throw NewLockTimeoutException(queue._lockTimeout);
+                }
             }
 
             // Regardless of the isolation-level, the operation iterates over the queue until it has acquired write-locks
@@ -751,11 +1044,11 @@ namespace Kingo.MicroServices.Controllers
                 Complete(queue, items, isolationLevel, true);
 
             protected override void Rollback(TransactionalMemoryQueue queue, IEnumerable<QueueItem> items, IsolationLevel isolationLevel) =>
-                Complete(items, false);
+                Complete(queue, items, isolationLevel, false);
 
             // When committing or rolling back an dequeue-operation, the IsDeleted-flag of every removed item is set to the appropriate value,
             // depending on the outcome of the transaction.
-            private static void Complete(TransactionalMemoryQueue queue, IEnumerable<QueueItem> items, IsolationLevel isolationLevel, bool isDeleted)
+            private void Complete(TransactionalMemoryQueue queue, IEnumerable<QueueItem> items, IsolationLevel isolationLevel, bool isDeleted)
             {
                 switch (isolationLevel)
                 {
@@ -770,7 +1063,7 @@ namespace Kingo.MicroServices.Controllers
                 }
             }
 
-            private static void CompleteSerializable(IEnumerable<QueueItem> items, bool isDeleted, TransactionalMemoryQueue queue)
+            private void CompleteSerializable(IEnumerable<QueueItem> items, bool isDeleted, TransactionalMemoryQueue queue)
             {
                 try
                 {
@@ -778,7 +1071,10 @@ namespace Kingo.MicroServices.Controllers
                 }
                 finally
                 {
-                    queue._itemsLock.ExitReadLock();
+                    if (_releaseItemsLock)
+                    {
+                        queue._itemsLock.ExitReadLock();
+                    }
                 }
             }
 
@@ -964,9 +1260,8 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
-        private readonly IMessageSerializer _serializer;
-        //private readonly Timer _garbageCollectorTimer;
-        private readonly Dictionary<string, TransactionOperationManager> _transactionOperations;
+        private readonly GarbageCollectorThread _garbageCollectorThread;
+        private readonly Dictionary<string, TransactionOperationThread> _transactionOperationThreads;
         private readonly LinkedList<QueueItem> _items;
         private readonly ReaderWriterLockSlim _itemsLock;
         private readonly TimeSpan _lockTimeout;
@@ -979,10 +1274,11 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="lockTimeout"/> is negative.
         /// </exception>
-        public TransactionalMemoryQueue(IMessageSerializer serializer = null, TimeSpan? lockTimeout = null)
+        public TransactionalMemoryQueue(IMessageSerializer serializer = null, TimeSpan? lockTimeout = null) : base(serializer)
         {
-            _serializer = serializer ?? new MessageSerializer();
-            _transactionOperations = new Dictionary<string, TransactionOperationManager>();
+            _garbageCollectorThread = new GarbageCollectorThread(this);
+            _garbageCollectorThread.Start();
+            _transactionOperationThreads = new Dictionary<string, TransactionOperationThread>();
             _items = new LinkedList<QueueItem>();
             _itemsLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             _lockTimeout = ToTimeSpan(lockTimeout);
@@ -990,11 +1286,7 @@ namespace Kingo.MicroServices.Controllers
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{GetType().FriendlyName()} (About {_items.Count} item(s) in queue, {_transactionOperations.Count} transaction(s) in progress)";
-
-        /// <inheritdoc />
-        protected override IMessageSerializer Serializer =>
-            _serializer;
+            $"{GetType().FriendlyName()} (About {_items.Count} item(s) in queue, {_transactionOperationThreads.Count} transaction(s) in progress)";
 
         private static TimeSpan ToTimeSpan(TimeSpan? lockTimeout)
         {
@@ -1026,15 +1318,8 @@ namespace Kingo.MicroServices.Controllers
         #region [====== CountAsync ======]
 
         /// <inheritdoc />
-        protected override async Task<int> CountItemsAsync()
-        {
-            using (var scope = NewTransactionScope())
-            {
-                var messages = await CountItemsAsync(Transaction.Current);
-                scope.Complete();
-                return messages.Count;
-            }
-        }
+        protected override async Task<int> CountItemsAsync() =>
+            (await CountItemsAsync(Transaction.Current)).Count;
 
         private Task<IReadOnlyCollection<MicroServiceBusMessage>> CountItemsAsync(Transaction transaction) =>
             ExecuteAsync(new SelectOperation(), transaction);
@@ -1044,14 +1329,8 @@ namespace Kingo.MicroServices.Controllers
         #region [====== EnqueueAsync ======]
 
         /// <inheritdoc />
-        protected override async Task EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages)
-        {
-            using (var scope = NewTransactionScope())
-            {
-                await EnqueueAsync(messages, Transaction.Current);
-                scope.Complete();
-            }
-        }
+        protected override Task EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages) =>
+            EnqueueAsync(messages, Transaction.Current);
 
         private Task EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages, Transaction transaction) =>
             ExecuteAsync(new EnqueueOperation(messages), transaction);
@@ -1061,15 +1340,8 @@ namespace Kingo.MicroServices.Controllers
         #region [====== DequeueAsync ======]
 
         /// <inheritdoc />
-        protected override async Task<IEnumerable<MicroServiceBusMessage>> DequeueAsync(BatchSize batchSize)
-        {
-            using (var scope = NewTransactionScope())
-            {
-                var messages = await DequeueAsync(batchSize, Transaction.Current);
-                scope.Complete();
-                return messages;
-            }
-        }
+        protected override async Task<IEnumerable<MicroServiceBusMessage>> DequeueAsync(BatchSize batchSize) =>
+            await DequeueAsync(batchSize, Transaction.Current);
 
         private Task<IReadOnlyCollection<MicroServiceBusMessage>> DequeueAsync(BatchSize batchSize, Transaction transaction) =>
             ExecuteAsync(new DequeueOperation(batchSize), transaction);
@@ -1081,56 +1353,52 @@ namespace Kingo.MicroServices.Controllers
         private Task<IReadOnlyCollection<MicroServiceBusMessage>> ExecuteAsync(TransactionOperation operation, Transaction transaction) =>
             GetOrAddOperationManager(transaction).ExecuteAsync(operation);
 
-        private TransactionOperationManager GetOrAddOperationManager(Transaction transaction)
+        private TransactionOperationThread GetOrAddOperationManager(Transaction transaction)
         {
             if (transaction.TransactionInformation.Status == TransactionStatus.Active)
             {
-                lock (_transactionOperations)
+                lock (_transactionOperationThreads)
                 {
                     var transactionId = transaction.TransactionInformation.LocalIdentifier;
 
-                    if (_transactionOperations.TryGetValue(transactionId, out var manager))
+                    if (_transactionOperationThreads.TryGetValue(transactionId, out var thread))
                     {
-                        return manager;
+                        return thread;
                     }
-                    _transactionOperations[transactionId] = manager = new TransactionOperationManager(this, transaction);
+                    _transactionOperationThreads[transactionId] = thread = new TransactionOperationThread(this, transaction);
 
                     try
                     {
-                        return manager.Start();
+                        return thread.Start();
                     }
                     catch
                     {
-                        manager.Dispose();
+                        thread.Dispose();
                         throw;
                     }
                     finally
                     {
-                        RemoveOperationManagerOnCompleted(transaction, transactionId);
+                        transaction.TransactionCompleted += HandleTransactionCompleted;
                     }
                 }
             }
             throw NewTransactionAlreadyCompletedException(transaction);
         }
 
-        private void RemoveOperationManagerOnCompleted(Transaction transaction, string transactionId)
+        private void HandleTransactionCompleted(object sender, TransactionEventArgs e)
         {
-            transaction.TransactionCompleted += (s, e) =>
+            lock (_transactionOperationThreads)
             {
-                lock (_transactionOperations)
+                var transactionId = e.Transaction.TransactionInformation.LocalIdentifier;
+
+                if (_transactionOperationThreads.TryGetValue(transactionId, out var manager))
                 {
-                    if (_transactionOperations.TryGetValue(transactionId, out var manager))
-                    {
-                        _transactionOperations.Remove(transactionId);
+                    _transactionOperationThreads.Remove(transactionId);
 
-                        manager.Dispose();
-                    }
+                    manager.Dispose();
                 }
-            };
+            }
         }
-
-        private static TransactionScope NewTransactionScope() =>
-            new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
 
         private static Exception NewTransactionAlreadyCompletedException(Transaction transaction)
         {
@@ -1158,6 +1426,8 @@ namespace Kingo.MicroServices.Controllers
         {
             if (context != DisposeContext.Finalizer)
             {
+                await _garbageCollectorThread.DisposeAsync();
+
                 _itemsLock.Dispose();
             }
             await base.DisposeAsync(context);

@@ -115,6 +115,42 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified value ({0}) should not be equal to {1}..
+        /// </summary>
+        internal static string Ensure_ValueIsEqualTo {
+            get {
+                return ResourceManager.GetString("Ensure_ValueIsEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified value ({0}) should be equal to {1}..
+        /// </summary>
+        internal static string Ensure_ValueIsNotEqualTo {
+            get {
+                return ResourceManager.GetString("Ensure_ValueIsNotEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified value ({0}) should be greater than {1}..
+        /// </summary>
+        internal static string Ensure_ValueIsNotGreaterThan {
+            get {
+                return ResourceManager.GetString("Ensure_ValueIsNotGreaterThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified value ({0}) should be greater than or equal to {1}..
+        /// </summary>
+        internal static string Ensure_ValueIsNotGreaterThanOrEqualTo {
+            get {
+                return ResourceManager.GetString("Ensure_ValueIsNotGreaterThanOrEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
         /// </summary>
         internal static string MemberInfoExtensions_AmbiguousAttributeMatch {

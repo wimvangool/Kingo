@@ -135,6 +135,18 @@
   <data name="DateTimeSpan_TimeSpanZeroNotAllowed" xml:space="preserve">
     <value>'{0}' is not allowed to be zero.</value>
   </data>
+  <data name="Ensure_ValueIsEqualTo" xml:space="preserve">
+    <value>The specified value ({0}) should not be equal to {1}.</value>
+  </data>
+  <data name="Ensure_ValueIsNotEqualTo" xml:space="preserve">
+    <value>The specified value ({0}) should be equal to {1}.</value>
+  </data>
+  <data name="Ensure_ValueIsNotGreaterThan" xml:space="preserve">
+    <value>The specified value ({0}) should be greater than {1}.</value>
+  </data>
+  <data name="Ensure_ValueIsNotGreaterThanOrEqualTo" xml:space="preserve">
+    <value>The specified value ({0}) should be greater than or equal to {1}.</value>
+  </data>
   <data name="MemberInfoExtensions_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Cannot obtain single attribute of type '{0}' declared on '{1}' because multiple attributes are of type '{0}'.</value>
   </data>

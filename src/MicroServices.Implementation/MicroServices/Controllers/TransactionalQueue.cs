@@ -26,9 +26,11 @@ namespace Kingo.MicroServices.Controllers
 
             public abstract Task<int> CountAsync();
 
-            public abstract Task EnqueueAsync(IEnumerable<IMessage> messages);
+            public abstract Task<int> EnqueueAsync(IEnumerable<IMessage> messages);
 
             public abstract Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize);
+
+            public abstract event EventHandler<TransactionalQueueChangedEventArgs> Changed;
         }
 
         #endregion
@@ -38,23 +40,133 @@ namespace Kingo.MicroServices.Controllers
         private sealed class ActiveState : State
         {
             private readonly TransactionalQueue _queue;
+            private readonly Dictionary<string, TransactionalQueueChangedEventArgs> _changesPerTransaction;
+            private EventHandler<TransactionalQueueChangedEventArgs> _changedEventHandlers;
 
             public ActiveState(TransactionalQueue queue)
             {
                 _queue = queue;
+                _changesPerTransaction = new Dictionary<string, TransactionalQueueChangedEventArgs>();
             }
 
-            public override Task<int> CountAsync() =>
-                _queue.CountItemsAsync();
+            public override async Task<int> CountAsync()
+            {
+                using (var scope = NewTransactionScope())
+                {
+                    var count = await _queue.CountItemsAsync();
+                    scope.Complete();
+                    return count;
+                }
+            }
 
-            public override Task EnqueueAsync(IEnumerable<IMessage> messages) =>
+            public override Task<int> EnqueueAsync(IEnumerable<IMessage> messages) =>
                 EnqueueAsync(_queue.Serialize(messages));
 
-            private Task EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages) =>
-                messages.Count == 0 ? Task.CompletedTask : _queue.EnqueueAsync(messages);
+            private async Task<int> EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages)
+            {
+                if (messages.Count == 0)
+                {
+                    return 0;
+                }
+                using (var scope = NewTransactionScope())
+                {
+                    await EnqueueAsync(messages, Transaction.Current);
+                    scope.Complete();
+                }
+                return messages.Count;
+            }
 
-            public override async Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize) =>
-                _queue.Deserialize(await _queue.DequeueAsync(new BatchSize(batchSize)));
+            private async Task EnqueueAsync(IReadOnlyCollection<MicroServiceBusMessage> messages, Transaction transaction)
+            {
+                await _queue.EnqueueAsync(messages);
+
+                OnChanged(new TransactionalQueueChangedEventArgs(transaction, messages.Count, 0));
+            }
+
+            public override Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize) =>
+                DequeueAsync(new BatchSize(batchSize));
+
+            private async Task<IReadOnlyCollection<IMessage>> DequeueAsync(BatchSize batchSize)
+            {
+                using (var scope = NewTransactionScope())
+                {
+                    var messages = await DequeueAsync(batchSize, Transaction.Current);
+                    scope.Complete();
+                    return messages;
+                }
+            }
+
+            private async Task<IReadOnlyCollection<IMessage>> DequeueAsync(BatchSize batchSize, Transaction transaction)
+            {
+                var messages = _queue.Deserialize(await _queue.DequeueAsync(batchSize));
+                if (messages.Count > 0)
+                {
+                    OnChanged(new TransactionalQueueChangedEventArgs(transaction, 0, messages.Count));
+                }
+                return messages;
+            }
+
+            public override event EventHandler<TransactionalQueueChangedEventArgs> Changed
+            {
+                add
+                {
+                    lock (this)
+                    {
+                        _changedEventHandlers += value;
+                    }
+                }
+                remove
+                {
+                    lock (this)
+                    {
+                        _changedEventHandlers -= value;
+                    }
+                }
+            }
+
+            private void OnChanged(TransactionalQueueChangedEventArgs e) =>
+                OnChanged(e, e.Transaction.TransactionInformation.LocalIdentifier);
+
+            private void OnChanged(TransactionalQueueChangedEventArgs e, string transactionId)
+            {
+                lock (_changesPerTransaction)
+                {
+                    if (_changesPerTransaction.TryGetValue(transactionId, out var changes))
+                    {
+                        _changesPerTransaction[transactionId] = changes.Append(e);
+                    }
+                    else
+                    {
+                        _changesPerTransaction[transactionId] = e;
+
+                        e.Transaction.TransactionCompleted += HandleTransactionCompleted;
+                    }
+                }
+            }
+
+            private void HandleTransactionCompleted(object sender, TransactionEventArgs e)
+            {
+               if (TryGetChanges(e.Transaction.TransactionInformation.LocalIdentifier, out var changes))
+               {
+                   if (e.Transaction.TransactionInformation.Status == TransactionStatus.Committed)
+                   {
+                       _changedEventHandlers.Raise(_queue, changes);
+                   }
+               }
+            }
+
+            private bool TryGetChanges(string transactionId, out TransactionalQueueChangedEventArgs changes)
+            {
+                lock (_changesPerTransaction)
+                {
+                    if (_changesPerTransaction.TryGetValue(transactionId, out changes))
+                    {
+                        _changesPerTransaction.Remove(transactionId);
+                        return true;
+                    }
+                    return false;
+                }
+            }
 
             protected override ValueTask DisposeAsync(DisposeContext context)
             {
@@ -65,6 +177,9 @@ namespace Kingo.MicroServices.Controllers
                 return base.DisposeAsync(context);
             }
         }
+
+        private static TransactionScope NewTransactionScope() =>
+            new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
 
         #endregion
 
@@ -82,11 +197,17 @@ namespace Kingo.MicroServices.Controllers
             public override Task<int> CountAsync() =>
                 throw _queue.NewObjectDisposedException();
 
-            public override Task EnqueueAsync(IEnumerable<IMessage> messages) =>
+            public override Task<int> EnqueueAsync(IEnumerable<IMessage> messages) =>
                 throw _queue.NewObjectDisposedException();
 
             public override Task<IReadOnlyCollection<IMessage>> DequeueAsync(int batchSize) =>
                 throw _queue.NewObjectDisposedException();
+
+            public override event EventHandler<TransactionalQueueChangedEventArgs> Changed
+            {
+                add => throw _queue.NewObjectDisposedException();
+                remove => throw _queue.NewObjectDisposedException();
+            }
 
             protected override ValueTask DisposeAsync(DisposeContext context) =>
                 default;
@@ -94,13 +215,16 @@ namespace Kingo.MicroServices.Controllers
 
         #endregion
 
+        private readonly IMessageSerializer _serializer;
         private State _state;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionalQueue" /> class.
         /// </summary>
-        protected TransactionalQueue()
+        /// <param name="serializer">The serializer that is used to serialize and deserialize all messages that are stored in this queue.</param>
+        protected TransactionalQueue(IMessageSerializer serializer = null)
         {
+            _serializer = serializer ?? new MessageSerializer();
             _state = new ActiveState(this);
         }
 
@@ -113,10 +237,8 @@ namespace Kingo.MicroServices.Controllers
         /// <summary>
         /// Gets the serializer that is used to serialize and deserialize all messages that are stored in this queue.
         /// </summary>
-        protected abstract IMessageSerializer Serializer
-        {
-            get;
-        }
+        protected virtual IMessageSerializer Serializer =>
+            _serializer;
 
         private IReadOnlyCollection<MicroServiceBusMessage> Serialize(IEnumerable<IMessage> messages) =>
             IsNotNull(messages, nameof(messages)).WhereNotNull().Select(Serialize).ToArray();
@@ -160,6 +282,7 @@ namespace Kingo.MicroServices.Controllers
         /// <param name="messages">The messages to enqueue.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="messages"/> is <c>null</c>.
+        /// <returns>The number of messages that were enqueued.</returns>
         /// </exception>
         /// <exception cref="SerializationException">
         /// At least one of the specified <paramref name="messages"/> could not be serialized.
@@ -167,7 +290,7 @@ namespace Kingo.MicroServices.Controllers
         /// <exception cref="ObjectDisposedException">
         /// This queue has already been disposed.
         /// </exception>
-        public Task EnqueueAsync(IEnumerable<IMessage> messages) =>
+        public Task<int> EnqueueAsync(IEnumerable<IMessage> messages) =>
             _state.EnqueueAsync(messages);
 
         /// <summary>
@@ -203,6 +326,20 @@ namespace Kingo.MicroServices.Controllers
         /// </summary>
         /// <param name="batchSize">The maximum number of messages to dequeue.</param>
         protected abstract Task<IEnumerable<MicroServiceBusMessage>> DequeueAsync(BatchSize batchSize);
+
+        #endregion
+
+        #region [====== Changed (Event) ======]
+
+        /// <summary>
+        /// Represents an event that is raised when one or more <see cref="EnqueueAsync"/> or <see cref="DequeueAsync"/>
+        /// operations have been executed on this queue as part of a specific transaction.
+        /// </summary>
+        public event EventHandler<TransactionalQueueChangedEventArgs> Changed
+        {
+            add => _state.Changed += value;
+            remove => _state.Changed -= value;
+        }
 
         #endregion
 
